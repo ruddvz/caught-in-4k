@@ -12,6 +12,7 @@ const DeepLinkHandler = require('./DeepLinkHandler');
 const SearchParamsHandler = require('./SearchParamsHandler');
 const { default: UpdaterBanner } = require('./UpdaterBanner');
 const { default: ShortcutsModal } = require('./ShortcutsModal');
+const { c4kAgents } = require('../services/BackgroundAgents/C4KBackgroundAgents');
 const ErrorDialog = require('./ErrorDialog');
 const withProtectedRoutes = require('./withProtectedRoutes');
 const routerViewsConfig = require('./routerViewsConfig');
@@ -43,8 +44,13 @@ const App = () => {
 
     React.useEffect(() => {
         document.body.classList.add('caught-in-4k');
+        
+        // Start Background Agents
+        c4kAgents.start();
+        
         return () => {
             document.body.classList.remove('caught-in-4k');
+            c4kAgents.stop();
         };
     }, []);
 
