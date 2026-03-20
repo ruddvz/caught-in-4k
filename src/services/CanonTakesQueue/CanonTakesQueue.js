@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { useCanonTakes } from '../common/useCanonTakes';
+import { useCanonTakes } from '../../common/useCanonTakes';
 
 const BATCH_SIZE = 3; // Process 3 at a time
 const BATCH_DELAY = 15000; // 15 seconds between batches (4/min = safe rate)
