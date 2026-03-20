@@ -1,37 +1,37 @@
-# Caught in 4K - Stremio Web
+# Caught in 4K
 
 [![Build](https://github.com/ruddvz/caught-in-4k/actions/workflows/build.yml/badge.svg)](https://github.com/ruddvz/caught-in-4k/actions/workflows/build.yml)
 [![GitHub Pages](https://img.shields.io/website?label=Live%20Demo&logo=github&up_message=online&down_message=offline&url=https%3A%2F%2Fruddvz.github.io%2Fcaught-in-4k%2F)](https://ruddvz.github.io/caught-in-4k/main)
 
-**Caught in 4K** - A premium streaming experience with a **Liquid Glass Cinematic Interface**. Featuring frosted glass panels, vibrant gradients, and a Gen Z aesthetic for modern content discovery.
+**Caught in 4K** - The premier destination for next-gen streaming. Featuring our exclusive **Liquid Glass Cinematic Interface**, this project brings frosted glass aesthetics, neon gradients, and a Gen Z vibe to your favorite movies and shows.
 
-Built on Stremio's powerful streaming foundation with an all-new design philosophy focused on 4K visual quality and immersive user experience.
+Built entirely from the ground up for superior 4K visual quality, seamless performance, and an immersive user experience.
 
-## Features
+## ✨ Features
 
 ### 🎬 Liquid Glass Design System
-- **Frosted Glass Panels** with backdrop blur effects
-- **Cinematic Gradients** with vibrant violet, orange, and blue accents
-- **Specular Highlights** for premium glass morphism effects
-- **Premium Dark Backgrounds** optimized for 4K displays
+- **Frosted Glass Panels** with hyper-realistic backdrop blur effects
+- **Cinematic Gradients** bursting with vibrant violet, orange, and electric blue accents
+- **Specular Highlights** that make buttons shine
+- **Deep Black Backgrounds** optimized for OLED and 4K displays
 
 ### 🎯 Gen Z AI Integration
-- **Canon Takes** - AI-generated Gen Z summaries for every movie and series
-- **Satisfaction Meter** - Community vibe ratings with emoji feedback
-- **Board Stats** - Global satisfaction analytics with trends
-- **Personalized Discovery** - Smart recommendations based on vibes
+- **Canon Takes** - Our proprietary background agents generate quick, witty, and relatable summaries for every movie and series.
+- **Satisfaction Meter** - Community vibe checks with emoji feedback to let you know if a show is worth the hype.
+- **Board Stats** - Global tracking of what's trending and what's flopping.
+- **Personalized Discovery** - Smart recommendations tailored entirely to your vibes.
 
 ### 🌍 Multi-Language & Accessibility
-- Full i18n support with 30+ languages
-- Custom Gen Z translation overrides
-- Accessibility-first component design
+- Fully internationalized (i18n) support
+- Custom Gen Z slang translation overrides
+- Accessible and screen-reader friendly design
 
-## Build
+## 🚀 Build Instructions
 
 ### Prerequisites
 
-* Node.js 12 or higher
-* [pnpm](https://pnpm.io/installation) 10 or higher
+* Node.js 18 or higher
+* [pnpm](https://pnpm.io/installation) 8 or higher
 
 ### Install dependencies
 
@@ -57,16 +57,9 @@ pnpm run build
 pnpm test
 ```
 
-### Run with Docker
+## 🎨 Theme Customization
 
-```bash
-docker build -t caught-in-4k .
-docker run -p 8080:8080 caught-in-4k
-```
-
-## Theme Customization
-
-The **Liquid Glass** theme is defined in `src/App/caught-in-4k-theme.less` with customizable CSS variables:
+The **Liquid Glass** theme is defined securely in `src/App/caught-in-4k-theme.less` with customizable CSS variables:
 
 ```css
 :root {
@@ -77,65 +70,14 @@ The **Liquid Glass** theme is defined in `src/App/caught-in-4k-theme.less` with 
 }
 ```
 
-## Components
-
-### Core UI Components
-- **CanonTakeBox** - AI summaries with glass morphism styling
-- **SatisfactionMeterBar** - Interactive vibe rating display
-- **ModalDialog** - Premium dialog with cinematic border effects
-- **Button** - Glass-morphism buttons with specular highlights
-
-### Layout Components
-- **MainNavBars** - Navigation with liquid glass background
-- **MetaRow** - Catalog browsing with premium styling
-- **HorizontalScroll** - Smooth media carousel
-
-## Deployment
-
-### GitHub Pages Auto-Deployment
-
-The project uses GitHub Actions to automatically:
-1. Build production assets
-2. Run all tests and linting
-3. Deploy to GitHub Pages on `gh-pages` branch
-
-Triggered on pushes to `main` and `development` branches.
-
-**Configure GitHub Pages:**
-- Go to **Settings → Pages**
-- Set Source: **Branch: gh-pages, Folder: /**
-
-### Manual Workflow Dispatch
-
-Trigger builds manually from GitHub Actions tab:
-1. Go to **Actions** → **Build**
-2. Click **"Run workflow"** → select branch → **Run**
-
-## Screenshots
-
-### Board - Liquid Glass Theme
-
-![Board](/assets/screenshots/board_wide.webp)
-
-### Mobile - Responsive Design
-
-![Mobile](/assets/screenshots/board_narrow.webp)
-
-## Tech Stack
+## 🔧 Tech Stack
 
 - **React 18** with Hooks
 - **Redux** for state management  
-- **i18next** for internationalization
 - **Webpack 5** with HMR
-- **Jest** for unit testing
-- **LESS** for styling
-- **TypeScript** support
-- **Workbox** for PWA features
+- **Jest** for lightning fast unit testing
+- **LESS** for our Liquid Glass styling
 
-## Contributing
+## 📜 License
 
-See [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md) for guidelines.
-
-## License
-
-Stremio is copyright 2017-2023 Smart code and available under GPLv2 license. See the [LICENSE](/LICENSE.md) file in the project for more information.
+Caught in 4K is an open-source passion project available under the [GPLv2 license](/LICENSE.md).
