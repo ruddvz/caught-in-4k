@@ -65,7 +65,7 @@ Wait for it to compile... Browser should open automatically.
 
 **"API Key: ❌ NOT FOUND"**
 - Check `.env` file exists in project root
-- Has `GEMINI_API_KEY=AIzaSyBwEQQSZpVlpTt_8QaXWQWQ5Mttjf8zSrI`
+- Has `GEMINI_API_KEY=`
 
 **"Cannot find module 'express'"**
 - Run: `npm install express cors dotenv`
