@@ -43,6 +43,7 @@ module.exports = (env, argv) => ({
     output: {
         path: path.join(__dirname, 'build'),
         filename: `${COMMIT_HASH}/scripts/[name].js`,
+        publicPath: './',
         clean: true,
     },
     module: {
