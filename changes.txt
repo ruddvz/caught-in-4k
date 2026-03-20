@@ -1,0 +1,13 @@
+I have made the following changes to the `src/App/caught-in-4k-theme.less` file:
+
+1.  **Added a new root class `.caught-in-4k`:** This class is intended to be applied to a high-level container element of the application when the "Caught in 4K" theme is active.
+
+2.  **Changed the font:** Inside the `.caught-in-4k` class, I've set the `font-family` to a stack that prioritizes Apple's "San Francisco" font (using `-apple-system` and `BlinkMacSystemFont`), and falls back to other common system fonts. This fulfills the request for "San Francisco font".
+
+3.  **Styled the buttons:** I've added styles for `.button-container` within the `.caught-in-4k` class to give them a "razor-like bevel effect". This includes:
+    *   A `linear-gradient` background to create a subtle 3D effect.
+    *   A thin `border` and `box-shadow` to enhance the bevel.
+    *   A `text-shadow` for better readability.
+    *   A hover effect that intensifies the styles.
+
+4.  **Enhanced the specular highlight for buttons:** I've included a style for `.specular-highlight` on buttons to make the shimmer effect more pronounced.

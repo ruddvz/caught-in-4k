@@ -41,6 +41,13 @@ const App = () => {
     const [initialized, setInitialized] = React.useState(false);
     const [shortcutModalOpen,, closeShortcutsModal, toggleShortcutModal] = useBinaryState(false);
 
+    React.useEffect(() => {
+        document.body.classList.add('caught-in-4k');
+        return () => {
+            document.body.classList.remove('caught-in-4k');
+        };
+    }, []);
+
     const onShortcut = React.useCallback((name) => {
         if (name === 'shortcuts') {
             toggleShortcutModal();

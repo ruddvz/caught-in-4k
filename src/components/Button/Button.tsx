@@ -60,7 +60,7 @@ const Button = forwardRef(({ className, href, disabled, children, onLongPress, o
             tabIndex: 0,
             ...props,
             ref,
-            className: classNames(className, styles['button-container'], { 'disabled': disabled }),
+            className: classNames(className, styles['button-container'], 'specular-highlight', { 'disabled': disabled }),
             href,
             onKeyDown,
             onMouseDown,

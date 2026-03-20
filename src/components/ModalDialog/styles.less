@@ -17,9 +17,12 @@
         max-width: 80%;
         max-height: 80%;
         padding: 0 2rem;
-        border-radius: var(--border-radius);
-        background-color: var(--modal-background-color);
-        box-shadow: var(--outer-glow);
+        border-radius: 24px;
+        background-color: rgba(12, 10, 25, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 240, 255, 0.15);
+        box-shadow: 0 0 30px rgba(0, 240, 255, 0.25), 0 0 60px rgba(157, 78, 221, 0.15), inset 0 0 30px rgba(255, 255, 255, 0.05);
 
         .modal-dialog-background {
             z-index: 0;
