@@ -245,6 +245,7 @@ module.exports = (env, argv) => ({
             scriptLoading: 'blocking',
             faviconsPath: 'favicons',
             imagesPath: 'images',
+            excludeChunks: ['worker'],
         }),
     ].filter(Boolean)
 });

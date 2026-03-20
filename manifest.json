@@ -11,8 +11,8 @@
     "start_url": "./",
     "icons": [
         {
-            "src": "favicons/icon_256x256.ico",
-            "sizes": "256x256",
+            "src": "favicons/favicon.ico",
+            "sizes": "32x32",
             "type": "image/vnd.microsoft.icon"
         },
         {
