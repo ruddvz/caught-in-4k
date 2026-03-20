@@ -21,7 +21,7 @@ const Calendar = ({ urlParams }: Props) => {
     const calendar = useCalendar(urlParams);
     const profile = useProfile();
 
-    const { toDayMonth } = useCalendarDate(profile);
+    const { toDayMonth } = useCalendarDate();
 
     const [selected, setSelected] = useState<CalendarDate | null>(null);
 
@@ -40,7 +40,6 @@ const Calendar = ({ urlParams }: Props) => {
                             <Selector
                                 selected={calendar.selected}
                                 selectable={calendar.selectable}
-                                profile={profile}
                             />
                             <Table
                                 items={calendar.items}
@@ -53,7 +52,6 @@ const Calendar = ({ urlParams }: Props) => {
                             items={calendar.items}
                             selected={selected}
                             monthInfo={calendar.monthInfo}
-                            profile={profile}
                             onChange={setSelected}
                         />
                         <BottomSheet title={detailsTitle} show={!!selected} onClose={onDetailsClose}>

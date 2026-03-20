@@ -4,3 +4,7 @@
 /npm-debug.log
 .DS_Store
 .prettierignore
+.env
+.env.local
+.env.*.local
+.env.production

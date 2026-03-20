@@ -5,63 +5,77 @@
  */
 
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styles from './styles.less';
 
 const SatisfactionMeterBar = ({ tier, size = 'detail', animated = false }) => {
-  const [showLabel, setShowLabel] = useState(false);
+    const [showLabel, setShowLabel] = useState(false);
 
-  if (!tier) {
-    return null;
-  }
+    if (!tier) {
+        return null;
+    }
 
-  const sizeClass = {
-    global: styles.global,
-    card: styles.card,
-    detail: styles.detail,
-  }[size] || styles.detail;
+    const sizeClass = {
+        global: styles.global,
+        card: styles.card,
+        detail: styles.detail,
+    }[size] || styles.detail;
 
-  const animatedClass = animated ? styles.shimmer : '';
+    const animatedClass = animated ? styles.shimmer : '';
 
-  const barStyle = {
-    background: `linear-gradient(90deg, ${tier.gradientStart} 0%, ${tier.gradientEnd} 100%)`,
-    width: `${tier.percentage}%`,
-  };
+    const barStyle = {
+        background: `linear-gradient(90deg, ${tier.gradientStart} 0%, ${tier.gradientEnd} 100%)`,
+        width: `${tier.percentage}%`,
+    };
 
-  return (
-    <div
-      className={`${styles.container} ${sizeClass} ${animatedClass}`}
-      onMouseEnter={() => setShowLabel(true)}
-      onMouseLeave={() => setShowLabel(false)}
-    >
-      <div className={styles.track}>
-        <div className={styles.bar} style={barStyle} />
-      </div>
+    return (
+        <div
+            className={`${styles.container} ${sizeClass} ${animatedClass}`}
+            onMouseEnter={() => setShowLabel(true)}
+            onMouseLeave={() => setShowLabel(false)}
+        >
+            <div className={styles.track}>
+                <div className={styles.bar} style={barStyle} />
+            </div>
 
-      {size === 'detail' && (
-        <div className={styles.detailContent}>
-          <span className={styles.percentage}>{tier.percentage}%</span>
-          <span className={styles.tierInfo}>
-            {tier.emoji} {tier.name}
-          </span>
-          <span className={styles.oneLiner}>{tier.oneLiner}</span>
+            {size === 'detail' && (
+                <div className={styles.detailContent}>
+                    <span className={styles.percentage}>{tier.percentage}%</span>
+                    <span className={styles.tierInfo}>
+                        {tier.emoji} {tier.name}
+                    </span>
+                    <span className={styles.oneLiner}>{tier.oneLiner}</span>
+                </div>
+            )}
+
+            {size === 'card' && showLabel && (
+                <div className={styles.cardLabel}>
+                    <span>{tier.emoji}</span>
+                    <span>{tier.name}</span>
+                </div>
+            )}
+
+            {size === 'global' && (
+                <div className={styles.globalContent}>
+                    <span className={styles.percentage}>{tier.percentage}%</span>
+                    <span className={styles.tierInfo}>{tier.emoji} {tier.name}</span>
+                </div>
+            )}
         </div>
-      )}
-
-      {size === 'card' && showLabel && (
-        <div className={styles.cardLabel}>
-          <span>{tier.emoji}</span>
-          <span>{tier.name}</span>
-        </div>
-      )}
-
-      {size === 'global' && (
-        <div className={styles.globalContent}>
-          <span className={styles.percentage}>{tier.percentage}%</span>
-          <span className={styles.tierInfo}>{tier.emoji} {tier.name}</span>
-        </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default SatisfactionMeterBar;
+
+SatisfactionMeterBar.propTypes = {
+    tier: PropTypes.shape({
+        gradientStart: PropTypes.string,
+        gradientEnd: PropTypes.string,
+        percentage: PropTypes.number,
+        emoji: PropTypes.string,
+        name: PropTypes.string,
+        oneLiner: PropTypes.string,
+    }),
+    size: PropTypes.string,
+    animated: PropTypes.bool,
+};

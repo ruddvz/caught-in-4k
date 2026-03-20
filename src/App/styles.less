@@ -6,7 +6,7 @@
 
 @font-face {
     font-family: 'PlusJakartaSans';
-    src: url('/assets/fonts/PlusJakartaSans.ttf') format('truetype');
+    src: url('../../assets/fonts/PlusJakartaSans.ttf') format('truetype');
 }
 
 :global {
@@ -116,6 +116,7 @@
     border: none;
     outline: none;
     list-style: none;
+    -webkit-user-select: none;
     user-select: none;
     text-decoration: none;
     appearance: none;
@@ -155,6 +156,7 @@ html {
     font-family: 'PlusJakartaSans', 'Arial', 'Helvetica', 'sans-serif';
     overflow: auto;
     overscroll-behavior: none;
+    -webkit-user-select: none;
     user-select: none;
     touch-action: manipulation;
     background-color: var(--primary-background-color);
@@ -201,6 +203,7 @@ html {
                 padding: 0 calc(0.5 * var(--horizontal-nav-bar-size));
                 overflow: visible;
                 scrollbar-width: none;
+                -ms-overflow-style: none;
                 pointer-events: none;
 
                 &::-webkit-scrollbar {

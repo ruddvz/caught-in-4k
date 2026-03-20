@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { useServices } from 'stremio/services';
-import { MultiselectMenu, Toggle } from 'stremio/components';
+import { Toggle } from 'stremio/components';
 import { Section, Option } from '../components';
 import useInterfaceOptions from './useInterfaceOptions';
 
@@ -12,7 +12,6 @@ const Interface = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) =>
     const { shell } = useServices();
 
     const {
-        interfaceLanguageSelect,
         quitOnCloseToggle,
         escExitFullscreenToggle,
         hideSpoilersToggle,
@@ -20,12 +19,6 @@ const Interface = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) =>
 
     return (
         <Section ref={ref} label={'INTERFACE'}>
-            <Option label={'SETTINGS_UI_LANGUAGE'}>
-                <MultiselectMenu
-                    className={'multiselect'}
-                    {...interfaceLanguageSelect}
-                />
-            </Option>
             {
                 shell.active &&
                     <Option label={'SETTINGS_QUIT_ON_CLOSE'}>

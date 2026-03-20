@@ -9,11 +9,10 @@ import styles from './Selector.less';
 type Props = {
     selected: CalendarSelected,
     selectable: CalendarSelectable,
-    profile: Profile,
 };
 
-const Selector = ({ selected, selectable, profile }: Props) => {
-    const { toMonth } = useCalendarDate(profile);
+const Selector = ({ selected, selectable }: Props) => {
+    const { toMonth } = useCalendarDate();
 
     const [prev, next] = useMemo(() => (
         [selectable.prev, selectable.next]

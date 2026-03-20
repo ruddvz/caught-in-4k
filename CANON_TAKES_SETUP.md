@@ -14,7 +14,7 @@ npm install express cors dotenv
 
 ### 2. Create `.env` file in project root
 ```
-GEMINI_API_KEY=AIzaSyBwEQQSZpVlpTt_8QaXWQWQ5Mttjf8zSrI
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
 ```
 
 ### 3. Create `api-proxy.js` in project root
@@ -131,7 +131,7 @@ git push heroku main
 
 **3. Set environment variable**
 ```bash
-heroku config:set GEMINI_API_KEY=AIzaSyBwEQQSZpVlpTt_8QaXWQWQ5Mttjf8zSrI
+heroku config:set GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
 ```
 
 **4. Update frontend `.env`**

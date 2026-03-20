@@ -44,10 +44,10 @@ const App = () => {
 
     React.useEffect(() => {
         document.body.classList.add('caught-in-4k');
-        
+
         // Start Background Agents
         c4kAgents.start();
-        
+
         return () => {
             document.body.classList.remove('caught-in-4k');
             c4kAgents.stop();

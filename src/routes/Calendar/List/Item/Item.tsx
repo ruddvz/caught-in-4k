@@ -12,13 +12,12 @@ type Props = {
     monthInfo: CalendarMonthInfo,
     date: CalendarDate,
     items: CalendarContentItem[],
-    profile: Profile,
     onClick: (date: CalendarDate) => void,
 };
 
-const Item = ({ selected, monthInfo, date, items, profile, onClick }: Props) => {
+const Item = ({ selected, monthInfo, date, items, onClick }: Props) => {
     const ref = useRef<HTMLDivElement>(null);
-    const { toDayMonth } = useCalendarDate(profile);
+    const { toDayMonth } = useCalendarDate();
 
     const [active, today] = useMemo(() => [
         date.day === selected?.day,

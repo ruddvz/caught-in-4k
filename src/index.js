@@ -16,11 +16,14 @@ const ReactDOM = require('react-dom/client');
 const i18n = require('i18next');
 const { initReactI18next } = require('react-i18next');
 const stremioTranslations = require('stremio-translations');
+const caughtIn4KTranslations = require('./common/caught-in-4k-translations');
 const App = require('./App');
 
-const translations = Object.fromEntries(Object.entries(stremioTranslations()).map(([key, value]) => [key, {
-    translation: value
-}]));
+const allTranslations = stremioTranslations();
+const baseTranslation = allTranslations['en-US'] || {};
+// Merge Caught in 4K overrides on top of default translations
+const mergedTranslation = Object.assign({}, baseTranslation, caughtIn4KTranslations);
+const translations = { 'en-US': { translation: mergedTranslation } };
 
 i18n
     .use(initReactI18next)

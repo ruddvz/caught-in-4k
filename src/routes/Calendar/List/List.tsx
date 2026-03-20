@@ -8,11 +8,10 @@ type Props = {
     items: CalendarItem[],
     selected: CalendarDate | null,
     monthInfo: CalendarMonthInfo,
-    profile: Profile,
     onChange: (date: CalendarDate) => void,
 };
 
-const List = ({ items, selected, monthInfo, profile, onChange }: Props) => {
+const List = ({ items, selected, monthInfo, onChange }: Props) => {
     const filteredItems = useMemo(() => {
         return items.filter(({ items }) => items.length);
     }, [items]);
@@ -31,7 +30,6 @@ const List = ({ items, selected, monthInfo, profile, onChange }: Props) => {
                             {...item}
                             selected={selected}
                             monthInfo={monthInfo}
-                            profile={profile}
                             onClick={onChange}
                         />
                     ))

@@ -10,6 +10,7 @@ const { default: BoardStatsSection } = require('stremio/components/BoardStatsSec
 const { default: useCanonTakesQueue } = require('stremio/services/CanonTakesQueue/CanonTakesQueue');
 const useBoard = require('./useBoard');
 const useContinueWatchingPreview = require('./useContinueWatchingPreview');
+const HeroShelf = require('./HeroShelf');
 const styles = require('./styles');
 const { default: StreamingServerWarning } = require('./StreamingServerWarning');
 
@@ -23,9 +24,15 @@ const Board = () => {
     const notifications = useNotifications();
     const profile = useProfile();
     const boardCatalogsOffset = continueWatchingPreview.items.length > 0 ? 1 : 0;
-    
+
     // Start Canon Takes background processing
     useCanonTakesQueue(board.catalogs);
+
+    const heroItems = React.useMemo(() => {
+        const firstReady = board.catalogs.find((c) => c.content && c.content.type === 'Ready');
+        if (!firstReady) return [];
+        return firstReady.content.content.filter((item) => item && typeof item.background === 'string').slice(0, 15);
+    }, [board.catalogs]);
     const scrollContainerRef = React.useRef();
     const showStreamingServerWarning = React.useMemo(() => {
         return streamingServer.settings !== null && streamingServer.settings.type === 'Err' && (
@@ -56,6 +63,12 @@ const Board = () => {
             <MainNavBars className={styles['board-content-container']} route={'board'}>
                 <div ref={scrollContainerRef} className={styles['board-content']} onScroll={onScroll}>
                     {
+                        heroItems.length > 0 ?
+                            <HeroShelf items={heroItems} />
+                            :
+                            null
+                    }
+                    {
                         continueWatchingPreview.items.length > 0 ?
                             <MetaRow
                                 className={classnames(styles['board-row'], styles['continue-watching-row'], 'animation-fade-in')}
@@ -67,7 +80,7 @@ const Board = () => {
                             :
                             null
                     }
-                    <BoardStatsSection metaRows={board.catalogs.filter(c => c.content?.type === 'Ready')} />
+                    <BoardStatsSection metaRows={board.catalogs.filter((c) => c.content?.type === 'Ready')} />
                     {board.catalogs.map((catalog, index) => {
                         switch (catalog.content?.type) {
                             case 'Ready': {

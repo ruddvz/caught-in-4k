@@ -61,7 +61,7 @@ const StreamingServerWarning = ({ className }: Props) => {
                 <a
                     href='https://www.stremio.com/download-service'
                     target='_blank'
-                    rel='noreferrer'
+                    rel='noreferrer noopener'
                 >
                     <Button
                         className={styles['action']}
