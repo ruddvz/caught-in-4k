@@ -43,7 +43,6 @@ jobs:
         run: pnpm lint
       # Create recursively the destination dir with
       # "--parrents where no error if existing, make parent directories as needed."
-      - run: mkdir -p ./build/${{ github.head_ref || github.ref_name }}
       - name: Disable Jekyll processing in published output
         run: touch ./build/.nojekyll
       - name: Deploy to GitHub Pages
@@ -53,7 +52,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
           publish_branch: gh-pages
-          # in stremio, we use `feat/features-name` or `fix/this-bug`
-          # so we need a recursive creation of the destination dir
-          destination_dir: ${{ github.head_ref || github.ref_name }}
           allow_empty_commit: true
