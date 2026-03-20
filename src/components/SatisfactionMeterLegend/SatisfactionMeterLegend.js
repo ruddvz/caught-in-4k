@@ -4,13 +4,15 @@
  */
 
 import React from 'react';
+const useTranslate = require('stremio/common/useTranslate');
 import { SATISFACTION_TIERS } from '../../common/useSatisfactionMeter';
 import styles from './styles.less';
 
 const SatisfactionMeterLegend = () => {
+  const t = useTranslate();
   return (
     <div className={styles.legend}>
-      <div className={styles.title}>Satisfaction Ratings</div>
+      <div className={styles.title}>{t('Satisfaction Ratings')}</div>
       <div className={styles.tiers}>
         {SATISFACTION_TIERS.map((tier) => (
           <div key={tier.id} className={styles.tierItem}>

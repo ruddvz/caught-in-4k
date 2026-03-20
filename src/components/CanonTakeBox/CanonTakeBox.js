@@ -6,10 +6,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useCanonTakes } from '../../common/useCanonTakes';
+const useTranslate = require('stremio/common/useTranslate');
 import styles from './styles.less';
 
 const CanonTakeBox = ({ title, year, genres, voteAverage }) => {
   const { fetchCanonTake, getCached } = useCanonTakes();
+  const t = useTranslate();
   const [canonTake, setCanonTake] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,7 +44,7 @@ const CanonTakeBox = ({ title, year, genres, voteAverage }) => {
   return (
     <div className={styles.canonTakeBox}>
       <div className={styles.header}>
-        <span className={styles.badge}>✦ canon take</span>
+        <span className={styles.badge}>{t('✦ canon take')}</span>
       </div>
 
       {isLoading ? (

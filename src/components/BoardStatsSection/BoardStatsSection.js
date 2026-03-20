@@ -8,9 +8,11 @@ import React, { useMemo } from 'react';
 import SatisfactionMeterBar from '../SatisfactionMeterBar/SatisfactionMeterBar';
 import SatisfactionMeterLegend from '../SatisfactionMeterLegend/SatisfactionMeterLegend';
 import { useSatisfactionMeter } from '../../common/useSatisfactionMeter';
+const useTranslate = require('stremio/common/useTranslate');
 import styles from './styles.less';
 
 const BoardStatsSection = ({ metaRows = [] }) => {
+  const t = useTranslate();
   const averageRating = useMemo(() => {
     if (!metaRows || metaRows.length === 0) {
       return null;
@@ -41,7 +43,7 @@ const BoardStatsSection = ({ metaRows = [] }) => {
     <div className={styles.statsSection}>
       <div className={styles.content}>
         <div className={styles.meterContainer}>
-          <h2 className={styles.heading}>How's the vibe?</h2>
+          <h2 className={styles.heading}>{t('How\'s the vibe?')}</h2>
           <SatisfactionMeterBar tier={tier} size="global" animated={true} />
         </div>
         <SatisfactionMeterLegend />
