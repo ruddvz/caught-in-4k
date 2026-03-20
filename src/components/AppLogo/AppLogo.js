@@ -1,7 +1,7 @@
 /**
  * App Logo Component
- * Text-based "Caught in 4K" branding with green wordmark and gold diamond
- * Styled to look premium like Apple TV
+ * Neon-style "Caught in 4K" branding with cyberpunk aesthetic
+ * Bright cyan text with neon pink accent diamond and glowing effects
  */
 
 import React from 'react';
@@ -12,11 +12,11 @@ const AppLogo = ({ variant = 'full', className = '' }) => {
   return (
     <div className={`${styles.logoContainer} ${className}`}>
       <div className={styles.logoText}>
-        <span className={styles.highlight}>◆</span>
-        <span className={styles.wordmark}>Caught in 4K</span>
+        <span className={styles.highlightNeon}>◆</span>
+        <span className={styles.wordmarkNeon}>Caught in 4K</span>
       </div>
       {variant === 'full' && (
-        <div className={styles.tagline}>we see you. we see what you watch.</div>
+        <div className={styles.taglineNeon}>watch in 4K</div>
       )}
     </div>
   );
