@@ -33,13 +33,31 @@ class C4KBackgroundAgents {
         this.satisfactionData = new Map();
         this.isProcessing = false;
         this.interval = null;
-        this.PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || 'http://localhost:3001/api/canon-take';
+        this.proxyAvailable = false;
+        this.proxyChecked = false;
+        this.PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || '';
     }
 
     start() {
         if (this.interval) return;
-        console.warn('[🤖 C4K Agent] Background agents started.');
-        this.interval = setInterval(() => this._processQueues(), 10000);
+        if (!this.PROXY_URL) return;
+        this._checkProxy();
+    }
+
+    async _checkProxy() {
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 3000);
+            const resp = await fetch(this.PROXY_URL, { method: 'OPTIONS', signal: controller.signal }).catch(() => null);
+            clearTimeout(timeout);
+            this.proxyAvailable = resp !== null;
+        } catch (_e) {
+            this.proxyAvailable = false;
+        }
+        this.proxyChecked = true;
+        if (this.proxyAvailable) {
+            this.interval = setInterval(() => this._processQueues(), 10000);
+        }
     }
 
     stop() {
@@ -94,7 +112,6 @@ class C4KBackgroundAgents {
                 continue;
             }
 
-            console.warn(`[🤖 Gen Z Agent] Processing summary for: ${item.name}`);
             try {
                 const response = await fetch(this.PROXY_URL, {
                     method: 'POST',
@@ -113,8 +130,11 @@ class C4KBackgroundAgents {
                         setCached(item.name, item.releaseInfo, data.canonTake);
                     }
                 }
-            } catch (err) {
-                console.error('[🤖 Gen Z Agent] Failed to fetch summary:', err);
+            } catch (_err) {
+                // Proxy unreachable — stop retrying
+                this.proxyAvailable = false;
+                this.stop();
+                break;
             }
         }
 

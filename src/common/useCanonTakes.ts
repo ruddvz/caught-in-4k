@@ -6,7 +6,7 @@
 import { useCallback } from 'react';
 
 const CACHE_PREFIX = 'c4k_canon_take_';
-const PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || 'http://localhost:3001/api/canon-take';
+const PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || '';
 
 export const useCanonTakes = () => {
     const getCacheKey = (title, year) => `${CACHE_PREFIX}${title}_${year}`;
@@ -53,6 +53,10 @@ export const useCanonTakes = () => {
             const cached = getCached(title, year);
             if (cached) {
                 return cached.canonTake;
+            }
+
+            if (!PROXY_URL) {
+                return '';
             }
 
             try {
