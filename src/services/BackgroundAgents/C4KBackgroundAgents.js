@@ -1,4 +1,4 @@
-/**
+﻿/**
  * C4K Background Agent System
  * Runs non-blocking background workers for Gen Z AI Summaries (Canon Takes)
  * and global Satisfaction Meter metrics calculation.
@@ -39,7 +39,6 @@ class C4KBackgroundAgents {
     start() {
         if (this.interval) return;
         console.warn('[🤖 C4K Agent] Background agents started.');
-        // Run background processing loop every 10 seconds
         this.interval = setInterval(() => this._processQueues(), 10000);
     }
 
@@ -50,9 +49,6 @@ class C4KBackgroundAgents {
         }
     }
 
-    /**
-   * Queue items for the Gen Z Summary Agent
-   */
     queueForCanonTake(items = []) {
         items.forEach((item) => {
             const id = `${item.name}_${item.releaseInfo || 'unknown'}`;
@@ -62,9 +58,6 @@ class C4KBackgroundAgents {
         });
     }
 
-    /**
-   * Pre-calculate Satisfaction Metrics
-   */
     processSatisfactionMetrics(items = []) {
         if (typeof window !== 'undefined' && window.requestIdleCallback) {
             window.requestIdleCallback(() => this._calculateMetrics(items));
@@ -90,12 +83,11 @@ class C4KBackgroundAgents {
         if (this.isProcessing || this.canonTakesQueue.size === 0) return;
         this.isProcessing = true;
 
-        // Process up to 3 items per cycle to prevent overwhelming the AI API
         const batch = Array.from(this.canonTakesQueue.values()).slice(0, 3);
 
         for (const item of batch) {
             const id = `${item.name}_${item.releaseInfo || 'unknown'}`;
-            this.canonTakesQueue.delete(id); // Remove from queue
+            this.canonTakesQueue.delete(id);
 
             const cached = getCached(item.name, item.releaseInfo);
             if (cached) {
