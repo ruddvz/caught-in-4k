@@ -66,9 +66,13 @@ function Core(args) {
         }
 
         starting = true;
-        transport = new CoreTransport(args);
-        transport.on('init', onTransportInit);
-        transport.on('error', onTransportError);
+        try {
+            transport = new CoreTransport(args);
+            transport.on('init', onTransportInit);
+            transport.on('error', onTransportError);
+        } catch (e) {
+            onTransportError(e);
+        }
         onStateChanged();
     };
     this.stop = function() {

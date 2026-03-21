@@ -8,6 +8,10 @@ function CoreTransport(args) {
     const worker = new Worker(`${process.env.COMMIT_HASH}/scripts/worker.js`);
     const bridge = new Bridge(window, worker);
 
+    worker.onerror = (e) => {
+        events.emit('error', e.message || 'Worker failed to load');
+    };
+
     window.onCoreEvent = ({ name, args }) => {
         try {
             events.emit(name, args);

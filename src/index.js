@@ -37,7 +37,40 @@ i18n
     });
 
 const root = ReactDOM.createRoot(document.getElementById('app'));
-root.render(<App />);
+
+class RootErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { error: null };
+    }
+    static getDerivedStateFromError(error) {
+        return { error };
+    }
+    render() {
+        if (this.state.error) {
+            return React.createElement('div', {
+                style: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100vh',
+                    color: '#fff',
+                    fontFamily: 'sans-serif',
+                    padding: '2rem',
+                    textAlign: 'center',
+                    background: '#1a1a2e',
+                }
+            },
+            React.createElement('h2', null, 'Something went wrong'),
+            React.createElement('p', { style: { color: '#aaa', maxWidth: '600px', wordBreak: 'break-all' } }, String(this.state.error))
+            );
+        }
+        return this.props.children;
+    }
+}
+
+root.render(React.createElement(RootErrorBoundary, null, React.createElement(App)));
 
 // Unregister any existing service workers and clear caches to ensure fresh content
 if ('serviceWorker' in navigator) {

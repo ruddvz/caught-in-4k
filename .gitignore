@@ -4,8 +4,12 @@
 /npm-debug.log
 *.log
 lint-output.txt
+lint_out.txt
 errors.txt
 stats.json
+diag.json
+diffstat.txt
+lint_result.json
 .DS_Store
 .prettierignore
 .env
