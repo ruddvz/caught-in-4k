@@ -24,9 +24,22 @@
         outline-style: none;
         transform: scale(1.08); /* Apple TV card scaling */
         z-index: 10;
+        
+        /* Contextual Lensing  */
+        filter: brightness(1.2) contrast(1.1);
 
         .poster-container {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 0.15rem var(--primary-foreground-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 0.15rem rgba(255, 255, 255, 0.4);
+            
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0; left: -100%;
+                width: 50%; height: 100%;
+                background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transform: skewX(-20deg);
+                animation: glint 1s ease-out;
+            }
 
             .dismiss-icon-layer {
                 opacity: 1;
@@ -391,4 +404,5 @@
             margin-top: 0.5rem;
         }
     }
-}
+}@ k e y f r a m e s   g l i n t   {   0 %   {   l e f t :   - 1 0 0 % ;   o p a c i t y :   0 ;   }   5 0 %   {   o p a c i t y :   1 ;   }   1 0 0 %   {   l e f t :   2 0 0 % ;   o p a c i t y :   0 ;   }   }  
+ 
