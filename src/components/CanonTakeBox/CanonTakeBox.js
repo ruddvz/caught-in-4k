@@ -3,7 +3,8 @@ const useTranslate = require('stremio/common/useTranslate');
 const styles = require('./styles.less');
 
 const CanonTakeBox = () => {
-    const t = useTranslate();
+    // useTranslate returns an object with helpers; grab the string translator
+    const { string: t } = useTranslate();
     const canonTake = 'an absolute cinematic masterpiece. the vibes are immaculate and the plot actually makes sense. certified fresh fr fr.';
     return (
         <div className={styles.canonTakeBox}>
