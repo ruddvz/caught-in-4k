@@ -18,20 +18,22 @@
 .meta-item-container {
     padding: 1rem;
     overflow: visible;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), z-index 0s;
 
     &:hover, &:focus, &:global(.active), &:global(.selected) {
         outline-style: none;
-        transition: background-color 100ms ease-out;
+        transform: scale(1.08); /* Apple TV card scaling */
+        z-index: 10;
 
         .poster-container {
-            box-shadow: 0 0 0 0.2rem var(--primary-foreground-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 0.15rem var(--primary-foreground-color);
 
             .dismiss-icon-layer {
                 opacity: 1;
             }
 
             .poster-image-layer {
-                transform: scale(1.05);
+                transform: scale(1.02); /* Inner scale relative to card */
             }
 
             .play-icon-layer {

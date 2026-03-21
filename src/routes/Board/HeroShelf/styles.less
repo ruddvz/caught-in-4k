@@ -6,10 +6,16 @@
 .hero-shelf-container {
     position: relative;
     width: 100%;
-    height: 32rem;
+    height: 75vh;
+    min-height: 40rem;
+    max-height: 60rem;
     overflow: hidden;
-    border-radius: var(--border-radius);
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+
+    /* Apple TV style edge-to-edge / oversized banner */
+    border-radius: 0; 
+    margin-left: calc(-1 * var(--safe-area-inset-left) - 1rem); /* offset board padding */
+    width: calc(100% + var(--safe-area-inset-left) + 2rem);
 
     &:hover {
         .hero-nav {
@@ -59,30 +65,32 @@
             top: 0;
             left: 0;
             bottom: 0;
-            width: 55%;
-            padding: 3rem 2rem 5rem 2rem;
+            width: 65%; /* Wider content block */
+            padding: 4rem 4rem 6rem calc(1rem + var(--safe-area-inset-left)); /* Offset padding securely */
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            gap: 1rem;
+            gap: 1.25rem;
 
             .hero-logo {
-                max-height: 7rem;
-                max-width: 20rem;
+                max-height: 10rem;
+                max-width: 25rem;
                 object-fit: contain;
                 object-position: left;
                 filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
             }
 
+            /* Apple TV typography scale for titles */
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 4rem;
                 font-weight: 800;
                 color: var(--primary-foreground-color);
-                text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+                text-shadow: 0 4px 16px rgba(0, 0, 0, 0.9);
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 max-width: 100%;
+                letter-spacing: -0.02em;
             }
 
             .hero-meta {
@@ -90,32 +98,32 @@
                 flex-direction: row;
                 align-items: center;
                 flex-wrap: wrap;
-                gap: 0.75rem;
+                gap: 1rem;
 
                 .hero-year,
                 .hero-runtime {
-                    font-size: 0.95rem;
-                    font-weight: 500;
-                    color: rgba(255, 255, 255, 0.8);
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    color: rgba(255, 255, 255, 0.9);
                 }
 
                 .hero-imdb {
-                    font-size: 0.85rem;
+                    font-size: 0.95rem;
                     font-weight: 700;
                     color: #1a1a1a;
                     background-color: var(--color-imdb);
-                    padding: 0.15rem 0.5rem;
-                    border-radius: 0.25rem;
+                    padding: 0.2rem 0.6rem;
+                    border-radius: 0.35rem;
                     letter-spacing: 0.03em;
                 }
             }
 
             .hero-description {
-                font-size: 0.95rem;
+                font-size: 1.15rem;
                 font-weight: 400;
                 line-height: 1.6;
                 color: rgba(255, 255, 255, 0.85);
-                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+                text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
                 overflow: hidden;
                 display: -webkit-box;
                 -webkit-line-clamp: 3;
@@ -138,11 +146,11 @@
                     justify-content: center;
                     height: 2.75rem;
                     padding: 0 1.75rem;
-                    border-radius: 999px;
-                    font-size: 1rem;
-                    font-weight: 600;
+border-radius: 12px;
+                    font-size: 1.1rem;
+                    font-weight: 700;
                     cursor: pointer;
-                    transition: filter 0.2s ease, transform 0.2s ease;
+                    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, background-color 0.2s ease;
                     white-space: nowrap;
 
                     span {
@@ -152,23 +160,26 @@
                     }
 
                     &.hero-btn-primary {
-                        background-color: var(--primary-accent-color);
-                        color: var(--secondary-foreground-color);
+                        background-color: var(--primary-foreground-color);
+                        color: var(--primary-background-color);
 
                         &:hover {
-                            filter: brightness(1.15);
-                            transform: translateY(-1px);
+                            background-color: white;
+                            transform: scale(1.05);
+                            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
                         }
                     }
 
                     &.hero-btn-secondary {
                         background-color: rgba(255, 255, 255, 0.15);
+                        backdrop-filter: blur(10px);
                         color: var(--primary-foreground-color);
-                        border: 1px solid rgba(255, 255, 255, 0.4);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
 
                         &:hover {
-                            background-color: rgba(255, 255, 255, 0.25);
-                            transform: translateY(-1px);
+                            background-color: rgba(255, 255, 255, 0.3);        
+                            transform: scale(1.05);
+                            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
                         }
                     }
                 }

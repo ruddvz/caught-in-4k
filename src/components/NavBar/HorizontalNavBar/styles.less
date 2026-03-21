@@ -10,7 +10,14 @@
     justify-content: space-between;
     height: var(--horizontal-nav-bar-size);
     padding-right: 1rem;
-    background-color: transparent;
+    
+    /* Apple TV transparent top nav with slight fade */
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+
     overflow: visible;
     padding-top: var(--safe-area-inset-top);
     box-sizing: content-box;

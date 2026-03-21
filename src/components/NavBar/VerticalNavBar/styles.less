@@ -11,7 +11,13 @@
     gap: 1rem;
     width: var(--vertical-nav-bar-size);
     padding: 1rem 0;
-    background-color: transparent;
+    
+    /* tvOS floating frosted sidenav style */
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
