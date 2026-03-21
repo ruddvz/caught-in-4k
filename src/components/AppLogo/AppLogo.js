@@ -16,7 +16,7 @@ const AppLogo = ({ variant = 'full', className = '' }) => {
                 alt={t('Caught in 4K')}
             />
             {variant === 'full' ? (
-                <div className={styles.tagline}>{t('watch in 4K')}</div>
+                <div className={styles.tagline}>{t('Caught in 4K')}</div>
             ) : null}
         </div>
     );
