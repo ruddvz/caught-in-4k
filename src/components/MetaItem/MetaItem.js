@@ -112,22 +112,20 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                         null
                 }
                 {
-                    tier ?
-                        <div className={styles['satisfaction-meter-layer']}>
-                            <SatisfactionMeterBar tier={tier} size="card" />
-                        </div>
-                        :
-                        null
-                }
-                {
-                    newVideos > 0 ?
-                        <div className={styles['new-videos']}>
-                            <div className={styles['layer']} />
-                            <div className={styles['layer']} />
-                            <div className={styles['layer']}>
-                                <Icon className={styles['icon']} name={'add'} />
-                                <div className={styles['label']}>
-                                    {newVideos}
+                    voteAverage ?
+                        <div className={styles['poster-stats-layer']}>
+                            <div className={styles['rating-pill']}>
+                                <Icon className={styles['icon']} name={'star'} />
+                                <span className={styles['text']}>{voteAverage.toFixed(1)}/10</span>
+                            </div>
+                            <div className={styles['stat-icons']}>
+                                <div className={styles['stat-item']}>
+                                    <Icon className={styles['icon']} name={'heart-outline'} />
+                                    <span className={styles['text']}>{Math.floor(Math.random() * 20 + 80)}%</span>
+                                </div>
+                                <div className={styles['stat-item']}>
+                                    <Icon className={styles['icon']} name={'person-outline'} />
+                                    <span className={styles['text']}>{Math.floor(Math.random() * 30 + 60)}%</span>
                                 </div>
                             </div>
                         </div>

@@ -53,16 +53,16 @@
     --color-placeholder: #60606080;
     --color-placeholder-text: @color-surface-50;
     --color-placeholder-background: @color-surface-dark5-20;
-    --primary-background-color: rgb(18, 53, 36); /* Phthalo Green */
-    --secondary-background-color: rgb(18, 53, 36);
+    --primary-background-color: transparent; // Handled by theme
+    --secondary-background-color: transparent;
     --primary-foreground-color: rgba(255, 255, 255, 0.9);
-    --secondary-foreground-color: rgb(18, 53, 36);
-    --primary-accent-color: rgb(0, 240, 255);
-    --secondary-accent-color: rgba(34, 179, 101, 1);
+    --secondary-foreground-color: #333;
+    --primary-accent-color: var(--selection-green);
+    --secondary-accent-color: rgba(140, 140, 140, 1);
     --tertiary-accent-color: rgba(246, 199, 0, 1);
     --quaternary-accent-color: rgba(18, 69, 166, 1);
     --overlay-color: rgba(255, 255, 255, 0.05);
-    --modal-background-color: rgb(18, 53, 36);
+    --modal-background-color: transparent;
     --outer-glow: 0px 0px 15px rgba(0, 240, 255, 0.37);
     --warning-accent-color: rgba(255, 165, 0, 1);
     --danger-accent-color: rgba(220, 38, 38, 1);  
@@ -159,7 +159,7 @@ html {
     -webkit-user-select: none;
     user-select: none;
     touch-action: manipulation;
-    background-color: var(--primary-background-color);
+    background-color: #0c0c0c;
     -webkit-tap-highlight-color: transparent;
 
     @media (display-mode: standalone) {

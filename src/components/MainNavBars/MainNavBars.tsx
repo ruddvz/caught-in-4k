@@ -7,6 +7,7 @@ import styles from './MainNavBars.less';
 
 const TABS = [
     { id: 'board', label: 'Board', icon: 'home', href: '#/' },
+    { id: 'search', label: 'Search', icon: 'search', href: '#/search' },
     { id: 'discover', label: 'Discover', icon: 'discover', href: '#/discover' },
     { id: 'library', label: 'Library', icon: 'library', href: '#/library' },
     { id: 'calendar', label: 'Calendar', icon: 'calendar', href: '#/calendar' },
@@ -24,15 +25,7 @@ type Props = {
 const MainNavBars = memo(({ className, route, query, children }: Props) => {
     return (
         <div className={classnames(className, styles['main-nav-bars-container'])}>
-            <HorizontalNavBar
-                className={styles['horizontal-nav-bar']}
-                route={route}
-                query={query}
-                backButton={false}
-                searchBar={true}
-                fullscreenButton={true}
-                navMenu={true}
-            />
+            {/* HorizontalNavBar hidden for clean sidebar-only layout */}
             <VerticalNavBar
                 className={styles['vertical-nav-bar']}
                 selected={route}

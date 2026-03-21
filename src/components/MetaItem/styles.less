@@ -29,7 +29,8 @@
         filter: brightness(1.2) contrast(1.1);
 
         .poster-container {
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 0.15rem rgba(255, 255, 255, 0.4);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.9), 0 0 0 3px var(--selection-green);
+            border-color: var(--selection-green);
 
             &::after {
                 content: '';
@@ -269,13 +270,66 @@
             }
         }
 
-        .satisfaction-meter-layer {
-            z-index: -1;
+        .poster-stats-layer {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
+            bottom: 0.75rem;
+            left: 0.75rem;
+            right: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+
+            .rating-pill {
+                display: flex;
+                align-items: center;
+                gap: 0.35rem;
+                background: rgba(0, 0, 0, 0.6);
+                padding: 0.25rem 0.6rem;
+                border-radius: 999px;
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+
+                .icon {
+                    width: 0.8rem;
+                    height: 0.8rem;
+                    color: gold;
+                }
+
+                .text {
+                    font-size: 0.75rem;
+                    font-weight: 700;
+                    color: #fff;
+                }
+            }
+
+            .stat-icons {
+                display: flex;
+                gap: 0.5rem;
+
+                .stat-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                    background: rgba(0, 0, 0, 0.6);
+                    padding: 0.25rem 0.6rem;
+                    border-radius: 999px;
+                    backdrop-filter: blur(4px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+
+                    .icon {
+                        width: 0.8rem;
+                        height: 0.8rem;
+                        color: rgba(255, 255, 255, 0.8);
+                    }
+
+                    .text {
+                        font-size: 0.75rem;
+                        font-weight: 600;
+                        color: #fff;
+                    }
+                }
+            }
         }
 
         .new-videos {
