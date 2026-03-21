@@ -4,7 +4,7 @@
  * and global Satisfaction Meter metrics calculation.
  */
 
-import { SATISFACTION_TIERS } from '../../common/useSatisfactionMeter';
+const { SATISFACTION_TIERS } = require('../../common/useSatisfactionMeter');
 
 const CACHE_PREFIX = 'c4k_canon_take_';
 
@@ -134,4 +134,6 @@ class C4KBackgroundAgents {
     }
 }
 
-export const c4kAgents = new C4KBackgroundAgents();
+const c4kAgents = new C4KBackgroundAgents();
+
+module.exports = { c4kAgents };

@@ -3,10 +3,10 @@
  * Connects React components to the global C4K Background Agent
  */
 
-import { useEffect } from 'react';
-import { c4kAgents } from '../BackgroundAgents/C4KBackgroundAgents';
+const { useEffect } = require('react');
+const { c4kAgents } = require('../BackgroundAgents/C4KBackgroundAgents');
 
-export const useCanonTakesQueue = (metaRows = []) => {
+const useCanonTakesQueue = (metaRows = []) => {
     useEffect(() => {
         const items = [];
         metaRows.forEach((row) => {
@@ -21,4 +21,4 @@ export const useCanonTakesQueue = (metaRows = []) => {
     }, [metaRows]);
 };
 
-export default useCanonTakesQueue;
+module.exports = useCanonTakesQueue;

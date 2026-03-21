@@ -4,10 +4,10 @@
  * Bright cyan text with neon pink accent diamond and glowing effects
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+const React = require('react');
+const PropTypes = require('prop-types');
 const useTranslate = require('stremio/common/useTranslate');
-import styles from './styles.less';
+const styles = require('./styles.less');
 
 const AppLogo = ({ variant = 'full', className = '' }) => {
     const t = useTranslate();
@@ -29,4 +29,4 @@ AppLogo.propTypes = {
     className: PropTypes.string,
 };
 
-export default AppLogo;
+module.exports = AppLogo;

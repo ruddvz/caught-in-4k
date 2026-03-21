@@ -3,10 +3,10 @@
  * Displays all 5 satisfaction tiers with emoji, name, and range
  */
 
-import React from 'react';
+const React = require('react');
 const useTranslate = require('stremio/common/useTranslate');
-import { SATISFACTION_TIERS } from '../../common/useSatisfactionMeter';
-import styles from './styles.less';
+const { SATISFACTION_TIERS } = require('../../common/useSatisfactionMeter');
+const styles = require('./styles.less');
 
 const SatisfactionMeterLegend = () => {
     const t = useTranslate();
@@ -30,4 +30,4 @@ const SatisfactionMeterLegend = () => {
     );
 };
 
-export default SatisfactionMeterLegend;
+module.exports = SatisfactionMeterLegend;

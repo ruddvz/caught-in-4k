@@ -4,13 +4,14 @@
  * Includes shimmer animation and tier legend
  */
 
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import SatisfactionMeterBar from '../SatisfactionMeterBar/SatisfactionMeterBar';
-import SatisfactionMeterLegend from '../SatisfactionMeterLegend/SatisfactionMeterLegend';
-import { useSatisfactionMeter } from '../../common/useSatisfactionMeter';
+const React = require('react');
+const { useMemo } = React;
+const PropTypes = require('prop-types');
+const SatisfactionMeterBar = require('../SatisfactionMeterBar/SatisfactionMeterBar');
+const SatisfactionMeterLegend = require('../SatisfactionMeterLegend/SatisfactionMeterLegend');
+const { useSatisfactionMeter } = require('../../common/useSatisfactionMeter');
 const useTranslate = require('stremio/common/useTranslate');
-import styles from './styles.less';
+const styles = require('./styles.less');
 
 const BoardStatsSection = ({ metaRows = [] }) => {
     const t = useTranslate();
@@ -58,7 +59,7 @@ const BoardStatsSection = ({ metaRows = [] }) => {
     );
 };
 
-export default BoardStatsSection;
+module.exports = BoardStatsSection;
 
 BoardStatsSection.propTypes = {
     metaRows: PropTypes.array,

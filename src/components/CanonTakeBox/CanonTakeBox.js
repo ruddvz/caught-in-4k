@@ -4,11 +4,12 @@
  * Shows skeleton loader while fetching
  */
 
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { useCanonTakes } from '../../common/useCanonTakes';
+const React = require('react');
+const { useEffect, useState } = React;
+const PropTypes = require('prop-types');
+const { useCanonTakes } = require('../../common/useCanonTakes');
 const useTranslate = require('stremio/common/useTranslate');
-import styles from './styles.less';
+const styles = require('./styles.less');
 
 const CanonTakeBox = ({ title, year, genres, voteAverage }) => {
     const { fetchCanonTake, getCached } = useCanonTakes();
@@ -61,7 +62,7 @@ const CanonTakeBox = ({ title, year, genres, voteAverage }) => {
     );
 };
 
-export default CanonTakeBox;
+module.exports = CanonTakeBox;
 
 CanonTakeBox.propTypes = {
     title: PropTypes.string,

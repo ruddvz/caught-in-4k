@@ -4,9 +4,10 @@
  * Supports 3 sizes: global (board), card (3px strip), detail (full bar in panel)
  */
 
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import styles from './styles.less';
+const React = require('react');
+const { useState } = React;
+const PropTypes = require('prop-types');
+const styles = require('./styles.less');
 
 const SatisfactionMeterBar = ({ tier, size = 'detail', animated = false }) => {
     const [showLabel, setShowLabel] = useState(false);
@@ -65,7 +66,7 @@ const SatisfactionMeterBar = ({ tier, size = 'detail', animated = false }) => {
     );
 };
 
-export default SatisfactionMeterBar;
+module.exports = SatisfactionMeterBar;
 
 SatisfactionMeterBar.propTypes = {
     tier: PropTypes.shape({
