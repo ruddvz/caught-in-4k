@@ -71,8 +71,8 @@ const ServicesToaster = () => {
         core.transport.on('CoreEvent', onCoreEvent);
         dragAndDrop.on('error', onDragAndDropError);
         return () => {
-            core.transport.off('CoreEvent', onCoreEvent);
-            dragAndDrop.off('error', onDragAndDropError);
+            core?.transport?.off('CoreEvent', onCoreEvent);
+            dragAndDrop?.off('error', onDragAndDropError);
         };
     }, []);
     return null;

@@ -12,7 +12,7 @@ const Multiselect = require('stremio/components/Multiselect');
 const useBinaryState = require('stremio/common/useBinaryState');
 const { ICON_FOR_TYPE } = require('stremio/common/CONSTANTS');
 const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
-const { default: SatisfactionMeterBar } = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
+const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
 const styles = require('./styles');
 
 const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, ...props }) => {

@@ -14,14 +14,6 @@ const HeroShelf = require('./HeroShelf');
 const styles = require('./styles');
 const { default: StreamingServerWarning } = require('./StreamingServerWarning');
 
-// DEBUG: identify undefined components in Board route
-[
-    ['ContinueWatchingItem', ContinueWatchingItem], ['EventModal', EventModal],
-    ['MainNavBars', MainNavBars], ['MetaItem', MetaItem], ['MetaRow', MetaRow],
-    ['BoardStatsSection', BoardStatsSection], ['HeroShelf', HeroShelf],
-    ['StreamingServerWarning', StreamingServerWarning],
-].forEach(([name, comp]) => { if (!comp) console.error('[C4K DEBUG] UNDEFINED in Board:', name); });
-
 const THRESHOLD = 5;
 
 const Board = () => {

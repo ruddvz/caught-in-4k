@@ -20,18 +20,6 @@ const styles = require('./styles');
 
 const RouterWithProtectedRoutes = withCoreSuspender(withProtectedRoutes(Router));
 
-// DEBUG: identify undefined components causing React #130
-[
-    ['ServicesProvider', ServicesProvider], ['PlatformProvider', PlatformProvider],
-    ['ToastProvider', ToastProvider], ['TooltipProvider', TooltipProvider],
-    ['FileDropProvider', FileDropProvider], ['ShortcutsProvider', ShortcutsProvider],
-    ['ServicesToaster', ServicesToaster], ['DeepLinkHandler', DeepLinkHandler],
-    ['SearchParamsHandler', SearchParamsHandler], ['UpdaterBanner', UpdaterBanner],
-    ['ShortcutsModal', ShortcutsModal], ['ErrorDialog', ErrorDialog],
-    ['RouterWithProtectedRoutes', RouterWithProtectedRoutes], ['Router', Router],
-    ['NotFound', NotFound],
-].forEach(([name, comp]) => { if (!comp) console.error('[C4K DEBUG] UNDEFINED component:', name); });
-
 const App = () => {
     const { i18n } = useTranslation();
     const shell = useShell();
