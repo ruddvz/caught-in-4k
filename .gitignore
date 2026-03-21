@@ -2,6 +2,10 @@
 /build
 /yarn.lock
 /npm-debug.log
+*.log
+lint-output.txt
+errors.txt
+stats.json
 .DS_Store
 .prettierignore
 .env
