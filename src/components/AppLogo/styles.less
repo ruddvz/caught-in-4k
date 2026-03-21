@@ -1,62 +1,30 @@
-/**
- * App Logo Styles - Neon Cyberpunk Theme
- * Cyan wordmark with neon pink diamond accent and glowing effects
- */
-
 .logoContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 }
 
-.logoText {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
+.logoImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
-// Neon Pink Diamond
-.highlightNeon {
-  color: #FF1493; // Deep Pink Neon
-  font-size: 1.25rem;
-  font-weight: 800;
-  text-shadow: 0 0 10px #FF1493, 0 0 20px #FF1493, 0 0 30px rgba(255, 20, 147, 0.5);
-  animation: neonPulse 2s infinite;
+.compact {
+  max-width: 100%;
 }
 
-// Neon Cyan Text
-.wordmarkNeon {
-  color: #00F0FF; // Bright Cyan
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-shadow: 0 0 10px #00F0FF, 0 0 20px #00F0FF, 0 0 30px rgba(0, 240, 255, 0.3);
+.full {
+  width: min(22rem, 80vw);
 }
 
-// Neon Tagline
-.taglineNeon {
+.tagline {
   font-size: 0.75rem;
-  color: #FF1493; // Neon Pink
+  color: #ff4b45;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  font-weight: 500;
-  text-shadow: 0 0 8px #FF1493, 0 0 15px rgba(255, 20, 147, 0.5);
-}
-
-// Glow pulse animation
-@keyframes neonPulse {
-  0%, 100% {
-    text-shadow: 0 0 10px #FF1493, 0 0 20px #FF1493, 0 0 30px rgba(255, 20, 147, 0.5);
-  }
-  50% {
-    text-shadow: 0 0 15px #FF1493, 0 0 25px #FF1493, 0 0 40px rgba(255, 20, 147, 0.8);
-  }
+  font-weight: 700;
 }

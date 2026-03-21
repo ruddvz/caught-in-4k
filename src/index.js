@@ -70,6 +70,10 @@ class RootErrorBoundary extends React.Component {
     }
 }
 
+RootErrorBoundary.propTypes = {
+    children: require('prop-types').node
+};
+
 root.render(React.createElement(RootErrorBoundary, null, React.createElement(App)));
 
 // Unregister any existing service workers and clear caches to ensure fresh content

@@ -7,7 +7,8 @@ const { comparatorWithPriorities, languages } = require('stremio/common');
 const { SUBTITLES_SIZES } = require('stremio/common/CONSTANTS');
 const { Button } = require('stremio/components');
 const styles = require('./styles');
-const _i18n = require('i18next'); const t = (...args) => (_i18n.t || _i18n.default?.t || ((x)=>x))(...args);
+const _i18n = require('i18next');
+const t = (...args) => (_i18n.t || _i18n.default?.t || ((x) => x))(...args);
 const { default: Stepper } = require('./Stepper');
 
 const ORIGIN_PRIORITIES = {

@@ -3,7 +3,8 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-const _i18n = require('i18next'); const t = (...args) => (_i18n.t || _i18n.default?.t || ((x)=>x))(...args);
+const _i18n = require('i18next');
+const t = (...args) => (_i18n.t || _i18n.default?.t || ((x) => x))(...args);
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const { Button, MultiselectMenu } = require('stremio/components');
 const SeasonsBarPlaceholder = require('./SeasonsBarPlaceholder');

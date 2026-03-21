@@ -12,7 +12,7 @@ const SearchBar = require('./SearchBar');
 const NavMenu = require('./NavMenu');
 const styles = require('./styles');
 const _i18n = require('i18next');
-const t = (...args) => (_i18n.t || _i18n.default?.t || ((x)=>x))(...args);
+const t = (...args) => (_i18n.t || _i18n.default?.t || ((x) => x))(...args);
 
 const HorizontalNavBar = React.memo(({ className, route, query, title, backButton, searchBar, fullscreenButton, navMenu, ...props }) => {
     const backButtonOnClick = React.useCallback(() => {

@@ -58,6 +58,7 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
                                         key: index,
                                         className: classnames(styles['meta-item'], styles['poster-shape-poster'], styles[`poster-shape-${item.posterShape}`]),
                                         notifications,
+                                        voteAverage: item.voteAverage ?? item.vote_average,
                                     });
                                 })
                                 :
