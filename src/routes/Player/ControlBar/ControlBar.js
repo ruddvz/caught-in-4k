@@ -10,7 +10,7 @@ const SeekBar = require('./SeekBar');
 const VolumeSlider = require('./VolumeSlider');
 const styles = require('./styles');
 const { useBinaryState, usePlatform } = require('stremio/common');
-const { t } = require('i18next');
+const _i18n = require('i18next'); const t = (...args) => (_i18n.t || _i18n.default?.t || ((x)=>x))(...args);
 
 const ControlBar = ({
     className,

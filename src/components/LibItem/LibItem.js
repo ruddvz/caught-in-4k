@@ -4,7 +4,7 @@ const React = require('react');
 const { useServices } = require('stremio/services');
 const PropTypes = require('prop-types');
 const MetaItem = require('stremio/components/MetaItem');
-const { t } = require('i18next');
+const _i18n = require('i18next'); const t = (...args) => (_i18n.t || _i18n.default?.t || ((x)=>x))(...args);
 
 const LibItem = ({ _id, removable, notifications, watched, ...props }) => {
 

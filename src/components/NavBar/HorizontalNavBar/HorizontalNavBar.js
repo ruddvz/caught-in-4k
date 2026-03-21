@@ -4,14 +4,15 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const { default: Icon } = require('@stremio/stremio-icons/react');
-const { Button } = require('stremio/components');
+const { default: Button } = require('stremio/components/Button/Button');
 const AppLogo = require('stremio/components/AppLogo/AppLogo');
 const { default: useFullscreen } = require('stremio/common/useFullscreen');
 const usePWA = require('stremio/common/usePWA');
 const SearchBar = require('./SearchBar');
 const NavMenu = require('./NavMenu');
 const styles = require('./styles');
-const { t } = require('i18next');
+const _i18n = require('i18next');
+const t = (...args) => (_i18n.t || _i18n.default?.t || ((x)=>x))(...args);
 
 const HorizontalNavBar = React.memo(({ className, route, query, title, backButton, searchBar, fullscreenButton, navMenu, ...props }) => {
     const backButtonOnClick = React.useCallback(() => {

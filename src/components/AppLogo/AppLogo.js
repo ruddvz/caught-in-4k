@@ -6,11 +6,11 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const useTranslate = require('stremio/common/useTranslate');
+const { useTranslation } = require('react-i18next');
 const styles = require('./styles.less');
 
 const AppLogo = ({ variant = 'full', className = '' }) => {
-    const t = useTranslate();
+    const { t } = useTranslation();
     return (
         <div className={`${styles.logoContainer} ${className}`}>
             <div className={styles.logoText}>

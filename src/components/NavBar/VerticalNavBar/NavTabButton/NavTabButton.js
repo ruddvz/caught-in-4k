@@ -4,7 +4,8 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const { default: Icon } = require('@stremio/stremio-icons/react');
-const { Button, Image } = require('stremio/components');
+const { default: Button } = require('stremio/components/Button/Button');
+const { default: Image } = require('stremio/components/Image/Image');
 const styles = require('./styles');
 
 const NavTabButton = ({ className, logo, icon, label, href, selected, onClick }) => {
