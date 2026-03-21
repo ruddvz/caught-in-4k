@@ -18,6 +18,11 @@ import MetaRow from './MetaRow';
 import ModalDialog from './ModalDialog';
 import Multiselect from './Multiselect';
 import MultiselectMenu from './MultiselectMenu';
+import AppLogo from './AppLogo/AppLogo';
+import CanonTakeBox from './CanonTakeBox/CanonTakeBox';
+import SatisfactionMeterBar from './SatisfactionMeterBar/SatisfactionMeterBar';
+import SatisfactionMeterLegend from './SatisfactionMeterLegend/SatisfactionMeterLegend';
+import BoardStatsSection from './BoardStatsSection/BoardStatsSection';
 import { HorizontalNavBar, VerticalNavBar } from './NavBar';
 import NumberInput from './NumberInput';
 import Popup from './Popup';
@@ -30,11 +35,6 @@ import TextInput from './TextInput';
 import Toggle from './Toggle';
 import Transition from './Transition';
 import Video from './Video';
-import SatisfactionMeterBar from './SatisfactionMeterBar/SatisfactionMeterBar';
-import SatisfactionMeterLegend from './SatisfactionMeterLegend/SatisfactionMeterLegend';
-import BoardStatsSection from './BoardStatsSection/BoardStatsSection';
-import AppLogo from './AppLogo/AppLogo';
-import CanonTakeBox from './CanonTakeBox/CanonTakeBox';
 
 export {
     AddonDetailsModal,
