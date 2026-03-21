@@ -19,6 +19,10 @@ const caughtIn4KTranslations = {
     STREMIO_COMMUNITY_ADDON: 'Community Add-on',
     FOOTER_COPYRIGHT: '© 2026 Caught in 4K — films that were meant to happen to you',
     FOOTER_DATA_CREDIT: 'data by TMDB · no cap',
+    TOS: 'Terms of Service',
+    PRIVACY_POLICY: 'Privacy Policy',
+    TERMS_OF_SERVICE: 'Terms of Service',
+    READ_AND_AGREE: 'I agree to the',
 };
 
 module.exports = caughtIn4KTranslations;

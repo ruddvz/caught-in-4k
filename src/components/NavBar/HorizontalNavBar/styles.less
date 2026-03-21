@@ -11,13 +11,20 @@
     height: var(--horizontal-nav-bar-size);
     padding-right: 1rem;
     
-    /* Apple TV transparent top nav with slight fade */
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    /* Apple TV / Omni liquid glass transparent top nav */
+    background: rgba(20, 20, 20, 0.4);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 
+    /* Make it a floating pill */
+    margin: 1rem auto 0 auto;
+    border-radius: 40px;
+    width: fit-content;
+    min-width: 50%;
+    padding: 0 2rem;
+    
     overflow: visible;
     padding-top: var(--safe-area-inset-top);
     box-sizing: content-box;

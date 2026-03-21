@@ -9,6 +9,7 @@ const { default: Image } = require('stremio/components/Image');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
 const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
+const CanonTakeBox = require('stremio/components/CanonTakeBox/CanonTakeBox');
 const styles = require('./styles');
 
 const HeroShelf = ({ items }) => {
@@ -121,6 +122,11 @@ const HeroShelf = ({ items }) => {
                             <p className={styles['hero-description']}>{item.description}</p>
                             : null
                     }
+                    <CanonTakeBox
+                        title={item.name}
+                        year={year}
+                        genres={typeof item.description === 'string' ? item.description.substring(0, 100) : ''}
+                    />
                     <div className={styles['hero-actions']}>
                         {
                             watchHref ?

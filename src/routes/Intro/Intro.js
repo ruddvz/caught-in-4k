@@ -341,7 +341,7 @@ const Intro = ({ queryParams }) => {
                                     ref={termsRef}
                                     label={t('READ_AND_AGREE')}
                                     link={t('TOS')}
-                                    href={'https://www.stremio.com/tos'}
+                                    href={'#'}
                                     checked={state.termsAccepted}
                                     onChange={toggleTermsAccepted}
                                 />
@@ -349,7 +349,7 @@ const Intro = ({ queryParams }) => {
                                     ref={privacyPolicyRef}
                                     label={t('READ_AND_AGREE')}
                                     link={t('PRIVACY_POLICY')}
-                                    href={'https://www.stremio.com/privacy'}
+                                    href={'#'}
                                     checked={state.privacyPolicyAccepted}
                                     onChange={togglePrivacyPolicyAccepted}
                                 />
