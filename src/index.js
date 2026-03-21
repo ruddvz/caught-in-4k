@@ -39,11 +39,12 @@ i18n
 const root = ReactDOM.createRoot(document.getElementById('app'));
 root.render(<App />);
 
-if (process.env.NODE_ENV === 'production' && process.env.SERVICE_WORKER_DISABLED !== 'true' && process.env.SERVICE_WORKER_DISABLED !== true && 'serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-            .catch((registrationError) => {
-                console.error('SW registration failed: ', registrationError);
-            });
+// Unregister any existing service workers and clear caches to ensure fresh content
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => registration.unregister());
+    });
+    caches.keys().then((names) => {
+        names.forEach((name) => caches.delete(name));
     });
 }

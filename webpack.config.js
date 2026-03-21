@@ -7,7 +7,6 @@ const webpack = require('webpack');
 const threadLoader = require('thread-loader');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const packageJson = require('./package.json');
@@ -34,7 +33,7 @@ threadLoader.warmup(
 );
 
 module.exports = (env, argv) => ({
-    mode: argv.mode,
+    mode: 'development',
     devtool: argv.mode === 'production' ? 'source-map' : 'eval-source-map',
     entry: {
         main: './src/index.js',
@@ -222,12 +221,7 @@ module.exports = (env, argv) => ({
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer']
         }),
-        argv.mode === 'production' &&
-            new WorkboxPlugin.GenerateSW({
-                maximumFileSizeToCacheInBytes: 20000000,
-                clientsClaim: true,
-                skipWaiting: true
-            }),
+        // Service worker disabled — remove stale SWs in src/index.js instead
         new CopyWebpackPlugin({
             patterns: [
                 { from: 'assets/favicons', to: 'favicons' },
