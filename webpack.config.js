@@ -190,7 +190,7 @@ module.exports = (env, argv) => ({
         liveReload: false
     },
     optimization: {
-        minimize: true,
+        minimize: false,
         minimizer: [
             new TerserPlugin({
                 test: /\.js$/,
