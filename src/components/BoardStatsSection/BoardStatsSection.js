@@ -28,15 +28,20 @@ const BoardStatsSection = ({ metaRows = [] }) => {
             return [];
         });
 
-        // Filter items with vote_average
-        const ratedItems = allMetaItems.filter((item) => typeof item.vote_average === 'number' && !isNaN(item.vote_average));
+        // Combine ratings (support voteAverage, vote_average, and imdbRating)
+        const ratedItems = allMetaItems.map((item) => {
+            if (typeof item.voteAverage === 'number' && !isNaN(item.voteAverage)) return item.voteAverage;
+            if (typeof item.vote_average === 'number' && !isNaN(item.vote_average)) return item.vote_average;
+            if (item.imdbRating) return parseFloat(item.imdbRating);
+            return null;
+        }).filter((rating) => rating !== null && !isNaN(rating));
 
         if (ratedItems.length === 0) {
             return null;
         }
 
         // Calculate average
-        const sum = ratedItems.reduce((acc, item) => acc + item.vote_average, 0);
+        const sum = ratedItems.reduce((acc, rating) => acc + rating, 0);
         return sum / ratedItems.length;
     }, [metaRows]);
 

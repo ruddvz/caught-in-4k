@@ -7,6 +7,8 @@ const { useTranslation } = require('react-i18next');
 const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
 const CONSTANTS = require('stremio/common/CONSTANTS');
+const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
+const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
 const styles = require('./styles');
 
 const HeroShelf = ({ items }) => {
@@ -41,11 +43,17 @@ const HeroShelf = ({ items }) => {
         setCurrentIndex((prev) => (prev + 1) % itemCount);
     }, [itemCount]);
 
+    const item = validItems[currentIndex] || validItems[0] || {};
+
+    const ratingToUse = (typeof item.voteAverage === 'number' && !isNaN(item.voteAverage)) ? item.voteAverage :
+        (typeof item.vote_average === 'number' && !isNaN(item.vote_average)) ? item.vote_average :
+            (item.imdbRating ? parseFloat(item.imdbRating) : null);
+
+    const satisfactionTier = useSatisfactionMeter(ratingToUse);
+
     if (validItems.length === 0) {
         return null;
     }
-
-    const item = validItems[currentIndex] || validItems[0];
 
     const imdbLink = Array.isArray(item.links)
         ? item.links.find((l) => l.category === CONSTANTS.IMDB_LINK_CATEGORY)
@@ -100,6 +108,11 @@ const HeroShelf = ({ items }) => {
                         {
                             imdbLink ?
                                 <span className={styles['hero-imdb']}>★ {imdbLink.name}</span>
+                                : null
+                        }
+                        {
+                            satisfactionTier ?
+                                <SatisfactionMeterBar tier={satisfactionTier} size="small" animated={true} />
                                 : null
                         }
                     </div>
