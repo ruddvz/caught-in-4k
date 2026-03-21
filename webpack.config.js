@@ -236,6 +236,16 @@ module.exports = (env, argv) => ({
         }),
         new HtmlWebPackPlugin({
             template: './src/index.html',
+            filename: 'index.html',
+            inject: false,
+            scriptLoading: 'blocking',
+            faviconsPath: 'favicons',
+            imagesPath: 'images',
+            excludeChunks: ['worker'],
+        }),
+        new HtmlWebPackPlugin({
+            template: './src/index.html',
+            filename: '404.html',
             inject: false,
             scriptLoading: 'blocking',
             faviconsPath: 'favicons',

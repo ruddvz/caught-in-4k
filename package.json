@@ -1,5 +1,6 @@
 {
     "name": "caught-in-4k",
+    "homepage": "https://ruddvz.github.io/caught-in-4k/",
     "displayName": "Caught in 4K",
     "version": "1.0.0-genesis",
     "description": "Caught in 4K — watch in 4K. Gen Z streaming experience.",
@@ -74,6 +75,7 @@
         "less-loader": "12.2.0",
         "mini-css-extract-plugin": "2.9.2",
         "postcss-loader": "8.1.1",
+        "puppeteer": "^24.40.0",
         "readdirp": "4.0.2",
         "recast": "0.23.11",
         "terser-webpack-plugin": "5.3.10",
