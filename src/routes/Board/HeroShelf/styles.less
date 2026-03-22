@@ -319,22 +319,22 @@ border-radius: 12px;
         min-height: unset;
 
         .hero-slide {
-            // On mobile, use fixed positioning for background layers so they extend
-            // behind the notch area (position: fixed escapes overflow:auto clipping).
+            // Keep background absolute so it scrolls with the page and does NOT
+            // bleed over the catalog rows below (position:fixed was the root cause).
             .hero-background {
-                position: fixed;
+                position: absolute;
                 top: 0;
                 left: 0;
-                width: 100vw;
-                height: 100dvh;
+                width: 100%;
+                height: 100%;
             }
 
             .hero-gradient {
-                position: fixed;
+                position: absolute;
                 top: 0;
                 left: 0;
-                width: 100vw;
-                height: 100dvh;
+                width: 100%;
+                height: 100%;
             }
 
             .hero-content {
