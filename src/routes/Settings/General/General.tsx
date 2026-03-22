@@ -109,11 +109,11 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
             />
             <Link
                 label={t('TERMS_OF_SERVICE')}
-                href={'https://www.stremio.com/tos'}
+                href={'#/tos'}
             />
             <Link
                 label={t('PRIVACY_POLICY')}
-                href={'https://www.stremio.com/privacy'}
+                href={'#/privacy'}
             />
             {
                 profile?.auth?.user &&

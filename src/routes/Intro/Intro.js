@@ -341,7 +341,7 @@ const Intro = ({ queryParams }) => {
                                     ref={termsRef}
                                     label={t('READ_AND_AGREE')}
                                     link={t('TOS')}
-                                    href={'#'}
+                                    href={'#/tos'}
                                     checked={state.termsAccepted}
                                     onChange={toggleTermsAccepted}
                                 />
@@ -349,7 +349,7 @@ const Intro = ({ queryParams }) => {
                                     ref={privacyPolicyRef}
                                     label={t('READ_AND_AGREE')}
                                     link={t('PRIVACY_POLICY')}
-                                    href={'#'}
+                                    href={'#/privacy'}
                                     checked={state.privacyPolicyAccepted}
                                     onChange={togglePrivacyPolicyAccepted}
                                 />

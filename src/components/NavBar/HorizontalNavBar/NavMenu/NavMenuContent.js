@@ -99,10 +99,10 @@ const NavMenuContent = ({ onClick }) => {
                 </Button>
             </div>
             <div className={styles['nav-menu-section']}>
-                <Button className={styles['nav-menu-option-container']} title={ t('TERMS_OF_SERVICE') } href={'https://www.stremio.com/tos'} target={'_blank'}>
+                <Button className={styles['nav-menu-option-container']} title={ t('TERMS_OF_SERVICE') } href={'#/tos'}>
                     <div className={styles['nav-menu-option-label']}>{ t('TERMS_OF_SERVICE') }</div>
                 </Button>
-                <Button className={styles['nav-menu-option-container']} title={ t('PRIVACY_POLICY') } href={'https://www.stremio.com/privacy'} target={'_blank'}>
+                <Button className={styles['nav-menu-option-container']} title={ t('PRIVACY_POLICY') } href={'#/privacy'}>
                     <div className={styles['nav-menu-option-label']}>{ t('PRIVACY_POLICY') }</div>
                 </Button>
                 {
