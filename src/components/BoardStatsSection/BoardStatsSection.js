@@ -55,7 +55,7 @@ const BoardStatsSection = ({ metaRows = [] }) => {
         <div className={styles.statsSection}>
             <div className={styles.content}>
                 <div className={styles.meterContainer}>
-                    <h2 className={styles.heading}>{t('How\'s the vibe?')}</h2>
+                    <h2 className={styles.heading}>{t.string('How\'s the vibe?')}</h2>
                     <SatisfactionMeterBar tier={tier} size="global" animated={true} />
                 </div>
                 <SatisfactionMeterLegend />

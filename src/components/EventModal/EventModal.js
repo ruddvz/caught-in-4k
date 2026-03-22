@@ -1,7 +1,7 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 const React = require('react');
-const { useTranslation } = require('react-i18next');
+const useTranslate = require('stremio/common/useTranslate');
 const { default: Button } = require('stremio/components/Button');
 const ModalDialog = require('stremio/components/ModalDialog');
 const useEvents = require('./useEvents');
@@ -9,7 +9,7 @@ const styles = require('./styles');
 const { default: Icon } = require('@stremio/stremio-icons/react');
 
 const EventModal = () => {
-    const { t } = useTranslation();
+    const t = useTranslate();
 
     const { events, pullEvents, dismissEvent } = useEvents();
 
@@ -67,14 +67,14 @@ const EventModal = () => {
                         modal?.addon?.manifestUrl ?
                             <Button className={styles['action-button']} href={`#/addons?addon=${encodeURIComponent(modal.addon.manifestUrl)}`} onClick={onClose}>
                                 <div className={styles['button-label']}>
-                                    { t('INSTALL_ADDON') }
+                                    { t.string('INSTALL_ADDON') }
                                 </div>
                             </Button>
                             :
                             modal.externalUrl ?
                                 <Button className={styles['action-button']} href={modal.externalUrl} target={'_blank'}>
                                     <div className={styles['button-label']}>
-                                        { t('LEARN_MORE') }
+                                        { t.string('LEARN_MORE') }
                                     </div>
                                 </Button>
                                 :
