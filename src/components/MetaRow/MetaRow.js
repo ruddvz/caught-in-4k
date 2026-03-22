@@ -8,11 +8,14 @@ const { default: Icon } = require('@stremio/stremio-icons/react');
 const { Button } = require('stremio/components');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const useTranslate = require('stremio/common/useTranslate');
+const { useInViewport } = require('stremio/common');
 const MetaRowPlaceholder = require('./MetaRowPlaceholder');
 const styles = require('./styles');
 
-const MetaRow = ({ className, title, catalog, message, itemComponent, notifications }) => {
+const MetaRow = ({ className, title, catalog, message, itemComponent, notifications, index = 0 }) => {
     const t = useTranslate();
+    const ref = React.useRef(null);
+    const isVisible = useInViewport(ref);
 
     const catalogTitle = React.useMemo(() => {
         return title ?? t.catalogTitle(catalog);
@@ -27,7 +30,7 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
     }, [catalog]);
 
     return (
-        <div className={classnames(className, styles['meta-row-container'])}>
+        <div ref={ref} className={classnames(className, styles['meta-row-container'], { [styles['visible']]: isVisible })} style={{ '--row-index': index }}>
             <div className={styles['header-container']}>
                 {
                     typeof catalogTitle === 'string' && catalogTitle.length > 0 ?

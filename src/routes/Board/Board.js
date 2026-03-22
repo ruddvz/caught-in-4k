@@ -95,6 +95,7 @@ const Board = () => {
                                 catalog={continueWatchingPreview}
                                 itemComponent={ContinueWatchingItem}
                                 notifications={notifications}
+                                index={0}
                             />
                             :
                             null
@@ -109,6 +110,7 @@ const Board = () => {
                                         className={classnames(styles['board-row'], styles[`board-row-${catalog.content.content[0].posterShape}`], 'animation-fade-in')}
                                         catalog={catalog}
                                         itemComponent={MetaItem}
+                                        index={index + boardCatalogsOffset}
                                     />
                                 );
                             }
@@ -120,6 +122,7 @@ const Board = () => {
                                             className={classnames(styles['board-row'], 'animation-fade-in')}
                                             catalog={catalog}
                                             message={catalog.content.content}
+                                            index={index + boardCatalogsOffset}
                                         />
                                     );
                                 }
@@ -132,6 +135,7 @@ const Board = () => {
                                         className={classnames(styles['board-row'], styles['board-row-poster'], 'animation-fade-in')}
                                         catalog={catalog}
                                         title={t.catalogTitle(catalog)}
+                                        index={index + boardCatalogsOffset}
                                     />
                                 );
                             }

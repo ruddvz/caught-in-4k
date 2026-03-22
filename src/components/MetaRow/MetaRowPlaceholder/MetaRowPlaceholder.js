@@ -7,12 +7,15 @@ const { useTranslation } = require('react-i18next');
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const { Button } = require('stremio/components');
 const CONSTANTS = require('stremio/common/CONSTANTS');
+const { useInViewport } = require('stremio/common');
 const styles = require('./styles');
 
-const MetaRowPlaceholder = ({ className, title, deepLinks }) => {
+const MetaRowPlaceholder = ({ className, title, deepLinks, index = 0 }) => {
     const { t } = useTranslation();
+    const ref = React.useRef(null);
+    const isVisible = useInViewport(ref);
     return (
-        <div className={classnames(className, styles['meta-row-placeholder-container'])}>
+        <div ref={ref} className={classnames(className, styles['meta-row-placeholder-container'], { [styles['visible']]: isVisible })} style={{ '--row-index': index }}>
             <div className={styles['header-container']}>
                 <div className={styles['title-container']} title={typeof title === 'string' && title.length > 0 ? title : null}>
                     {typeof title === 'string' && title.length > 0 ? title : null}

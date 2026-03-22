@@ -6,8 +6,16 @@
     flex-direction: row;
     align-items: center;
     gap: 2rem;
-    margin-bottom: 2rem;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 12px;
+    background: transparent;
+    transition: background 0.2s ease;
     overflow: visible;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
 
     .heading, .content {
         flex: 1 1 50%;
@@ -24,7 +32,7 @@
         .icon {
             width: 4rem;
             height: 4rem;
-            color: var(--primary-foreground-color);
+            color: var(--primary-accent-color);
         }
 
         .label {

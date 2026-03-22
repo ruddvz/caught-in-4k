@@ -8,7 +8,7 @@
 }
 
 .event-modal {
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
 
     .modal-dialog-container {
         overflow: visible;
@@ -82,19 +82,23 @@
                 }
 
                 .action-button {
-                    background-color: var(--primary-foreground-color);
-                    border: 2px solid var(--primary-foreground-color);
+                    background-color: var(--primary-accent-color);
+                    border: none;
                     padding: 0.8rem 2rem;
                     border-radius: 2rem;
+                    box-shadow: var(--outer-glow);
+                    transition: all 0.2s ease;
 
                     .button-label {
-                        color: var(--primary-accent-color);
+                        color: black;
                         font-size: 1rem;
                         font-weight: 700;
                     }
 
                     &:hover {
-                        background-color: transparent;
+                        background-color: var(--primary-accent-color);
+                        filter: brightness(1.1);
+                        box-shadow: 0 0 35px rgba(0, 240, 255, 0.6);
                     }
                 }
             }

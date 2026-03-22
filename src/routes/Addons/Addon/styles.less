@@ -8,14 +8,24 @@
     flex-direction: row;
     align-items: flex-start;
     padding: 1.5rem;
-    border: 0.15rem solid transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
-    background-color: var(--overlay-color);
-    transition: border-color 0.1s ease-out;
+    background-color: rgba(255, 255, 255, 0.04);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, border-color 0.3s ease;
     cursor: pointer;
 
     &:hover {
-        border-color: var(--overlay-color);
+        transform: scale(1.02);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--primary-accent-color);
+        border-color: var(--primary-accent-color);
+
+        .logo-container {
+            .logo, .icon {
+                filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.3));
+            }
+        }
     }
 
     .logo-container {
@@ -68,8 +78,8 @@
             margin-top: 0.5rem;
             padding: 0 0.5rem;
             max-height: 2.4em;
-            color: var(--primary-foreground-color);
-            opacity: 0.6;
+            color: var(--primary-accent-color); // Version in cyan
+            opacity: 0.8;
         }
 
         .types-container {
@@ -138,25 +148,28 @@
         }
 
         .install-button-container {
-            background-color: var(--secondary-accent-color);
+            background-color: var(--primary-accent-color);
+            box-shadow: var(--outer-glow);
 
             &:hover {
-                outline: var(--focus-outline-size) solid var(--secondary-accent-color);
-                background-color: transparent;
+                background-color: var(--primary-accent-color);
+                filter: brightness(1.1);
+                box-shadow: 0 0 35px rgba(0, 240, 255, 0.6);
             }
 
             .label {
-                color: var(--primary-foreground-color)
+                color: black;
             }
         }
 
         .configure-button-container {
             flex: none;
-            background-color: var(--secondary-accent-color);
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
 
             &:hover {
-                outline: var(--focus-outline-size) solid var(--secondary-accent-color);
-                background-color: transparent;
+                background-color: rgba(255, 255, 255, 0.2);
+                border: 1px solid var(--primary-accent-color);
             }
 
             .icon {

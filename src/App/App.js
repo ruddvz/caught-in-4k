@@ -21,7 +21,8 @@ const styles = require('./styles');
 const RouterWithProtectedRoutes = withCoreSuspender(withProtectedRoutes(Router));
 
 const App = () => {
-    const { i18n } = useTranslation();
+    const translation = useTranslation();
+    const i18n = translation.i18n || (Array.isArray(translation) ? translation[1] : null);
     const shell = useShell();
     const onPathNotMatch = React.useCallback(() => {
         return NotFound;

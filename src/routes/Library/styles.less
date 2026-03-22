@@ -96,6 +96,24 @@
             grid-gap: 0.5rem;
             overflow-y: auto;
         }
+
+        .lib-item {
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            
+            &:hover {
+                transform: scale(1.05);
+                z-index: 10;
+                
+                :global(.poster-container) {
+                    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 0 2px var(--primary-accent-color);
+                    border-color: var(--primary-accent-color);
+                }
+
+                :global(.poster-image) {
+                    filter: brightness(1.1) contrast(1.1);
+                }
+            }
+        }
     }
 }
 

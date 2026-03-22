@@ -1,22 +1,29 @@
 .section {
     position: relative;
-    max-width: 35rem;
+    max-width: 45rem; // Increased slightly for better layout
     display: flex;
     flex-direction: column;
     align-items: start;
-    padding: 3rem 0;
+    padding: 2rem;
+    margin: 2rem 0;
     overflow: visible;
 
-    &:not(:last-child) {
-        border-bottom: thin solid var(--overlay-color);
-    }
+    // Apply frosted glass directly or via class
+    background: rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
     
     .label {
         flex: none;
         align-self: stretch;
-        font-size: 1.8rem;
-        line-height: 3.4rem;
+        font-size: 1.6rem;
+        font-weight: 500;
+        line-height: 2.4rem;
         margin-bottom: 2rem;
-        color: var(--primary-foreground-color);
+        color: var(--primary-accent-color); // Use cyan for labels
+        padding-left: 1rem;
+        border-left: 3px solid var(--primary-accent-color);
     }
 }

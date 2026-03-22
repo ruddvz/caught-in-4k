@@ -21,16 +21,21 @@
         font-weight: 500;
         color: var(--primary-foreground-color);
         opacity: 0.4;
+        transition: all 0.2s ease;
 
         &.selected {
             font-weight: 600;
-            color: var(--primary-foreground-color);
-            background-color: var(--overlay-color);
+            color: var(--primary-accent-color);
+            background-color: rgba(0, 240, 255, 0.12);
+            border-left: 3px solid var(--primary-accent-color);
+            border-radius: 0 4rem 4rem 0;
+            box-shadow: 0 0 14px rgba(0, 240, 255, 0.18);
             opacity: 1;
         }
 
-        &:hover {
-            background-color: var(--overlay-color);
+        &:hover:not(.selected) {
+            background-color: rgba(255, 255, 255, 0.05);
+            opacity: 0.8;
         }
     }
 

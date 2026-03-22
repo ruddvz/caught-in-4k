@@ -3,6 +3,14 @@
 @import (reference) '~stremio/common/screen-sizes.less';
 
 .meta-row-placeholder-container {
+    opacity: 0;
+    transform: translateY(20px);
+
+    &.visible {
+        animation: rowFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        animation-delay: calc(var(--row-index, 0) * 100ms);
+    }
+
     .header-container {
         display: flex;
         flex-direction: row;
@@ -94,6 +102,17 @@
                 }
             }
         }
+    }
+}
+
+@keyframes rowFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 

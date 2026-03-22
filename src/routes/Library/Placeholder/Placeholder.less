@@ -8,9 +8,18 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100%;
-    width: 100%;
+    min-height: auto;
+    width: auto;
+    max-width: 60rem;
+    margin: 4rem auto;
+    padding: 3rem;
     overflow-y: auto;
+    background: rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
 
     .title {
         font-size: 1.75rem;
@@ -73,14 +82,17 @@
             line-height: 4rem;
             padding: 0 5rem;
             font-size: 1.1rem;
-            color: var(--primary-foreground-color);
+            color: black;
+            font-weight: 700;
             text-align: center;
             border-radius: 3.5rem;
-            background-color: var(--overlay-color);
+            background-color: var(--primary-accent-color);
+            box-shadow: var(--outer-glow);
+            transition: all 0.2s ease;
 
             &:hover {
-                outline: var(--focus-outline-size) solid var(--primary-foreground-color);
-                background-color: transparent;
+                filter: brightness(1.1);
+                box-shadow: 0 0 35px rgba(0, 240, 255, 0.6);
             }
         }
     }

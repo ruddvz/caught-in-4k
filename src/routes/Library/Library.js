@@ -105,7 +105,7 @@ const Library = ({ model, urlParams, queryParams }) => {
                                     <div ref={scrollContainerRef} className={classnames(styles['meta-items-container'], 'animation-fade-in')} onScroll={onScroll}>
                                         {
                                             library.catalog.map((libItem, index) => (
-                                                <LibItem {...libItem} notifications={notifications} removable={model === 'library'} key={index} />
+                                                <LibItem {...libItem} className={styles['lib-item']} notifications={notifications} removable={model === 'library'} key={index} />
                                             ))
                                         }
                                     </div>
