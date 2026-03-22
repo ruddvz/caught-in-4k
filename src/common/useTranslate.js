@@ -1,18 +1,21 @@
+```javascript
 // Copyright (C) 2017-2023 Smart code 203358507
 
-const { useCallback } = require('react');
-const { useTranslation } = require('react-i18next');
+const { useCallback, useMemo } = require('react');
+const i18next = require('i18next');
 
 const useTranslate = () => {
-    const result = useTranslation();
-    const t = typeof result.t === 'function' 
-        ? result.t 
-        : (Array.isArray(result) && typeof result[0] === 'function' 
-            ? result[0] 
-            : (key) => {
-                console.warn('Translation function "t" not found, falling back to key:', key);
-                return key;
-            });
+    const t = useCallback((key, options) => {
+        try {
+            const translate = i18next.t || i18next.default?.t;
+            if (typeof translate === 'function') {
+                return translate(key, options);
+            }
+        } catch (e) {
+            console.warn('Global i18next translation failed:', e);
+        }
+        return key;
+    }, []);
 
     const string = useCallback((key) => t(key), [t]);
 
