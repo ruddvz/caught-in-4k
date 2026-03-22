@@ -64,6 +64,13 @@ const HeroShelf = ({ items }) => {
             ? (item.deepLinks.player || item.deepLinks.metaDetailsStreams || item.deepLinks.metaDetailsVideos) || null
             : null;
 
+    const trailerHref =
+        Array.isArray(item.trailerStreams) &&
+        item.trailerStreams.length > 0 &&
+        item.trailerStreams[0].deepLinks
+            ? item.trailerStreams[0].deepLinks.player || null
+            : null;
+
     return (
         <div className={styles['hero-shelf-container']}>
             <div className={styles['hero-slide']}>
@@ -117,6 +124,16 @@ const HeroShelf = ({ items }) => {
                                     href={watchHref}
                                 >
                                     <span>{t.string('SHOW')}</span>
+                                </Button>
+                                : null
+                        }
+                        {
+                            trailerHref ?
+                                <Button
+                                    className={classnames(styles['hero-btn'], styles['hero-btn-secondary'])}
+                                    href={trailerHref}
+                                >
+                                    <span>{t.string('TRAILER')}</span>
                                 </Button>
                                 : null
                         }
