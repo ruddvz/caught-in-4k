@@ -24,10 +24,6 @@ const routerViewsConfig = [
             component: routes.Library
         },
         {
-            ...routesRegexp.calendar,
-            component: routes.Calendar
-        },
-        {
             ...routesRegexp.continuewatching,
             component: routes.Library
         },

@@ -298,7 +298,7 @@ border-radius: 12px;
         // On mobile the nav is at the BOTTOM, not left — reset the desktop edge-to-edge offset
         margin-left: -1rem;
         width: calc(100% + 2rem);
-        height: clamp(18rem, 42vh, 26rem);
+        height: clamp(24rem, 56vh, 34rem);
         min-height: unset;
 
         .hero-slide {
@@ -307,6 +307,7 @@ border-radius: 12px;
                 padding: 1.5rem 1rem 3rem 1rem;
 
                 .hero-logo {
+                    display: block;
                     max-height: 3rem;
                 }
 
@@ -322,13 +323,19 @@ border-radius: 12px;
                     line-clamp: 2;
                 }
 
+                .hero-canon-take {
+                    display: none;
+                }
+
                 .hero-actions {
                     gap: 0.5rem;
+                    margin-top: 0.5rem;
 
                     .hero-btn {
-                        height: 2.25rem;
-                        padding: 0 1rem;
-                        font-size: 0.9rem;
+                        height: 2.75rem;
+                        padding: 0 1.25rem;
+                        font-size: 0.95rem;
+                        min-width: 5rem;
                     }
                 }
             }
