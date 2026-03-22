@@ -153,15 +153,15 @@ border-radius: 12px;
                     transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, background-color 0.2s ease;
                     white-space: nowrap;
 
-                    span {
-                        color: inherit;
-                        font-size: inherit;
-                        font-weight: inherit;
-                    }
-
                     &.hero-btn-primary {
                         background-color: var(--primary-foreground-color);
-                        color: var(--primary-background-color);
+                        color: #111111;
+
+                        span {
+                            color: #111111;
+                            font-size: inherit;
+                            font-weight: inherit;
+                        }
 
                         &:hover {
                             background-color: white;
@@ -171,10 +171,16 @@ border-radius: 12px;
                     }
 
                     &.hero-btn-secondary {
-                        background-color: rgba(255, 255, 255, 0.15);
+                        background-color: rgba(255, 255, 255, 0.18);
                         backdrop-filter: blur(10px);
-                        color: var(--primary-foreground-color);
-                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        color: rgba(255, 255, 255, 0.95);
+                        border: 1px solid rgba(255, 255, 255, 0.3);
+
+                        span {
+                            color: rgba(255, 255, 255, 0.95);
+                            font-size: inherit;
+                            font-weight: inherit;
+                        }
 
                         &:hover {
                             background-color: rgba(255, 255, 255, 0.3);        
@@ -195,8 +201,6 @@ border-radius: 12px;
         height: 3rem;
         border-radius: 50%;
         background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        font-size: 1.75rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -205,6 +209,12 @@ border-radius: 12px;
         transition: opacity 0.2s ease, background-color 0.2s ease;
         z-index: 2;
         border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0;
+
+        svg {
+            display: block;
+            flex-shrink: 0;
+        }
 
         &:hover {
             background-color: rgba(0, 0, 0, 0.75);
@@ -296,7 +306,9 @@ border-radius: 12px;
 @media only screen and (max-width: @minimum) {
     .hero-shelf-container {
         // On mobile the nav is at the BOTTOM, not left — reset the desktop edge-to-edge offset
+        // Extend upward behind the notch area
         margin-left: -1rem;
+        margin-top: calc(-1 * env(safe-area-inset-top, 0px));
         width: calc(100% + 2rem);
         height: clamp(24rem, 56vh, 34rem);
         min-height: unset;
@@ -304,7 +316,8 @@ border-radius: 12px;
         .hero-slide {
             .hero-content {
                 width: 100%;
-                padding: 1.5rem 1rem 3rem 1rem;
+                // Include safe area top so text clears the notch
+                padding: calc(env(safe-area-inset-top, 0px) + 1.5rem) 1rem 3rem 1rem;
 
                 .hero-logo {
                     display: block;

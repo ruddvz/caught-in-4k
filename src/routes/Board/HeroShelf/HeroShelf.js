@@ -148,14 +148,18 @@ const HeroShelf = ({ items }) => {
                             onClick={goToPrev}
                             aria-label={'Previous'}
                         >
-                            ‹
+                            <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.5 1.5L2 8.5L8.5 15.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
                         </button>
                         <button
                             className={classnames(styles['hero-nav'], styles['hero-nav-next'])}
                             onClick={goToNext}
                             aria-label={'Next'}
                         >
-                            ›
+                            <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.5 1.5L8 8.5L1.5 15.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
                         </button>
                         <div className={styles['hero-dots']}>
                             {validItems.map((_, i) => (
