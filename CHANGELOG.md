@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ## Latest
 
+- **Updated DESIGN.md** with 9 new design suggestions (6k–6s), fixed trailer button status, added priority roadmap table, and corrected responsive breakpoint docs
 - **Restored YouTube trailer button** on the Board hero section (was accidentally removed in a prior commit)
 
 ## 2026-03-22

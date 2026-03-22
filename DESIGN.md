@@ -80,11 +80,11 @@
 
 ### ✅ Hero Background Notch (Mobile)
 - **Issue**: On iOS/Android with a notch, the hero image started below the status bar area, leaving a dark gap.
-- **Fix implemented**: On mobile (≤ 640px), the `.hero-background` and `.hero-gradient` use `position: fixed; top: 0; width: 100vw; height: 100dvh` — they escape the `overflow-y: auto` scroll clipping and cover the full screen including behind the notch. Works with `viewport-fit=cover` + `apple-mobile-web-app-status-bar-style: black-translucent` in index.html.
-- **Note**: The background stays fixed (parallax-like) while hero content scrolls. Rows cover it with their dark background.
+- **Previous fix**: Used `position: fixed` on `.hero-background` and `.hero-gradient` to escape scroll clipping.
+- **Current fix**: Reverted to `position: absolute` with `width: 100%; height: 100%` — this keeps the hero contained within its section and prevents it from bleeding over catalog rows below. The fixed approach caused the hero background to cover the entire viewport.
 
-### ✅ YouTube Trailer Button Removed
-- The hero's "TRAILER" button (which linked to YouTube trailers) has been removed. Only the "SHOW/WATCH" button remains. This keeps the UX fully in-app.
+### ✅ YouTube Trailer Button Restored
+- The hero's "TRAILER" button (which links to YouTube trailers via `item.trailerStreams`) has been restored as a secondary glass button next to the primary "SHOW" button. It only renders when a trailer stream is available for the current hero item.
 
 ### ✅ Catalog Calendar Removed
 - The calendar tab and all calendar-related features were removed.
@@ -139,15 +139,82 @@
 **Idea**: When the hero changes slide, extract the dominant color from the hero background image using `canvas` + `getImageData()`. Temporarily shift the UI accent color to a tint of the movie's color palette. The nav glow, button, and dots shift to match the content. Revert after leaving the hero.  
 **Files**: `HeroShelf.js` — add canvas sampling, dispatch to a React context or CSS variable update.
 
+### 6k. Streaming Server Toast Redesign (Priority: HIGH)
+**Problem**: The live site shows a persistent "Streaming server is not available. Install / Later / Don't show again" toast at the bottom. It's visually disruptive — plain text on a dark bar that clashes with the cinematic aesthetic.
+**Idea**: Replace with a dismissible glass-pill notification that slides in from the bottom-right, uses the frosted-glass treatment, and auto-dismisses after 10 seconds if the user takes no action. Add a subtle cyan icon (e.g. a server/cloud icon) and keep the "Install" CTA as a small cyan-outlined button.
+**Files**: `src/common/Toast/`, `src/App/ServicesToaster.js`
+
+### 6l. Hero Carousel Progress Bar (Priority: MEDIUM)
+**Problem**: Users have no visual indication of when the hero will auto-rotate to the next slide.
+**Idea**: Add a thin (2px) cyan progress bar at the very bottom of the hero section that fills from left to right over the 15-second auto-rotate interval. When the slide changes, it resets. This is more elegant than the dot indicators and is used by Apple TV+ and Disney+.
+**Implementation**: CSS `@keyframes` animation on a `::after` pseudo-element of the hero container, reset via React key change on slide transition.
+
+### 6m. Content Card Skeleton Loading (Priority: MEDIUM)
+**Problem**: When catalog rows load, there's a flash of empty space before posters appear.
+**Idea**: Show skeleton placeholder cards (dark rectangles with a subtle shimmer animation) while images load. Use CSS `background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite`.
+**Files**: `src/components/MetaItem/`, `src/components/LibItem/`
+
+### 6n. Canon Take Box Animation (Priority: LOW)
+**Problem**: The Canon Take box on the hero appears instantly, which feels abrupt.
+**Idea**: Animate it in with a slide-up + fade: `transform: translateY(10px); opacity: 0` → `transform: translateY(0); opacity: 1` with a 300ms ease transition, triggered when the hero slide is active.
+
+### 6o. "Continue Watching" Progress Bars (Priority: HIGH)
+**Problem**: Continue Watching items don't visually communicate how far the user got.
+**Idea**: Add a thin (3px) progress bar at the bottom of each Continue Watching poster card. Color: cyan fill on a dark track. Width proportional to the watch percentage. This is standard on Netflix, Disney+, and HBO Max.
+**Files**: `src/components/ContinueWatchingItem/`
+
+### 6p. Mobile Swipe Gestures for Hero (Priority: MEDIUM)
+**Problem**: On mobile, users must tap the small arrow buttons or dots to navigate hero slides.
+**Idea**: Add touch swipe support — swipe left for next, swipe right for previous. Use a lightweight touch event handler (no library needed). Track `touchstart` and `touchend` X coordinates; if delta > 50px, trigger slide change.
+**Files**: `src/routes/Board/HeroShelf/HeroShelf.js`
+
+### 6q. Micro-Interaction: Button Haptic Press Effect (Priority: LOW)
+**Problem**: Buttons feel flat on tap.
+**Idea**: Add a CSS `active` state that briefly scales the button to `0.97` with a faster transition (`50ms`) to simulate a physical "press" feel. Combined with `transform: scale(1.05)` on hover, this creates a satisfying click → release cycle.
+
+### 6r. Adaptive Font Sizing with clamp() (Priority: MEDIUM)
+**Problem**: Font sizes jump abruptly at breakpoints.
+**Idea**: Replace fixed font sizes with `clamp()` for fluid typography. Example for hero title: `font-size: clamp(1.3rem, 4vw, 4rem)` — smoothly scales between mobile and desktop without media queries. Apply to hero description and section headers too.
+
+### 6s. Nav Pill Collapse to Icons-Only on Scroll (Priority: LOW)
+**Problem**: The vertical nav pill takes up horizontal space on narrower desktops.
+**Idea**: When the user scrolls down past the hero, the nav pill transitions from showing icons + labels to icons only (collapsed mode). On hover, it expands back. This gives more room for content. Use a CSS transition on width + text opacity.
+
 ---
 
 ## 7. Responsive Breakpoints
 
 | Name | Max Width | Layout |
 |---|---|---|
-| Desktop | > 640px | Vertical nav pill left, hero full-height |
-| Mobile | ≤ 640px | Nav bar at bottom, hero height `clamp(24rem, 56vh, 34rem)` |
-| `@xsmall` | ≤ 1000px | Hero height 24rem, narrower content |
+| Desktop | > 1000px | Vertical nav pill left, hero full-height |
+| Tablet / `@xsmall` | 641px–1000px | Hero height 24rem, narrower content |
+| Mobile / `@minimum` | ≤ 640px | Nav bar at bottom, hero height `clamp(24rem, 56vh, 34rem)` |
+
+---
+
+## 8. Design Priority Roadmap
+
+| Priority | Item | Impact |
+|---|---|---|
+| **HIGH** | 6k. Streaming server toast redesign | Eliminates the most visually jarring element on the live site |
+| **HIGH** | 6o. Continue Watching progress bars | Industry-standard UX, high user value |
+| **HIGH** | 6j. Contextual color palette from hero | Wow factor, differentiator |
+| **HIGH** | 6a. Scroll-linked hero fade | Polished Netflix-style transition |
+| **MEDIUM** | 6l. Hero carousel progress bar | Subtle but professional touch |
+| **MEDIUM** | 6m. Skeleton loading cards | Eliminates layout shift and feels premium |
+| **MEDIUM** | 6p. Mobile swipe gestures | Essential mobile UX |
+| **MEDIUM** | 6r. Adaptive font sizing | Smooth scaling, fewer breakpoint hacks |
+| **MEDIUM** | 6c. Glassmorphic row headers | Visual consistency with glass theme |
+| **MEDIUM** | 6i. Search bar glow | Extends cyan highlight system |
+| **MEDIUM** | 6f. Responsive grid for tablets | Better mid-size screen experience |
+| **LOW** | 6b. Parallax hero background | Subtle depth effect |
+| **LOW** | 6n. Canon Take box animation | Polish |
+| **LOW** | 6q. Button haptic press effect | Micro-interaction |
+| **LOW** | 6s. Nav pill collapse on scroll | Space optimization |
+| **LOW** | 6d. Animated "Now Playing" indicator | Fun detail |
+| **LOW** | 6e. Card hover preview | Netflix-style, complex to implement |
+| **LOW** | 6g. Theme toggle: Dark / Ultra-Dark | Niche OLED benefit |
+| **LOW** | 6h. Animated hero dot indicators | Minor polish |
 | `@small` | ≤ 1300px | Hero height 22rem |
 | `@medium` | ≤ 1600px | Hero height 28rem |
 
