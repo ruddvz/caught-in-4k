@@ -17,9 +17,13 @@
         .title-container {
             flex: 1;
             max-height: 2.4em;
-            font-size: 1.6rem;
+            font-size: clamp(1.2rem, 1.8vw, 1.6rem);
             font-weight: 500;
             color: var(--primary-foreground-color);
+            border-left: 3px solid var(--primary-accent-color);
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 0 8px 8px 0;
+            padding-left: 0.75rem;
         }
 
         .see-all-container {

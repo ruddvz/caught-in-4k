@@ -39,6 +39,8 @@ const Board = () => {
             isNaN(profile.settings.streamingServerWarningDismissed.getTime()) ||
             profile.settings.streamingServerWarningDismissed.getTime() < Date.now());
     }, [profile.settings, streamingServer.settings]);
+    const heroRef = React.useRef(null);
+    const [heroOpacity, setHeroOpacity] = React.useState(1);
     const onVisibleRangeChange = React.useCallback(() => {
         const range = getVisibleChildrenRange(scrollContainerRef.current);
         if (range === null) {
@@ -53,7 +55,22 @@ const Board = () => {
 
         loadBoardRows({ start, end });
     }, [boardCatalogsOffset]);
-    const onScroll = React.useCallback(debounce(onVisibleRangeChange, 250), [onVisibleRangeChange]);
+    const onScroll = React.useCallback(debounce((event) => {
+        onVisibleRangeChange();
+        if (heroRef.current && event && event.target) {
+            const heroHeight = heroRef.current.offsetHeight;
+            const scrollTop = event.target.scrollTop;
+            const fadeStart = heroHeight * 0.3;
+            const fadeEnd = heroHeight * 0.8;
+            if (scrollTop <= fadeStart) {
+                setHeroOpacity(1);
+            } else if (scrollTop >= fadeEnd) {
+                setHeroOpacity(0);
+            } else {
+                setHeroOpacity(1 - (scrollTop - fadeStart) / (fadeEnd - fadeStart));
+            }
+        }
+    }, 16), [onVisibleRangeChange]);
     React.useLayoutEffect(() => {
         onVisibleRangeChange();
     }, [board.catalogs, onVisibleRangeChange]);
@@ -64,7 +81,9 @@ const Board = () => {
                 <div ref={scrollContainerRef} className={styles['board-content']} onScroll={onScroll}>
                     {
                         heroItems.length > 0 ?
-                            <HeroShelf items={heroItems} />
+                            <div ref={heroRef} style={{ opacity: heroOpacity, transition: 'opacity 0.1s ease-out' }}>
+                                <HeroShelf items={heroItems} />
+                            </div>
                             :
                             null
                     }

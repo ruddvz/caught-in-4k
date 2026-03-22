@@ -6,6 +6,17 @@ All notable changes to this project are documented in this file.
 
 ## Latest
 
+- **feat: Scroll-linked hero fade (6a)** — Hero section fades out as user scrolls past it, Netflix-style transition
+- **feat: Glassmorphic row section headers (6c)** — Catalog row titles now have a left cyan accent border and subtle glass background
+- **feat: Streaming server toast redesign (6k)** — Warning toast restyled as a frosted glass pill with slide-up animation and accent-colored Install CTA
+- **feat: Hero carousel progress bar (6l)** — Thin 2px cyan progress bar at bottom of hero fills over 15 seconds, resets on slide change
+- **feat: Skeleton loading shimmer (6m)** — Placeholder cards now animate with a shimmer gradient instead of static grey
+- **feat: Search bar glow (6i)** — Text inputs now show a cyan glow ring on focus
+- **feat: Continue Watching progress bars (6o)** — Progress bars on cards now use the accent color with a glow effect, thinner and positioned at card bottom
+- **feat: Mobile swipe gestures (6p)** — Swipe left/right on hero section to navigate slides on touch devices
+- **feat: Button haptic press (6q)** — All buttons now scale to 0.97 on active/press for a physical click feel
+- **feat: Adaptive font sizing (6r)** — Hero title, description, and row headers use clamp() for fluid scaling across screen sizes
+
 - **Updated DESIGN.md** with 9 new design suggestions (6k–6s), fixed trailer button status, added priority roadmap table, and corrected responsive breakpoint docs
 - **Restored YouTube trailer button** on the Board hero section (was accidentally removed in a prior commit)
 

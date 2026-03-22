@@ -99,18 +99,15 @@
 
 ## 6. Design Scenarios & Future Ideas
 
-### 6a. Scroll-Linked Hero Fade (Priority: HIGH)
-**Problem**: The fixed hero background stays visible while rows scroll in front (mobile). This is cool but if rows don't fully cover the background, it looks layered.
-**Idea**: Use a JavaScript `IntersectionObserver` or `onScroll` to track how far the user has scrolled past the hero. Fade the hero's opacity from 1→0 as the user scrolls past the first 30% of hero height. This creates a silky Netflix-style transition.
-**Implementation**: Add `heroFade` state to `Board.js`. Update via `scrollContainerRef.current.onScroll`. Apply `style={{ opacity: heroFade }}` + `pointer-events: none` on hero when faded.
+### ~~6a. Scroll-Linked Hero Fade~~ ✅ IMPLEMENTED
+**Implemented**: Hero fades from opacity 1→0 as user scrolls past 30%–80% of hero height. Uses debounced scroll handler in `Board.js` with `heroOpacity` state applied to wrapper div.
 
 ### 6b. Parallax Hero Background (Priority: MEDIUM)
 **Problem**: Hero looks static.  
 **Idea**: Apply a subtle `transform: translateY(scrollTop * 0.3)` to the hero background as the user scrolls. The image scrolls at 30% of normal speed creating depth. Can be done with either `position: fixed` (on mobile) or with JS transform on desktop.
 
-### 6c. Glassmorphic Row Section Headers (Priority: MEDIUM)
-**Problem**: Row titles ("Continue Watching", "Movies", etc.) look generic.
-**Idea**: Give each row's title bar a subtle glass-pill treatment — semi-transparent background with a left-border in the accent cyan color. Example: `border-left: 3px solid var(--primary-accent-color); background: rgba(255,255,255,0.04); border-radius: 0 8px 8px 0; padding-left: 0.75rem`.
+### ~~6c. Glassmorphic Row Section Headers~~ ✅ IMPLEMENTED
+**Implemented**: Row title containers now have `border-left: 3px solid var(--primary-accent-color)`, `background: rgba(255,255,255,0.04)`, `border-radius: 0 8px 8px 0`, and left padding. Font size uses `clamp()` for fluid scaling.
 
 ### 6d. Animated "Now Playing" Indicator (Priority: LOW)
 **Idea**: When a Continue Watching item is hovered, show a subtle equalizer animation (3 bars pulsing up/down in cyan). Indicates this item has progress.
@@ -132,49 +129,37 @@
 **Current state**: Dots use a pill/stretched animation on `hero-dot-active`. 
 **Idea**: Add a CSS progress animation to the active dot — it "fills" over 15 seconds (the auto-rotate interval) to show time remaining before the next slide. The dot's width animates from `0.5rem` → `1.5rem` over 15s, then snaps back.
 
-### 6i. Search Bar Glow (Priority: MEDIUM)
-**Idea**: When the search input is focused, add a soft cyan glow to the input's border: `box-shadow: 0 0 0 2px var(--primary-accent-color), 0 0 16px rgba(0,240,255,0.2)`. This extends the highlight system to the search bar.
+### ~~6i. Search Bar Glow~~ ✅ IMPLEMENTED
+**Implemented**: TextInput now has `:focus` styles with `box-shadow: 0 0 0 2px var(--primary-accent-color), 0 0 16px rgba(0,240,255,0.2)` and `border-color` update.
 
 ### 6j. Contextual Color Palette from Hero Image (Priority: HIGH — WOW FACTOR)
 **Idea**: When the hero changes slide, extract the dominant color from the hero background image using `canvas` + `getImageData()`. Temporarily shift the UI accent color to a tint of the movie's color palette. The nav glow, button, and dots shift to match the content. Revert after leaving the hero.  
 **Files**: `HeroShelf.js` — add canvas sampling, dispatch to a React context or CSS variable update.
 
-### 6k. Streaming Server Toast Redesign (Priority: HIGH)
-**Problem**: The live site shows a persistent "Streaming server is not available. Install / Later / Don't show again" toast at the bottom. It's visually disruptive — plain text on a dark bar that clashes with the cinematic aesthetic.
-**Idea**: Replace with a dismissible glass-pill notification that slides in from the bottom-right, uses the frosted-glass treatment, and auto-dismisses after 10 seconds if the user takes no action. Add a subtle cyan icon (e.g. a server/cloud icon) and keep the "Install" CTA as a small cyan-outlined button.
-**Files**: `src/common/Toast/`, `src/App/ServicesToaster.js`
+### ~~6k. Streaming Server Toast Redesign~~ ✅ IMPLEMENTED
+**Implemented**: Warning container restyled as frosted glass pill with `backdrop-filter: blur(20px)`, `border-radius: 999px`, accent-colored Install CTA, and `slideUpToast` animation. Mobile layout uses rounded corners.
 
-### 6l. Hero Carousel Progress Bar (Priority: MEDIUM)
-**Problem**: Users have no visual indication of when the hero will auto-rotate to the next slide.
-**Idea**: Add a thin (2px) cyan progress bar at the very bottom of the hero section that fills from left to right over the 15-second auto-rotate interval. When the slide changes, it resets. This is more elegant than the dot indicators and is used by Apple TV+ and Disney+.
-**Implementation**: CSS `@keyframes` animation on a `::after` pseudo-element of the hero container, reset via React key change on slide transition.
+### ~~6l. Hero Carousel Progress Bar~~ ✅ IMPLEMENTED
+**Implemented**: 2px progress bar at bottom of hero with `@keyframes heroProgressFill` animation over 15s. Resets via React `key={currentIndex}` on the fill element. Uses accent color with cyan glow.
 
-### 6m. Content Card Skeleton Loading (Priority: MEDIUM)
-**Problem**: When catalog rows load, there's a flash of empty space before posters appear.
-**Idea**: Show skeleton placeholder cards (dark rectangles with a subtle shimmer animation) while images load. Use CSS `background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite`.
-**Files**: `src/components/MetaItem/`, `src/components/LibItem/`
+### ~~6m. Content Card Skeleton Loading~~ ✅ IMPLEMENTED
+**Implemented**: MetaRowPlaceholder poster and title skeletons now use `background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%)` with `@keyframes shimmer` animation at 1.5s interval.
 
 ### 6n. Canon Take Box Animation (Priority: LOW)
 **Problem**: The Canon Take box on the hero appears instantly, which feels abrupt.
 **Idea**: Animate it in with a slide-up + fade: `transform: translateY(10px); opacity: 0` → `transform: translateY(0); opacity: 1` with a 300ms ease transition, triggered when the hero slide is active.
 
-### 6o. "Continue Watching" Progress Bars (Priority: HIGH)
-**Problem**: Continue Watching items don't visually communicate how far the user got.
-**Idea**: Add a thin (3px) progress bar at the bottom of each Continue Watching poster card. Color: cyan fill on a dark track. Width proportional to the watch percentage. This is standard on Netflix, Disney+, and HBO Max.
-**Files**: `src/components/ContinueWatchingItem/`
+### ~~6o. "Continue Watching" Progress Bars~~ ✅ IMPLEMENTED
+**Implemented**: Progress bar in MetaItem restyled — 3px height, positioned at card bottom (0.5rem inset), uses `var(--primary-accent-color)` with `box-shadow: 0 0 6px rgba(0,240,255,0.4)` glow. Dark track uses 15% white opacity.
 
-### 6p. Mobile Swipe Gestures for Hero (Priority: MEDIUM)
-**Problem**: On mobile, users must tap the small arrow buttons or dots to navigate hero slides.
-**Idea**: Add touch swipe support — swipe left for next, swipe right for previous. Use a lightweight touch event handler (no library needed). Track `touchstart` and `touchend` X coordinates; if delta > 50px, trigger slide change.
-**Files**: `src/routes/Board/HeroShelf/HeroShelf.js`
+### ~~6p. Mobile Swipe Gestures for Hero~~ ✅ IMPLEMENTED
+**Implemented**: Touch event handlers (`onTouchStart`/`onTouchEnd`) on hero container. Tracks X delta; if > 50px, triggers `goToNext` or `goToPrev`. No library needed.
 
-### 6q. Micro-Interaction: Button Haptic Press Effect (Priority: LOW)
-**Problem**: Buttons feel flat on tap.
-**Idea**: Add a CSS `active` state that briefly scales the button to `0.97` with a faster transition (`50ms`) to simulate a physical "press" feel. Combined with `transform: scale(1.05)` on hover, this creates a satisfying click → release cycle.
+### ~~6q. Micro-Interaction: Button Haptic Press Effect~~ ✅ IMPLEMENTED
+**Implemented**: Button component now has `&:active { transform: scale(0.97); transition: transform 50ms ease; }` for physical press feel.
 
-### 6r. Adaptive Font Sizing with clamp() (Priority: MEDIUM)
-**Problem**: Font sizes jump abruptly at breakpoints.
-**Idea**: Replace fixed font sizes with `clamp()` for fluid typography. Example for hero title: `font-size: clamp(1.3rem, 4vw, 4rem)` — smoothly scales between mobile and desktop without media queries. Apply to hero description and section headers too.
+### ~~6r. Adaptive Font Sizing with clamp()~~ ✅ IMPLEMENTED
+**Implemented**: Hero title uses `clamp(1.3rem, 4vw, 4rem)`, hero description uses `clamp(0.9rem, 1.2vw, 1.15rem)`, row headers use `clamp(1.2rem, 1.8vw, 1.6rem)`. Smooth scaling without media query jumps.
 
 ### 6s. Nav Pill Collapse to Icons-Only on Scroll (Priority: LOW)
 **Problem**: The vertical nav pill takes up horizontal space on narrower desktops.
@@ -196,20 +181,20 @@
 
 | Priority | Item | Impact |
 |---|---|---|
-| **HIGH** | 6k. Streaming server toast redesign | Eliminates the most visually jarring element on the live site |
-| **HIGH** | 6o. Continue Watching progress bars | Industry-standard UX, high user value |
+| ~~**HIGH**~~ | ~~6k. Streaming server toast redesign~~ | ✅ IMPLEMENTED |
+| ~~**HIGH**~~ | ~~6o. Continue Watching progress bars~~ | ✅ IMPLEMENTED |
 | **HIGH** | 6j. Contextual color palette from hero | Wow factor, differentiator |
-| **HIGH** | 6a. Scroll-linked hero fade | Polished Netflix-style transition |
-| **MEDIUM** | 6l. Hero carousel progress bar | Subtle but professional touch |
-| **MEDIUM** | 6m. Skeleton loading cards | Eliminates layout shift and feels premium |
-| **MEDIUM** | 6p. Mobile swipe gestures | Essential mobile UX |
-| **MEDIUM** | 6r. Adaptive font sizing | Smooth scaling, fewer breakpoint hacks |
-| **MEDIUM** | 6c. Glassmorphic row headers | Visual consistency with glass theme |
-| **MEDIUM** | 6i. Search bar glow | Extends cyan highlight system |
+| ~~**HIGH**~~ | ~~6a. Scroll-linked hero fade~~ | ✅ IMPLEMENTED |
+| ~~**MEDIUM**~~ | ~~6l. Hero carousel progress bar~~ | ✅ IMPLEMENTED |
+| ~~**MEDIUM**~~ | ~~6m. Skeleton loading cards~~ | ✅ IMPLEMENTED |
+| ~~**MEDIUM**~~ | ~~6p. Mobile swipe gestures~~ | ✅ IMPLEMENTED |
+| ~~**MEDIUM**~~ | ~~6r. Adaptive font sizing~~ | ✅ IMPLEMENTED |
+| ~~**MEDIUM**~~ | ~~6c. Glassmorphic row headers~~ | ✅ IMPLEMENTED |
+| ~~**MEDIUM**~~ | ~~6i. Search bar glow~~ | ✅ IMPLEMENTED |
 | **MEDIUM** | 6f. Responsive grid for tablets | Better mid-size screen experience |
 | **LOW** | 6b. Parallax hero background | Subtle depth effect |
 | **LOW** | 6n. Canon Take box animation | Polish |
-| **LOW** | 6q. Button haptic press effect | Micro-interaction |
+| ~~**LOW**~~ | ~~6q. Button haptic press effect~~ | ✅ IMPLEMENTED |
 | **LOW** | 6s. Nav pill collapse on scroll | Space optimization |
 | **LOW** | 6d. Animated "Now Playing" indicator | Fun detail |
 | **LOW** | 6e. Card hover preview | Netflix-style, complex to implement |

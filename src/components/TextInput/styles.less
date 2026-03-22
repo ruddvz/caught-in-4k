@@ -2,8 +2,15 @@
 
 .text-input {
     user-select: text;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
 
     &::-moz-focus-inner {
         border: none;
+    }
+
+    &:focus {
+        box-shadow: 0 0 0 2px var(--primary-accent-color), 0 0 16px rgba(0, 240, 255, 0.2);
+        border-color: var(--primary-accent-color);
+        outline: none;
     }
 }

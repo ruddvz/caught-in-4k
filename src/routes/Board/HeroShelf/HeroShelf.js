@@ -42,6 +42,20 @@ const HeroShelf = ({ items }) => {
         setCurrentIndex((prev) => (prev + 1) % itemCount);
     }, [itemCount]);
 
+    const touchStartX = React.useRef(null);
+    const onTouchStart = React.useCallback((e) => {
+        touchStartX.current = e.touches[0].clientX;
+    }, []);
+    const onTouchEnd = React.useCallback((e) => {
+        if (touchStartX.current === null) return;
+        const delta = e.changedTouches[0].clientX - touchStartX.current;
+        if (Math.abs(delta) > 50) {
+            if (delta < 0) goToNext();
+            else goToPrev();
+        }
+        touchStartX.current = null;
+    }, [goToNext, goToPrev]);
+
     const item = validItems[currentIndex] || validItems[0] || {};
 
     if (validItems.length === 0) {
@@ -72,7 +86,7 @@ const HeroShelf = ({ items }) => {
             : null;
 
     return (
-        <div className={styles['hero-shelf-container']}>
+        <div className={styles['hero-shelf-container']} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
             <div className={styles['hero-slide']}>
                 <Image
                     className={styles['hero-background']}
@@ -172,6 +186,13 @@ const HeroShelf = ({ items }) => {
                             ))}
                         </div>
                     </React.Fragment>
+                    : null
+            }
+            {
+                validItems.length > 1 ?
+                    <div className={styles['hero-progress-bar']}>
+                        <div key={currentIndex} className={styles['hero-progress-fill']} />
+                    </div>
                     : null
             }
         </div>

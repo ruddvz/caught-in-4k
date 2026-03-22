@@ -70,7 +70,9 @@
             .poster-container {
                 border-radius: var(--border-radius);
                 padding-bottom: calc(100% * var(--poster-shape-ratio));
-                background-color: var(--color-placeholder-background);
+                background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s ease-in-out infinite;
             }
 
             .title-bar-container {
@@ -85,7 +87,10 @@
                     width: 60%;
                     height: 1.2rem;
                     border-radius: var(--border-radius);
-                    background-color: var(--color-placeholder-background);
+                    background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%);
+                    background-size: 200% 100%;
+                    animation: shimmer 1.5s ease-in-out infinite;
+                    animation-delay: 0.15s;
                 }
             }
         }
@@ -108,4 +113,9 @@
             }
         }
     }
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
