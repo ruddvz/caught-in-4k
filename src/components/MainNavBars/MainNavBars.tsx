@@ -1,9 +1,10 @@
+```javascript
 // Copyright (C) 2017-2023 Smart code 203358507
 
 import React, { memo } from 'react';
 import classnames from 'classnames';
-import AppLogo from 'stremio/components/AppLogo/AppLogo';
-import VerticalNavBar from '../NavBar/VerticalNavBar/VerticalNavBar';
+import { HorizontalNavBar, VerticalNavBar } from '../NavBar';
+import AppLogo from '../AppLogo/AppLogo';
 import styles from './MainNavBars.less';
 
 const TABS = [

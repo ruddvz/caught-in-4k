@@ -3,18 +3,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-const _i18n = require('i18next');
-const t = (key) => {
-    try {
-        const translate = _i18n.t || _i18n.default?.t;
-        if (typeof translate === 'function') {
-            return translate(key);
-        }
-    } catch (e) {
-        console.error('Translation failed for key:', key, e);
-    }
-    return key;
-};
+const useTranslate = require('stremio/common/useTranslate');
 const filterInvalidDOMProps = require('filter-invalid-dom-props').default;
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const { default: Button } = require('stremio/components/Button');
@@ -27,6 +16,8 @@ const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/Sa
 const styles = require('./styles');
 
 const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, ...props }) => {
+    const t = useTranslate();
+    const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
     const tier = useSatisfactionMeter(voteAverage);
     const href = React.useMemo(() => {
         return deepLinks ?
@@ -78,7 +69,7 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
             <div className={classnames(styles['poster-container'], { 'poster-change-cursor': posterChangeCursor })}>
                 {
                     onDismissClick ?
-                        <div title={t('LIBRARY_RESUME_DISMISS')} className={styles['dismiss-icon-layer']} onClick={onDismissClick}>
+                        <div title={t.string('LIBRARY_RESUME_DISMISS')} className={styles['dismiss-icon-layer']} onClick={onDismissClick}>
                             <Icon className={styles['dismiss-icon']} name={'close'} />
                             <div className={styles['dismiss-icon-backdrop']} />
                         </div>
@@ -103,7 +94,7 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                 </div>
                 {
                     onPlayClick ?
-                        <div title={t('CONTINUE_WATCHING')} className={styles['play-icon-layer']} onClick={onPlayClick}>
+                        <div title={t.string('CONTINUE_WATCHING')} className={styles['play-icon-layer']} onClick={onPlayClick}>
                             <Icon className={styles['play-icon']} name={'play'} />
                             <div className={styles['play-icon-outer']} />
                             <div className={styles['play-icon-background']} />

@@ -1,9 +1,9 @@
-﻿// Copyright (C) 2017-2024 Smart code 203358507
+// Copyright (C) 2017-2024 Smart code 203358507
 
 const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-const { useTranslation } = require('react-i18next');
+const useTranslate = require('stremio/common/useTranslate');
 const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
 const CONSTANTS = require('stremio/common/CONSTANTS');
@@ -11,7 +11,7 @@ const CanonTakeBox = require('stremio/components/CanonTakeBox/CanonTakeBox');
 const styles = require('./styles');
 
 const HeroShelf = ({ items }) => {
-    const { t } = useTranslation();
+    const t = useTranslate();
     const [currentIndex, setCurrentIndex] = React.useState(0);
 
     const validItems = React.useMemo(() =>
@@ -121,7 +121,7 @@ const HeroShelf = ({ items }) => {
                                     className={classnames(styles['hero-btn'], styles['hero-btn-primary'])}
                                     href={watchHref}
                                 >
-                                    <span>{t('SHOW')}</span>
+                                    <span>{t.string('SHOW')}</span>
                                 </Button>
                                 : null
                         }
@@ -131,7 +131,7 @@ const HeroShelf = ({ items }) => {
                                     className={classnames(styles['hero-btn'], styles['hero-btn-secondary'])}
                                     href={trailerHref}
                                 >
-                                    <span>{t('TRAILER')}</span>
+                                    <span>{t.string('TRAILER')}</span>
                                 </Button>
                                 : null
                         }

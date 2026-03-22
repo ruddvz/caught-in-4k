@@ -3,22 +3,12 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-const _i18n = require('i18next');
-const t = (key) => {
-    try {
-        const translate = _i18n.t || _i18n.default?.t;
-        if (typeof translate === 'function') {
-            return translate(key);
-        }
-    } catch (e) {
-        console.error('Translation failed for key:', key, e);
-    }
-    return key;
-};
+const useTranslate = require('stremio/common/useTranslate');
 const NavTabButton = require('./NavTabButton');
-const styles = require('./styles');
+const styles = require('./styles.less');
 
 const VerticalNavBar = React.memo(({ className, selected, tabs }) => {
+    const t = useTranslate();
     return (
         <nav className={classnames(className, styles['vertical-nav-bar-container'])}>
             {
@@ -31,7 +21,7 @@ const VerticalNavBar = React.memo(({ className, selected, tabs }) => {
                             href={tab.href}
                             logo={tab.logo}
                             icon={tab.icon}
-                            label={t(tab.label)}
+                            label={t.string(tab.label)}
                             onClick={tab.onClick}
                         />
                     ))

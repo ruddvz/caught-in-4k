@@ -1,7 +1,7 @@
 // Copyright (C) 2017-2024 Smart code 203358507
 
 import React, { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import useTranslate from 'stremio/common/useTranslate';
 import classnames from 'classnames';
 import { useServices } from 'stremio/services';
 import { Button } from 'stremio/components';
@@ -14,7 +14,7 @@ type Props = {
 };
 
 const StreamingServerWarning = ({ className }: Props) => {
-    const { t } = useTranslation();
+    const t = useTranslate();
     const { core } = useServices();
     const profile = useProfile();
 
@@ -55,7 +55,7 @@ const StreamingServerWarning = ({ className }: Props) => {
     return (
         <div className={classnames(className, styles['warning-container'])}>
             <div className={styles['warning-statement']}>
-                {t('SETTINGS_SERVER_UNAVAILABLE')}
+                {t.string('SETTINGS_SERVER_UNAVAILABLE')}
             </div>
             <div className={styles['actions']}>
                 <a
@@ -65,32 +65,32 @@ const StreamingServerWarning = ({ className }: Props) => {
                 >
                     <Button
                         className={styles['action']}
-                        title={t('SERVICE_INSTALL')}
+                        title={t.string('SERVICE_INSTALL')}
                         tabIndex={-1}
                     >
                         <div className={styles['label']}>
-                            {t('SERVICE_INSTALL')}
+                            {t.string('SERVICE_INSTALL')}
                         </div>
                     </Button>
                 </a>
                 <Button
                     className={styles['action']}
-                    title={t('WARNING_STREAMING_SERVER_LATER')}
+                    title={t.string('WARNING_STREAMING_SERVER_LATER')}
                     onClick={onLater}
                     tabIndex={-1}
                 >
                     <div className={styles['label']}>
-                        {t('WARNING_STREAMING_SERVER_LATER')}
+                        {t.string('WARNING_STREAMING_SERVER_LATER')}
                     </div>
                 </Button>
                 <Button
                     className={styles['action']}
-                    title={t('DONT_SHOW_AGAIN')}
+                    title={t.string('DONT_SHOW_AGAIN')}
                     onClick={onDismiss}
                     tabIndex={-1}
                 >
                     <div className={styles['label']}>
-                        {t('DONT_SHOW_AGAIN')}
+                        {t.string('DONT_SHOW_AGAIN')}
                     </div>
                 </Button>
             </div>
