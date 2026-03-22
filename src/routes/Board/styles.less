@@ -28,6 +28,9 @@
             padding: 0 1rem;
             padding-top: 0;
             overflow-y: auto;
+            /* Allow hero to bleed left behind the nav pill without creating a horizontal scrollbar */
+            overflow-x: clip;
+            overflow-clip-margin: calc(var(--vertical-nav-bar-size) + 2.5rem);
 
             .board-row {
                 margin-top: 1rem;

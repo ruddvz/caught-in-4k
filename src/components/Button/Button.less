@@ -4,12 +4,18 @@
 
 .button-container {
     outline-width: var(--focus-outline-size);
-    outline-color: @color-surface-light5;
+    outline-color: var(--primary-accent-color);
     outline-offset: calc(-1 * var(--focus-outline-size));
     cursor: pointer;
+    transition: box-shadow 0.2s ease;
 
     &:focus {
         outline-style: solid;
+    }
+
+    &:focus-visible {
+        outline-style: solid;
+        box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.2);
     }
 
     &:global(.disabled) {

@@ -154,38 +154,40 @@ border-radius: 12px;
                     white-space: nowrap;
 
                     &.hero-btn-primary {
-                        background-color: var(--primary-foreground-color);
-                        color: #111111;
+                        background-color: var(--primary-accent-color);
+                        color: #000;
+                        box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
 
                         span {
-                            color: #111111;
+                            color: #000;
                             font-size: inherit;
                             font-weight: inherit;
                         }
 
                         &:hover {
-                            background-color: white;
+                            background-color: rgb(80, 248, 255);
                             transform: scale(1.05);
-                            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+                            box-shadow: 0 0 35px rgba(0, 240, 255, 0.6);
                         }
                     }
 
                     &.hero-btn-secondary {
-                        background-color: rgba(255, 255, 255, 0.18);
+                        background-color: rgba(255, 255, 255, 0.12);
                         backdrop-filter: blur(10px);
-                        color: rgba(255, 255, 255, 0.95);
-                        border: 1px solid rgba(255, 255, 255, 0.3);
+                        color: rgba(255, 255, 255, 0.92);
+                        border: 1px solid rgba(255, 255, 255, 0.25);
 
                         span {
-                            color: rgba(255, 255, 255, 0.95);
+                            color: rgba(255, 255, 255, 0.92);
                             font-size: inherit;
                             font-weight: inherit;
                         }
 
                         &:hover {
-                            background-color: rgba(255, 255, 255, 0.3);        
+                            background-color: rgba(255, 255, 255, 0.22);
+                            border-color: var(--primary-accent-color);
+                            box-shadow: 0 0 16px rgba(0, 240, 255, 0.2);
                             transform: scale(1.05);
-                            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
                         }
                     }
                 }
@@ -257,18 +259,6 @@ border-radius: 12px;
     }
 }
 
-@media only screen and (max-width: @medium) {
-    .hero-shelf-container {
-        height: 26rem;
-
-        .hero-slide {
-            .hero-content {
-                width: 70%;
-            }
-        }
-    }
-}
-
 @media only screen and (max-width: @small) {
     .hero-shelf-container {
         height: 22rem;
@@ -291,13 +281,30 @@ border-radius: 12px;
     }
 }
 
-@media only screen and (max-width: @xsmall) {
+@media only screen and (max-width: @medium) {
     .hero-shelf-container {
-        height: 20rem;
+        height: 28rem;
 
         .hero-slide {
             .hero-content {
-                width: 100%;
+                width: 75%;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: @xsmall) {
+    .hero-shelf-container {
+        height: 24rem;
+
+        .hero-slide {
+            .hero-content {
+                width: 80%;
+                padding: 3rem 2rem 5rem calc(var(--vertical-nav-bar-size) + 1rem);
+
+                .hero-title {
+                    font-size: 2.5rem;
+                }
             }
         }
     }
@@ -305,18 +312,34 @@ border-radius: 12px;
 
 @media only screen and (max-width: @minimum) {
     .hero-shelf-container {
-        // On mobile the nav is at the BOTTOM, not left — reset the desktop edge-to-edge offset
-        // Extend upward behind the notch area
+        // On mobile the nav is at the BOTTOM — reset the desktop left-bleed offset
         margin-left: -1rem;
-        margin-top: calc(-1 * env(safe-area-inset-top, 0px));
         width: calc(100% + 2rem);
         height: clamp(24rem, 56vh, 34rem);
         min-height: unset;
 
         .hero-slide {
+            // On mobile, use fixed positioning for background layers so they extend
+            // behind the notch area (position: fixed escapes overflow:auto clipping).
+            .hero-background {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100dvh;
+            }
+
+            .hero-gradient {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100dvh;
+            }
+
             .hero-content {
                 width: 100%;
-                // Include safe area top so text clears the notch
+                // Padding-top accounts for the notch safe-area so text is readable
                 padding: calc(env(safe-area-inset-top, 0px) + 1.5rem) 1rem 3rem 1rem;
 
                 .hero-logo {
