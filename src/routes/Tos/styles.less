@@ -1,0 +1,103 @@
+// Copyright (C) Caught in 4K
+
+@import (reference) '~stremio/common/screen-sizes.less';
+
+.legal-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-background-dark5);
+    overflow: hidden;
+}
+
+.nav-bar {
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.legal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem 4rem 4rem;
+    max-width: 860px;
+    margin: 0 auto;
+    color: var(--color-surface-light5-90);
+
+    @media only screen and (max-width: @minimum) {
+        padding: 1.5rem 1.5rem 3rem;
+    }
+
+    h1.legal-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-accent-color, rgb(0, 240, 255));
+        margin-bottom: 0.25rem;
+        line-height: 1.2;
+    }
+
+    p.legal-effective {
+        font-size: 0.85rem;
+        color: var(--color-surface-light5-50);
+        margin-bottom: 2rem;
+    }
+
+    p.legal-intro {
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        color: var(--color-surface-light5-80);
+    }
+
+    h2.section-title {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--primary-accent-color, rgb(0, 240, 255));
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+    }
+
+    p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        margin-bottom: 0.75rem;
+        color: var(--color-surface-light5-80);
+    }
+
+    ul.legal-list {
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+
+        li {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 0.3rem;
+            color: var(--color-surface-light5-80);
+        }
+    }
+
+    .important-notice {
+        background: rgba(0, 240, 255, 0.06);
+        border-left: 3px solid var(--primary-accent-color, rgb(0, 240, 255));
+        border-radius: 0 6px 6px 0;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--color-surface-light5-80);
+    }
+
+    .legal-footer {
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        text-align: center;
+
+        p {
+            font-size: 0.85rem;
+            color: var(--color-surface-light5-50);
+        }
+    }
+}

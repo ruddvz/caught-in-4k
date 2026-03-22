@@ -57,6 +57,16 @@ const routerViewsConfig = [
             ...routesRegexp.player,
             component: routes.Player
         }
+    ],
+    [
+        {
+            ...routesRegexp.tos,
+            component: routes.Tos
+        },
+        {
+            ...routesRegexp.privacy,
+            component: routes.PrivacyPolicy
+        }
     ]
 ];
 
