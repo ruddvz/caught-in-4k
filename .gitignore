@@ -16,3 +16,6 @@ lint_result.json
 .env.local
 .env.*.local
 .env.production
+
+# Claude Organize — ephemeral log file
+docs/organization-log.json
