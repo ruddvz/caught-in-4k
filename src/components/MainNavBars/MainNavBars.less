@@ -57,11 +57,21 @@
     .main-nav-bars-container {
         .nav-content-container {
             left: 0;
-            bottom: var(--vertical-nav-bar-size);
+            bottom: calc(var(--vertical-nav-bar-size) + env(safe-area-inset-bottom, 0rem));
+        }
+
+        .logo-container {
+            display: none;
         }
 
         .vertical-nav-bar {
             top: initial;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            transform: none;
+            max-height: calc(var(--vertical-nav-bar-size) + env(safe-area-inset-bottom, 0rem));
         }
     }
 }

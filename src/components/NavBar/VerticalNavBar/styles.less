@@ -36,16 +36,20 @@
 @media only screen and (max-width: @minimum) {
     .vertical-nav-bar-container {
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: space-around;
         gap: 0;
-        height: var(--vertical-nav-bar-size);
+        height: calc(var(--vertical-nav-bar-size) + env(safe-area-inset-bottom, 0rem));
         width: 100%;
-        padding: 0 1rem;
+        padding: 0.25rem 0.5rem env(safe-area-inset-bottom, 0rem);
         overflow-y: hidden;
-        overflow-x: auto;
+        overflow-x: hidden;
+        border-radius: 1rem 1rem 0 0;
 
         .nav-tab-button {
-            flex: none;
+            flex: 1;
+            width: auto;
+            min-width: 2.5rem;
+            max-width: 4.5rem;
 
             &:last-child {
                 display: none;
