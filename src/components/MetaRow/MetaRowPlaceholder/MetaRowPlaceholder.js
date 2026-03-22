@@ -7,7 +7,7 @@ const { useTranslation } = require('react-i18next');
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const { Button } = require('stremio/components');
 const CONSTANTS = require('stremio/common/CONSTANTS');
-const { useInViewport } = require('stremio/common');
+const useInViewport = require('stremio/common/useInViewport');
 const styles = require('./styles');
 
 const MetaRowPlaceholder = ({ className, title, deepLinks, index = 0 }) => {

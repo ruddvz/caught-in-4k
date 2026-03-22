@@ -8,7 +8,7 @@ const { default: Icon } = require('@stremio/stremio-icons/react');
 const { Button } = require('stremio/components');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const useTranslate = require('stremio/common/useTranslate');
-const { useInViewport } = require('stremio/common');
+const useInViewport = require('stremio/common/useInViewport');
 const MetaRowPlaceholder = require('./MetaRowPlaceholder');
 const styles = require('./styles');
 
