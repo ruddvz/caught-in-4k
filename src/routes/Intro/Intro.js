@@ -376,14 +376,6 @@ const Intro = ({ queryParams }) => {
                     </Button>
                 </div>
                 <div className={styles['options-container']}>
-                    <Button className={classnames(styles['form-button'], styles['facebook-button'])} onClick={loginWithFacebook}>
-                        <Icon className={styles['icon']} name={'facebook'} />
-                        <div className={styles['label']}>{t('FB_LOGIN')}</div>
-                    </Button>
-                    <Button className={classnames(styles['form-button'], styles['apple-button'])} onClick={loginWithApple}>
-                        <Icon className={styles['icon']} name={'macos'} />
-                        <div className={styles['label']}>{t('APPLE_LOGIN')}</div>
-                    </Button>
                     {
                         state.form === SIGNUP_FORM ?
                             <Button className={classnames(styles['form-button'], styles['login-form-button'])} onClick={switchFormOnClick}>
