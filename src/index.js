@@ -14,7 +14,7 @@ if (browser?.platform?.type === 'desktop') {
 const React = require('react');
 const ReactDOM = require('react-dom/client');
 const i18n = require('i18next');
-const { initReactI18next } = require('react-i18next');
+const { initReactI18next, I18nextProvider } = require('react-i18next');
 const stremioTranslations = require('stremio-translations');
 const caughtIn4KTranslations = require('./common/caught-in-4k-translations');
 const App = require('./App');
@@ -74,7 +74,11 @@ RootErrorBoundary.propTypes = {
     children: require('prop-types').node
 };
 
-root.render(React.createElement(RootErrorBoundary, null, React.createElement(App)));
+root.render(
+    React.createElement(I18nextProvider, { i18n },
+        React.createElement(RootErrorBoundary, null, React.createElement(App))
+    )
+);
 
 // Unregister any existing service workers and clear caches to ensure fresh content
 if ('serviceWorker' in navigator) {
