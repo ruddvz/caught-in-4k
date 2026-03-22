@@ -3,7 +3,6 @@
 import React, { memo } from 'react';
 import classnames from 'classnames';
 import { HorizontalNavBar, VerticalNavBar } from '../NavBar';
-import AppLogo from '../AppLogo/AppLogo';
 import styles from './MainNavBars.less';
 
 const TABS = [
@@ -24,19 +23,27 @@ type Props = {
 };
 
 const MainNavBars = memo(({ className, route, query, children }: Props) => {
+    const isSearch = route === 'search';
     return (
         <div className={classnames(className, styles['main-nav-bars-container'])}>
-            <div className={styles['logo-container']}>
-                <AppLogo variant="compact" className={styles['logo']} />
-            </div>
-            {/* HorizontalNavBar hidden for clean sidebar-only layout */}
+            {isSearch && (
+                // @ts-ignore
+                <HorizontalNavBar
+                    className={styles['horizontal-nav-bar']}
+                    route={route}
+                    query={query}
+                    searchBar={true}
+                    navMenu={false}
+                    fullscreenButton={false}
+                />
+            )}
             {/* @ts-ignore */}
             <VerticalNavBar
                 className={styles['vertical-nav-bar']}
                 selected={route}
                 tabs={TABS}
             />
-            <div className={styles['nav-content-container']}>{children}</div>
+            <div className={classnames(styles['nav-content-container'], isSearch && styles['nav-content-with-search'])}>{children}</div>
         </div>
     );
 });

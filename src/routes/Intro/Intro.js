@@ -353,12 +353,6 @@ const Intro = ({ queryParams }) => {
                                     checked={state.privacyPolicyAccepted}
                                     onChange={togglePrivacyPolicyAccepted}
                                 />
-                                <Checkbox
-                                    ref={marketingRef}
-                                    label={t('MARKETING_AGREE')}
-                                    checked={state.marketingAccepted}
-                                    onChange={toggleMarketingAccepted}
-                                />
                             </React.Fragment>
                             :
                             <div className={styles['forgot-password-link-container']}>

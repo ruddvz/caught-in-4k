@@ -15,21 +15,8 @@
         position: absolute;
         top: 0;
         right: 0;
-        left: 0;
+        left: var(--vertical-nav-bar-size);
         z-index: 1;
-        display: none; // Sidebar-only consolidated layout
-    }
-
-    .logo-container {
-        position: fixed;
-        top: 1.5rem;
-        left: 0.5rem;
-        z-index: 1001;
-
-        .logo {
-            width: 3rem;
-            height: auto;
-        }
     }
 
     .vertical-nav-bar {
@@ -51,17 +38,21 @@
         z-index: 0;
         overflow: hidden;
     }
+
+    .nav-content-with-search {
+        top: var(--horizontal-nav-bar-size);
+    }
 }
 
 @media only screen and (max-width: @minimum) {
     .main-nav-bars-container {
+        .horizontal-nav-bar {
+            left: 0;
+        }
+
         .nav-content-container {
             left: 0;
             bottom: calc(var(--vertical-nav-bar-size) + env(safe-area-inset-bottom, 0rem));
-        }
-
-        .logo-container {
-            display: none;
         }
 
         .vertical-nav-bar {
