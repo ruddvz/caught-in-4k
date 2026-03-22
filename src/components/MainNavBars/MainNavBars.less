@@ -20,12 +20,26 @@
         display: none; // Sidebar-only consolidated layout
     }
 
+    .logo-container {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 1001;
+
+        .logo {
+            width: 4rem;
+            height: auto;
+        }
+    }
+
     .vertical-nav-bar {
         position: fixed;
-        top: 1.5rem;
-        bottom: 1.5rem;
+        top: 50%;
         left: 1.5rem;
+        transform: translateY(-50%);
         z-index: 1000;
+        height: auto;
+        max-height: 80vh;
     }
 
     .nav-content-container {

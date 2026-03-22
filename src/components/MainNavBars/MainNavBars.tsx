@@ -2,7 +2,8 @@
 
 import React, { memo } from 'react';
 import classnames from 'classnames';
-import { VerticalNavBar, HorizontalNavBar } from 'stremio/components/NavBar';
+import AppLogo from 'stremio/components/AppLogo/AppLogo';
+import VerticalNavBar from '../NavBar/VerticalNavBar/VerticalNavBar';
 import styles from './MainNavBars.less';
 
 const TABS = [
@@ -25,7 +26,11 @@ type Props = {
 const MainNavBars = memo(({ className, route, query, children }: Props) => {
     return (
         <div className={classnames(className, styles['main-nav-bars-container'])}>
+            <div className={styles['logo-container']}>
+                <AppLogo variant="compact" className={styles['logo']} />
+            </div>
             {/* HorizontalNavBar hidden for clean sidebar-only layout */}
+            {/* @ts-ignore */}
             <VerticalNavBar
                 className={styles['vertical-nav-bar']}
                 selected={route}
