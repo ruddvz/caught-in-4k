@@ -6,7 +6,7 @@ const debounce = require('lodash.debounce');
 const useTranslate = require('stremio/common/useTranslate');
 const { useStreamingServer, useNotifications, withCoreSuspender, getVisibleChildrenRange, useProfile } = require('stremio/common');
 const { ContinueWatchingItem, EventModal, MainNavBars, MetaItem, MetaRow } = require('stremio/components');
-const BoardStatsSection = require('stremio/components/BoardStatsSection/BoardStatsSection');
+
 const useCanonTakesQueue = require('stremio/services/CanonTakesQueue/CanonTakesQueue');
 const useBoard = require('./useBoard');
 const useContinueWatchingPreview = require('./useContinueWatchingPreview');
@@ -80,7 +80,7 @@ const Board = () => {
                             :
                             null
                     }
-                    <BoardStatsSection metaRows={board.catalogs.filter((c) => c.content?.type === 'Ready')} />
+
                     {board.catalogs.map((catalog, index) => {
                         switch (catalog.content?.type) {
                             case 'Ready': {

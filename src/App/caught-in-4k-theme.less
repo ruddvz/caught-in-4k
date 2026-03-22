@@ -87,27 +87,21 @@
     }
 }
 
+// Body-level styles when .caught-in-4k is applied to <body>
 .caught-in-4k {
     font-family: 'PlusJakartaSans', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+    position: relative;
+    z-index: 1;
 
-    body {
-        position: relative;
-        z-index: 1;
-
-        &::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            background: black;
-            // Add your video background here
-            // content: '';
-            // background: url('path/to/your/video.mp4') no-repeat center center fixed;
-            // background-size: cover;
-        }
+    &::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        background: black;
     }
 
     .button-container {

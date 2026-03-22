@@ -33,7 +33,7 @@ threadLoader.warmup(
 );
 
 module.exports = (env, argv) => ({
-    mode: 'development',
+    mode: argv.mode,
     devtool: argv.mode === 'production' ? 'source-map' : 'eval-source-map',
     entry: {
         main: './src/index.js',

@@ -1,17 +1,60 @@
 const React = require('react');
+const { useState, useEffect } = React;
 const styles = require('./styles.less');
 
-const CanonTakeBox = () => {
-    // Design-only placeholder copy; no external data or translations required.
-    const canonTake = 'An absolute cinematic masterpiece. The vibes are immaculate and the plot actually makes sense — certified fresh, fr fr.';
+const CACHE_PREFIX = 'c4k_canon_take_';
+
+const getCached = (title, year) => {
+    try {
+        const key = `${CACHE_PREFIX}${title}_${year}`;
+        const cached = localStorage.getItem(key);
+        return cached ? JSON.parse(cached) : null;
+    } catch (_e) {
+        return null;
+    }
+};
+
+const CanonTakeBox = ({ title, year }) => {
+    const [canonTake, setCanonTake] = useState(null);
+
+    useEffect(() => {
+        if (!title) return;
+        const cached = getCached(title, year);
+        if (cached && cached.canonTake) {
+            setCanonTake(cached.canonTake);
+        }
+    }, [title, year]);
+
+    // Skeleton/loading state when no cached take yet
+    const renderSkeleton = () => (
+        <div className={styles.skeleton}>
+            <div className={styles.skeletonLine} style={{ width: '90%' }} />
+            <div className={styles.skeletonLine} style={{ width: '70%' }} />
+            <div className={styles.skeletonLine} style={{ width: '50%' }} />
+        </div>
+    );
 
     return (
         <div className={styles.canonTakeBox}>
             <div className={styles.header}>
-                <span className={styles.badge}>✦ canon take</span>
-                <span className={styles.subtle}>Gen Z summary preview</span>
+                <span className={styles.badge}>{'✦ canon take'}</span>
+                {title && (
+                    <span className={styles.subtle}>
+                        {title} {year ? `(${year})` : ''}
+                    </span>
+                )}
             </div>
-            <div className={styles.content}>{canonTake}</div>
+            <div className={styles.content}>
+                {canonTake ? (
+                    <React.Fragment>
+                        <span className={styles.quoteMark}>{'"'}</span>
+                        {canonTake}
+                        <span className={styles.quoteMark}>{'"'}</span>
+                    </React.Fragment>
+                ) : (
+                    renderSkeleton()
+                )}
+            </div>
         </div>
     );
 };

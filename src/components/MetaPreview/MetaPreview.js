@@ -206,15 +206,9 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                         null
                 }
                 {
-                    !compact ?
-                        <CanonTakeBox
-                            title={name}
-                            year={released instanceof Date && !isNaN(released.getTime()) ? released.getFullYear() : releaseInfo}
-                            genres={typeof description === 'string' ? description.substring(0, 100) : ''}
-                            voteAverage={voteAverage}
-                        />
-                        :
-                        null
+                    !compact ? (
+                        <CanonTakeWithLogic title={name} released={released} releaseInfo={releaseInfo} description={description} voteAverage={voteAverage} />
+                    ) : null
                 }
             </div>
             <div className={styles['action-buttons-container']}>
@@ -323,6 +317,20 @@ MetaPreview.propTypes = {
     toggleInLibrary: PropTypes.func,
     ratingInfo: PropTypes.object,
     voteAverage: PropTypes.number,
+};
+
+const CanonTakeWithLogic = ({ title, released, releaseInfo, description, voteAverage }) => {
+    const useCanonTakes = (require('stremio/common/useCanonTakes').default || require('stremio/common/useCanonTakes'));
+    const { fetchCanonTake } = useCanonTakes();
+    const [take, setTake] = React.useState(null);
+    const year = released instanceof Date && !isNaN(released.getTime()) ? released.getFullYear() : releaseInfo;
+
+    React.useEffect(() => {
+        if (!title) return;
+        fetchCanonTake(title, year, description, voteAverage).then(setTake);
+    }, [title, year]);
+
+    return <CanonTakeBox title={title} year={year} takeOverride={take} />;
 };
 
 module.exports = MetaPreview;
