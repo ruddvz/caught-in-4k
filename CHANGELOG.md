@@ -4,6 +4,26 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## Latest (DESIGN.md Overhaul)
+
+- **docs: Complete DESIGN.md rewrite** — Transformed from a flat list of ideas into a full design system document with 14 sections:
+  - Table of contents with navigation links
+  - Design identity with 5 core design principles
+  - Complete design tokens (colors, gradients, shadows, spacing/radius) with ASCII color palette diagram
+  - Typography system with role-based sizing table
+  - Depth & layering model with Z-depth stack diagram and glass effect tiers
+  - Component catalog with ASCII wireframes (nav pill, hero section, content cards, buttons, toasts, context menus, row headers, scroll rows)
+  - Page architecture diagrams for Board, MetaDetails, Settings, and Player
+  - Responsive system with breakpoints, progressive item disclosure, and mobile adaptations
+  - Motion & animation language (core animations table, easing principles, animation gaps audit)
+  - Tracked 10 implemented improvements in a summary table
+  - Documented 9 pending ideas from Round 1 backlog
+  - **Added 20 new design suggestions (Round 2: 7a–7t)** based on full UI audit
+  - Priority roadmap with status legend, effort estimates, and sorted backlog (29 total items)
+  - Complete file map covering all styling files across routes and components
+
+---
+
 ## Latest
 
 - **feat: Scroll-linked hero fade (6a)** — Hero section fades out as user scrolls past it, Netflix-style transition
