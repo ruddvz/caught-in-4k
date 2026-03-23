@@ -13,8 +13,6 @@ import styles from './styles.less';
 import NavMenu from '../HorizontalNavBar/NavMenu';
 import useFullscreen from '../../../common/useFullscreen';
 
-const profileSrc = require('/assets/images/profile_placeholder.png');
-const zoomSrc = require('/assets/images/zoom_icon.png');
 
 type Props = {
     className?: string;
@@ -45,9 +43,9 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
     return (
         <nav className={classnames(className, styles['top-nav-bar-container'])}>
             <div className={styles['left-section']}>
-                <div className={styles['logo-wrapper']}>
+                <a href="#/" className={styles['logo-wrapper']}>
                     <AppLogo variant="compact" className={styles['logo']} />
-                </div>
+                </a>
             </div>
             
             <div className={styles['center-section']}>
@@ -86,12 +84,12 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                     onClick={onFullscreenClick}
                     title={t(fullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN')}
                 >
-                    <img src={zoomSrc} alt="Zoom" className={styles['zoom-img']} />
+                    <Icon name={fullscreen ? 'minimize' : 'maximize'} className={styles['icon']} />
                 </Button>
                 
                 <NavMenu renderLabel={({ onClick }: { onClick: () => void }) => (
-                    <Button className={styles['profile-btn']} onClick={onClick}>
-                        <img src={profileSrc} alt="Profile" className={styles['profile-img']} />
+                    <Button className={styles['action-btn']} onClick={onClick}>
+                        <Icon name="person-outline" className={styles['icon']} />
                     </Button>
                 )} />
             </div>

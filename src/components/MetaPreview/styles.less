@@ -190,10 +190,14 @@
                     font-weight: 700;
                     cursor: pointer;
                     transition: all 0.25s ease;
+                    outline: none; // ensure no odd default outlines cut off glows
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); // Default shadow
 
                     &:hover {
                         background: rgba(255, 255, 255, 0.22);
                         transform: translateY(-2px);
+                        box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15); // proper outer glow on hover, no cutoffs
+                        border-color: rgba(255, 255, 255, 0.2);
                     }
 
                     &:global(.wide) {
@@ -204,9 +208,11 @@
                         background: var(--accent-primary);
                         color: #000;
                         border-color: transparent;
+                        box-shadow: 0 4px 16px rgba(var(--accent-primary-rgb, 255, 255, 255), 0.3); // colored shadow
 
                         &:hover {
-                            filter: brightness(0.92);
+                            filter: brightness(1.1);
+                            box-shadow: 0 8px 32px rgba(var(--accent-primary-rgb, 255, 255, 255), 0.5); // colored glow
                         }
                     }
                 }
@@ -242,6 +248,7 @@
     // === META LINKS WIDGET ===
     .meta-links-widget {
         padding: 1.5rem 3rem;
+        width: 100%; // Ensure it uses the full width of the glass to prevent cutting off text
     }
 
     // === SATISFACTION / RATINGS WIDGET ===
