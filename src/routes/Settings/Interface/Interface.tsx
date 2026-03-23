@@ -1,10 +1,8 @@
 import React, { forwardRef } from 'react';
 import { useServices } from 'stremio/services';
-import { Button, Toggle } from 'stremio/components';
-import { usePlatform } from 'stremio/common';
+import { Toggle } from 'stremio/components';
 import { Section, Option } from '../components';
 import useInterfaceOptions from './useInterfaceOptions';
-import styles from './Interface.less';
 
 type Props = {
     profile: Profile,
@@ -12,7 +10,6 @@ type Props = {
 
 const Interface = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const { shell } = useServices();
-    const platform = usePlatform();
 
     const {
         quitOnCloseToggle,
@@ -46,15 +43,6 @@ const Interface = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) =>
                     {...hideSpoilersToggle}
                 />
             </Option>
-            {
-                !platform.isMobile &&
-                    <div className={styles['shortcuts-link']}>
-                        <Button className={styles['shortcuts-button']} href={'#/settings/shortcuts'}>
-                            <span className={styles['shortcuts-label']}>⌨ Keyboard Shortcuts</span>
-                            <span className={styles['shortcuts-arrow']}>→</span>
-                        </Button>
-                    </div>
-            }
         </Section>
     );
 });

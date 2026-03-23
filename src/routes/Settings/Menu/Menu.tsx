@@ -12,6 +12,7 @@ type Props = {
 const NAV_ITEMS = [
     { id: SECTIONS.GENERAL, labelKey: 'SETTINGS_NAV_GENERAL' },
     { id: SECTIONS.PLAYER, labelKey: 'SETTINGS_NAV_PLAYER' },
+    { id: SECTIONS.SHORTCUTS, labelKey: 'SETTINGS_NAV_SHORTCUTS' },
 ];
 
 const Menu = ({ selected, onSelect }: Props) => {
