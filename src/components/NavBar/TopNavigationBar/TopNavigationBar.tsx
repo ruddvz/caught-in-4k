@@ -13,6 +13,9 @@ import styles from './styles.less';
 import NavMenu from '../HorizontalNavBar/NavMenu';
 import useFullscreen from '../../../common/useFullscreen';
 
+const profileSrc = require('/assets/images/profile_placeholder.png');
+const zoomSrc = require('/assets/images/zoom_icon.png');
+
 type Props = {
     className?: string;
     route?: string;
@@ -58,12 +61,12 @@ const TopNavigationBar = memo(({ className, route, tabs }: Props) => {
                     onClick={onFullscreenClick}
                     title={t(fullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN')}
                 >
-                    <Icon name={fullscreen ? 'contract' : 'expand'} className={styles['icon']} />
+                    <img src={zoomSrc} alt="Zoom" className={styles['zoom-img']} />
                 </Button>
                 
                 <NavMenu renderLabel={({ onClick }: { onClick: () => void }) => (
                     <Button className={styles['profile-btn']} onClick={onClick}>
-                        <Icon name="person-circle-outline" className={styles['icon']} />
+                        <img src={profileSrc} alt="Profile" className={styles['profile-img']} />
                     </Button>
                 )} />
             </div>
