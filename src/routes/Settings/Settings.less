@@ -3,110 +3,45 @@
 .settings-container {
     height: 100%;
     width: 100%;
-    background-color: transparent;
+    background-color: #0a0a0a;
 
     .settings-content {
         height: 100%;
         max-width: 1400px;
         margin: 0 auto;
         display: flex;
-        flex-direction: row;
-        gap: 2rem;
+        flex-direction: column;
+        gap: 0;
         background: transparent;
 
         .sections-container {
             flex: 1;
-            padding: 2.5rem 4rem 8rem 0;
+            padding: 1.5rem 2rem 4rem;
             overflow-y: auto;
+            overflow-x: hidden;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            align-items: start;
+            align-content: start;
             scrollbar-width: thin;
             scrollbar-color: rgba(255, 255, 255, 0.05) transparent;
             scroll-behavior: smooth;
-            padding-bottom: 20rem; // Add extra padding for bottom scrolling
 
             &::-webkit-scrollbar { width: 4px; }
             &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 2px; }
-
-            // Individual section styling
-            :global(.section) {
-                margin-bottom: 6rem;
-                animation: sectionFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-                
-                .section-header {
-                    margin-bottom: 3rem;
-                    
-                    .section-title {
-                        font-size: 2.5rem;
-                        font-weight: 800;
-                        color: var(--text-primary);
-                        letter-spacing: -0.04em;
-                    }
-
-                    .section-description {
-                        font-size: 1.1rem;
-                        color: var(--text-secondary);
-                        opacity: 0.5;
-                        margin-top: 0.75rem;
-                        max-width: 40rem;
-                        line-height: 1.5;
-                    }
-                }
-
-                // Grid based settings widget
-                .section-content {
-                    width: 100%;
-                    max-width: 900px;
-                    display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-                    gap: 1.5rem;
-
-                    :global(.setting-item) {
-                        background: rgba(255, 255, 255, 0.02);
-                        border: 1px solid rgba(255, 255, 255, 0.05);
-                        border-radius: 2rem;
-                        padding: 1.5rem 2rem;
-                        display: flex;
-                        flex-direction: column;
-                        gap: 1.25rem;
-                        transition: all 0.3s ease;
-
-                        &:hover {
-                            background: rgba(255, 255, 255, 0.04);
-                            border-color: rgba(255, 255, 255, 0.1);
-                            transform: translateY(-2px);
-                        }
-
-                        .setting-label {
-                            display: flex;
-                            flex-direction: column;
-                            gap: 0.25rem;
-                            
-                            .title {
-                                font-size: 1.1rem;
-                                font-weight: 700;
-                                color: var(--text-primary);
-                            }
-
-                            .description {
-                                font-size: 0.9rem;
-                                color: var(--text-secondary);
-                                opacity: 0.5;
-                                line-height: 1.4;
-                            }
-                        }
-
-                        .setting-input {
-                            align-self: flex-start;
-                        }
-                    }
-                }
-            }
         }
     }
 }
 
-@keyframes sectionFadeIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+@media only screen and (min-width: 1200px) {
+    .settings-container {
+        .settings-content {
+            .sections-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    }
 }
 
 @media only screen and (max-width: @small) {
@@ -116,28 +51,11 @@
             gap: 0;
 
             .sections-container {
-                padding: 2rem 1.5rem 12rem;
+                padding: 1rem 1rem 12rem;
+                grid-template-columns: 1fr;
+                gap: 1rem;
                 width: 100%;
                 box-sizing: border-box;
-
-                :global(.section) {
-                    margin-bottom: 4rem;
-
-                    .section-header {
-                        margin-bottom: 2rem;
-                        .section-title { font-size: 1.8rem; }
-                        .section-description { font-size: 1rem; }
-                    }
-
-                    .section-content {
-                        grid-template-columns: 1fr;
-                        
-                        :global(.setting-item) {
-                            padding: 1.25rem 1.5rem;
-                            border-radius: 1.5rem;
-                        }
-                    }
-                }
             }
         }
     }

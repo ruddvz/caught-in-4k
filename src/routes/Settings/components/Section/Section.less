@@ -2,52 +2,46 @@
 
 .section {
     position: relative;
-    max-width: 60rem;
     display: flex;
     flex-direction: column;
-    padding: 2.5rem 3rem;
-    margin: 4rem 0;
+    padding: 1.75rem 2rem;
     
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 3rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.2);
-    transition: all 0.4s ease;
+    background: #1a1a1a;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    overflow: hidden;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.035);
         border-color: rgba(255, 255, 255, 0.1);
-        transform: translateY(-4px);
     }
     
     .label {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.4em;
-        margin-bottom: 2.5rem;
-        color: var(--text-secondary);
-        opacity: 0.3;
-        padding-bottom: 1.5rem;
+        letter-spacing: 0.3em;
+        margin-bottom: 1.5rem;
+        color: #00e676;
+        opacity: 0.8;
+        padding-bottom: 1rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        text-align: center;
     }
 }
 
 @media only screen and (max-width: @small) {
     .section {
-        padding: 2rem 1.5rem;
-        margin: 2rem 0;
-        border-radius: 2rem;
+        padding: 1.5rem 1.25rem;
+        border-radius: 1.25rem;
         backdrop-filter: none;
-        background: rgba(255, 255, 255, 0.03);
 
         .label {
-            font-size: 0.75rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            letter-spacing: 0.3em;
+            font-size: 0.7rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            letter-spacing: 0.25em;
         }
     }
 }

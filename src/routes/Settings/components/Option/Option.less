@@ -7,7 +7,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 1.5rem 0;
+    padding: 1rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     transition: all 0.3s ease;
 
@@ -19,13 +19,13 @@
         flex: 1;
         display: flex;
         align-items: center;
-        gap: 1.5rem;
+        gap: 1rem;
         min-width: 0;
 
         .icon {
             flex: none;
-            width: 1.6rem;
-            height: 1.6rem;
+            width: 1.4rem;
+            height: 1.4rem;
             opacity: 0.25;
             color: var(--text-primary);
             transition: all 0.3s ease;
@@ -33,7 +33,7 @@
 
         .label {
             flex: 1;
-            font-size: 1.15rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.01em;
@@ -53,48 +53,53 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        min-width: 15rem;
-        margin-left: 2rem;
+        min-width: 12rem;
+        margin-left: 1.5rem;
 
-        // Custom styling for elements inside content
         :global(.multiselect) {
             background: rgba(255, 255, 255, 0.04);
             border-radius: 999px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             font-weight: 700;
-            height: 3.25rem;
-            padding: 0 1.25rem;
+            height: 2.75rem;
+            padding: 0 1rem;
             color: var(--text-primary);
             transition: all 0.25s ease;
+            font-size: 0.9rem;
 
             &:hover {
                 background: rgba(255, 255, 255, 0.08);
-                border-color: rgba(255, 255, 255, 0.2);
+                border-color: #00e676;
+            }
+
+            &:focus-within {
+                border-color: #00e676;
+                box-shadow: 0 0 0 2px rgba(0, 230, 118, 0.2);
             }
         }
 
         :global(.button) {
-            background: #fff;
+            background: #00e676;
             color: #000;
             border-radius: 999px;
-            padding: 0.85rem 2rem;
+            padding: 0.75rem 1.5rem;
             height: auto;
             font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             border: none;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 230, 118, 0.2);
 
             &:hover {
-                transform: translateY(-4px) scale(1.02);
-                box-shadow: 0 16px 32px rgba(255, 255, 255, 0.12);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(0, 230, 118, 0.3);
+                filter: brightness(1.1);
             }
 
             &:active {
                 transform: scale(0.96);
-                box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
             }
             
             &:disabled {
@@ -106,8 +111,8 @@
 
         :global(.color-input) {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 1.25rem;
-            padding: 0.5rem;
+            border-radius: 1rem;
+            padding: 0.4rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
     }
@@ -117,18 +122,17 @@
     .option {
         flex-direction: column;
         align-items: stretch;
-        gap: 1.25rem;
-        padding: 1.5rem 0.5rem;
-        border-radius: 1.5rem;
+        gap: 1rem;
+        padding: 1rem 0.25rem;
 
         .heading {
             .icon {
-                width: 1.4rem;
-                height: 1.4rem;
+                width: 1.2rem;
+                height: 1.2rem;
                 opacity: 0.4;
             }
             .label {
-                font-size: 1.05rem;
+                font-size: 0.95rem;
                 white-space: normal;
                 line-height: 1.4;
             }
