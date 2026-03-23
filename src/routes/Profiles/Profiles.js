@@ -6,6 +6,8 @@ const { Button } = require('stremio/components');
 const { withCoreSuspender } = require('stremio/common');
 const styles = require('./styles.less');
 
+const APP_LOGO = require('/assets/images/logo1.png');
+
 const AVAILABLE_AVATARS = [
     require('../../../assets/images/avatars/abstract-avatar-1-circle-x3ecvpg9e9e3jtdw7ny2xs.png'),
     require('../../../assets/images/avatars/abstract-avatar-2-circle-rfv7tepq8onk3cwh4hta4d.png'),
@@ -48,18 +50,19 @@ const Profiles = () => {
 
     // Keyboard navigation in select view
     React.useEffect(() => {
-        if (view !== 'select' || profiles.length === 0) return;
+        if (view !== 'select') return;
         const handleKey = (e) => {
             if (e.key === 'ArrowLeft') {
                 setFocusedIndex(i => Math.max(0, i - 1));
             } else if (e.key === 'ArrowRight') {
-                setFocusedIndex(i => Math.min(profiles.length - 1, i + 1));
-            } else if (e.key === 'Enter' && profiles[focusedIndex]) {
-                setIsExiting(true);
-                setTimeout(() => {
-                    localStorage.setItem('c4k_current_profile', JSON.stringify(profiles[focusedIndex]));
-                    window.location.hash = '#/';
-                }, 350);
+                const max = profiles.length < 4 ? profiles.length : profiles.length - 1;
+                setFocusedIndex(i => Math.min(max, i + 1));
+            } else if (e.key === 'Enter') {
+                if (focusedIndex < profiles.length) {
+                    doSelectProfile(profiles[focusedIndex]);
+                } else {
+                    setView('add');
+                }
             }
         };
         window.addEventListener('keydown', handleKey);
@@ -94,166 +97,146 @@ const Profiles = () => {
         saveProfiles(updated);
     };
 
-    const onSelectProfile = (profile) => {
+    const doSelectProfile = (profile) => {
         setIsExiting(true);
         setTimeout(() => {
             localStorage.setItem('c4k_current_profile', JSON.stringify(profile));
             window.location.hash = '#/';
-        }, 350);
+        }, 400);
     };
 
-    const currentAvatar = React.useMemo(() => {
-        if (view === 'add') return AVAILABLE_AVATARS[newAvatarIndex];
-        const p = profiles[focusedIndex];
-        return p ? (p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar) : null;
-    }, [view, profiles, focusedIndex, newAvatarIndex]);
-
-    const focusedProfile = profiles[focusedIndex];
+    const getAvatarUrl = (p) =>
+        p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar;
 
     return (
-        <div className={classnames(styles['profiles-page-container'], { [styles['exiting']]: isExiting })}>
-            {/* Dynamic blurred avatar background */}
-            <div className={styles['dynamic-bg']} style={{ backgroundImage: currentAvatar ? `url(${currentAvatar})` : 'none' }} />
-            <div className={styles['bg-overlay']} />
+        <div className={classnames(styles['profiles-page'], { [styles['exiting']]: isExiting })}>
 
-            <div className={styles['profiles-content']}>
-
-                {view === 'select' && (
-                    <div className={styles['select-view']}>
-                        <h1 className={styles['welcome-text']}>Who's watching?</h1>
-                        <p className={styles['welcome-sub']}>Pick your profile to continue</p>
-
-                        <div className={styles['main-profile-display']}>
-                            {profiles.length > 0 ? (
-                                <>
-                                    <div
-                                        className={styles['focus-avatar']}
-                                        style={{ backgroundImage: `url(${currentAvatar})` }}
-                                        onClick={() => onSelectProfile(focusedProfile)}
-                                        tabIndex={0}
-                                        onKeyDown={(e) => e.key === 'Enter' && onSelectProfile(focusedProfile)}
-                                    >
-                                        <div className={styles['play-hint']}>
-                                            <span className={styles['play-icon']}>▶</span>
-                                            <span>Watch Now</span>
-                                        </div>
-                                    </div>
-                                    <h2 className={styles['focus-name']}>{focusedProfile ? focusedProfile.name : ''}</h2>
-                                </>
-                            ) : (
-                                <>
-                                    <div className={styles['empty-avatar']} onClick={() => setView('add')}>
-                                        <span className={styles['empty-plus']}>+</span>
-                                        <span className={styles['empty-label']}>Create Profile</span>
-                                    </div>
-                                    <h2 className={styles['focus-name']}>Get started</h2>
-                                    <p className={styles['empty-hint']}>Add a profile to begin your personalized journey</p>
-                                </>
-                            )}
-                        </div>
-
-                        <div className={styles['carousel-wrapper']}>
-                            <div className={styles['profile-carousel']}>
-                                {profiles.map((p, i) => (
-                                    <div
-                                        key={p.id}
-                                        className={classnames(styles['mini-card'], { [styles['active']]: i === focusedIndex })}
-                                        onMouseEnter={() => setFocusedIndex(i)}
-                                        onClick={() => onSelectProfile(p)}
-                                    >
-                                        <div
-                                            className={styles['mini-avatar']}
-                                            style={{ backgroundImage: `url(${p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar})` }}
-                                        />
-                                        <span className={styles['mini-name']}>{p.name}</span>
-                                        <button
-                                            className={styles['delete-btn']}
-                                            onClick={(e) => handleDeleteProfile(e, p.id)}
-                                            title={`Remove ${p.name}`}
-                                        >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ))}
-
-                                {profiles.length < 4 && (
-                                    <div className={styles['mini-card']} onClick={() => setView('add')}>
-                                        <div className={classnames(styles['mini-avatar'], styles['add-node'])}>
-                                            <span>+</span>
-                                        </div>
-                                        <span className={styles['mini-name']}>Add Profile</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className={styles['bottom-controls']}>
-                            <Button className={styles['glass-btn']} href="#/settings">Settings</Button>
-                        </div>
+            {view === 'select' && (
+                <div className={styles['select-view']}>
+                    {/* Logo at top — where "Google TV" would be */}
+                    <div className={styles['brand-header']}>
+                        <img src={APP_LOGO} className={styles['brand-logo']} alt="Caught in 4K" />
                     </div>
-                )}
 
-                {view === 'add' && (
-                    <div className={styles['add-view']}>
-                        <div className={styles['add-glass-card']}>
-                            <h1 className={styles['add-title']}>Create Profile</h1>
-                            <p className={styles['add-subtitle']}>Choose an avatar and pick a name</p>
+                    <h1 className={styles['heading']}>Who's watching?</h1>
 
-                            <div className={styles['avatar-display-large']}>
+                    {/* Single row of profile cards */}
+                    <div className={styles['profiles-row']}>
+                        {profiles.map((p, i) => (
+                            <div
+                                key={p.id}
+                                className={classnames(styles['profile-card'], { [styles['focused']]: i === focusedIndex })}
+                                onMouseEnter={() => setFocusedIndex(i)}
+                                onClick={() => doSelectProfile(p)}
+                            >
                                 <div
-                                    className={styles['current-pick-avatar']}
-                                    style={{ backgroundImage: `url(${AVAILABLE_AVATARS[newAvatarIndex]})` }}
+                                    className={styles['profile-avatar']}
+                                    style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
                                 />
+                                <span className={styles['profile-name']}>{p.name}</span>
+                                <button
+                                    className={styles['delete-btn']}
+                                    onClick={(e) => handleDeleteProfile(e, p.id)}
+                                    title={`Remove ${p.name}`}
+                                >
+                                    ✕
+                                </button>
                             </div>
+                        ))}
 
-                            <div className={styles['avatar-grid-picker']}>
-                                {AVAILABLE_AVATARS.map((url, i) => (
-                                    <div
-                                        key={i}
-                                        className={classnames(styles['picker-avatar'], { [styles['selected']]: i === newAvatarIndex })}
-                                        style={{ backgroundImage: `url(${url})` }}
-                                        onClick={() => setNewAvatarIndex(i)}
-                                    />
-                                ))}
+                        {profiles.length < 4 && (
+                            <div
+                                className={classnames(styles['profile-card'], styles['add-card'], {
+                                    [styles['focused']]: focusedIndex === profiles.length
+                                })}
+                                onMouseEnter={() => setFocusedIndex(profiles.length)}
+                                onClick={() => setView('add')}
+                            >
+                                <div className={styles['add-avatar']}>
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                </div>
+                                <span className={styles['profile-name']}>Add Profile</span>
                             </div>
+                        )}
+                    </div>
 
-                            <div className={styles['name-input-container']}>
-                                <input
-                                    className={styles['modern-input']}
-                                    placeholder="Enter a name..."
-                                    value={newName}
-                                    onChange={(e) => setNewName(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && newName.trim() && handleCreateProfile()}
-                                    maxLength={20}
-                                    autoFocus
+                    <div className={styles['bottom-bar']}>
+                        <Button className={styles['settings-btn']} href="#/settings">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '0.5rem' }}>
+                                <circle cx="12" cy="12" r="3" />
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            </svg>
+                            Settings
+                        </Button>
+                    </div>
+                </div>
+            )}
+
+            {view === 'add' && (
+                <div className={styles['add-view']}>
+                    <div className={styles['brand-header']}>
+                        <img src={APP_LOGO} className={styles['brand-logo']} alt="Caught in 4K" />
+                    </div>
+
+                    <h1 className={styles['heading']}>Create a profile</h1>
+                    <p className={styles['add-sub']}>Choose an avatar and give it a name</p>
+
+                    <div className={styles['add-card-body']}>
+                        <div className={styles['avatar-preview']}>
+                            <div
+                                className={styles['preview-circle']}
+                                style={{ backgroundImage: `url(${AVAILABLE_AVATARS[newAvatarIndex]})` }}
+                            />
+                        </div>
+
+                        <div className={styles['avatar-grid']}>
+                            {AVAILABLE_AVATARS.map((url, i) => (
+                                <div
+                                    key={i}
+                                    className={classnames(styles['grid-avatar'], { [styles['selected']]: i === newAvatarIndex })}
+                                    style={{ backgroundImage: `url(${url})` }}
+                                    onClick={() => setNewAvatarIndex(i)}
                                 />
-                            </div>
+                            ))}
+                        </div>
 
-                            <div className={styles['modal-actions']}>
-                                <Button
-                                    className={classnames(styles['modal-btn'], styles['primary-btn'])}
-                                    onClick={handleCreateProfile}
-                                    disabled={!newName.trim()}
-                                >
-                                    Start Watching
-                                </Button>
-                                <Button
-                                    className={classnames(styles['modal-btn'], styles['secondary-btn'])}
-                                    onClick={() => setView('select')}
-                                >
-                                    Cancel
-                                </Button>
-                            </div>
+                        <input
+                            className={styles['name-input']}
+                            placeholder="Enter a name..."
+                            value={newName}
+                            onChange={(e) => setNewName(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && newName.trim() && handleCreateProfile()}
+                            maxLength={20}
+                            autoFocus
+                        />
+
+                        <div className={styles['add-actions']}>
+                            <Button
+                                className={classnames(styles['action-btn'], styles['primary-btn'])}
+                                onClick={handleCreateProfile}
+                                disabled={!newName.trim()}
+                            >
+                                Create Profile
+                            </Button>
+                            <Button
+                                className={classnames(styles['action-btn'], styles['ghost-btn'])}
+                                onClick={() => { setNewName(''); setView('select'); }}
+                            >
+                                Cancel
+                            </Button>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 };
 
 const ProfilesFallback = () => (
-    <div className={styles['profiles-page-container']} />
+    <div className={styles['profiles-page']} />
 );
 
 module.exports = withCoreSuspender(Profiles, ProfilesFallback);
