@@ -119,48 +119,23 @@
 
 ## 7. Suggested Design Improvements
 
-These are prioritized improvements that would meaningfully elevate the UI:
+These are prioritized improvements that would meaningfully elevate the UI. (✅ = Completed)
 
-### 🔥 High Priority
+### 🚀 Completed Improvements
 
-**A. Load `Inter` from Google Fonts**
-Currently using system sans-serif. Loading `Inter` would immediately make the entire app feel more premium. Add to `index.html`:
-```html
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-```
-Then set `font-family: 'Inter', sans-serif` globally.
+- [x] **A. Load `Inter` from Google Fonts**: Standardized typeface to Inter for a premium feel.
+- [x] **B. Skeleton Loading Screens**: Implemented high-fidelity skeleton rows on Board and Discover.
+- [x] **C. Hero Banner Carousel Polish**: Added 8s autoplay and smoother slide transitions.
+- [x] **D. Category Quick-Filter Bar**: Added genre pills to the Board page.
+- [x] **E. Poster Progress Indicators**: Added 6px rounded progress bars on "Continue Watching" items.
+- [x] **F. Glassmorphism Active Tab**: Refined Top Navigation pill with 24px backdrop-blur.
+- [x] **G. Smooth Page Transitions**: Global route fade-in/up animation applied.
+- [x] **H. MetaItem Rating Chip Redesign**: IMDb scores now render as floating yellow glass pills.
 
-**B. Skeleton Loading Screens (Board + Discover)**
-Right now the placeholder cards are static shimmer blocks. Replace them with a proper skeleton UI — hero skeleton, row-title skeleton bar, and post shimmer — so loading feels intentional rather than broken.
+### 🎨 Remaining Polish
 
-**C. Hero Banner Carousel Autoplay + Slide Indicator**
-The Hero section currently has dot indicators coded in CSS but no JS autoplay. Implementing a 6–8 second autoplay timer with a smooth crossfade transition between slides would make the board page feel alive.
-
-### ⚡ Medium Priority
-
-**D. Category Quick-Filter Bar (Board Page)**
-Add a horizontal scrolling row of genre pills below the Hero (Trending, Action, Sci-Fi, Drama, etc.) that pre-filter the Board carousels in real-time. This is a common pattern in Netflix/Apple TV+ and significantly improves content discovery.
-
-**E. Poster Cards: Add Subtle Progress Bar**
-For "Continue Watching" items specifically, a thin `4px` rounded progress bar at the bottom of the poster (e.g. `42% watched`) would be a premium touch making it instantly clear where the user left off.
-
-**F. Active Tab Background Blur on Desktop**
-The top nav active tab uses a plain white pill. Consider shifting to a semi-transparent frosted glass pill with a subtle glow (`box-shadow: 0 0 12px rgba(255,255,255,0.2)`) for a more expensive feel.
-
-**G. Smooth Page Transitions**
-Adding a `300ms` fade-in animation when switching routes (Board → Discover → Library) would eliminate the harsh instantaneous page swap and feel far more polished.
-
-### 🎨 Polish
-
-**H. MetaItem Rating Chip Redesign**
-The IMDb rating on poster cards currently renders as plain text. Replace with a proper chip: `⭐ 8.2` with `--accent-tertiary` (star yellow) color for the star and bold white number.
-
-**I. Settings & Addons Pages**
-These pages currently use whatever default styles existed. They should be wrapped in `--bg-surface-1` cards with `--radius-card` and consistent spacing to feel part of the dashboard, not bolted on.
-
-**J. Empty State Illustrations**
-The "No catalog selected" and error states in Discover show a small grey image. Replace with a styled illustration or icon + a descriptive headline + a CTA button ("Browse Addons") for a more helpful empty state.
+- [ ] **I. Settings & Addons Widget Wrap**: Ensure Settings/Addons use dash-card container styles.
+- [ ] **J. Empty State illustrations**: Replace generic images with high-quality dashboard assets.
 
 ---
 
