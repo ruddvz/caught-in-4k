@@ -164,7 +164,7 @@ const Discover = ({ urlParams, queryParams }) => {
                                                 type={metaItem.type}
                                                 name={metaItem.name}
                                                 poster={metaItem.poster}
-                                                posterShape={metaItem.posterShape}
+                                                posterShape={'poster'}
                                                 playname={selectedMetaItemIndex === index}
                                                 deepLinks={metaItem.deepLinks}
                                                 watched={metaItem.watched}

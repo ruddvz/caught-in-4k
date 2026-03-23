@@ -40,16 +40,36 @@
         }
     }
 
+    // === MAIN COMBINED GLASS CONTAINER ===
+    .main-details-glass {
+        background: var(--bg-surface-1);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-soft);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+
+        .hero-widget, 
+        .description-widget, 
+        .meta-links-widget {
+            background: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+        }
+
+        .description-widget, 
+        .meta-links-widget {
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+    }
+
     // === HERO WIDGET: Poster + title info ===
     .hero-widget {
         position: relative;
         width: 100%;
-        border-radius: var(--radius-card);
-        overflow: hidden;
         min-height: 22rem;
-        background: var(--bg-surface-1);
-        box-shadow: var(--shadow-soft);
-        border: 1px solid rgba(255, 255, 255, 0.06);
 
         .background-image-layer {
             position: absolute;
@@ -200,11 +220,7 @@
 
     // === DESCRIPTION WIDGET ===
     .description-widget {
-        background: var(--bg-surface-1);
-        border-radius: var(--radius-card);
-        padding: 1.75rem 2rem;
-        box-shadow: var(--shadow-soft);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 1.75rem 3rem;
 
         .label-container {
             font-size: 0.8rem;
@@ -225,11 +241,7 @@
 
     // === META LINKS WIDGET ===
     .meta-links-widget {
-        background: var(--bg-surface-1);
-        border-radius: var(--radius-card);
-        padding: 1.5rem 2rem;
-        box-shadow: var(--shadow-soft);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 1.5rem 3rem;
     }
 
     // === SATISFACTION / RATINGS WIDGET ===
