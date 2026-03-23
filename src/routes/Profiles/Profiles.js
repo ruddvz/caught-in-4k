@@ -129,6 +129,8 @@ const Profiles = () => {
         setIsExiting(true);
         setTimeout(() => {
             localStorage.setItem('c4k_current_profile', JSON.stringify(profile));
+            // Notify nav bar in the same tab to re-read the profile immediately
+            window.dispatchEvent(new Event('c4k-profile-changed'));
             window.location.hash = '#/';
         }, 400);
     };

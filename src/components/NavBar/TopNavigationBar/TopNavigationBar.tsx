@@ -39,7 +39,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
 
     const [currentProfile, setCurrentProfile] = React.useState<any>(null);
 
-    React.useEffect(() => {
+    const readProfile = React.useCallback(() => {
         const stored = localStorage.getItem('c4k_current_profile');
         if (stored) {
             try {
@@ -47,8 +47,22 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
             } catch (e) {
                 console.error(e);
             }
+        } else {
+            setCurrentProfile(null);
         }
     }, []);
+
+    React.useEffect(() => {
+        readProfile();
+        // storage fires when another tab changes localStorage
+        window.addEventListener('storage', readProfile);
+        // c4k-profile-changed fires within the same tab (dispatched by Profiles.js)
+        window.addEventListener('c4k-profile-changed', readProfile);
+        return () => {
+            window.removeEventListener('storage', readProfile);
+            window.removeEventListener('c4k-profile-changed', readProfile);
+        };
+    }, [readProfile]);
 
     const avatars = [
         require('../../../../assets/images/avatars/c4k-avatar-1.png'),
