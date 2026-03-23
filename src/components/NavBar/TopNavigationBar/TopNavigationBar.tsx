@@ -1,6 +1,4 @@
-// Copyright (C) 2017-2023 Smart code 203358507
-
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import classnames from 'classnames';
 // @ts-ignore
 import Icon from '@stremio/stremio-icons/react';
@@ -13,28 +11,21 @@ import { useTranslation } from 'react-i18next';
 import styles from './styles.less';
 // @ts-ignore
 import NavMenu from '../HorizontalNavBar/NavMenu';
-
-type Tab = {
-    id: string;
-    label: string;
-    href: string;
-};
+import useFullscreen from '../../../common/useFullscreen';
 
 type Props = {
     className?: string;
     route?: string;
-    tabs: any[];
+    tabs: { id: string; label: string; icon: string; href: string }[];
 };
 
 const TopNavigationBar = memo(({ className, route, tabs }: Props) => {
     const { t } = useTranslation();
-    
-    // Mapping tabs to what we want to show in the pill
-    const displayTabs: Tab[] = [
-        { id: 'discover', label: 'DISCOVER', href: '#/discover' },
-        { id: 'library', label: 'LIBRARY', href: '#/library' },
-        { id: 'addons', label: 'ADDONS', href: '#/addons' },
-    ];
+    const [fullscreen, , , toggleFullscreen] = useFullscreen() as [boolean, unknown, unknown, () => void];
+
+    const onFullscreenClick = useCallback(() => {
+        toggleFullscreen();
+    }, [toggleFullscreen]);
 
     return (
         <nav className={classnames(className, styles['top-nav-bar-container'])}>
@@ -44,27 +35,36 @@ const TopNavigationBar = memo(({ className, route, tabs }: Props) => {
             </div>
             
             <div className={styles['center-section']}>
-                <div className={styles['nav-pill']}>
-                    {displayTabs.map((tab) => (
-                        <Button
-                            key={tab.id}
-                            className={classnames(styles['nav-tab'], { [styles['active']]: route === tab.id })}
-                            href={tab.href}
-                        >
-                            {t(tab.label)}
-                        </Button>
-                    ))}
-                    <Button className={styles['search-icon-btn']} href="#/search">
-                        <Icon name="search" className={styles['icon']} />
-                    </Button>
+                <div className={styles['nav-pill-wrapper']}>
+                    <div className={styles['nav-pill']}>
+                        {tabs && tabs.map((tab) => (
+                            <Button
+                                key={tab.id}
+                                className={classnames(styles['nav-tab'], { [styles['active']]: route === tab.id })}
+                                href={tab.href}
+                            >
+                                <Icon name={tab.icon} className={styles['tab-icon']} />
+                                <span className={styles['tab-label']}>{t(tab.label)}</span>
+                            </Button>
+                        ))}
+                    </div>
                 </div>
             </div>
             
             <div className={styles['right-section']}>
+                <Button 
+                    className={classnames(styles['action-btn'], styles['fullscreen-btn'])} 
+                    onClick={onFullscreenClick}
+                    title={t(fullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN')}
+                >
+                    <Icon name={fullscreen ? 'contract' : 'expand'} className={styles['icon']} />
+                </Button>
+                
                 <Button className={styles['notif-btn']}>
                     <Icon name="notifications-outline" className={styles['icon']} />
                     <div className={styles['notif-dot']} />
                 </Button>
+                
                 <NavMenu renderLabel={({ onClick }: { onClick: () => void }) => (
                     <Button className={styles['profile-btn']} onClick={onClick}>
                         <Icon name="person-circle-outline" className={styles['icon']} />
@@ -78,3 +78,4 @@ const TopNavigationBar = memo(({ className, route, tabs }: Props) => {
 TopNavigationBar.displayName = 'TopNavigationBar';
 
 export default TopNavigationBar;
+

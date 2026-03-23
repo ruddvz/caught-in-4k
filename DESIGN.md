@@ -59,10 +59,11 @@
 
 ### 4a. Top Navigation (Replaces Sidebar)
 - **Position:** Top of the screen, full width minus padding.
-- **Layout:** Flex row, `justify-content: space-between`.
+- **Layout:** Flex row, `justify-content: space-between`, `align-items: center`.
 - **Left:** Brand Logo ("Flix.id" / "Caught in 4k").
-- **Center Pill:** `background: var(--bg-surface-1)`, `border-radius: 999px`, contains toggle tabs for "Movie | Series | Originals" and a Search icon.
-- **Right:** Notification bell (with red dot), User profile circle.
+- **Center Pill:** `background: var(--bg-surface-1)`, `border-radius: 999px`. It must contain the **6 original legacy navigation icons** (including Search and Add-ons) laid out horizontally as clickable tabs/icons.
+- **Right Cluster:** Contains the **Fullscreen (Zoom) toggle button** on the left and the **User profile** circle on the right.
+- **Responsiveness (CRITICAL):** Must be perfectly mobile-friendly (e.g., iPhone web app). If the screen is too narrow, the center pill and right cluster must adapt (scale down, reduce paddings, or use a mobile-friendly overflow/bottom menu) ensuring absolutely nothing gets cut off or clipped. Touch targets must remain accessible.
 
 ### 4b. Hero Banners
 - **Layout:** Horizontal scroll container instead of edge-to-edge absolute backgrounds.

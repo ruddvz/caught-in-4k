@@ -26,9 +26,12 @@ This app is moving away from edge-to-edge "cinematic" full-bleed layouts into a 
 ### Component Directives
 
 **1. Top Navigation & Filters (The Header)**
--   Replaces the vertical side-nav pill.
--   Renders at the top. Contains the Logo (left), a center pill with internal tabs (Movie | Series | Originals) + Search icon, and a user profile/notification bell cluster (right).
-
+- **Role:** Replaces the vertical side-nav pill.
+- **Position & Layout:** Top of the screen, containing three main elements:
+  - **Left:** The main Logo.
+  - **Center Pill:** Must contain the **original 6 core legacy icons** (Home/Board, Discover, Library, Add-ons, Search, etc.) in a horizontal row.
+  - **Right Cluster:** Must have a **Fullscreen (Zoom) button** on the left and the **User profile** circle on the right.
+- **Mobile Responsiveness (CRITICAL):** This header must NOT cut off or hide important features on small screens (like an iPhone Safari web app). It must perfectly adapt by shrinking paddings, scaling icons, using horizontal scroll if necessary, or collapsing into an elegant bottom-nav on strict mobile resolutions. Nothing must clip!
 **2. Hero Banners**
 -   Horizontal scrolling carousel of distinct wide cards (not edge-to-edge wallpapers).
 -   Titles, descriptions, and "Play" buttons sit *inside* the rounded banner card structure.
