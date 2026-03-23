@@ -232,52 +232,54 @@ const Profiles = () => {
                         <img src={APP_LOGO} className={styles['brand-logo']} alt="Caught in 4K" />
                     </div>
 
-                    <h1 className={styles['heading']}>Create a profile</h1>
-                    <p className={styles['add-sub']}>Choose an avatar and give it a name</p>
-
-                    <div className={styles['add-card-body']}>
-                        <div className={styles['avatar-preview']}>
+                    <div className={styles['add-split']}>
+                        {/* ── LEFT PANEL: big preview + name + buttons ── */}
+                        <div className={styles['add-left']}>
                             <div
                                 className={styles['preview-circle']}
                                 style={{ backgroundImage: `url(${AVAILABLE_AVATARS[newAvatarIndex]})` }}
                             />
+
+                            <input
+                                className={styles['name-input']}
+                                placeholder="Enter a name..."
+                                value={newName}
+                                onChange={(e) => setNewName(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && newName.trim() && handleCreateProfile()}
+                                maxLength={20}
+                                autoFocus
+                            />
+
+                            <div className={styles['add-actions']}>
+                                <Button
+                                    className={classnames(styles['action-btn'], styles['primary-btn'])}
+                                    onClick={handleCreateProfile}
+                                    disabled={!newName.trim()}
+                                >
+                                    Create Profile
+                                </Button>
+                                <Button
+                                    className={classnames(styles['action-btn'], styles['ghost-btn'])}
+                                    onClick={() => { setNewName(''); setView('select'); }}
+                                >
+                                    Cancel
+                                </Button>
+                            </div>
                         </div>
 
-                        <div className={styles['avatar-grid']}>
-                            {AVAILABLE_AVATARS.map((url, i) => (
-                                <div
-                                    key={i}
-                                    className={classnames(styles['grid-avatar'], { [styles['selected']]: i === newAvatarIndex })}
-                                    style={{ backgroundImage: `url(${url})` }}
-                                    onClick={() => setNewAvatarIndex(i)}
-                                />
-                            ))}
-                        </div>
-
-                        <input
-                            className={styles['name-input']}
-                            placeholder="Enter a name..."
-                            value={newName}
-                            onChange={(e) => setNewName(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && newName.trim() && handleCreateProfile()}
-                            maxLength={20}
-                            autoFocus
-                        />
-
-                        <div className={styles['add-actions']}>
-                            <Button
-                                className={classnames(styles['action-btn'], styles['primary-btn'])}
-                                onClick={handleCreateProfile}
-                                disabled={!newName.trim()}
-                            >
-                                Create Profile
-                            </Button>
-                            <Button
-                                className={classnames(styles['action-btn'], styles['ghost-btn'])}
-                                onClick={() => { setNewName(''); setView('select'); }}
-                            >
-                                Cancel
-                            </Button>
+                        {/* ── RIGHT PANEL: 5×4 avatar grid ── */}
+                        <div className={styles['add-right']}>
+                            <p className={styles['add-sub']}>Choose an avatar</p>
+                            <div className={styles['avatar-grid']}>
+                                {AVAILABLE_AVATARS.map((url, i) => (
+                                    <div
+                                        key={i}
+                                        className={classnames(styles['grid-avatar'], { [styles['selected']]: i === newAvatarIndex })}
+                                        style={{ backgroundImage: `url(${url})` }}
+                                        onClick={() => setNewAvatarIndex(i)}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
