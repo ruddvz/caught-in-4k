@@ -9,44 +9,52 @@ const styles = require('./styles.less');
 const APP_LOGO = require('/assets/images/logo1.png');
 
 const AVAILABLE_AVATARS = [
-    require('../../../assets/images/avatars/abstract-avatar-1-circle-x3ecvpg9e9e3jtdw7ny2xs.png'),
-    require('../../../assets/images/avatars/abstract-avatar-2-circle-rfv7tepq8onk3cwh4hta4d.png'),
-    require('../../../assets/images/avatars/abstract-avatar-3-circle-0yg49l6kn99g7py9q5r7gj.png'),
-    require('../../../assets/images/avatars/abstract-avatar-4-circle-nb6qd1yx1gas0k26aq3jrf.png'),
-    require('../../../assets/images/avatars/abstract-avatar-5-circle-u6e0p97idsipndksw2lcaq.png'),
-    require('../../../assets/images/avatars/abstract-avatar-6-circle-9xlbldchfaeckxehv4tjpk.png'),
-    require('../../../assets/images/avatars/abstract-avatar-7-circle-76pjyw5fm6gdvqjgyuort.png'),
-    require('../../../assets/images/avatars/abstract-avatar-8-circle-83i2c7b13kbvq9x6crxf.png'),
-    require('../../../assets/images/avatars/abstract-avatar-9-circle-bugfxnw039lgvn25kqzo4c.png'),
-    require('../../../assets/images/avatars/abstract-avatar-10-circle-lrsrjd2txm8mkkolw7902.png'),
-    require('../../../assets/images/avatars/abstract-avatar-11-circle-7apdsvuf90sqtke9ybhz3.png'),
-    require('../../../assets/images/avatars/abstract-avatar-12-circle-k7p9le9zztnhp0wfjxzcpl.png'),
-    require('../../../assets/images/avatars/abstract-avatar-13-circle-xwe9z0rcnakp9ehxtqpqp.png'),
-    require('../../../assets/images/avatars/abstract-avatar-14-circle-iflsbo952sl97g9h1c8uqb.png'),
-    require('../../../assets/images/avatars/abstract-avatar-15-circle-lges9w2kuam0yxwl9s51ixd.png'),
-    require('../../../assets/images/avatars/abstract-avatar-16-circle-dcwuud5dq7kw3o25bu1qz8.png')
+    require('../../../assets/images/avatars/c4k-avatar-1.png'),
+    require('../../../assets/images/avatars/c4k-avatar-2.png'),
+    require('../../../assets/images/avatars/c4k-avatar-3.png'),
+    require('../../../assets/images/avatars/c4k-avatar-4.png'),
+    require('../../../assets/images/avatars/c4k-avatar-5.png'),
+    require('../../../assets/images/avatars/c4k-avatar-6.png'),
+    require('../../../assets/images/avatars/c4k-avatar-7.png'),
+    require('../../../assets/images/avatars/c4k-avatar-8.png'),
+    require('../../../assets/images/avatars/c4k-avatar-9.png'),
+    require('../../../assets/images/avatars/c4k-avatar-10.png'),
+    require('../../../assets/images/avatars/c4k-avatar-11.png'),
+    require('../../../assets/images/avatars/c4k-avatar-12.png'),
+    require('../../../assets/images/avatars/c4k-avatar-13.png'),
+    require('../../../assets/images/avatars/c4k-avatar-14.png'),
+    require('../../../assets/images/avatars/c4k-avatar-15.png'),
+    require('../../../assets/images/avatars/c4k-avatar-16.png'),
+    require('../../../assets/images/avatars/c4k-avatar-17.png'),
+    require('../../../assets/images/avatars/c4k-avatar-18.png'),
+    require('../../../assets/images/avatars/c4k-avatar-19.png'),
+    require('../../../assets/images/avatars/c4k-avatar-20.png'),
 ];
 
 const LOCAL_STORAGE_KEY = 'c4k_profiles';
 
-// Dominant accent color per avatar index (matches avatar palette)
+// Dominant accent color per avatar — matches the circle background in each avatar image
 const AVATAR_ACCENTS = [
-    '#7dd3fc', // 1  — sky blue
-    '#4ade80', // 2  — green
-    '#fca5a5', // 3  — rose pink
-    '#f97316', // 4  — orange-red
-    '#fb923c', // 5  — orange
-    '#fbbf24', // 6  — amber yellow
-    '#60a5fa', // 7  — blue
-    '#f97316', // 8  — orange-red
-    '#4ade80', // 9  — green
-    '#fca5a5', // 10 — rose pink
-    '#4ade80', // 11 — green
-    '#f9a8d4', // 12 — pink mauve
-    '#fb923c', // 13 — orange
-    '#7dd3fc', // 14 — sky blue
-    '#3b82f6', // 15 — vivid blue
-    '#4ade80', // 16 — green
+    '#7ecec4', // 1  — teal (winking girl with glasses)
+    '#f48fb0', // 2  — pink (laughing guy)
+    '#f5d76e', // 3  — yellow (blonde girl blowing kiss)
+    '#f0a050', // 4  — orange (bearded guy with glasses)
+    '#c3a8e0', // 5  — lavender (Indian girl)
+    '#9ccf6c', // 6  — green (tongue-out guy)
+    '#f07070', // 7  — coral red (hat guy with cap)
+    '#6bb8de', // 8  — blue (curly hair, 3D glasses)
+    '#b59fd9', // 9  — purple (red-hair girl)
+    '#f0a080', // 10 — peach (waving glasses guy)
+    '#5bbfb5', // 11 — teal (smart glasses guy)
+    '#e87aa3', // 12 — pink (shushing girl)
+    '#f0d040', // 13 — yellow (detective with magnifier)
+    '#f5a838', // 14 — orange (tongue-out with red glasses)
+    '#9478c3', // 15 — purple (old professor)
+    '#86b868', // 16 — sage green (hijab girl)
+    '#7ab3d8', // 17 — blue (beanie blue-hair)
+    '#d47890', // 18 — rose (Indian girl with nose ring)
+    '#8fad8a', // 19 — muted green (silver-hair grandma)
+    '#e88070', // 20 — coral (cowboy hat)
 ];
 
 const Profiles = () => {
