@@ -68,19 +68,22 @@
         display: flex;
         flex-direction: row;
         align-items: stretch;
+        overflow-x: hidden;
+        padding: 0 1.5rem 1rem;
+        gap: 1.25rem;
+        margin-bottom: -1rem;
 
         .meta-item {
-            flex: 1;
-            margin: 1rem;
+            flex: 0 0 auto;
 
-            &:not(:first-child) {
-                margin-left: 1.5rem;
-            }
+            &.poster-shape-poster { width: 180px; }
+            &.poster-shape-square { width: 180px; }
+            &.poster-shape-landscape { width: 320px; }
 
             .poster-container {
-                border-radius: var(--border-radius);
-                padding-bottom: calc(100% * var(--poster-shape-ratio));
-                background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%);
+                border-radius: var(--border-radius, 24px);
+                padding-bottom: calc(100% * var(--poster-shape-ratio, 1.5));
+                background: linear-gradient(90deg, var(--bg-surface-2) 25%, var(--bg-surface-1) 50%, var(--bg-surface-2) 75%);
                 background-size: 200% 100%;
                 animation: shimmer 1.5s ease-in-out infinite;
             }
@@ -131,14 +134,15 @@
         }
 
         .meta-items-container {
-            .meta-item {
-                margin: 0.5rem;
-                flex: none;
-                width: 120px; // Match mobile width from normal meta row
+            padding: 0 1rem 1rem;
+            gap: 0.75rem;
 
-                &:not(:first-child) {
-                    margin-left: 0.75rem; // Match gap!
-                }
+            .meta-item {
+                flex: 0 0 auto;
+                
+                &.poster-shape-poster { width: 120px; }
+                &.poster-shape-square { width: 120px; }
+                &.poster-shape-landscape { width: 200px; }
 
                 .title-bar-container {
                     margin-top: 0.5rem;

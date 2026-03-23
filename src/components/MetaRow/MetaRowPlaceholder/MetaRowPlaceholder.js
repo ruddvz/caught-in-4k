@@ -10,10 +10,15 @@ const CONSTANTS = require('stremio/common/CONSTANTS');
 const useInViewport = require('stremio/common/useInViewport');
 const styles = require('./styles');
 
-const MetaRowPlaceholder = ({ className, title, deepLinks, index = 0 }) => {
+const MetaRowPlaceholder = ({ className, title, deepLinks, catalog, index = 0 }) => {
     const { t } = useTranslation();
     const ref = React.useRef(null);
     const isVisible = useInViewport(ref);
+    
+    const posterShape = React.useMemo(() => {
+        return catalog?.content?.posterShape ?? catalog?.posterShape ?? 'poster';
+    }, [catalog]);
+
     return (
         <div ref={ref} className={classnames(className, styles['meta-row-placeholder-container'], { [styles['visible']]: isVisible })} style={{ '--row-index': index }}>
             <div className={styles['header-container']}>
@@ -32,7 +37,7 @@ const MetaRowPlaceholder = ({ className, title, deepLinks, index = 0 }) => {
             </div>
             <div className={styles['meta-items-container']}>
                 {Array(CONSTANTS.CATALOG_PREVIEW_SIZE).fill(null).map((_, index) => (
-                    <div key={index} className={styles['meta-item']}>
+                    <div key={index} className={classnames(styles['meta-item'], styles[`poster-shape-${posterShape}`])}>
                         <div className={styles['poster-container']} />
                         <div className={styles['title-bar-container']}>
                             <div className={styles['title-label']} />
@@ -49,7 +54,8 @@ MetaRowPlaceholder.propTypes = {
     title: PropTypes.string,
     deepLinks: PropTypes.shape({
         discover: PropTypes.string
-    })
+    }),
+    catalog: PropTypes.object
 };
 
 module.exports = MetaRowPlaceholder;

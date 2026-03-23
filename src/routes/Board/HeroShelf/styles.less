@@ -6,8 +6,8 @@
 .hero-shelf-container {
     position: relative;
     width: 100%;
-    height: 100vh; // Full height edge-to-edge
-    min-height: 55rem;
+    height: calc(100vh - 4rem); // Massive floating card
+    min-height: 45rem;
     overflow: visible;
     margin: 0;
     padding: 0;
@@ -23,9 +23,9 @@
         position: relative;
         width: 100%;
         height: 100%;
-        border-radius: 0; // Edge-to-edge wallpaper
+        border-radius: 2rem; // Restore strictly rounded card aesthetic
         overflow: hidden;
-        box-shadow: none;
+        box-shadow: var(--shadow-soft);
         background: var(--bg-surface-1);
         border: 1px solid rgba(255, 255, 255, 0.08);
 
@@ -227,13 +227,13 @@
 
 @media only screen and (max-width: @small) {
     .hero-shelf-container {
-        height: 40rem;
-        min-height: unset;
+        height: calc(100vh - 9rem); // Almost full screen height floating on mobile
+        min-height: 35rem;
         padding: 0;
         margin: 0;
         
         .hero-slide {
-            border-radius: 0;
+            border-radius: 1.5rem; // Still rounded on mobile
 
             .hero-content {
                 width: 100%;
