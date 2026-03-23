@@ -1,7 +1,6 @@
-# Caught in 4K — Design System v2 (Dashboard Redesign)
+# Caught in 4K — Design System v3
 
-> Living design system document for the widget-based streaming dashboard.
-> This entirely replaces the original "Cinematic Glass" aesthetic.
+> Living design document. Keep this updated after every major design change.
 
 ---
 
@@ -9,113 +8,166 @@
 
 | Attribute | Value |
 |---|---|
-| **Form Factor** | Application Dashboard |
-| **Aesthetic** | Soft Neumorphic / Matte Slate — no hard edges, no glowing glass borders |
-| **Concept** | "Widgetized Streaming" — content is broken into distinct high-radius structural cards |
-| **Inspirations** | Premium Dribbble concept layouts, Modern SaaS dashboards |
+| **Aesthetic** | Matte Slate + Soft Neumorphic — rounded cards, deep shadows, no hard edges |
+| **Layout Model** | Widget Dashboard — content broken into floating, rounded widget cards |
+| **Typography** | `Inter` or `Outfit` via Google Fonts (system sans-serif fallback) |
 
 ---
 
 ## 2. Design Tokens
 
-### 2a. Color Palette (Matte Slate)
+### Colors
 
 | Token | Value | Usage |
 |---|---|---|
-| `--bg-body` | `#1e2029` (Deep Slate Blue) | The absolute base background layer of the application. |
-| `--bg-surface-1` | `#2a2c38` (Lighter Slate) | Default background for large widget cards, sidebars, and rows. |
-| `--bg-surface-2` | `#3b3e4f` (Mid Slate) | Elevated elements inside cards (e.g., inner buttons, search bars). |
-| `--accent-primary` | `#ffffff` (Pure White) | For High-contrast primary action pills (like "Watch" toggles). |
-| `--accent-secondary` | `#ff4d4f` (Soft Red) | Badges, warnings, secondary action highlights. |
-| `--accent-tertiary` | `#ffd043` (Star Yellow) | Ratings, stars, IMDb tags. |
-| `--text-primary` | `#f8f9fa` | All main headings and primary body text. |
-| `--text-secondary` | `#9ca3af` | Subtitles, duration strings, disabled states. |
+| `--bg-body` | `#1e2029` | App base background |
+| `--bg-surface-1` | `#2a2c38` | Widget cards, nav pills, carousels |
+| `--bg-surface-2` | `#3b3e4f` | Elevated elements inside cards |
+| `--accent-primary` | `#ffffff` | Primary CTAs (Watch button, active tab) |
+| `--accent-secondary` | `#ff4d4f` | Badges, warnings, remove actions |
+| `--accent-tertiary` | `#ffd043` | Ratings, stars, IMDb tags |
+| `--text-primary` | `#f8f9fa` | Headings and primary body text |
+| `--text-secondary` | `#9ca3af` | Subtitles, duration, disabled state |
 
-### 2b. Radii & Shadows
+### Radii & Shadows
 
 | Token | Value | Usage |
 |---|---|---|
-| `--radius-card` | `32px` (`2rem`) | Standard for all large widget panels, hero banners, and category carousels. |
-| `--radius-pill` | `999px` | For the top navigation bar, category filter buttons, and standard CTAs. |
-| `--radius-avatar` | `16px` | For cast/crew images (squircle look) instead of full circles. |
-| `--shadow-soft` | `0 16px 32px rgba(0,0,0,0.2)` | Applied to all major widget cards to create depth without neon glowing borders. |
+| `--radius-card` | `32px` | All large widget panels and poster cards |
+| `--radius-pill` | `999px` | Nav bar, filter buttons, CTAs |
+| `--radius-avatar` | `16px` | Cast/crew squircle portraits |
+| `--shadow-soft` | `0 16px 32px rgba(0,0,0,0.2)` | Card depth, no neon glow |
 
 ---
 
-## 3. Typography System
+## 3. Typography
 
-**Font:** System sans-serif or `Inter` / `Outfit` depending on final load.
-
-| Role | Properties |
-|---|---|
-| Main Titles | `24px` to `36px`, Weight: `700`, tight letter-spacing. |
-| Card Headings | `18px` to `22px`, Weight: `600`. |
-| Meta Text | `12px` to `14px`, Weight: `400` or `500`, Color: `--text-secondary`. |
-| Nav/Pill Labels | `14px`, Weight: `500`. |
-
----
-
-## 4. Component Layouts
-
-### 4a. Top Navigation (Replaces Sidebar)
-- **Position:** Top of the screen, full width minus padding.
-- **Layout:** Flex row, `justify-content: space-between`, `align-items: center`.
-- **Left:** Brand Logo ("Flix.id" / "Caught in 4k").
-- **Center Pill:** `background: var(--bg-surface-1)`, `border-radius: 999px`. It must contain the **6 original legacy navigation icons** (including Search and Add-ons) laid out horizontally as clickable tabs/icons.
-- **Right Cluster:** Contains the **Fullscreen (Zoom) toggle button** on the left and the **User profile** circle on the right.
-- **Responsiveness (CRITICAL):** Must be perfectly mobile-friendly (e.g., iPhone web app). If the screen is too narrow, the center pill and right cluster must adapt (scale down, reduce paddings, or use a mobile-friendly overflow/bottom menu) ensuring absolutely nothing gets cut off or clipped. Touch targets must remain accessible.
-
-### 4b. Hero Banners
-- **Layout:** Edge-to-edge full width background banners.
-- **Cards:** Huge full-bleed backgrounds sliding horizontally. No border radius on the outer container, sitting flush against the screen edges.
-- **Content:** Headline, subtitle, and primary `[▶ Play]` pill button are left-aligned inside the safe-area bounds over the artwork.
-
-### 4c. Category Filters Row
-- **Layout:** Horizontal flex row of pills.
-- **Style:** `background: var(--bg-surface-1)`. When selected/active, the pill uses an accent color or pure white bg with dark text. Includes a small icon + label (e.g., `[🔥 Trending]`).
-
-### 4d. Title Grid (Discover/Board)
-- **Layout:** CSS Grid.
-- **Card Structure:** 
-  1. Top: Vertical poster image, rounded corners.
-  2. Bottom: Text sits *outside* the image below it. Title is primary text, accompanied by a star rating and year (e.g., `⭐ 7.8 | 2023`).
-
-### 4e. Movie / Series Detail View (Widget Dashboard)
-Instead of a single scrolling list, the details page is broken into distinct visual blocks:
-- **Left Hero Widget:** Very large vertical poster. Includes main Title, genres, and two pill buttons (`[Watch]` and `[+ Add to watchlist]`).
-- **Top Center Widget:** "Recommended Movies" horizontal scroll list.
-- **Middle Center Widget:** "Reviews" — features a radial half-circle progress dial showing the rating (e.g. 7.8/10), with Rotten Tomatoes/IMDb chips underneath.
-- **Right Column widgets:** 
-  1. Mini playing/trailer video card.
-  2. "Cast" widget: a row of actors with squircle portraits.
-  3. "Menu" side-widget: Quick access settings/account links right on the details page.
+| Role | Size | Weight | Notes |
+|---|---|---|---|
+| Hero Title | `clamp(2rem, 4vw, 3.5rem)` | `800` | Tight letter-spacing `-0.04em` |
+| Section Heading | `1.6rem` | `800` | Carousel row titles |
+| Card Title | `1.1rem` | `800` | Below poster, truncated 1 line |
+| Meta Text | `0.9rem` | `600` | Rating, year. Color: `--text-secondary` |
+| Nav Label | `1rem` | `700` | Top nav tabs |
+| Bottom Nav Label | `0.65rem` | `700` | Icon label below icon on mobile |
 
 ---
 
-## 5. Animation Directives
+## 4. Components
 
-- **Ditch the Apple TV scale hover:** No extreme 3D twisting hooks. 
-- **Subtle Lift:** Hovering a card gently shifts `transform: translateY(-4px)` and increases the opacity of its soft drop-shadow.
-- **Pill Toggles:** Clicking a category pill smoothly transitions the background color via standard CSS `transition: background 0.3s ease`.
+### 4a. Top Navigation
+- Full-width transparent bar, `z-index: 1001`.
+- **Left:** Logo (`3.5rem` icon, links to `#/`).
+- **Center:** Pill nav (`--bg-surface-1`, `border-radius: 999px`) containing 6 tabs: Board, Search, Discover, Library, Addons, Settings.
+  - Tab labels: **Title Case** (e.g. "Board", "Discover") — consistent across top and bottom nav.
+  - Active tab: white background (`--accent-primary`), dark text.
+- **Right:** Fullscreen button + Profile circle.
+- **Mobile (<640px):** Top nav center pill is hidden. A **bottom nav pill** takes over (see 4b).
+
+### 4b. Mobile Bottom Navigation
+- Fixed at bottom of screen, full-width, `border-radius: 2.25rem 2.25rem 0 0`.
+- Frosted glass: `background: rgba(13,17,23,0.95)`, `backdrop-filter: blur(50px)`.
+- Each tab: icon stacked above text label. Label is Title Case.
+- Safe area bottom inset applied via `calc(env(safe-area-inset-bottom) + 1.25rem)`.
+
+### 4c. Hero Banners (Board)
+- Massive floating rounded card: `border-radius: 2rem`, `height: calc(100vh - 4rem)`.
+- Background image fills the card with `object-fit: cover`, `brightness(0.7)`.
+- Two-layer gradient overlay (bottom-to-top + left-to-right) for text legibility.
+- Content: title, meta badges, two CTA pill buttons — all left-aligned at bottom of card.
+- **Mobile:** `height: calc(100vh - 9rem)`, `border-radius: 1.5rem`.
+
+### 4d. Board Carousels
+- Each section is a `MetaRow` with a horizontal scroll container (`overflow-x: auto`).
+- Fixed item widths: `180px` (poster/square), `320px` (landscape).
+- `margin-bottom: 2.5rem` between all rows for consistent spacing.
+- Placeholder items use same widths so they don't shift on load.
+
+### 4e. Discover Page
+- **Desktop:** Two-column flex row. Left = scrollable poster grid. Right = `28rem` wide MetaPreview side panel.
+- **Mobile/Tablet:** MetaPreview fully hidden. Full width grid only.
+- Grid: `repeat(auto-fill, minmax(160px, 1fr))` on desktop, `minmax(100px, 1fr)` on mobile.
+- Filter row: pill-style dropdowns visible on desktop, collapsed to a filter-button modal on mobile.
+
+### 4f. MetaPreview (Detail Sidebar)
+- Sits in a `32px`-radius glass container with soft drop shadow.
+- Top: background blur hero image with title + meta info overlay.
+- Below: description text, genre links, action buttons.
 
 ---
 
-## 6. Implementation Status & To-Do List (Handoff)
+## 5. Animations
 
-### ✅ What is Completed:
-1. **Top Navigation (Replaces Sidebar):** Fully implemented. It has the horizontal pill with legacy icons, responsive zoom, and profile buttons (`person-outline` & `maximize` icons). Verified mobile-responsive.
-2. **Bottom Mobile Nav Pill:** Centered bottom-pill layout implemented with icons AND text labels (strictly ALL CAPS). Fits screen cleanly on mobile.
-3. **Discover Mobile Layout:** Restored the horizontal carousel of "Category Pills" on mobile Discover instead of completely hiding them behind a filter button.
-4. **Hero Banners Edge-To-Edge:** HeroShelf was reverted to edge-to-edge full size layout for maximum cinematic effect, seamlessly integrating above the board carousels.
-5. **Board Page Carousels (Fixed sizes!):** MetaRow placeholder font-sizes and widths were aligned with normal items. Universal `margin-bottom: 2.5rem` on `.board-row` fixes spacing inconsistencies between carousels.
+- **Card Hover:** `translateY(-8px)` + increased shadow opacity. No 3D rotation.
+- **Row Entrance:** `opacity: 0 → 1` + `translateY(20px → 0)` with staggered delay per row (`var(--row-index) * 100ms`).
+- **Pill Transition:** `transition: background 0.3s ease` for active state toggle.
+- **Hero Image:** `transform: scale(1.05)` on slide hover over `1.2s`.
 
-### 📝 To-Do List for the Next Agent:
-1. **Consolidate Safe Area Offsets (Suggesion):** The `calc(env(safe-area-inset-top, 0px) + xrem)` code is manually duplicated across `.route-library`, `.route-settings`, etc. in `MainNavBars.less`. Consolidate these into a clean mobile-spacing mixin for better maintainability.
-2. **Settings/Addon Pages Alignment:** Check `Addons` and `Settings` to ensure they are using the new Matte Slate bg classes and following the Dashboard card logic, as currently they still sit below the top nav.
-3. **Hero Banners Aspect Ratio Check:** In `HeroShelf` components, verify text sits correctly within the edge-to-edge padding across ultra-wide desktop monitors without wrapping too far out of bounds.
-4. **Ratings and Widgets on MetaPreview Detail:** Complete the "Reviews dial gauge visualization", Rotten Tomatoes/IMDb chips, and Ensure "Cast & Crew" uses the rounded Squircle avatar shapes natively. 
-5. **"Right Side Menu" on Detail View:** Re-arrange the Meta details so there is a clean distinction between the left hero/poster, the middle body text, and a proper widget column on the exact right side for Mini-Trailer, Cast, and Menu.
+---
 
-**General instructions to next UI Agent:**
-- When updating anything, strictly open the corresponding `.LESS` files and review `#app` hierarchies.
-- The theme runs deeply. If you insert a background color, ensure it's `var(--bg-surface-x)` and never `#000` or `#fff` straight up. Always use high radii (`var(--radius-card)` and `var(--radius-pill)`).
+## 6. Known Issues & Bugs (Fix These Next)
+
+| # | Issue | Location | Status |
+|---|---|---|---|
+| 1 | Discover MetaPreview doesn't hide on iPad-size screens properly | `Discover/styles.less` @small breakpoint | 🔴 Needs testing |
+| 2 | `env(safe-area-inset-top)` padding is duplicated across 5+ routes | `MainNavBars.less` | 🟡 Tech debt |
+| 3 | Continue Watching items may still show incorrect poster widths on first load | `MetaRowPlaceholder` + `MetaRow` | 🟡 Monitor |
+| 4 | Bottom nav active state uses white pill but dark icon may not contrast well on all wallpaper covers | `MainNavBars.less` | 🟡 Review |
+| 5 | Hero text overflows on ultrawide monitors (>2000px) | `HeroShelf/styles.less` | 🔴 Cap `max-width` on content |
+
+---
+
+## 7. Suggested Design Improvements
+
+These are prioritized improvements that would meaningfully elevate the UI:
+
+### 🔥 High Priority
+
+**A. Load `Inter` from Google Fonts**
+Currently using system sans-serif. Loading `Inter` would immediately make the entire app feel more premium. Add to `index.html`:
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+```
+Then set `font-family: 'Inter', sans-serif` globally.
+
+**B. Skeleton Loading Screens (Board + Discover)**
+Right now the placeholder cards are static shimmer blocks. Replace them with a proper skeleton UI — hero skeleton, row-title skeleton bar, and post shimmer — so loading feels intentional rather than broken.
+
+**C. Hero Banner Carousel Autoplay + Slide Indicator**
+The Hero section currently has dot indicators coded in CSS but no JS autoplay. Implementing a 6–8 second autoplay timer with a smooth crossfade transition between slides would make the board page feel alive.
+
+### ⚡ Medium Priority
+
+**D. Category Quick-Filter Bar (Board Page)**
+Add a horizontal scrolling row of genre pills below the Hero (Trending, Action, Sci-Fi, Drama, etc.) that pre-filter the Board carousels in real-time. This is a common pattern in Netflix/Apple TV+ and significantly improves content discovery.
+
+**E. Poster Cards: Add Subtle Progress Bar**
+For "Continue Watching" items specifically, a thin `4px` rounded progress bar at the bottom of the poster (e.g. `42% watched`) would be a premium touch making it instantly clear where the user left off.
+
+**F. Active Tab Background Blur on Desktop**
+The top nav active tab uses a plain white pill. Consider shifting to a semi-transparent frosted glass pill with a subtle glow (`box-shadow: 0 0 12px rgba(255,255,255,0.2)`) for a more expensive feel.
+
+**G. Smooth Page Transitions**
+Adding a `300ms` fade-in animation when switching routes (Board → Discover → Library) would eliminate the harsh instantaneous page swap and feel far more polished.
+
+### 🎨 Polish
+
+**H. MetaItem Rating Chip Redesign**
+The IMDb rating on poster cards currently renders as plain text. Replace with a proper chip: `⭐ 8.2` with `--accent-tertiary` (star yellow) color for the star and bold white number.
+
+**I. Settings & Addons Pages**
+These pages currently use whatever default styles existed. They should be wrapped in `--bg-surface-1` cards with `--radius-card` and consistent spacing to feel part of the dashboard, not bolted on.
+
+**J. Empty State Illustrations**
+The "No catalog selected" and error states in Discover show a small grey image. Replace with a styled illustration or icon + a descriptive headline + a CTA button ("Browse Addons") for a more helpful empty state.
+
+---
+
+## 8. Agent Instructions
+
+- **Always use** `var(--bg-surface-1/2)` for backgrounds. Never hardcode `#000` or `#fff`.
+- **Always use** `var(--radius-card)` or `var(--radius-pill)`. No raw `px` border-radius values.
+- **Tab labels** must be **Title Case** in the `TABS` array and rendered directly (no `.toUpperCase()` or `t()`).
+- **Mobile first:** always add a `@media (max-width: @minimum)` block for any new component.
+- Before adding any new LESS rule, open the existing file and check for conflicts with existing classes.
