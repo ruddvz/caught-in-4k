@@ -14,8 +14,8 @@ const TABS = [
     { id: 'search', label: 'Search', icon: 'search', href: '#/search' },
     { id: 'discover', label: 'Discover', icon: 'discover', href: '#/discover' },
     { id: 'library', label: 'Library', icon: 'library', href: '#/library' },
-    { id: 'addons', label: 'ADDONS', icon: 'addons', href: '#/addons' },
-    { id: 'settings', label: 'SETTINGS', icon: 'settings', href: '#/settings' },
+    { id: 'addons', label: 'Addons', icon: 'addons', href: '#/addons' },
+    { id: 'settings', label: 'Settings', icon: 'settings', href: '#/settings' },
 ];
 
 type Props = {
@@ -42,7 +42,7 @@ const MainNavBars = memo(({ className, route, query, children }: Props) => {
                         className={classnames(styles['bottom-nav-tab'], { [styles['active']]: route === tab.id })}
                     >
                         <Icon name={tab.icon} className={styles['bottom-tab-icon']} />
-                        <span className={styles['bottom-tab-label']}>{tab.label.toUpperCase()}</span>
+                        <span className={styles['bottom-tab-label']}>{tab.label}</span>
                     </Button>
                 ))}
             </div>

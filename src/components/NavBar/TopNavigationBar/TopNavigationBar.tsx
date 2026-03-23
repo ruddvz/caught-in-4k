@@ -100,7 +100,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                                     className={classnames(styles['nav-tab'], { [styles['active']]: route === tab.id })}
                                 >
                                     <Icon name={tab.icon} className={styles['tab-icon']} />
-                                    <span className={styles['tab-label']}>{t(tab.label.toUpperCase())}</span>
+                                    <span className={styles['tab-label']}>{tab.label}</span>
                                 </Button>
                             ))}
                         </div>
