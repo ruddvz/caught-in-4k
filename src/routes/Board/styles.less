@@ -17,7 +17,7 @@
         .board-content {
             height: 100%;
             width: 100%;
-            padding: 0 1rem;
+            padding: 0;
             padding-top: 0;
             overflow-y: auto;
             /* Allow hero to bleed left behind the nav pill without creating a horizontal scrollbar */
@@ -25,8 +25,14 @@
             overflow-clip-margin: calc(var(--vertical-nav-bar-size) + 2.5rem);
 
             .board-row {
+                padding: 0 1rem; // Add back padding for non-hero rows
                 margin-top: 1rem;
                 margin-bottom: 2rem;
+
+                &.hero-shelf-row {
+                    padding: 0;
+                    margin-top: 0;
+                }
             }
 
             .board-section-title {

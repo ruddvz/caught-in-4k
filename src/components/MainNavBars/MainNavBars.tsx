@@ -3,6 +3,10 @@
 import React, { memo } from 'react';
 import classnames from 'classnames';
 import { HorizontalNavBar, VerticalNavBar, TopNavigationBar } from '../NavBar';
+// @ts-ignore
+import Icon from '@stremio/stremio-icons/react';
+// @ts-ignore
+import Button from 'stremio/components/Button';
 import styles from './MainNavBars.less';
 
 const TABS = [
@@ -30,6 +34,17 @@ const MainNavBars = memo(({ className, route, query, children }: Props) => {
                 tabs={TABS}
             />
             <div className={styles['nav-content-container']}>{children}</div>
+            <div className={styles['mobile-bottom-nav']}>
+                {TABS.slice(0, 6).map((tab) => (
+                    <Button 
+                        key={tab.id}
+                        href={tab.href}
+                        className={classnames(styles['bottom-nav-tab'], { [styles['active']]: route === tab.id })}
+                    >
+                        <Icon name={tab.icon} className={styles['bottom-tab-icon']} />
+                    </Button>
+                ))}
+            </div>
         </div>
     );
 });
