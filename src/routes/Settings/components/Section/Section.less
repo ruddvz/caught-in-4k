@@ -4,43 +4,52 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: 1.75rem 2rem;
+    padding: 1.5rem 1.75rem;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.04) transparent;
     
     background: #1a1a1a;
     border-radius: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    overflow: hidden;
+    transition: border-color 0.3s ease;
+
+    &::-webkit-scrollbar { width: 3px; }
+    &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.06); border-radius: 2px; }
 
     &:hover {
         border-color: rgba(255, 255, 255, 0.1);
     }
     
     .label {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.3em;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
         color: #00e676;
         opacity: 0.8;
-        padding-bottom: 1rem;
+        padding-bottom: 0.875rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        flex-shrink: 0;
     }
 }
 
 @media only screen and (max-width: @small) {
     .section {
-        padding: 1.5rem 1.25rem;
-        border-radius: 1.25rem;
+        padding: 1.25rem 1rem;
+        border-radius: 1rem;
         backdrop-filter: none;
+        overflow-y: auto;
 
         .label {
-            font-size: 0.7rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
+            font-size: 0.68rem;
+            margin-bottom: 0.875rem;
+            padding-bottom: 0.625rem;
             letter-spacing: 0.25em;
         }
     }

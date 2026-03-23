@@ -26,7 +26,12 @@ const MultiselectMenu = ({ className, title, options, value, disabled, onSelect 
     const selectedOption = options.find((opt) => opt.value === value);
 
     const onOptionSelect = (selectedValue: string | number) => {
-        level ? setLevel(level + 1) : onSelect(selectedValue), closeMenu();
+        if (level) {
+            setLevel(level + 1);
+        } else {
+            onSelect(selectedValue);
+            closeMenu();
+        }
     };
 
     return (

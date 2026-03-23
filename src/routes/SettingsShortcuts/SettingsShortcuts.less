@@ -8,80 +8,103 @@
 
 .shortcuts-content {
     height: 100%;
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
     padding: 2rem 2.5rem 4rem;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.05) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.06) transparent;
 
     &::-webkit-scrollbar { width: 4px; }
-    &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 2px; }
+    &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.06); border-radius: 2px; }
 }
 
+/* ─── Header ─────────────────────────────────────────────── */
 .header {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 2.5rem;
 
     .back-button {
         display: inline-flex;
+        align-self: flex-start;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.7rem 1.25rem;
+        padding: 0.65rem 1.2rem;
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        color: var(--text-secondary);
-        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.875rem;
         font-weight: 700;
         cursor: pointer;
-        transition: all 0.3s ease;
-        margin-bottom: 1.5rem;
+        transition: all 0.25s ease;
+        margin-bottom: 1.75rem;
+        text-decoration: none;
 
         &:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: #00e676;
+            background: rgba(0, 230, 118, 0.08);
+            border-color: rgba(0, 230, 118, 0.35);
             color: #00e676;
         }
 
         .back-icon {
-            width: 1.2rem;
-            height: 1.2rem;
+            width: 1.1rem;
+            height: 1.1rem;
         }
     }
 
+    .title-row {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+    }
+
     .title {
-        font-size: 2rem;
-        font-weight: 800;
-        color: var(--text-primary);
-        letter-spacing: -0.03em;
-        margin: 0 0 0.5rem;
+        font-size: 2.25rem;
+        font-weight: 900;
+        color: #fff;
+        letter-spacing: -0.04em;
+        margin: 0 0 0.4rem;
+        line-height: 1;
     }
 
     .subtitle {
-        font-size: 1rem;
-        color: var(--text-secondary);
-        opacity: 0.4;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.35);
         margin: 0;
         font-weight: 600;
+        letter-spacing: 0.01em;
+    }
+
+    .accent-bar {
+        display: inline-block;
+        width: 3rem;
+        height: 3px;
+        background: #00e676;
+        border-radius: 2px;
+        margin-top: 1rem;
     }
 }
 
+/* ─── Grid ───────────────────────────────────────────────── */
 .groups-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
 }
 
+/* ─── Each shortcut group card ───────────────────────────── */
 .group-card {
     background: #1a1a1a;
     border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 1.5rem;
-    padding: 2rem;
+    border-radius: 1.25rem;
+    padding: 1.5rem 1.75rem;
     backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
+    transition: border-color 0.25s ease;
 
     &:hover {
-        border-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(0, 230, 118, 0.18);
     }
 }
 
@@ -89,26 +112,31 @@
     width: 100%;
 }
 
+/* ─── Mobile ─────────────────────────────────────────────── */
+@media only screen and (max-width: @medium) {
+    .groups-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media only screen and (max-width: @small) {
     .shortcuts-content {
-        padding: 1.5rem 1rem 8rem;
+        padding: 1.25rem 1rem 6rem;
     }
 
     .header {
         margin-bottom: 1.5rem;
 
-        .title {
-            font-size: 1.5rem;
-        }
+        .title { font-size: 1.65rem; }
     }
 
     .groups-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 0.875rem;
     }
 
     .group-card {
-        padding: 1.5rem;
-        border-radius: 1.25rem;
+        padding: 1.25rem;
+        border-radius: 1rem;
     }
 }

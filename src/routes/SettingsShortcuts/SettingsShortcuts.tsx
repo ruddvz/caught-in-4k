@@ -1,13 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
-import { useTranslation } from 'react-i18next';
 import Icon from '@stremio/stremio-icons/react';
 import { Button, MainNavBars, ShortcutsGroup } from 'stremio/components';
 import { useShortcuts } from 'stremio/common';
 import styles from './SettingsShortcuts.less';
 
 const SettingsShortcuts = () => {
-    const { t } = useTranslation();
     const { grouped } = useShortcuts();
 
     return (
@@ -20,6 +18,7 @@ const SettingsShortcuts = () => {
                     </Button>
                     <h1 className={styles['title']}>Keyboard Shortcuts</h1>
                     <p className={styles['subtitle']}>Master the keys, master the stream</p>
+                    <span className={styles['accent-bar']} />
                 </div>
 
                 <div className={styles['groups-grid']}>
@@ -39,3 +38,4 @@ const SettingsShortcuts = () => {
 };
 
 export default SettingsShortcuts;
+
