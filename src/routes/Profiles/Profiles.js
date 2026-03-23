@@ -29,6 +29,26 @@ const AVAILABLE_AVATARS = [
 
 const LOCAL_STORAGE_KEY = 'c4k_profiles';
 
+// Dominant accent color per avatar index (matches avatar palette)
+const AVATAR_ACCENTS = [
+    '#7dd3fc', // 1  — sky blue
+    '#4ade80', // 2  — green
+    '#fca5a5', // 3  — rose pink
+    '#f97316', // 4  — orange-red
+    '#fb923c', // 5  — orange
+    '#fbbf24', // 6  — amber yellow
+    '#60a5fa', // 7  — blue
+    '#f97316', // 8  — orange-red
+    '#4ade80', // 9  — green
+    '#fca5a5', // 10 — rose pink
+    '#4ade80', // 11 — green
+    '#f9a8d4', // 12 — pink mauve
+    '#fb923c', // 13 — orange
+    '#7dd3fc', // 14 — sky blue
+    '#3b82f6', // 15 — vivid blue
+    '#4ade80', // 16 — green
+];
+
 const Profiles = () => {
     const [profiles, setProfiles] = React.useState([]);
     const [view, setView] = React.useState('select'); // 'select' | 'add'
@@ -107,6 +127,9 @@ const Profiles = () => {
 
     const getAvatarUrl = (p) =>
         p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar;
+
+    const getAccent = (p) =>
+        p.avatarIndex !== undefined ? (AVATAR_ACCENTS[p.avatarIndex] || '#fff') : '#fff';
 
     return (
         <div className={classnames(styles['profiles-page'], { [styles['exiting']]: isExiting })}>
