@@ -8,6 +8,7 @@ const MetaDetails = require('./MetaDetails');
 const NotFound = require('./NotFound');
 const Search = require('./Search');
 const { default: Settings } = require('./Settings');
+const { default: SettingsShortcuts } = require('./SettingsShortcuts');
 const Player = require('./Player');
 const Intro = require('./Intro');
 const Tos = require('./Tos');
@@ -23,6 +24,7 @@ module.exports = {
     NotFound,
     Search,
     Settings,
+    SettingsShortcuts,
     Player,
     Intro,
     Tos,

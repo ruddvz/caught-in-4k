@@ -1,0 +1,114 @@
+@import (reference) '~stremio/common/screen-sizes.less';
+
+.shortcuts-page {
+    height: 100%;
+    width: 100%;
+    background-color: #0a0a0a;
+}
+
+.shortcuts-content {
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 2.5rem 4rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.05) transparent;
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 2px; }
+}
+
+.header {
+    margin-bottom: 2.5rem;
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.7rem 1.25rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #00e676;
+            color: #00e676;
+        }
+
+        .back-icon {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+    }
+
+    .title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        letter-spacing: -0.03em;
+        margin: 0 0 0.5rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        opacity: 0.4;
+        margin: 0;
+        font-weight: 600;
+    }
+}
+
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.group-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.shortcuts-group {
+    width: 100%;
+}
+
+@media only screen and (max-width: @small) {
+    .shortcuts-content {
+        padding: 1.5rem 1rem 8rem;
+    }
+
+    .header {
+        margin-bottom: 1.5rem;
+
+        .title {
+            font-size: 1.5rem;
+        }
+    }
+
+    .groups-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .group-card {
+        padding: 1.5rem;
+        border-radius: 1.25rem;
+    }
+}

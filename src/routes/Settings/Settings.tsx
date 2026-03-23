@@ -1,8 +1,7 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import classnames from 'classnames';
-import throttle from 'lodash.throttle';
 import { useRouteFocused } from 'stremio-router';
 import { usePlatform, useProfile, useStreamingServer, withCoreSuspender } from 'stremio/common';
 import { MainNavBars } from 'stremio/components';
@@ -12,110 +11,65 @@ import General from './General';
 import Interface from './Interface';
 import Player from './Player';
 import Streaming from './Streaming';
-import Shortcuts from './Shortcuts';
-import Info from './Info';
 import styles from './Settings.less';
 
+const SECTION_COMPONENTS = [
+    { id: SECTIONS.GENERAL, key: 'general' },
+    { id: SECTIONS.INTERFACE, key: 'interface' },
+    { id: SECTIONS.PLAYER, key: 'player' },
+    { id: SECTIONS.STREAMING, key: 'streaming' },
+];
+
 const Settings = () => {
-    const { routeFocused } = useRouteFocused();
     const profile = useProfile();
     const platform = usePlatform();
     const streamingServer = useStreamingServer();
 
-    const sectionsContainerRef = useRef<HTMLDivElement>(null);
-    const generalSectionRef = useRef<HTMLDivElement>(null);
-    const interfaceSectionRef = useRef<HTMLDivElement>(null);
-    const playerSectionRef = useRef<HTMLDivElement>(null);
-    const streamingServerSectionRef = useRef<HTMLDivElement>(null);
-    const shortcutsSectionRef = useRef<HTMLDivElement>(null);
+    const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
-    const sections = useMemo(() => ([
-        { ref: generalSectionRef, id: SECTIONS.GENERAL },
-        { ref: interfaceSectionRef, id: SECTIONS.INTERFACE },
-        { ref: playerSectionRef, id: SECTIONS.PLAYER },
-        { ref: streamingServerSectionRef, id: SECTIONS.STREAMING },
-        { ref: shortcutsSectionRef, id: SECTIONS.SHORTCUTS },
-    ]), []);
+    const onNavSelect = useCallback((sectionId: string) => {
+        setSelectedSection((prev) => prev === sectionId ? null : sectionId);
+    }, []);
 
-    const [selectedSectionId, setSelectedSectionId] = useState(SECTIONS.GENERAL);
-
-    const updateSelectedSectionId = useCallback(() => {
-        const container = sectionsContainerRef.current;
-        if (!container) return;
-
-        const availableSections = sections.filter((section) => section.ref.current);
-        if (!availableSections.length) return;
-
-        const { scrollTop, clientHeight, scrollHeight, offsetTop } = container;
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
-
-        if (isAtBottom) {
-            setSelectedSectionId(availableSections[availableSections.length - 1].id);
-            return;
+    const visibleSections = useMemo(() => {
+        if (selectedSection) {
+            return SECTION_COMPONENTS.filter((s) => s.id === selectedSection);
         }
-
-        const marker = scrollTop + 50;
-        const activeSection = availableSections.reduce((current, section) => {
-            const sectionTop = section.ref.current!.offsetTop + offsetTop;
-            return sectionTop <= marker ? section : current;
-        }, availableSections[0]);
-
-        setSelectedSectionId(activeSection.id);
-    }, [sections]);
-
-    const onMenuSelect = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-        const section = sections.find((section) => {
-            return section.id === event.currentTarget.dataset.section;
-        });
-
-        const container = sectionsContainerRef.current;
-        section && container?.scrollTo({
-            top: section.ref.current!.offsetTop - container!.offsetTop,
-            behavior: 'smooth'
-        });
-    }, [sections]);
-
-    const onContainerScroll = useCallback(throttle(() => {
-        updateSelectedSectionId();
-    }, 50), []);
-
-    useLayoutEffect(() => {
-        if (routeFocused) {
-            updateSelectedSectionId();
-        }
-    }, [routeFocused]);
+        return SECTION_COMPONENTS;
+    }, [selectedSection]);
 
     return (
         <MainNavBars className={styles['settings-container']} route={'settings'}>
             <div className={classnames(styles['settings-content'], 'animation-fade-in')}>
                 <Menu
-                    selected={selectedSectionId}
+                    selected={selectedSection}
                     streamingServer={streamingServer}
-                    onSelect={onMenuSelect}
+                    onSelect={onNavSelect}
                 />
 
-                <div ref={sectionsContainerRef} className={styles['sections-container']} onScroll={onContainerScroll}>
-                    <General
-                        ref={generalSectionRef}
-                        profile={profile}
-                    />
-                    <Interface
-                        ref={interfaceSectionRef}
-                        profile={profile}
-                    />
-                    <Player
-                        ref={playerSectionRef}
-                        profile={profile}
-                    />
-                    <Streaming
-                        ref={streamingServerSectionRef}
-                        profile={profile}
-                        streamingServer={streamingServer}
-                    />
-                    {
-                        !platform.isMobile && <Shortcuts ref={shortcutsSectionRef} />
-                    }
-                    <Info streamingServer={streamingServer} />
+                <div className={classnames(styles['sections-container'], {
+                    [styles['single-widget']]: selectedSection !== null,
+                })}>
+                    {visibleSections.map((section) => {
+                        switch (section.id) {
+                            case SECTIONS.GENERAL:
+                                return <General key={section.key} profile={profile} />;
+                            case SECTIONS.INTERFACE:
+                                return <Interface key={section.key} profile={profile} />;
+                            case SECTIONS.PLAYER:
+                                return <Player key={section.key} profile={profile} />;
+                            case SECTIONS.STREAMING:
+                                return (
+                                    <Streaming
+                                        key={section.key}
+                                        profile={profile}
+                                        streamingServer={streamingServer}
+                                    />
+                                );
+                            default:
+                                return null;
+                        }
+                    })}
                 </div>
             </div>
         </MainNavBars>

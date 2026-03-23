@@ -16,12 +16,12 @@
 
         .sections-container {
             flex: 1;
-            padding: 1.5rem 2rem 4rem;
+            padding: 1rem 2rem 2rem;
             overflow-y: auto;
             overflow-x: hidden;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+            gap: 1.25rem;
             align-items: start;
             align-content: start;
             scrollbar-width: thin;
@@ -30,15 +30,12 @@
 
             &::-webkit-scrollbar { width: 4px; }
             &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 2px; }
-        }
-    }
-}
 
-@media only screen and (min-width: 1200px) {
-    .settings-container {
-        .settings-content {
-            .sections-container {
-                grid-template-columns: repeat(3, 1fr);
+            &.single-widget {
+                grid-template-columns: 1fr;
+                max-width: 800px;
+                margin: 0 auto;
+                width: 100%;
             }
         }
     }
@@ -47,15 +44,16 @@
 @media only screen and (max-width: @small) {
     .settings-container {
         .settings-content {
-            flex-direction: column;
-            gap: 0;
-
             .sections-container {
-                padding: 1rem 1rem 12rem;
+                padding: 0.75rem 1rem 10rem;
                 grid-template-columns: 1fr;
                 gap: 1rem;
                 width: 100%;
                 box-sizing: border-box;
+
+                &.single-widget {
+                    max-width: none;
+                }
             }
         }
     }

@@ -46,6 +46,10 @@ const routerViewsConfig = [
         {
             ...routesRegexp.settings,
             component: routes.Settings
+        },
+        {
+            ...routesRegexp.settingsShortcuts,
+            component: routes.SettingsShortcuts
         }
     ],
     [

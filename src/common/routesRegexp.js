@@ -41,6 +41,10 @@ const routesRegexp = {
         regexp: /^\/settings$/,
         urlParamsNames: []
     },
+    settingsShortcuts: {
+        regexp: /^\/settings\/shortcuts$/,
+        urlParamsNames: []
+    },
     player: {
         regexp: /^\/player\/([^/]*)(?:\/([^/]*)\/([^/]*)\/([^/]*)\/([^/]*)\/([^/]*))?$/,
         urlParamsNames: ['stream', 'streamTransportUrl', 'metaTransportUrl', 'type', 'id', 'videoId']
