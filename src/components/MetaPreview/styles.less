@@ -402,12 +402,33 @@
             &::-webkit-scrollbar { display: none; }
         }
 
+        .description-widget {
+            padding: 1rem 1.5rem;
+
+            .description-text {
+                font-size: 0.95rem;
+                line-height: 1.7;
+            }
+        }
+
         .satisfaction-meter-container {
             padding: 1rem;
         }
 
         .meta-links-widget {
             padding: 1rem 1.5rem;
+        }
+
+        .main-details-glass {
+            .hero-widget-content {
+                padding: 1.5rem;
+                gap: 0.6rem;
+            }
+        }
+
+        // Tighten the outer gap between sections on small screens
+        &.meta-preview-container {
+            gap: 1rem;
         }
     }
 
