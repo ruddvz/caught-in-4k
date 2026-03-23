@@ -5,37 +5,63 @@
     align-self: stretch;
     display: flex;
     flex-direction: column;
-    width: 18rem;
-    padding: 3rem 1.5rem;
+    width: 20rem;
+    padding: 2.5rem 1.25rem;
+    background: rgba(255, 255, 255, 0.015);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 0.3rem;
+
+    .section-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--text-secondary);
+        opacity: 0.5;
+        padding: 0 1rem;
+        margin: 1rem 0 0.4rem;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
 
     .button {
         flex: none;
         align-self: stretch;
         display: flex;
         align-items: center;
-        height: 4rem;
-        border-radius: 4rem;
-        padding: 2rem;
-        margin-bottom: 0.5rem;
-        font-size: 1.1rem;
-        font-weight: 500;
-        color: var(--primary-foreground-color);
-        opacity: 0.4;
-        transition: all 0.2s ease;
+        gap: 0.75rem;
+        height: 3.2rem;
+        border-radius: 999px;
+        padding: 0 1.25rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        transition: all 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        text-decoration: none;
+
+        .button-icon {
+            width: 1.35rem;
+            height: 1.35rem;
+            flex: none;
+            opacity: 0.6;
+        }
 
         &.selected {
-            font-weight: 600;
-            color: var(--primary-accent-color);
-            background-color: rgba(0, 240, 255, 0.12);
-            border-left: 3px solid var(--primary-accent-color);
-            border-radius: 0 4rem 4rem 0;
-            box-shadow: 0 0 14px rgba(0, 240, 255, 0.18);
-            opacity: 1;
+            background: var(--accent-primary);
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+            .button-icon {
+                opacity: 1;
+            }
         }
 
         &:hover:not(.selected) {
-            background-color: rgba(255, 255, 255, 0.05);
-            opacity: 0.8;
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text-primary);
         }
     }
 
@@ -45,12 +71,14 @@
 
     .version-info-label {
         flex: 0 1 auto;
-        margin: 0.5rem 0;
+        margin: 0.5rem 0 0;
+        padding: 0 1rem;
         white-space: nowrap;
         text-overflow: ellipsis;
-        color: var(--primary-foreground-color);
-        opacity: 0.3;
+        color: var(--text-secondary);
+        opacity: 0.25;
         overflow: hidden;
+        font-size: 0.8rem;
     }
 }
 
