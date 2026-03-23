@@ -92,7 +92,8 @@
             align-self: stretch;
             display: grid;
             grid-auto-rows: max-content;
-            align-items: center;
+            align-items: start;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             grid-gap: 0.5rem;
             overflow-y: auto;
         }
@@ -135,76 +136,6 @@
     }
 }
 
-@media only screen and (min-width: @large) {
-    .library-container {
-        .library-content {
-            .meta-items-container {
-                grid-template-columns: repeat(10, 1fr);
-            }
-        }
-    }
-}
-
-@media only screen and (max-width: @large) {
-    .library-container {
-        .library-content {
-            .meta-items-container {
-                grid-template-columns: repeat(9, 1fr);
-            }
-        }
-    }
-}
-
-@media only screen and (max-width: @normal) {
-    .library-container {
-        .library-content {
-            .meta-items-container {
-                grid-template-columns: repeat(8, 1fr);
-            }
-        }
-    }
-}
-
-@media only screen and (max-width: @medium) {
-    .library-container {
-        .library-content {
-            .meta-items-container {
-                grid-template-columns: repeat(7, 1fr);
-            }
-        }
-    }
-}
-
-@media only screen and (max-width: @small) {
-    .library-container {
-        .library-content {
-            .meta-items-container {
-                grid-template-columns: repeat(6, 1fr);
-            }
-        }
-    }
-}
-
-@media only screen and (max-width: @xsmall) {
-    .library-container {
-        .library-content {
-            .meta-items-container {
-                grid-template-columns: repeat(5, 1fr);
-            }
-        }
-    }
-}
-
-@media only screen and (max-width: @xxsmall) {
-    .library-container {
-        .library-content {
-            .meta-items-container {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-    }
-}
-
 @media only screen and (max-width: @minimum) {
     .library-container {
         .library-content {
@@ -213,7 +144,7 @@
             }
 
             .meta-items-container {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
         }
     }
