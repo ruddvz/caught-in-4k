@@ -30,8 +30,9 @@ const TopNavigationBar = memo(({ className, route, tabs }: Props) => {
     return (
         <nav className={classnames(className, styles['top-nav-bar-container'])}>
             <div className={styles['left-section']}>
-                <AppLogo variant="compact" className={styles['logo']} />
-                <span className={styles['brand-name']}>Caught in 4K</span>
+                <div className={styles['logo-wrapper']}>
+                    <AppLogo variant="compact" className={styles['logo']} />
+                </div>
             </div>
             
             <div className={styles['center-section']}>
@@ -58,11 +59,6 @@ const TopNavigationBar = memo(({ className, route, tabs }: Props) => {
                     title={t(fullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN')}
                 >
                     <Icon name={fullscreen ? 'contract' : 'expand'} className={styles['icon']} />
-                </Button>
-                
-                <Button className={styles['notif-btn']}>
-                    <Icon name="notifications-outline" className={styles['icon']} />
-                    <div className={styles['notif-dot']} />
                 </Button>
                 
                 <NavMenu renderLabel={({ onClick }: { onClick: () => void }) => (

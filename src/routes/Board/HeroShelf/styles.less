@@ -6,11 +6,11 @@
 .hero-shelf-container {
     position: relative;
     width: 100%;
-    height: 38rem;
+    height: 55rem;
     overflow: visible;
-    margin-top: 1.5rem;
-    margin-bottom: 3.5rem;
-    padding: 0 2rem;
+    margin-top: 0;
+    margin-bottom: 5rem;
+    padding: 0 1rem;
     box-sizing: border-box;
 
     &:hover {
@@ -37,7 +37,8 @@
             height: 100%;
             object-fit: cover;
             object-position: center 20%;
-            filter: brightness(0.7);
+            filter: brightness(0.8);
+            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .hero-gradient {
@@ -47,8 +48,8 @@
             width: 100%;
             height: 100%;
             background: 
-                linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%),
-                linear-gradient(to right, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
+                linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 30%, transparent 70%),
+                linear-gradient(to right, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
             pointer-events: none;
         }
 
@@ -100,7 +101,7 @@
             }
 
             .hero-description {
-                font-size: 1.1rem;
+                font-size: 1.25rem;
                 line-height: 1.6;
                 color: var(--text-secondary);
                 max-width: 90%;
@@ -233,30 +234,28 @@
 
 @media only screen and (max-width: 1024px) {
     .hero-shelf-container {
-        height: 30rem;
+        height: 40rem;
         padding: 0 1rem;
         
         .hero-slide {
             .hero-content {
-                width: 80%;
+                width: 85%;
                 padding: 2.5rem;
             }
         }
-        
-        .hero-nav { display: none; }
     }
 }
 
 @media only screen and (max-width: 640px) {
     .hero-shelf-container {
-        height: 26rem;
+        height: 32rem;
         
         .hero-slide .hero-content {
             width: 100%;
             padding: 1.5rem;
             
-            .hero-title { font-size: 2rem; }
-            .hero-description { -webkit-line-clamp: 2; font-size: 0.95rem; }
+            .hero-title { font-size: 2.5rem; }
+            .hero-description { -webkit-line-clamp: 2; line-clamp: 2; font-size: 1rem; }
         }
         .hero-dots { right: 50%; transform: translateX(50%); bottom: 1.5rem; }
     }

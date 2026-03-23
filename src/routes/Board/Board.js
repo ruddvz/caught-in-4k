@@ -88,8 +88,6 @@ const Board = () => {
                             :
                             null
                     }
-                    <CategoryBar />
-                    <div className={styles['board-section-title']}>Trending in Animation</div>
                     {
                         continueWatchingPreview.items.length > 0 ?
                             <MetaRow
@@ -110,7 +108,7 @@ const Board = () => {
                                 return (
                                     <MetaRow
                                         key={index}
-                                        className={classnames(styles['board-row'], styles[`board-row-${catalog.content.content[0].posterShape}`], 'animation-fade-in')}
+                                        className={classnames(styles['board-row'], styles['board-row-poster'], 'animation-fade-in')}
                                         catalog={catalog}
                                         itemComponent={MetaItem}
                                         index={index + boardCatalogsOffset}

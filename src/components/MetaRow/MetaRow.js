@@ -59,7 +59,7 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
                                     return React.createElement(itemComponent, {
                                         ...item,
                                         key: index,
-                                        className: classnames(styles['meta-item'], styles['poster-shape-poster'], styles[`poster-shape-${item.posterShape}`]),
+                                        className: classnames(styles['meta-item'], styles['poster-shape-poster'], 'animation-fade-in'),
                                         notifications,
                                         voteAverage: (item.voteAverage ?? item.vote_average) || (item.imdbRating ? parseFloat(item.imdbRating) : null),
                                     });
