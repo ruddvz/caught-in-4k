@@ -3,14 +3,14 @@ const path = require('path');
 
 const OUT = path.join(__dirname, '../../assets/images/avatars');
 
-// Exact pixel coordinates for 1408x768 images
+// Shifted centers (+12px X) to eliminate left-side "moon" bleed from neighbors
 const centers = [
-    {x:145, y:215}, {x:413, y:215}, {x:681, y:215}, {x:949, y:215}, {x:1217, y:215},
-    {x:145, y:555}, {x:413, y:555}, {x:681, y:555}, {x:949, y:555}, {x:1217, y:555},
+    {x:157, y:215}, {x:425, y:215}, {x:693, y:215}, {x:961, y:215}, {x:1229, y:215},
+    {x:157, y:555}, {x:425, y:555}, {x:693, y:555}, {x:961, y:555}, {x:1229, y:555},
 ];
 
-const radius = 120;  // px — captures full circle, leaves breathing room from neighbors
-const side   = 240;  // 2 * radius
+const radius = 115;  // tightened from 120 — safety buffer against neighbor bleed
+const side   = 230;  // 2 * radius
 
 console.log('radius:', radius, 'px  |  crop size:', side + 'x' + side, 'px');
 
