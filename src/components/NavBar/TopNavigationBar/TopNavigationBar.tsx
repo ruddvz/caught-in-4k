@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 // @ts-ignore
 import styles from './styles.less';
 // @ts-ignore
-import NavMenu from '../HorizontalNavBar/NavMenu';
+import styles from './styles.less';
 import useFullscreen from '../../../common/useFullscreen';
 
 
@@ -86,12 +86,9 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                 >
                     <Icon name={fullscreen ? 'minimize' : 'maximize'} className={styles['icon']} />
                 </Button>
-                
-                <NavMenu renderLabel={({ onClick }: { onClick: () => void }) => (
-                    <Button className={styles['action-btn']} onClick={onClick}>
-                        <Icon name="person-outline" className={styles['icon']} />
-                    </Button>
-                )} />
+                <Button className={styles['action-btn']} href="#/profiles">
+                    <Icon name="person-outline" className={styles['icon']} />
+                </Button>
             </div>
         </nav>
     );

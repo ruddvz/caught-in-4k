@@ -1,86 +1,97 @@
+@import (reference) "~stremio/common/screen-sizes.less";
+
 .option {
     position: relative;
     width: 100%;
-    flex: none;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 2rem;
-    padding: 1rem;
-    margin-bottom: 0.5rem;
-    border-radius: 12px;
-    background: transparent;
-    transition: background 0.2s ease;
-    overflow: visible;
+    justify-content: space-between;
+    padding: 1.25rem 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 
-    &:hover {
-        background: rgba(255, 255, 255, 0.03);
-    }
-
-    .heading, .content {
-        flex: 1 1 50%;
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+    &:last-child {
+        border-bottom: none;
     }
 
     .heading {
+        flex: 1;
         display: flex;
-        gap: 0.75rem;
+        align-items: center;
+        gap: 1.25rem;
 
         .icon {
-            width: 4rem;
-            height: 4rem;
-            color: var(--primary-accent-color);
+            width: 1.5rem;
+            height: 1.5rem;
+            opacity: 0.5;
+            color: var(--text-primary);
         }
 
         .label {
-            line-height: 1.5rem;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            color: var(--primary-foreground-color);
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-primary);
         }
     }
 
     .content {
-        justify-content: center;
-        overflow: visible;
+        flex: none;
+        display: flex;
+        justify-content: flex-end;
+        min-width: 12rem;
 
         :global(.multiselect) {
-            width: 100%;
-            padding: 0;
-            background: var(--overlay-color);
+            background: var(--bg-surface-2);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
         }
 
         :global(.button) {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 3.5rem;
-            width: 100%;
-            padding: 0 2rem;
-            border-radius: 3.5rem;
-            font-weight: 500;
-            color: var(--primary-foreground-color);
-            background-color: var(--overlay-color);
-        
+            background: var(--bg-surface-2);
+            color: var(--text-primary);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            height: auto;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+
             &:hover {
-                outline: var(--focus-outline-size) solid var(--primary-foreground-color);
-                background-color: transparent;
+                background: var(--text-primary);
+                color: var(--bg-body);
+                transform: translateY(-2px);
             }
         }
 
         :global(.color-input) {
-            width: 100%;
-            padding: 1.3rem 1rem;
-            border-radius: 3rem;
-            border: 2px solid transparent;
-            transition: 0.3s all ease-in-out;
-    
-            &:hover {
-                border-color: var(--overlay-color);
-            }
+            background: var(--bg-surface-2);
+            border-radius: 0.75rem;
+            padding: 0.75rem;
         }
     }
 }
+
+@media only screen and (max-width: @small) {
+    .option {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        padding: 1.5rem 0;
+
+        .heading {
+            .icon {
+                display: none; // Save space on small mobile settings
+            }
+        }
+
+        .content {
+            min-width: 100%;
+            
+            :global(.button) {
+                flex: 1;
+            }
+        }
+    }
+}

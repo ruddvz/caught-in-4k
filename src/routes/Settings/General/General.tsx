@@ -100,6 +100,10 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     />
             }
             <Link
+                label="Switch Profiles"
+                href="#/profiles"
+            />
+            <Link
                 label={t('TERMS_OF_SERVICE')}
                 href={'#/tos'}
             />

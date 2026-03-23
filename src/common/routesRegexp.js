@@ -52,6 +52,10 @@ const routesRegexp = {
     privacy: {
         regexp: /^\/privacy$/,
         urlParamsNames: []
+    },
+    profiles: {
+        regexp: /^\/profiles$/,
+        urlParamsNames: []
     }
 };
 

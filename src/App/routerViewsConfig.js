@@ -62,6 +62,10 @@ const routerViewsConfig = [
         {
             ...routesRegexp.privacy,
             component: routes.PrivacyPolicy
+        },
+        {
+            ...routesRegexp.profiles,
+            component: routes.Profiles
         }
     ]
 ];

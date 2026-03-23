@@ -10,8 +10,8 @@ const Search = require('./Search');
 const { default: Settings } = require('./Settings');
 const Player = require('./Player');
 const Intro = require('./Intro');
-const Tos = require('./Tos');
 const PrivacyPolicy = require('./PrivacyPolicy');
+const Profiles = require('./Profiles');
 
 module.exports = {
     Addons,
@@ -25,5 +25,6 @@ module.exports = {
     Player,
     Intro,
     Tos,
-    PrivacyPolicy
+    PrivacyPolicy,
+    Profiles
 };
