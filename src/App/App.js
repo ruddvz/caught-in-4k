@@ -2,6 +2,7 @@
 
 require('spatial-navigation-polyfill');
 const React = require('react');
+const classnames = require('classnames');
 const { useTranslation } = require('react-i18next');
 const { Router } = require('stremio-router');
 const { Core, Shell, Chromecast, DragAndDrop, KeyboardShortcuts, ServicesProvider } = require('stremio/services');
