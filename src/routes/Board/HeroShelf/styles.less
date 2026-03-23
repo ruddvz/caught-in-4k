@@ -260,7 +260,7 @@
         height: 60vh;
         max-height: 500px;
         min-height: 400px;
-        margin-bottom: 2rem;
+        margin-top: calc(var(--safe-area-inset-top) * -1 - 6rem); // Bleed background behind nav
         padding: 0; // Full bleed
         
         .hero-slide {
@@ -270,7 +270,7 @@
             .hero-content {
                 width: 100%;
                 padding: 1.5rem;
-                padding-top: calc(var(--safe-area-inset-top) + 2rem);
+                padding-top: 1rem; // Reduced since parent container adds top padding
                 padding-bottom: 3.5rem;
                 
                 .hero-logo {
