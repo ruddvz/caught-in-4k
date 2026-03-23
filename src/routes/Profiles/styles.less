@@ -1,159 +1,205 @@
 @import (reference) "~stremio/common/screen-sizes.less";
 
+// Modern Profile Styles
 .profiles-page-container {
     height: 100vh;
     width: 100%;
-    background-color: var(--bg-body);
+    background-color: #0c0e12; // Deeper matte slate
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+
+    // Background Blobs for depth
+    .bg-blob-1 {
+        position: absolute;
+        top: -10%;
+        left: -10%;
+        width: 50vw;
+        height: 50vw;
+        background: radial-gradient(circle, rgba(96, 165, 250, 0.08) 0%, transparent 70%);
+        filter: blur(80px);
+        z-index: 0;
+    }
+
+    .bg-blob-2 {
+        position: absolute;
+        bottom: -10%;
+        right: -10%;
+        width: 40vw;
+        height: 40vw;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+        filter: blur(80px);
+        z-index: 0;
+    }
 
     .profiles-content {
         width: 100%;
         max-width: 1200px;
+        z-index: 10;
         padding: 2rem;
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-top: -5vh; // Slightly above center for visual balance
+    }
+
+    // Glassmorphic Main Card
+    .glass-main-card {
+        width: 100%;
+        padding: 4rem 3rem;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 4rem; // Extreme rounded
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .view-title {
         font-size: 3.5rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin-bottom: 2.5rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 3.5rem;
         text-align: center;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.04em;
     }
 
     .view-subtitle {
-        font-size: 1.25rem;
-        color: var(--text-secondary);
-        margin-top: -1.5rem;
-        margin-bottom: 3rem;
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: -2.5rem;
+        margin-bottom: 3.5rem;
         text-align: center;
+        max-width: 400px;
     }
 
-    // ── Select View ──
+    // --- Profile Grid ---
     .profiles-grid {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 2.5rem;
+        gap: 3rem;
         margin-bottom: 4rem;
     }
 
     .profile-card {
-        width: 11rem;
+        width: 12rem;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1.25rem;
+        gap: 1.5rem;
         cursor: pointer;
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
         &:hover {
-            transform: scale(1.1);
+            transform: translateY(-12px);
 
             .profile-avatar {
-                border-color: var(--text-primary);
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+                border-color: #fff;
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.1);
+                
+                .avatar-hover-overlay {
+                    opacity: 1;
+                }
             }
 
             .profile-name {
-                color: var(--text-primary);
+                color: #fff;
+                transform: scale(1.05);
             }
         }
 
         .profile-avatar {
-            width: 11rem;
-            height: 11rem;
-            border-radius: 1.5rem;
+            width: 12rem;
+            height: 12rem;
+            border-radius: 3rem; // High radius
             background-size: cover;
             background-position: center;
-            background-color: var(--bg-surface-2);
-            border: 3px solid transparent;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 4px solid transparent;
+            transition: all 0.4s ease;
+            position: relative;
             overflow: hidden;
+
+            .avatar-hover-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3));
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
         }
 
         .profile-name {
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            transition: color 0.3s ease;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         &.add-btn {
             .profile-avatar {
-                background: rgba(255, 255, 255, 0.03);
-                border: 2px dashed rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.02);
+                border: 2px dashed rgba(255, 255, 255, 0.15);
 
                 .add-icon {
-                    font-size: 4rem;
-                    color: rgba(255, 255, 255, 0.15);
-                    font-weight: 300;
+                    font-size: 5rem;
+                    color: rgba(255, 255, 255, 0.1);
+                    font-weight: 200;
+                    margin-top: -0.5rem;
                 }
             }
 
-            &:hover {
-                .profile-avatar {
-                    background: rgba(255, 255, 255, 0.06);
-                    border-color: rgba(255, 255, 255, 0.3);
-                    
-                    .add-icon {
-                        color: var(--text-primary);
-                    }
+            &:hover .profile-avatar {
+                background: rgba(255, 255, 255, 0.05);
+                border-style: solid;
+                border-color: rgba(255, 255, 255, 0.4);
+                
+                .add-icon {
+                    color: #fff;
+                    transform: rotate(90deg);
+                    transition: transform 0.4s ease;
                 }
             }
         }
     }
 
+    // --- Actions ---
     .footer-actions {
         display: flex;
-        gap: 1.5rem;
-        margin-top: 1rem;
+        gap: 2rem;
     }
 
-    .manage-btn {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: rgba(255, 255, 255, 0.5);
-        padding: 0.8rem 2.5rem;
-        border-radius: 0.25rem;
-        font-weight: 500;
+    .action-pill-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.6);
+        padding: 1rem 3rem;
+        border-radius: 999px; // Pill
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.15em;
+        letter-spacing: 0.1em;
         font-size: 0.9rem;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
 
         &:hover {
-            border-color: var(--text-primary);
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
     }
 
-
-    .empty-hint {
-        color: var(--text-secondary);
-        opacity: 0.5;
-        margin-bottom: 2rem;
-    }
-
-    // ── Add View ──
+    // --- Add View ---
     .add-view {
         width: 100%;
-        max-width: 600px;
+        max-width: 500px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -161,149 +207,171 @@
 
     .avatar-selection {
         width: 100%;
-        margin-bottom: 2.5rem;
+        margin-bottom: 3rem;
 
         .avatar-label {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.3);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1.25rem;
+            letter-spacing: 0.2em;
+            margin-bottom: 2rem;
             text-align: center;
         }
 
         .avatars-scroll {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             padding: 1rem;
             overflow-x: auto;
             scrollbar-width: none;
-            -ms-overflow-style: none;
             &::-webkit-scrollbar { display: none; }
-            
-            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
 
         .avatar-option {
-            width: 5rem;
-            height: 5rem;
+            width: 5.5rem;
+            height: 5.5rem;
             flex: none;
-            border-radius: 1rem;
+            border-radius: 1.5rem;
             background-size: cover;
             background-position: center;
             cursor: pointer;
             border: 3px solid transparent;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
             &:hover {
-                transform: scale(1.1);
+                transform: scale(1.15) translateY(-5px);
             }
 
             &.selected {
-                border-color: var(--text-primary);
-                transform: scale(1.1);
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+                border-color: #fff;
+                transform: scale(1.2) translateY(-5px);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
             }
         }
     }
 
     .input-section {
         width: 100%;
-        margin-bottom: 3rem;
+        margin-bottom: 3.5rem;
 
         .name-input {
             width: 100%;
-            background: var(--bg-surface-2);
-            border: 2px solid transparent;
-            border-radius: 1rem;
-            padding: 1.25rem 1.5rem;
-            color: var(--text-primary);
-            font-size: 1.25rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 1.5rem 2rem;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
 
             &:focus {
                 outline: none;
-                background: var(--bg-surface-1);
-                border-color: rgba(255, 255, 255, 0.2);
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.3);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+                transform: scale(1.02);
             }
 
             &::placeholder {
-                color: rgba(255, 255, 255, 0.2);
+                color: rgba(255, 255, 255, 0.15);
             }
         }
     }
 
     .action-buttons {
         display: flex;
-        gap: 1.5rem;
+        flex-direction: column;
+        gap: 1.25rem;
         width: 100%;
 
         .action-btn {
-            flex: 1;
-            padding: 1.25rem;
-            border-radius: 1rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            transition: all 0.2s ease;
+            width: 100%;
+            padding: 1.5rem;
+            border-radius: 999px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
 
             &.save-btn {
-                background: var(--text-primary);
-                color: var(--bg-body);
+                background: #fff;
+                color: #000;
 
-                &:hover {
-                    opacity: 0.9;
-                    transform: translateY(-2px);
+                &:hover:not(:disabled) {
+                    transform: scale(1.02) translateY(-2px);
+                    box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
                 }
 
                 &:disabled {
-                    opacity: 0.3;
+                    opacity: 0.2;
                     cursor: not-allowed;
-                    transform: none;
                 }
             }
 
             &.cancel-btn {
                 background: transparent;
-                border: 2px solid rgba(255, 255, 255, 0.1);
-                color: var(--text-secondary);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: rgba(255, 255, 255, 0.4);
 
                 &:hover {
-                    border-color: var(--text-primary);
-                    color: var(--text-primary);
-                    background: rgba(255, 255, 255, 0.05);
+                    color: #fff;
+                    border-color: rgba(255, 255, 255, 0.4);
+                    background: rgba(255, 255, 255, 0.03);
                 }
             }
         }
     }
 }
 
+// Responsive
 @media (max-width: @small) {
     .profiles-page-container {
-        padding-top: 2rem;
+        .glass-main-card {
+            padding: 3rem 1.5rem;
+            border-radius: 3rem;
+            box-shadow: none;
+            background: transparent;
+            border: none;
+            backdrop-filter: none;
+        }
 
         .view-title {
-            font-size: 2.25rem;
-            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 2.5rem;
         }
 
         .profiles-grid {
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .profile-card {
-            width: 8rem;
+            width: 9rem;
 
             .profile-avatar {
-                width: 8rem;
-                height: 8rem;
+                width: 9rem;
+                height: 9rem;
+                border-radius: 2.25rem;
             }
 
             .profile-name {
-                font-size: 1.1rem;
+                font-size: 1.25rem;
             }
+        }
+
+        .footer-actions {
+            flex-direction: column;
+            width: 100%;
+            gap: 1rem;
+        }
+        
+        .action-pill-btn {
+            width: 100%;
+            padding: 1.25rem;
         }
     }
 }

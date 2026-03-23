@@ -78,90 +78,96 @@ const Profiles = () => {
 
     return (
         <div className={styles['profiles-page-container']}>
+            {/* Modern background elements */}
+            <div className={styles['bg-blob-1']} />
+            <div className={styles['bg-blob-2']} />
+            
             <div className={classnames(styles['profiles-content'], 'animation-fade-in')}>
-                
-                {view === 'select' && (
-                    <div className={styles['select-view']}>
-                        <h1 className={styles['view-title']}>Who's watching?</h1>
-                        <div className={styles['profiles-grid']}>
-                            {profiles.map((p) => (
-                                <div key={p.id} className={styles['profile-card']} onClick={() => onSelectProfile(p)}>
-                                    <div 
-                                        className={styles['profile-avatar']} 
-                                        style={{ backgroundImage: `url('${p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar}')` }}
-                                    />
-                                    <div className={styles['profile-name']}>{p.name}</div>
-                                </div>
-                            ))}
-
-                            {profiles.length < 4 && (
-                                <div className={classnames(styles['profile-card'], styles['add-btn'])} onClick={onAddClick}>
-                                    <div className={styles['profile-avatar']}>
-                                        <div className={styles['add-icon']}>+</div>
+                <div className={styles['glass-main-card']}>
+                    {view === 'select' && (
+                        <div className={styles['select-view']}>
+                            <h1 className={styles['view-title']}>Who's watching?</h1>
+                            <div className={styles['profiles-grid']}>
+                                {profiles.map((p) => (
+                                    <div key={p.id} className={styles['profile-card']} onClick={() => onSelectProfile(p)}>
+                                        <div 
+                                            className={styles['profile-avatar']} 
+                                            style={{ backgroundImage: `url('${p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar}')` }}
+                                        >
+                                            <div className={styles['avatar-hover-overlay']} />
+                                        </div>
+                                        <div className={styles['profile-name']}>{p.name}</div>
                                     </div>
-                                    <div className={styles['profile-name']}>Add Profile</div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className={styles['footer-actions']}>
-                            <Button className={styles['manage-btn']} href="#/settings">
-                                Settings
-                            </Button>
-                            <Button className={styles['manage-btn']} href="#/">
-                                Back Home
-                            </Button>
-                        </div>
-                    </div>
-                )}
-
-                {view === 'add' && (
-                    <div className={styles['add-view']}>
-                        <h1 className={styles['view-title']}>Add Profile</h1>
-                        <p className={styles['view-subtitle']}>Create a new browsing experience.</p>
-
-                        <div className={styles['avatar-selection']}>
-                            <div className={styles['avatar-label']}>Select an Icon</div>
-                            <div className={styles['avatars-scroll']}>
-                                {AVAILABLE_AVATARS.map((url, i) => (
-                                    <div 
-                                        key={i} 
-                                        className={classnames(styles['avatar-option'], { [styles['selected']]: i === newAvatarIndex })}
-                                        style={{ backgroundImage: `url('${url}')` }}
-                                        onClick={() => setNewAvatarIndex(i)}
-                                    />
                                 ))}
+
+                                {profiles.length < 4 && (
+                                    <div className={classnames(styles['profile-card'], styles['add-btn'])} onClick={onAddClick}>
+                                        <div className={styles['profile-avatar']}>
+                                            <div className={styles['add-icon']}>+</div>
+                                        </div>
+                                        <div className={styles['profile-name']}>Add Profile</div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className={styles['footer-actions']}>
+                                <Button className={styles['action-pill-btn']} href="#/settings">
+                                    Settings
+                                </Button>
+                                <Button className={styles['action-pill-btn']} href="#/">
+                                    Back Home
+                                </Button>
                             </div>
                         </div>
+                    )}
 
-                        <div className={styles['input-section']}>
-                            <input 
-                                className={styles['name-input']} 
-                                placeholder="Profile Name" 
-                                value={newName}
-                                onChange={(e) => setNewName(e.target.value)}
-                                autoFocus
-                            />
+                    {view === 'add' && (
+                        <div className={styles['add-view']}>
+                            <h1 className={styles['view-title']}>Add Profile</h1>
+                            <p className={styles['view-subtitle']}>Create a new browsing experience.</p>
+
+                            <div className={styles['avatar-selection']}>
+                                <div className={styles['avatar-label']}>Select an Icon</div>
+                                <div className={styles['avatars-scroll']}>
+                                    {AVAILABLE_AVATARS.map((url, i) => (
+                                        <div 
+                                            key={i} 
+                                            className={classnames(styles['avatar-option'], { [styles['selected']]: i === newAvatarIndex })}
+                                            style={{ backgroundImage: `url('${url}')` }}
+                                            onClick={() => setNewAvatarIndex(i)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className={styles['input-section']}>
+                                <input 
+                                    className={styles['name-input']} 
+                                    placeholder="Profile Name" 
+                                    value={newName}
+                                    onChange={(e) => setNewName(e.target.value)}
+                                    autoFocus
+                                />
+                            </div>
+
+                            <div className={styles['action-buttons']}>
+                                <Button 
+                                    className={classnames(styles['action-btn'], styles['save-btn'])} 
+                                    onClick={handleCreateProfile}
+                                    disabled={!newName.trim()}
+                                >
+                                    Create Profile
+                                </Button>
+                                <Button 
+                                    className={classnames(styles['action-btn'], styles['cancel-btn'])} 
+                                    onClick={() => setView('select')}
+                                >
+                                    Return
+                                </Button>
+                            </div>
                         </div>
-
-                        <div className={styles['action-buttons']}>
-                            <Button 
-                                className={classnames(styles['action-btn'], styles['save-btn'])} 
-                                onClick={handleCreateProfile}
-                                disabled={!newName.trim()}
-                            >
-                                Create
-                            </Button>
-                            <Button 
-                                className={classnames(styles['action-btn'], styles['cancel-btn'])} 
-                                onClick={() => setView('select')}
-                            >
-                                Back
-                            </Button>
-                        </div>
-                    </div>
-                )}
-
+                    )}
+                </div>
             </div>
         </div>
     );
