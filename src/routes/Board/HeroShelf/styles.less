@@ -257,25 +257,27 @@
 
 @media only screen and (max-width: 640px) {
     .hero-shelf-container {
-        height: 60vh;
-        max-height: 500px;
-        min-height: 400px;
-        margin-top: 0; // Fixed: Start below buttons initially
-        padding: 0; // Full bleed
+        // Fill full viewport height on mobile — bottom pill floats over it
+        height: 100dvh;
+        height: 100vh; // Fallback for browsers without dvh support
+        min-height: 500px;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding: 0;
         
         .hero-slide {
-            border-radius: 0; // Square edges for full cover
+            border-radius: 0;
             border: none;
             
             .hero-content {
                 width: 100%;
-                padding: 1.5rem;
-                padding-top: 1rem; // Reduced since parent container adds top padding
-                padding-bottom: 3.5rem;
+                // Start text below the notch + floating logo bar
+                padding: calc(var(--safe-area-inset-top) + 5rem) 1.5rem 6rem;
+                justify-content: flex-end;
                 
                 .hero-logo {
                     max-height: 4rem;
-                    max-width: 12rem;
+                    max-width: 13rem;
                 }
 
                 .hero-title { 
@@ -293,20 +295,21 @@
                 .hero-actions {
                     .hero-btn {
                         flex: 1;
-                        padding: 0.75rem 1rem;
-                        font-size: 0.9rem;
+                        padding: 0.8rem 1rem;
+                        font-size: 0.95rem;
                     }
                 }
             }
         }
+
         .hero-dots { 
             right: 50%; 
             transform: translateX(50%); 
-            bottom: 1.5rem; 
+            bottom: 5.5rem; // Sit above bottom pill
         }
 
         .hero-nav {
-            display: none; // No arrows on mobile, use swipe
+            display: none;
         }
     }
 }
