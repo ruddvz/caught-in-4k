@@ -27,7 +27,7 @@ type Props = {
 
 const MainNavBars = memo(({ className, route, query, children }: Props) => {
     return (
-        <div className={classnames(className, styles['main-nav-bars-container'])}>
+        <div className={classnames(className, styles['main-nav-bars-container'], { [styles[`route-${route}`]]: !!route })}>
             <TopNavigationBar
                 className={styles['top-nav-bar']}
                 route={route}

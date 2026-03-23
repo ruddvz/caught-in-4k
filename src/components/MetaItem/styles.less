@@ -91,13 +91,15 @@
 
         .title-label {
             font-size: 1.1rem;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-primary);
             width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             text-align: left;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
         }
 
         .meta-info-row {
@@ -147,6 +149,13 @@
 
         .title-bar-container {
             margin-top: 0.5rem;
+            
+            .title-label {
+                font-size: 0.95rem; // Slightly smaller for mobile grid
+            }
+            .meta-info-row {
+                font-size: 0.8rem;
+            }
         }
     }
 }
