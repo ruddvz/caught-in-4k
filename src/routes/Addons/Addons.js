@@ -140,6 +140,11 @@ const Addons = ({ urlParams, queryParams }) => {
                         <Icon className={styles['filter-icon']} name={'filters'} />
                     </Button>
                 </div>
+
+                {/* Mobile FAB */}
+                <Button className={styles['add-button-mobile-fab']} title={t('ADD_ADDON')} onClick={openAddAddonModal}>
+                    <Icon className={styles['icon']} name={'add'} />
+                </Button>
                 {
                     installedAddons.selected !== null ?
                         installedAddons.selectable.types.length === 0 ?
