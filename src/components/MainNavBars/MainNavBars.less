@@ -65,16 +65,34 @@
 
 @media only screen and (max-width: 640px) {
     .main-nav-bars-container {
+        height: 100vh;
+        overflow: hidden;
+
         .top-nav-bar {
-            height: calc(var(--safe-area-inset-top) + 5rem);
+            height: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1010;
         }
 
         .nav-content-container {
-            padding-bottom: 5rem; // Leave space for the bottom nav
+            padding-bottom: calc(env(safe-area-inset-bottom, 1rem) + 4rem); 
+            padding-top: 0;
+            margin-top: 0;
+            height: 100%;
         }
 
         .mobile-bottom-nav {
-            display: flex;
+            display: flex !important;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(13, 17, 23, 0.95) !important;
+            backdrop-filter: blur(25px) saturate(200%);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
     }
 }
