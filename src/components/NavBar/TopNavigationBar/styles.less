@@ -2,8 +2,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 2.5rem;
-    height: 6rem; // Increased slightly for better breathability
+    padding: calc(var(--safe-area-inset-top) + 1rem) 2.5rem 1rem;
+    height: calc(var(--safe-area-inset-top) + 6rem); 
     background: transparent;
     width: 100%;
     box-sizing: border-box;
@@ -203,10 +203,15 @@
 
 @media only screen and (max-width: 640px) {
     .top-nav-bar-container {
-        padding: 0.5rem 1rem;
+        padding: calc(var(--safe-area-inset-top) + 0.5rem) 1rem 0.5rem;
+        height: calc(var(--safe-area-inset-top) + 5rem);
 
         .right-section {
             gap: 1rem;
+
+            .fullscreen-btn {
+                display: none; // User doesn't want zoom button on mobile
+            }
         }
 
         .center-section .nav-pill .nav-tab {

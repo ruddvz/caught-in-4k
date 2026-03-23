@@ -73,38 +73,40 @@
         opacity: 0.6;
     }
 
-    .meta-items-container {
-        display: flex;
-        flex-direction: row;
-        align-items: stretch;
-        overflow-x: auto;
-        overflow-y: visible;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 1rem;
-        margin-bottom: -1rem; // counteract the padding visually
-        scrollbar-width: none;
-        
-        &::-webkit-scrollbar {
-            display: none;
+        .meta-items-container {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            overflow-x: auto;
+            overflow-y: visible;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 1rem 1rem;
+            margin-bottom: -1rem;
+            gap: 1.25rem; // Explicit spacing between items
+            scrollbar-width: none;
+            
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            .meta-item {
+                scroll-snap-align: start;
+                flex: 0 0 auto; // Use raw content size with defined widths
+                
+                &.poster-shape-poster {
+                    width: 180px;
+                }
+
+                &.poster-shape-square {
+                    width: 180px;
+                }
+
+                &.poster-shape-landscape {
+                    width: 320px;
+                }
+            }
         }
-
-        .meta-item {
-            scroll-snap-align: start;
-
-            &.poster-shape-poster {
-                flex: 0 0 max(160px, calc(100vw / 6 - 2rem));
-            }
-
-            &.poster-shape-square {
-                flex: 0 0 max(180px, calc(100vw / 5 - 2rem));
-            }
-
-            &.poster-shape-landscape {
-                flex: 0 0 max(280px, calc(100vw / 4 - 2rem));
-            }
-        }
-    }
 }
 
 @keyframes rowFadeIn {
@@ -121,9 +123,10 @@
 @media only screen and (max-width: @minimum) {
     .meta-row-container {
         .header-container {
-            padding: 0 0.5rem;
+            padding: 0 1rem;
 
             .title-container {
+                font-size: 1.4rem;
                 margin-right: 0.5rem;
                 white-space: nowrap;
                 text-overflow: ellipsis;
@@ -131,10 +134,13 @@
         }
 
         .meta-items-container {
+            padding: 0 1rem 1rem; // Ensure padding matches for scrolling bleed
+            gap: 1rem;
+
             .meta-item {
-                &:not(:first-child) {
-                    margin-left: 0;
-                }
+                &.poster-shape-poster { width: 140px; }
+                &.poster-shape-square { width: 140px; }
+                &.poster-shape-landscape { width: 240px; }
             }
         }
     }
