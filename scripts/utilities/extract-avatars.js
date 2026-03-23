@@ -3,10 +3,10 @@ const path = require('path');
 
 const OUT = path.join(__dirname, '../../assets/images/avatars');
 
-// Shifted centers (+12px X) to eliminate left-side "moon" bleed from neighbors
+// Shifted centers (+18px X total) to eliminate left-side "moon" bleed from neighbors
 const centers = [
-    {x:157, y:215}, {x:425, y:215}, {x:693, y:215}, {x:961, y:215}, {x:1229, y:215},
-    {x:157, y:555}, {x:425, y:555}, {x:693, y:555}, {x:961, y:555}, {x:1229, y:555},
+    {x:163, y:215}, {x:431, y:215}, {x:699, y:215}, {x:967, y:215}, {x:1235, y:215},
+    {x:163, y:555}, {x:431, y:555}, {x:699, y:555}, {x:967, y:555}, {x:1235, y:555},
 ];
 
 const radius = 115;  // tightened from 120 — safety buffer against neighbor bleed
