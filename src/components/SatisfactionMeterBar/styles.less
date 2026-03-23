@@ -147,3 +147,38 @@
     }
   }
 }
+
+@import (reference) '~stremio/common/screen-sizes.less';
+
+@media only screen and (max-width: @minimum) {
+  .detail {
+    padding: 0.75rem 0;
+
+    .track {
+      height: 0.5rem;
+    }
+
+    .detailContent {
+      gap: 0.5rem;
+      flex-wrap: wrap;
+
+      .percentage {
+        font-size: 1rem;
+        min-width: auto;
+      }
+
+      .tierInfo {
+        font-size: 0.8rem;
+      }
+
+      .oneLiner {
+        width: 100%;
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .global {
+    padding: 0.75rem;
+  }
+}

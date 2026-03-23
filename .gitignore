@@ -12,10 +12,11 @@ diffstat.txt
 lint_result.json
 .DS_Store
 .prettierignore
+
+# Environment files — NEVER commit secrets or API keys
 .env
-.env.local
-.env.*.local
-.env.production
+.env.*
+!.env.example
 
 # Claude Organize — ephemeral log file
 docs/organization-log.json

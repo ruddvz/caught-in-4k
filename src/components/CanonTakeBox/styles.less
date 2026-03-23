@@ -93,3 +93,32 @@
   line-height: 1;
   vertical-align: text-top;
 }
+
+@import (reference) '~stremio/common/screen-sizes.less';
+
+@media only screen and (max-width: @minimum) {
+  .canonTakeBox {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 16px;
+    gap: 0.6rem;
+  }
+
+  .content {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.65rem;
+  }
+
+  .subtle {
+    font-size: 0.75rem;
+  }
+
+  .quoteMark {
+    font-size: 1.2rem;
+  }
+}

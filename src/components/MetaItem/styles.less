@@ -119,6 +119,46 @@
                 box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             }
         }
+
+        .poster-stats-layer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            padding: 0.6rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
+            pointer-events: none;
+
+            .rating-pill {
+                top: auto;
+                left: auto;
+                position: static;
+            }
+
+            .stat-icons {
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+
+                .stat-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                    font-size: 0.7rem;
+                    font-weight: 700;
+                    color: rgba(255, 255, 255, 0.85);
+
+                    .icon {
+                        width: 0.75rem;
+                        height: 0.75rem;
+                    }
+                }
+            }
+        }
     }
 
     &.poster-shape-poster { .poster-container::before { padding-top: 150%; } }
@@ -195,6 +235,29 @@
         padding: 0.6rem;
         gap: 0.6rem;
 
+        .poster-container {
+            .poster-stats-layer {
+                padding: 0.4rem;
+                gap: 0.3rem;
+
+                .stat-icons {
+                    display: none;
+                }
+            }
+
+            .rating-pill {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.7rem;
+                top: 0.5rem;
+                left: 0.5rem;
+
+                .icon {
+                    width: 0.7rem;
+                    height: 0.7rem;
+                }
+            }
+        }
+
         .title-bar-container {
             gap: 0.3rem;
             min-height: 3.9rem;
@@ -226,6 +289,25 @@
 @media only screen and (max-width: @minimum) {
     .meta-item-container.carousel-layout {
         padding: 0.5rem;
+
+        .poster-container {
+            .poster-stats-layer {
+                display: none;
+            }
+
+            .rating-pill {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.65rem;
+                top: 0.35rem;
+                left: 0.35rem;
+                gap: 0.2rem;
+
+                .icon {
+                    width: 0.6rem;
+                    height: 0.6rem;
+                }
+            }
+        }
 
         .title-bar-container {
             min-height: 3.7rem;

@@ -2,9 +2,11 @@
  * C4K Background Agent System
  * Runs non-blocking background workers for Gen Z AI Summaries (Canon Takes)
  * and global Satisfaction Meter metrics calculation.
+ * Uses Pollinations.AI (free, no key) as primary, Gemini proxy as fallback.
  */
 
 const { SATISFACTION_TIERS } = require('../../common/useSatisfactionMeter');
+const { generateCanonTake } = require('../../common/pollinationsApi');
 
 const CACHE_PREFIX = 'c4k_canon_take_';
 
@@ -40,11 +42,16 @@ class C4KBackgroundAgents {
 
     start() {
         if (this.interval) return;
-        if (!this.PROXY_URL) return;
-        this._checkProxy();
+        // Start immediately — Pollinations doesn't need a proxy
+        this.interval = setInterval(() => this._processQueues(), 10000);
     }
 
     async _checkProxy() {
+        // Legacy — only used if Pollinations fails and PROXY_URL is set
+        if (!this.PROXY_URL) {
+            this.proxyChecked = true;
+            return;
+        }
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 3000);
@@ -55,9 +62,6 @@ class C4KBackgroundAgents {
             this.proxyAvailable = false;
         }
         this.proxyChecked = true;
-        if (this.proxyAvailable) {
-            this.interval = setInterval(() => this._processQueues(), 10000);
-        }
     }
 
     stop() {
@@ -112,6 +116,27 @@ class C4KBackgroundAgents {
                 continue;
             }
 
+            // Primary: Pollinations.AI (free, no key)
+            try {
+                const take = await generateCanonTake(
+                    item.name,
+                    item.releaseInfo,
+                    item.genre || 'unknown',
+                    item.vote_average || 0
+                );
+                if (take) {
+                    setCached(item.name, item.releaseInfo, take);
+                    continue;
+                }
+            } catch (_pollErr) {
+                // Pollinations failed — try proxy fallback
+            }
+
+            // Fallback: Gemini proxy (if configured)
+            if (!this.PROXY_URL) continue;
+            if (!this.proxyChecked) await this._checkProxy();
+            if (!this.proxyAvailable) continue;
+
             try {
                 const response = await fetch(this.PROXY_URL, {
                     method: 'POST',
@@ -131,10 +156,7 @@ class C4KBackgroundAgents {
                     }
                 }
             } catch (_err) {
-                // Proxy unreachable — stop retrying
                 this.proxyAvailable = false;
-                this.stop();
-                break;
             }
         }
 

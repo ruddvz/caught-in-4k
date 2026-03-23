@@ -14,16 +14,20 @@ const getCached = (title, year) => {
     }
 };
 
-const CanonTakeBox = ({ title, year }) => {
+const CanonTakeBox = ({ title, year, takeOverride }) => {
     const [canonTake, setCanonTake] = useState(null);
 
     useEffect(() => {
+        if (takeOverride) {
+            setCanonTake(takeOverride);
+            return;
+        }
         if (!title) return;
         const cached = getCached(title, year);
         if (cached && cached.canonTake) {
             setCanonTake(cached.canonTake);
         }
-    }, [title, year]);
+    }, [title, year, takeOverride]);
 
     // Skeleton/loading state when no cached take yet
     const renderSkeleton = () => (

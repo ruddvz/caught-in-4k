@@ -1,9 +1,11 @@
 /**
  * Canon Takes Cache & API Hook
- * Manages localStorage caching and Gemini API calls via proxy
+ * Uses Pollinations.AI (free, no key) as primary, Gemini proxy as fallback
  */
 
 import { useCallback } from 'react';
+
+const { generateCanonTake } = require('./pollinationsApi');
 
 const CACHE_PREFIX = 'c4k_canon_take_';
 const PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || '';
@@ -11,9 +13,6 @@ const PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || '';
 export const useCanonTakes = () => {
     const getCacheKey = (title, year) => `${CACHE_PREFIX}${title}_${year}`;
 
-    /**
-   * Get cached Canon Take
-   */
     const getCached = useCallback((title, year) => {
         try {
             const key = getCacheKey(title, year);
@@ -25,9 +24,6 @@ export const useCanonTakes = () => {
         }
     }, []);
 
-    /**
-   * Store Canon Take in cache
-   */
     const setCached = useCallback((title, year, canonTake) => {
         try {
             const key = getCacheKey(title, year);
@@ -37,27 +33,34 @@ export const useCanonTakes = () => {
         }
     }, []);
 
-    /**
-   * Check if Canon Take is cached
-   */
     const isCached = useCallback((title, year) => {
         return getCached(title, year) !== null;
     }, [getCached]);
 
     /**
-   * Fetch Canon Take from API (if not cached)
-   */
+     * Fetch Canon Take — tries Pollinations.AI first, then Gemini proxy fallback
+     */
     const fetchCanonTake = useCallback(
         async (title, year, genres, imdbRating) => {
-            // Check cache first
             const cached = getCached(title, year);
             if (cached) {
                 return cached.canonTake;
             }
 
-            if (!PROXY_URL) {
-                return '';
+            // Primary: Pollinations.AI (free, no key needed)
+            try {
+                const genresStr = Array.isArray(genres) ? genres.join(', ') : (genres || 'unknown');
+                const take = await generateCanonTake(title, year, genresStr, imdbRating);
+                if (take) {
+                    setCached(title, year, take);
+                    return take;
+                }
+            } catch (err) {
+                console.warn('Pollinations Canon Take failed, trying proxy:', err.message);
             }
+
+            // Fallback: Gemini proxy (if configured)
+            if (!PROXY_URL) return '';
 
             try {
                 const response = await fetch(PROXY_URL, {
@@ -71,22 +74,17 @@ export const useCanonTakes = () => {
                     }),
                 });
 
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`Proxy error: ${response.statusText}`);
 
                 const data = await response.json();
-                const { canonTake } = data;
-
-                // Cache the result
-                if (canonTake) {
-                    setCached(title, year, canonTake);
+                if (data.canonTake) {
+                    setCached(title, year, data.canonTake);
+                    return data.canonTake;
                 }
-
-                return canonTake || '';
+                return '';
             } catch (error) {
                 console.error('Canon Take fetch error:', error);
-                return ''; // Graceful fallback
+                return '';
             }
         },
         [getCached, setCached]

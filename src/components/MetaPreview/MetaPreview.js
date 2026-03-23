@@ -16,6 +16,7 @@ const useBinaryState = require('stremio/common/useBinaryState');
 const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
 const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
 const CanonTakeBox = require('stremio/components/CanonTakeBox/CanonTakeBox');
+const { generateSatisfactionOneLiner } = require('stremio/common/pollinationsApi');
 const ActionButton = require('./ActionButton');
 const MetaLinks = require('./MetaLinks');
 const MetaPreviewPlaceholder = require('./MetaPreviewPlaceholder');
@@ -291,7 +292,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
             {
                 !compact && tier ?
                     <div className={styles['satisfaction-meter-container']}>
-                        <SatisfactionMeterBar tier={tier} size="detail" />
+                        <SatisfactionMeterWithAI tier={tier} title={name} released={released} releaseInfo={releaseInfo} />
                     </div>
                     :
                     null
@@ -344,10 +345,48 @@ const CanonTakeWithLogic = ({ title, released, releaseInfo, description, voteAve
 
     React.useEffect(() => {
         if (!title) return;
-        fetchCanonTake(title, year, description, voteAverage).then(setTake);
+        let cancelled = false;
+        fetchCanonTake(title, year, description, voteAverage).then((result) => {
+            if (!cancelled) setTake(result);
+        });
+        return () => { cancelled = true; };
     }, [title, year]);
 
     return <CanonTakeBox title={title} year={year} takeOverride={take} />;
+};
+
+const SAT_CACHE_PREFIX = 'c4k_sat_liner_';
+
+const SatisfactionMeterWithAI = ({ tier, title, released, releaseInfo }) => {
+    const [aiOneLiner, setAiOneLiner] = React.useState(null);
+    const year = released instanceof Date && !isNaN(released.getTime()) ? released.getFullYear() : releaseInfo;
+
+    React.useEffect(() => {
+        if (!title || !tier) return;
+        let cancelled = false;
+        const cacheKey = `${SAT_CACHE_PREFIX}${title}_${year}`;
+        try {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                setAiOneLiner(cached);
+                return;
+            }
+        } catch (_e) { /* ignore */ }
+
+        generateSatisfactionOneLiner(title, year, tier.name, tier.percentage)
+            .then((liner) => {
+                if (cancelled) return;
+                if (liner) {
+                    setAiOneLiner(liner);
+                    try { localStorage.setItem(cacheKey, liner); } catch (_e) { /* ignore */ }
+                }
+            })
+            .catch(() => { /* graceful fallback to static one-liner */ });
+        return () => { cancelled = true; };
+    }, [title, year, tier]);
+
+    const enhancedTier = aiOneLiner ? { ...tier, oneLiner: aiOneLiner } : tier;
+    return <SatisfactionMeterBar tier={enhancedTier} size="detail" />;
 };
 
 module.exports = MetaPreview;
