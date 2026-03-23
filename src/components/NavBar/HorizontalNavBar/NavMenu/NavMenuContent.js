@@ -29,10 +29,11 @@ const NavMenuContent = ({ onClick }) => {
         });
     }, []);
 
-    const displayName = profile.auth === null ? 'Guest' : (profile.auth.user.email?.split('@')[0] || 'User');
+    const email = profile.auth && profile.auth.user && profile.auth.user.email;
+    const displayName = profile.auth === null ? 'Guest' : (email ? email.split('@')[0] : 'User');
     const avatarUrl = profile.auth === null
         ? require('/assets/images/anonymous.png')
-        : profile.auth.user.avatar || require('/assets/images/default_avatar.png');
+        : (profile.auth.user && profile.auth.user.avatar) ? profile.auth.user.avatar : require('/assets/images/default_avatar.png');
 
     return (
         <div className={classnames(styles['nav-menu-container'], 'animation-fade-in')} onClick={onClick}>
@@ -87,7 +88,7 @@ const NavMenuContent = ({ onClick }) => {
                     href={profile.auth === null ? '#/intro' : null}
                     onClick={profile.auth !== null ? logoutButtonOnClick : null}
                 >
-                    <Icon className={styles['qa-icon']} name={profile.auth === null ? 'user' : 'exit'} />
+                    <Icon className={styles['qa-icon']} name={'person-outline'} />
                     <span>{profile.auth === null ? `${t('LOG_IN')} / ${t('SIGN_UP')}` : t('LOG_OUT')}</span>
                 </Button>
             </div>

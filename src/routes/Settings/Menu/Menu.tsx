@@ -3,8 +3,6 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { useServices } from 'stremio/services';
 import { Button } from 'stremio/components';
-// @ts-ignore
-import Icon from '@stremio/stremio-icons/react';
 import { SECTIONS } from '../constants';
 import { usePlatform } from 'stremio/common';
 import styles from './Menu.less';
@@ -16,11 +14,11 @@ type Props = {
 };
 
 const MENU_ITEMS = [
-    { id: 'GENERAL',    icon: 'settings',      labelKey: 'SETTINGS_NAV_GENERAL' },
-    { id: 'INTERFACE',  icon: 'brush',         labelKey: 'INTERFACE' },
-    { id: 'PLAYER',     icon: 'play-outline',  labelKey: 'SETTINGS_NAV_PLAYER' },
-    { id: 'STREAMING',  icon: 'stream',        labelKey: 'SETTINGS_NAV_STREAMING' },
-    { id: 'SHORTCUTS',  icon: 'keyboard',      labelKey: 'SETTINGS_NAV_SHORTCUTS', mobileHide: true },
+    { id: 'GENERAL',    labelKey: 'SETTINGS_NAV_GENERAL' },
+    { id: 'INTERFACE',  labelKey: 'INTERFACE' },
+    { id: 'PLAYER',     labelKey: 'SETTINGS_NAV_PLAYER' },
+    { id: 'STREAMING',  labelKey: 'SETTINGS_NAV_STREAMING' },
+    { id: 'SHORTCUTS',  labelKey: 'SETTINGS_NAV_SHORTCUTS', mobileHide: true },
 ];
 
 const Menu = ({ selected, streamingServer, onSelect }: Props) => {
@@ -45,7 +43,6 @@ const Menu = ({ selected, streamingServer, onSelect }: Props) => {
                         data-section={(SECTIONS as any)[item.id]}
                         onClick={onSelect}
                     >
-                        <Icon name={item.icon} className={styles['button-icon']} />
                         {t(item.labelKey)}
                     </Button>
                 );
