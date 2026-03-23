@@ -172,6 +172,8 @@
         gap: 0.2rem;
         padding: 0 0.2rem;
         width: 100%;
+        flex: 1 0 auto; // Grow to fill remaining card height so all cards in a row align
+        min-height: 3.5rem; // Fallback floor so desktop single-line titles don't collapse
 
         .title-label {
             font-size: 1.1rem;
@@ -193,6 +195,7 @@
             font-size: 0.85rem;
             font-weight: 700;
             color: var(--text-secondary);
+            margin-top: auto; // Pin rating/year to the bottom of the title-bar
 
             .rating {
                 color: var(--accent-tertiary);
@@ -260,7 +263,7 @@
 
         .title-bar-container {
             gap: 0.3rem;
-            min-height: 3.9rem;
+            min-height: 4.2rem; // Enough for 2-line title + meta-info row
             padding: 0 0.1rem;
 
             .title-label {
@@ -310,12 +313,12 @@
         }
 
         .title-bar-container {
-            min-height: 3.7rem;
+            min-height: 4rem; // Enough for 2-line title + meta-info row at small size
             margin-top: 0.35rem;
             
             .title-label {
                 min-height: 2.5em;
-                font-size: 0.95rem; // Slightly smaller for mobile grid
+                font-size: 0.95rem;
             }
 
             .meta-info-row {
