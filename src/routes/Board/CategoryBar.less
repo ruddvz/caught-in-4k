@@ -1,0 +1,46 @@
+// Copyright (C) 2017-2024 Smart code 203358507
+
+.category-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0 2rem;
+    margin-bottom: 3rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+
+    .category-pill {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 1rem 2rem;
+        background: var(--bg-surface-1);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: var(--radius-pill);
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        white-space: nowrap;
+        outline: none;
+
+        .icon {
+            font-size: 1.25rem;
+        }
+
+        &.active {
+            background: var(--accent-primary);
+            color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
+        }
+
+        &:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+    }
+}

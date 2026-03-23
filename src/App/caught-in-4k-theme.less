@@ -2,26 +2,26 @@
 // Premium 4K streaming UI with frosted glass panels and vibrant gradients
 
 :root {
-    // Primary Accent: Bright Cyan Neon (#00F0FF)
-    --primary-accent-color: rgb(0, 240, 255);
+    // New Dashboard Tokens
+    --bg-body: #1e2029;
+    --bg-surface-1: #2a2c38;
+    --bg-surface-2: #3b3e4f;
+    --accent-primary: #ffffff;
+    --accent-secondary: #ff4d4f;
+    --accent-tertiary: #ffd043;
+    --text-primary: #f8f9fa;
+    --text-secondary: #9ca3af;
+    --radius-card: 32px;
+    --radius-pill: 999px;
+    --radius-avatar: 16px;
+    --shadow-soft: 0 16px 32px rgba(0,0,0,0.2);
 
-    // Secondary Accent: Grey Monotone (replaces purple)
-    --secondary-accent-color: rgba(140, 140, 140, 1);
-
-    // Background Colors: Deep charcoal/black for cinematic aesthetic
-    --primary-background-color: #0c0c0c;
-    --secondary-background-color: #121212;
-    --modal-background-color: #1a1a1a;
-    --selection-green: #22b365; // Vibrant Green for selection highlights
-
-    // Liquid Glass Effect: Cyan Glow
-    --outer-glow: 0 0 20px rgba(0, 240, 255, 0.35);
-    
-    // Gradient Accents for Cinematic Bursts (updated to greys and neons)
-    --gradient-violet: linear-gradient(135deg, rgba(80, 80, 80, 0.6) 0%, rgba(80, 80, 80, 0) 50%);
-    --gradient-orange: linear-gradient(45deg, rgba(120, 120, 120, 0.6) 0%, rgba(120, 120, 120, 0) 50%);
-    --gradient-blue: linear-gradient(225deg, rgba(0, 240, 255, 0.6) 0%, rgba(0, 240, 255, 0) 50%);
-    --gradient-pink: linear-gradient(315deg, rgba(160, 160, 160, 0.6) 0%, rgba(160, 160, 160, 0) 50%);
+    // Legacy overrides to ensure compatibility while transitioning
+    --primary-accent-color: var(--accent-primary);
+    --secondary-accent-color: var(--text-secondary);
+    --primary-background-color: var(--bg-body);
+    --secondary-background-color: var(--bg-surface-1);
+    --modal-background-color: var(--bg-surface-2);
 }
 
 // Frosted Glass Panel Effect

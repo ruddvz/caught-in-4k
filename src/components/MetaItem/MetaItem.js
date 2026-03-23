@@ -15,7 +15,7 @@ const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
 const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
 const styles = require('./styles');
 
-const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, ...props }) => {
+const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, releaseInfo, ...props }) => {
     const t = useTranslate();
     const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
     const tier = useSatisfactionMeter(voteAverage);
@@ -138,6 +138,10 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                     <div className={styles['title-bar-container']}>
                         <div className={styles['title-label']}>
                             {typeof name === 'string' && name.length > 0 ? name : ''}
+                        </div>
+                        <div className={styles['meta-info-row']}>
+                            {voteAverage ? <span className={styles['rating']}>★ {voteAverage.toFixed(1)}</span> : null}
+                            {releaseInfo ? <span className={styles['year']}>{releaseInfo.toString().substring(0, 4)}</span> : null}
                         </div>
                         {
                             Array.isArray(options) && options.length > 0 ?

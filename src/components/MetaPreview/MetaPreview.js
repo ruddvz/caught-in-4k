@@ -104,188 +104,203 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
     ), [name]);
     return (
         <div className={classnames(className, styles['meta-preview-container'], { [styles['compact']]: compact })} ref={ref}>
+            {/* === HERO WIDGET: background + title + actions === */}
+            <div className={styles['hero-widget']}>
+                {
+                    typeof background === 'string' && background.length > 0 ?
+                        <div className={styles['background-image-layer']}>
+                            <Image className={styles['background-image']} src={background} alt={' '} />
+                        </div>
+                        :
+                        null
+                }
+                <div className={styles['hero-widget-content']}>
+                    {
+                        typeof logo === 'string' && logo.length > 0 ?
+                            <Image
+                                className={styles['logo']}
+                                src={logo}
+                                alt={' '}
+                                title={name}
+                                renderFallback={renderLogoFallback}
+                            />
+                            :
+                            renderLogoFallback()
+                    }
+                    {
+                        (typeof releaseInfo === 'string' && releaseInfo.length > 0) || (released instanceof Date && !isNaN(released.getTime())) || (typeof runtime === 'string' && runtime.length > 0) || linksGroups.has(CONSTANTS.IMDB_LINK_CATEGORY) ?
+                            <div className={styles['runtime-release-info-container']}>
+                                {
+                                    typeof runtime === 'string' && runtime.length > 0 ?
+                                        <div className={styles['runtime-label']}>{runtime}</div>
+                                        :
+                                        null
+                                }
+                                {
+                                    typeof releaseInfo === 'string' && releaseInfo.length > 0 ?
+                                        <div className={styles['release-info-label']}>{releaseInfo}</div>
+                                        :
+                                        released instanceof Date && !isNaN(released.getTime()) ?
+                                            <div className={styles['release-info-label']}>{released.getFullYear()}</div>
+                                            :
+                                            null
+                                }
+                                {
+                                    linksGroups.has(CONSTANTS.IMDB_LINK_CATEGORY) ?
+                                        <Button
+                                            className={styles['imdb-button-container']}
+                                            title={linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).label}
+                                            href={linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).href}
+                                            target={'_blank'}
+                                            {...(compact ? { tabIndex: -1 } : null)}
+                                        >
+                                            <div className={styles['label']}>{linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).label}</div>
+                                            <Icon className={styles['icon']} name={'imdb'} />
+                                        </Button>
+                                        :
+                                        null
+                                }
+                            </div>
+                            :
+                            null
+                    }
+                    {/* Action buttons rendered inside hero card */}
+                    <div className={styles['action-buttons-container']}>
+                        {
+                            typeof toggleInLibrary === 'function' ?
+                                <ActionButton
+                                    className={styles['action-button']}
+                                    icon={inLibrary ? 'remove-from-library' : 'add-to-library'}
+                                    label={inLibrary ? t('REMOVE_FROM_LIB') : t('ADD_TO_LIB')}
+                                    tooltip={compact}
+                                    tabIndex={compact ? -1 : 0}
+                                    onClick={toggleInLibrary}
+                                />
+                                :
+                                null
+                        }
+                        {
+                            typeof trailerHref === 'string' ?
+                                <ActionButton
+                                    className={styles['action-button']}
+                                    icon={'trailer'}
+                                    label={t('TRAILER')}
+                                    tabIndex={compact ? -1 : 0}
+                                    href={trailerHref}
+                                    tooltip={compact}
+                                />
+                                :
+                                null
+                        }
+                        {
+                            typeof showHref === 'string' && compact ?
+                                <ActionButton
+                                    className={classnames(styles['action-button'], styles['show-button'])}
+                                    icon={'play'}
+                                    label={t('SHOW')}
+                                    tabIndex={compact ? -1 : 0}
+                                    href={showHref}
+                                />
+                                :
+                                null
+                        }
+                        {
+                            !compact && ratingInfo !== null ?
+                                <Ratings
+                                    ratingInfo={ratingInfo}
+                                    className={styles['ratings']}
+                                />
+                                :
+                                null
+                        }
+                        {
+                            linksGroups.has(CONSTANTS.SHARE_LINK_CATEGORY) && !compact ?
+                                <React.Fragment>
+                                    <ActionButton
+                                        className={styles['action-button']}
+                                        icon={'share'}
+                                        label={t('CTX_SHARE')}
+                                        tooltip={true}
+                                        tabIndex={compact ? -1 : 0}
+                                        onClick={openShareModal}
+                                    />
+                                    {
+                                        shareModalOpen ?
+                                            <ModalDialog title={t('CTX_SHARE')} onCloseRequest={closeShareModal}>
+                                                <SharePrompt
+                                                    className={styles['share-prompt']}
+                                                    url={linksGroups.get(CONSTANTS.SHARE_LINK_CATEGORY).href}
+                                                />
+                                            </ModalDialog>
+                                            :
+                                            null
+                                    }
+                                </React.Fragment>
+                                :
+                                null
+                        }
+                    </div>
+                </div>
+            </div>
+
+            {/* === DESCRIPTION WIDGET === */}
             {
-                typeof background === 'string' && background.length > 0 ?
-                    <div className={styles['background-image-layer']}>
-                        <Image className={styles['background-image']} src={background} alt={' '} />
+                typeof description === 'string' && description.length > 0 ?
+                    <div className={styles['description-widget']}>
+                        <div className={styles['label-container']}>{t('SUMMARY')}</div>
+                        <div className={styles['description-text']}>{description}</div>
                     </div>
                     :
                     null
             }
-            <div className={styles['meta-info-container']}>
-                {
-                    typeof logo === 'string' && logo.length > 0 ?
-                        <Image
-                            className={styles['logo']}
-                            src={logo}
-                            alt={' '}
-                            title={name}
-                            renderFallback={renderLogoFallback}
-                        />
-                        :
-                        renderLogoFallback()
-                }
-                {
-                    (typeof releaseInfo === 'string' && releaseInfo.length > 0) || (released instanceof Date && !isNaN(released.getTime())) || (typeof runtime === 'string' && runtime.length > 0) || linksGroups.has(CONSTANTS.IMDB_LINK_CATEGORY) ?
-                        <div className={styles['runtime-release-info-container']}>
-                            {
-                                typeof runtime === 'string' && runtime.length > 0 ?
-                                    <div className={styles['runtime-label']}>{runtime}</div>
-                                    :
-                                    null
-                            }
-                            {
-                                typeof releaseInfo === 'string' && releaseInfo.length > 0 ?
-                                    <div className={styles['release-info-label']}>{releaseInfo}</div>
-                                    :
-                                    released instanceof Date && !isNaN(released.getTime()) ?
-                                        <div className={styles['release-info-label']}>{released.getFullYear()}</div>
-                                        :
-                                        null
-                            }
-                            {
-                                linksGroups.has(CONSTANTS.IMDB_LINK_CATEGORY) ?
-                                    <Button
-                                        className={styles['imdb-button-container']}
-                                        title={linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).label}
-                                        href={linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).href}
-                                        target={'_blank'}
-                                        {...(compact ? { tabIndex: -1 } : null)}
-                                    >
-                                        <div className={styles['label']}>{linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).label}</div>
-                                        <Icon className={styles['icon']} name={'imdb'} />
-                                    </Button>
-                                    :
-                                    null
-                            }
-                        </div>
-                        :
-                        null
-                }
-                {
-                    compact && typeof description === 'string' && description.length > 0 ?
-                        <div className={styles['description-container']}>
-                            {description}
-                        </div>
-                        :
-                        null
-                }
-                {
-                    Array.from(linksGroups.keys())
-                        .filter((category) => {
-                            return category !== CONSTANTS.IMDB_LINK_CATEGORY &&
-                                category !== CONSTANTS.SHARE_LINK_CATEGORY &&
-                                category !== CONSTANTS.WRITERS_LINK_CATEGORY;
-                        })
-                        .map((category, index) => (
-                            <MetaLinks
-                                key={index}
-                                className={styles['meta-links']}
-                                label={category}
-                                links={linksGroups.get(category)}
-                            />
-                        ))
-                }
-                {
-                    !compact && typeof description === 'string' && description.length > 0 ?
-                        <div className={styles['description-container']}>
-                            <div className={styles['label-container']}>
-                                {t('SUMMARY')}
-                            </div>
-                            {description}
-                        </div>
-                        :
-                        null
-                }
-                {
-                    !compact && tier ?
-                        <div className={styles['satisfaction-meter-container']}>
-                            <SatisfactionMeterBar tier={tier} size="detail" />
-                        </div>
-                        :
-                        null
-                }
-                {
-                    !compact ? (
-                        <CanonTakeWithLogic title={name} released={released} releaseInfo={releaseInfo} description={description} voteAverage={voteAverage} />
-                    ) : null
-                }
-            </div>
-            <div className={styles['action-buttons-container']}>
-                {
-                    typeof toggleInLibrary === 'function' ?
-                        <ActionButton
-                            className={styles['action-button']}
-                            icon={inLibrary ? 'remove-from-library' : 'add-to-library'}
-                            label={inLibrary ? t('REMOVE_FROM_LIB') : t('ADD_TO_LIB')}
-                            tooltip={compact}
-                            tabIndex={compact ? -1 : 0}
-                            onClick={toggleInLibrary}
-                        />
-                        :
-                        null
-                }
-                {
-                    typeof trailerHref === 'string' ?
-                        <ActionButton
-                            className={styles['action-button']}
-                            icon={'trailer'}
-                            label={t('TRAILER')}
-                            tabIndex={compact ? -1 : 0}
-                            href={trailerHref}
-                            tooltip={compact}
-                        />
-                        :
-                        null
-                }
-                {
-                    typeof showHref === 'string' && compact ?
-                        <ActionButton
-                            className={classnames(styles['action-button'], styles['show-button'])}
-                            icon={'play'}
-                            label={t('SHOW')}
-                            tabIndex={compact ? -1 : 0}
-                            href={showHref}
-                        />
-                        :
-                        null
-                }
-                {
-                    !compact && ratingInfo !== null ?
-                        <Ratings
-                            ratingInfo={ratingInfo}
-                            className={styles['ratings']}
-                        />
-                        :
-                        null
-                }
-                {
-                    linksGroups.has(CONSTANTS.SHARE_LINK_CATEGORY) && !compact ?
-                        <React.Fragment>
-                            <ActionButton
-                                className={styles['action-button']}
-                                icon={'share'}
-                                label={t('CTX_SHARE')}
-                                tooltip={true}
-                                tabIndex={compact ? -1 : 0}
-                                onClick={openShareModal}
-                            />
-                            {
-                                shareModalOpen ?
-                                    <ModalDialog title={t('CTX_SHARE')} onCloseRequest={closeShareModal}>
-                                        <SharePrompt
-                                            className={styles['share-prompt']}
-                                            url={linksGroups.get(CONSTANTS.SHARE_LINK_CATEGORY).href}
-                                        />
-                                    </ModalDialog>
-                                    :
-                                    null
-                            }
-                        </React.Fragment>
-                        :
-                        null
-                }
-            </div>
+
+            {/* === GENRE/LINKS WIDGET === */}
+            {
+                Array.from(linksGroups.keys())
+                    .filter((category) => {
+                        return category !== CONSTANTS.IMDB_LINK_CATEGORY &&
+                            category !== CONSTANTS.SHARE_LINK_CATEGORY &&
+                            category !== CONSTANTS.WRITERS_LINK_CATEGORY;
+                    })
+                    .length > 0 ?
+                    <div className={styles['meta-links-widget']}>
+                        {
+                            Array.from(linksGroups.keys())
+                                .filter((category) => {
+                                    return category !== CONSTANTS.IMDB_LINK_CATEGORY &&
+                                        category !== CONSTANTS.SHARE_LINK_CATEGORY &&
+                                        category !== CONSTANTS.WRITERS_LINK_CATEGORY;
+                                })
+                                .map((category, index) => (
+                                    <MetaLinks
+                                        key={index}
+                                        className={styles['meta-links']}
+                                        label={category}
+                                        links={linksGroups.get(category)}
+                                    />
+                                ))
+                        }
+                    </div>
+                    :
+                    null
+            }
+
+            {/* === SATISFACTION METER WIDGET === */}
+            {
+                !compact && tier ?
+                    <div className={styles['satisfaction-meter-container']}>
+                        <SatisfactionMeterBar tier={tier} size="detail" />
+                    </div>
+                    :
+                    null
+            }
+
+            {/* === CANON TAKE WIDGET === */}
+            {
+                !compact ? (
+                    <CanonTakeWithLogic title={name} released={released} releaseInfo={releaseInfo} description={description} voteAverage={voteAverage} />
+                ) : null
+            }
         </div>
     );
 });

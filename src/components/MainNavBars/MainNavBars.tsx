@@ -2,7 +2,7 @@
 
 import React, { memo } from 'react';
 import classnames from 'classnames';
-import { HorizontalNavBar, VerticalNavBar } from '../NavBar';
+import { HorizontalNavBar, VerticalNavBar, TopNavigationBar } from '../NavBar';
 import styles from './MainNavBars.less';
 
 const TABS = [
@@ -22,27 +22,14 @@ type Props = {
 };
 
 const MainNavBars = memo(({ className, route, query, children }: Props) => {
-    const isSearch = route === 'search';
     return (
         <div className={classnames(className, styles['main-nav-bars-container'])}>
-            {isSearch && (
-                // @ts-ignore
-                <HorizontalNavBar
-                    className={styles['horizontal-nav-bar']}
-                    route={route}
-                    query={query}
-                    searchBar={true}
-                    navMenu={false}
-                    fullscreenButton={false}
-                />
-            )}
-            {/* @ts-ignore */}
-            <VerticalNavBar
-                className={styles['vertical-nav-bar']}
-                selected={route}
+            <TopNavigationBar
+                className={styles['top-nav-bar']}
+                route={route}
                 tabs={TABS}
             />
-            <div className={classnames(styles['nav-content-container'], isSearch && styles['nav-content-with-search'])}>{children}</div>
+            <div className={styles['nav-content-container']}>{children}</div>
         </div>
     );
 });

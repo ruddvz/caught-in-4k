@@ -1,0 +1,187 @@
+// Copyright (C) 2017-2024 Smart code 203358507
+
+.top-nav-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 2.5rem;
+    height: 5.5rem;
+    background: transparent;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1001;
+
+    .left-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+
+        .logo {
+            width: 2.8rem;
+            height: 2.8rem;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            font-family: 'PlusJakartaSans', sans-serif;
+        }
+    }
+
+    .center-section {
+        flex: 2;
+        display: flex;
+        justify-content: center;
+
+        .nav-pill {
+            display: flex;
+            align-items: center;
+            background: var(--bg-surface-1);
+            padding: 0.45rem;
+            border-radius: var(--radius-pill);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.35);
+            gap: 0.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+
+            .nav-tab {
+                padding: 0.7rem 1.75rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                border-radius: var(--radius-pill);
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--text-secondary);
+                background: transparent;
+                transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                cursor: pointer;
+                text-decoration: none;
+
+                &.active {
+                    background: var(--accent-primary);
+                    color: #000;
+                    transform: scale(1.02);
+                }
+
+                &:hover:not(.active) {
+                    color: var(--text-primary);
+                    background: rgba(255, 255, 255, 0.08);
+                }
+            }
+
+            .search-icon-btn {
+                width: 2.8rem;
+                height: 2.8rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-secondary);
+                border: none;
+                background: transparent;
+                padding: 0;
+                cursor: pointer;
+
+                .icon {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+
+                &:hover {
+                    color: var(--text-primary);
+                    background: rgba(255, 255, 255, 0.08);
+                    border-radius: 50%;
+                }
+            }
+        }
+    }
+
+    .right-section {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 1.25rem;
+
+        .notif-btn {
+            position: relative;
+            width: 3.2rem;
+            height: 3.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s ease;
+
+            .icon {
+                width: 1.8rem;
+                height: 1.8rem;
+            }
+
+            .notif-dot {
+                position: absolute;
+                top: 0.8rem;
+                right: 0.8rem;
+                width: 0.6rem;
+                height: 0.6rem;
+                background: var(--accent-secondary);
+                border-radius: 50%;
+                border: 2px solid var(--bg-body);
+                animation: pulse-red 2s infinite;
+            }
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        .profile-btn {
+            width: 3.2rem;
+            height: 3.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            .icon {
+                width: 2.2rem;
+                height: 2.2rem;
+            }
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: scale(1.05);
+            }
+        }
+    }
+}
+
+@keyframes pulse-red {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 77, 79, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); }
+}
+
+@media only screen and (max-width: 1024px) {
+    .top-nav-bar-container {
+        padding: 0.75rem 1rem;
+        
+        .brand-name {
+            display: none;
+        }
+    }
+}

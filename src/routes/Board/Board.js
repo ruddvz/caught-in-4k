@@ -11,6 +11,7 @@ const useCanonTakesQueue = require('stremio/services/CanonTakesQueue/CanonTakesQ
 const useBoard = require('./useBoard');
 const useContinueWatchingPreview = require('./useContinueWatchingPreview');
 const HeroShelf = require('./HeroShelf');
+const CategoryBar = require('./CategoryBar');
 const styles = require('./styles');
 const { default: StreamingServerWarning } = require('./StreamingServerWarning');
 
@@ -87,6 +88,8 @@ const Board = () => {
                             :
                             null
                     }
+                    <CategoryBar />
+                    <div className={styles['board-section-title']}>Trending in Animation</div>
                     {
                         continueWatchingPreview.items.length > 0 ?
                             <MetaRow
