@@ -141,6 +141,23 @@ const Profiles = () => {
     const getAccent = (p) =>
         p.avatarIndex !== undefined ? (AVATAR_ACCENTS[p.avatarIndex] || '#fff') : '#fff';
 
+    // Convert a #rrggbb hex to an rgba() string for CSS custom property use
+    const hexToRgba = (hex, alpha) => {
+        const h = hex.replace('#', '');
+        const r = parseInt(h.slice(0, 2), 16);
+        const g = parseInt(h.slice(2, 4), 16);
+        const b = parseInt(h.slice(4, 6), 16);
+        return `rgba(${r},${g},${b},${alpha})`;
+    };
+
+    const getAccentStyle = (p) => {
+        const hex = getAccent(p);
+        return {
+            '--accent': hex,
+            '--accent-rgba': hexToRgba(hex, 0.28),
+        };
+    };
+
     return (
         <div className={classnames(styles['profiles-page'], { [styles['exiting']]: isExiting })}>
 
@@ -159,7 +176,7 @@ const Profiles = () => {
                             <div
                                 key={p.id}
                                 className={classnames(styles['profile-card'], { [styles['focused']]: i === focusedIndex })}
-                                style={{ '--accent': getAccent(p) }}
+                                style={getAccentStyle(p)}
                                 onMouseEnter={() => setFocusedIndex(i)}
                                 onClick={() => doSelectProfile(p)}
                             >

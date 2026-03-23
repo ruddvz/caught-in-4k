@@ -12,7 +12,9 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
+    // overflow: hidden removed — it was clipping the avatar glow box-shadows.
+    // The page fills the full viewport so nothing escapes the screen anyway.
+    overflow: visible;
     font-family: 'PlusJakartaSans', -apple-system, sans-serif;
 
     &.exiting {
@@ -171,7 +173,8 @@
             transform: scale(1.06);
             border-color: var(--accent, rgba(255, 255, 255, 0.5));
             box-shadow:
-                0 0 0 6px rgba(255, 255, 255, 0.06),
+                0 0 0 4px rgba(255, 255, 255, 0.08),
+                0 0 40px 8px var(--accent-rgba, rgba(255, 255, 255, 0.18)),
                 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
@@ -184,7 +187,7 @@
         }
 
         &::before {
-            opacity: 0.15;
+            opacity: 0.22;
         }
     }
 
@@ -193,10 +196,9 @@
         .profile-avatar {
             transform: scale(1.12);
             border-color: var(--accent, #fff);
-            // Pure rgba box-shadows — no color-mix(), no clipping artifact
             box-shadow:
-                0 0 0 6px rgba(255, 255, 255, 0.1),
-                0 0 70px 10px rgba(255, 255, 255, 0.12),
+                0 0 0 5px rgba(255, 255, 255, 0.12),
+                0 0 60px 16px var(--accent-rgba, rgba(255, 255, 255, 0.22)),
                 0 30px 70px rgba(0, 0, 0, 0.6);
         }
 
@@ -207,7 +209,7 @@
         }
 
         &::before {
-            opacity: 0.28;
+            opacity: 0.35;
             filter: blur(50px);
         }
     }
