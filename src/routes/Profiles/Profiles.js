@@ -33,6 +33,7 @@ const Profiles = () => {
     const [newName, setNewName] = React.useState('');
     const [newAvatarIndex, setNewAvatarIndex] = React.useState(0);
     const [focusedIndex, setFocusedIndex] = React.useState(0);
+    const [isExiting, setIsExiting] = React.useState(false);
 
     React.useEffect(() => {
         try {
@@ -45,9 +46,29 @@ const Profiles = () => {
         }
     }, []);
 
-    const saveProfiles = (newProfiles) => {
-        setProfiles(newProfiles);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newProfiles));
+    // Keyboard navigation in select view
+    React.useEffect(() => {
+        if (view !== 'select' || profiles.length === 0) return;
+        const handleKey = (e) => {
+            if (e.key === 'ArrowLeft') {
+                setFocusedIndex(i => Math.max(0, i - 1));
+            } else if (e.key === 'ArrowRight') {
+                setFocusedIndex(i => Math.min(profiles.length - 1, i + 1));
+            } else if (e.key === 'Enter' && profiles[focusedIndex]) {
+                setIsExiting(true);
+                setTimeout(() => {
+                    localStorage.setItem('c4k_current_profile', JSON.stringify(profiles[focusedIndex]));
+                    window.location.hash = '#/';
+                }, 350);
+            }
+        };
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+    }, [view, profiles, focusedIndex]);
+
+    const saveProfiles = (updated) => {
+        setProfiles(updated);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
     };
 
     const handleCreateProfile = () => {
@@ -64,9 +85,21 @@ const Profiles = () => {
         setView('select');
     };
 
+    const handleDeleteProfile = (e, profileId) => {
+        e.stopPropagation();
+        const updated = profiles.filter(p => p.id !== profileId);
+        if (focusedIndex >= updated.length) {
+            setFocusedIndex(Math.max(0, updated.length - 1));
+        }
+        saveProfiles(updated);
+    };
+
     const onSelectProfile = (profile) => {
-        localStorage.setItem('c4k_current_profile', JSON.stringify(profile));
-        window.location.hash = '#/';
+        setIsExiting(true);
+        setTimeout(() => {
+            localStorage.setItem('c4k_current_profile', JSON.stringify(profile));
+            window.location.hash = '#/';
+        }, 350);
     };
 
     const currentAvatar = React.useMemo(() => {
@@ -75,35 +108,48 @@ const Profiles = () => {
         return p ? (p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar) : null;
     }, [view, profiles, focusedIndex, newAvatarIndex]);
 
+    const focusedProfile = profiles[focusedIndex];
+
     return (
-        <div className={styles['profiles-page-container']}>
-            {/* Dynamic Background */}
+        <div className={classnames(styles['profiles-page-container'], { [styles['exiting']]: isExiting })}>
+            {/* Dynamic blurred avatar background */}
             <div className={styles['dynamic-bg']} style={{ backgroundImage: currentAvatar ? `url(${currentAvatar})` : 'none' }} />
             <div className={styles['bg-overlay']} />
 
-            <div className={classnames(styles['profiles-content'], 'animation-fade-in')}>
+            <div className={styles['profiles-content']}>
 
                 {view === 'select' && (
                     <div className={styles['select-view']}>
-                        <h1 className={styles['welcome-text']}>Welcome back</h1>
+                        <h1 className={styles['welcome-text']}>Who's watching?</h1>
+                        <p className={styles['welcome-sub']}>Pick your profile to continue</p>
 
                         <div className={styles['main-profile-display']}>
                             {profiles.length > 0 ? (
-                                <div
-                                    className={styles['focus-avatar']}
-                                    style={{ backgroundImage: `url(${currentAvatar})` }}
-                                    onClick={() => onSelectProfile(profiles[focusedIndex])}
-                                >
-                                    <div className={styles['play-hint']}>Tap to start</div>
-                                </div>
+                                <>
+                                    <div
+                                        className={styles['focus-avatar']}
+                                        style={{ backgroundImage: `url(${currentAvatar})` }}
+                                        onClick={() => onSelectProfile(focusedProfile)}
+                                        tabIndex={0}
+                                        onKeyDown={(e) => e.key === 'Enter' && onSelectProfile(focusedProfile)}
+                                    >
+                                        <div className={styles['play-hint']}>
+                                            <span className={styles['play-icon']}>▶</span>
+                                            <span>Watch Now</span>
+                                        </div>
+                                    </div>
+                                    <h2 className={styles['focus-name']}>{focusedProfile ? focusedProfile.name : ''}</h2>
+                                </>
                             ) : (
-                                <div className={styles['empty-avatar']} onClick={() => setView('add')}>
-                                    <span>+</span>
-                                </div>
+                                <>
+                                    <div className={styles['empty-avatar']} onClick={() => setView('add')}>
+                                        <span className={styles['empty-plus']}>+</span>
+                                        <span className={styles['empty-label']}>Create Profile</span>
+                                    </div>
+                                    <h2 className={styles['focus-name']}>Get started</h2>
+                                    <p className={styles['empty-hint']}>Add a profile to begin your personalized journey</p>
+                                </>
                             )}
-                            <h2 className={styles['focus-name']}>
-                                {profiles.length > 0 ? profiles[focusedIndex].name : 'New Story'}
-                            </h2>
                         </div>
 
                         <div className={styles['carousel-wrapper']}>
@@ -119,6 +165,14 @@ const Profiles = () => {
                                             className={styles['mini-avatar']}
                                             style={{ backgroundImage: `url(${p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar})` }}
                                         />
+                                        <span className={styles['mini-name']}>{p.name}</span>
+                                        <button
+                                            className={styles['delete-btn']}
+                                            onClick={(e) => handleDeleteProfile(e, p.id)}
+                                            title={`Remove ${p.name}`}
+                                        >
+                                            ✕
+                                        </button>
                                     </div>
                                 ))}
 
@@ -127,6 +181,7 @@ const Profiles = () => {
                                         <div className={classnames(styles['mini-avatar'], styles['add-node'])}>
                                             <span>+</span>
                                         </div>
+                                        <span className={styles['mini-name']}>Add Profile</span>
                                     </div>
                                 )}
                             </div>
@@ -141,7 +196,8 @@ const Profiles = () => {
                 {view === 'add' && (
                     <div className={styles['add-view']}>
                         <div className={styles['add-glass-card']}>
-                            <h1 className={styles['add-title']}>New Profile</h1>
+                            <h1 className={styles['add-title']}>Create Profile</h1>
+                            <p className={styles['add-subtitle']}>Choose an avatar and pick a name</p>
 
                             <div className={styles['avatar-display-large']}>
                                 <div
@@ -164,9 +220,11 @@ const Profiles = () => {
                             <div className={styles['name-input-container']}>
                                 <input
                                     className={styles['modern-input']}
-                                    placeholder="Who is this?"
+                                    placeholder="Enter a name..."
                                     value={newName}
                                     onChange={(e) => setNewName(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && newName.trim() && handleCreateProfile()}
+                                    maxLength={20}
                                     autoFocus
                                 />
                             </div>
@@ -177,7 +235,7 @@ const Profiles = () => {
                                     onClick={handleCreateProfile}
                                     disabled={!newName.trim()}
                                 >
-                                    Start Browsing
+                                    Start Watching
                                 </Button>
                                 <Button
                                     className={classnames(styles['modal-btn'], styles['secondary-btn'])}

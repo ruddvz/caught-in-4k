@@ -52,13 +52,31 @@
         animation: contentFadeIn 0.8s ease forwards;
     }
 
+    // Exit animation
+    &.exiting {
+        .profiles-content {
+            opacity: 0;
+            transform: scale(0.96);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+    }
+
     .welcome-text {
-        font-size: 0.85rem;
+        font-size: 1.9rem;
         font-weight: 800;
-        color: rgba(255, 255, 255, 0.25);
-        text-transform: uppercase;
-        letter-spacing: 0.35em;
+        color: #fff;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.4rem;
+        text-align: center;
+    }
+
+    .welcome-sub {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.35);
+        letter-spacing: 0.05em;
         margin-bottom: 3rem;
+        text-align: center;
     }
 
     // Large focused avatar
@@ -89,16 +107,23 @@
                 position: absolute;
                 inset: 0;
                 display: flex;
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                background: rgba(0, 0, 0, 0.5);
+                gap: 0.4rem;
+                background: rgba(0, 0, 0, 0.55);
                 color: #fff;
-                font-size: 0.85rem;
+                font-size: 0.75rem;
                 font-weight: 800;
                 text-transform: uppercase;
-                letter-spacing: 0.15em;
+                letter-spacing: 0.18em;
                 opacity: 0;
                 transition: opacity 0.3s ease;
+
+                .play-icon {
+                    font-size: 1.5rem;
+                    display: block;
+                }
             }
 
             &:hover {
@@ -121,20 +146,49 @@
             background: rgba(255, 255, 255, 0.03);
             border: 2px dashed rgba(255, 255, 255, 0.15);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 4rem;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.15);
+            gap: 0.5rem;
             margin-bottom: 2rem;
+            cursor: pointer;
             transition: all 0.3s ease;
+
+            .empty-plus {
+                font-size: 3.5rem;
+                font-weight: 200;
+                color: rgba(255, 255, 255, 0.25);
+                line-height: 1;
+                transition: color 0.3s ease;
+            }
+
+            .empty-label {
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: rgba(255, 255, 255, 0.2);
+                text-transform: uppercase;
+                letter-spacing: 0.12em;
+                transition: color 0.3s ease;
+            }
 
             &:hover {
                 background: rgba(255, 255, 255, 0.06);
-                color: #fff;
                 border-color: rgba(255, 255, 255, 0.5);
                 transform: scale(1.05);
+
+                .empty-plus, .empty-label {
+                    color: #fff;
+                }
             }
+        }
+
+        .empty-hint {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.2);
+            text-align: center;
+            max-width: 260px;
+            line-height: 1.6;
+            margin-top: 0.5rem;
         }
 
         .focus-name {
@@ -165,7 +219,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.45rem;
+            position: relative;
 
             .mini-avatar {
                 width: 4.5rem;
@@ -178,16 +233,74 @@
                 transition: all 0.3s ease;
             }
 
-            &:hover .mini-avatar {
-                opacity: 0.7;
-                transform: scale(1.1);
+            .mini-name {
+                font-size: 0.65rem;
+                font-weight: 700;
+                color: rgba(255, 255, 255, 0.3);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                max-width: 5rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-align: center;
+                transition: color 0.3s ease;
             }
 
-            &.active .mini-avatar {
-                opacity: 1;
-                border-color: #fff;
-                transform: scale(1.2);
-                box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            .delete-btn {
+                position: absolute;
+                top: -0.3rem;
+                right: -0.3rem;
+                width: 1.4rem;
+                height: 1.4rem;
+                border-radius: 50%;
+                background: rgba(20, 20, 20, 0.9);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 0.55rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                opacity: 0;
+                transition: all 0.2s ease;
+                line-height: 1;
+                padding: 0;
+
+                &:hover {
+                    background: #e53935;
+                    border-color: #e53935;
+                    color: #fff;
+                    transform: scale(1.1);
+                }
+            }
+
+            &:hover {
+                .mini-avatar {
+                    opacity: 0.7;
+                    transform: scale(1.1);
+                }
+
+                .mini-name {
+                    color: rgba(255, 255, 255, 0.7);
+                }
+
+                .delete-btn {
+                    opacity: 1;
+                }
+            }
+
+            &.active {
+                .mini-avatar {
+                    opacity: 1;
+                    border-color: #fff;
+                    transform: scale(1.2);
+                    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+                }
+
+                .mini-name {
+                    color: #fff;
+                }
             }
 
             .add-node {
@@ -198,6 +311,7 @@
                 font-size: 1.5rem;
                 font-weight: 300;
                 color: rgba(255, 255, 255, 0.2);
+                transition: all 0.3s ease;
 
                 &:hover {
                     color: #fff;
@@ -256,8 +370,15 @@
         font-size: 2rem;
         font-weight: 800;
         color: #fff;
-        margin-bottom: 2.5rem;
+        margin-bottom: 0.4rem;
         letter-spacing: -0.02em;
+    }
+
+    .add-subtitle {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.3);
+        letter-spacing: 0.05em;
+        margin-bottom: 2.2rem;
     }
 
     .avatar-display-large {
@@ -389,7 +510,12 @@
         }
 
         .welcome-text {
-            font-size: 0.7rem;
+            font-size: 1.4rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .welcome-sub {
+            font-size: 0.75rem;
             margin-bottom: 2rem;
         }
 
@@ -415,9 +541,16 @@
         .profile-carousel {
             gap: 1.25rem;
 
-            .mini-card .mini-avatar {
-                width: 3.5rem;
-                height: 3.5rem;
+            .mini-card {
+                .mini-avatar {
+                    width: 3.5rem;
+                    height: 3.5rem;
+                }
+
+                .mini-name {
+                    font-size: 0.6rem;
+                    max-width: 4rem;
+                }
             }
         }
 
