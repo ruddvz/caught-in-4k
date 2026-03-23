@@ -30,7 +30,7 @@ const HeroShelf = ({ items }) => {
         if (itemCount <= 1) return;
         const id = setInterval(() => {
             setCurrentIndex((prev) => (prev + 1) % itemCount);
-        }, 15000);
+        }, 8000);
         return () => clearInterval(id);
     }, [itemCount]);
 

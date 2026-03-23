@@ -5,18 +5,18 @@ const classnames = require('classnames');
 const styles = require('./CategoryBar.less');
 
 const CATEGORIES = [
-  { id: 'trending', label: 'Trending', icon: '🔥' },
-  { id: 'action', label: 'Action', icon: '⚔️' },
-  { id: 'romance', label: 'Romance', icon: '❤️' },
-  { id: 'animation', label: 'Animation', icon: '🧸' },
-  { id: 'horror', label: 'Horror', icon: '👻' },
-  { id: 'special', label: 'Special', icon: '🌟' },
-  { id: 'drakor', label: 'Drakor', icon: '🇰🇷' },
+    { id: 'trending', label: 'Trending', icon: '🔥' },
+    { id: 'action', label: 'Action', icon: '⚔️' },
+    { id: 'romance', label: 'Romance', icon: '❤️' },
+    { id: 'animation', label: 'Animation', icon: '🧸' },
+    { id: 'horror', label: 'Horror', icon: '👻' },
+    { id: 'special', label: 'Special', icon: '🌟' },
+    { id: 'drakor', label: 'Drakor', icon: '🇰🇷' },
 ];
 
 const CategoryBar = () => {
     const [selected, setSelected] = React.useState('animation');
-    
+
     return (
         <div className={styles['category-bar-container']}>
             {CATEGORIES.map((cat) => (

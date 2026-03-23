@@ -81,29 +81,31 @@
             &.poster-shape-landscape { width: 320px; }
 
             .poster-container {
-                border-radius: var(--border-radius, 24px);
+                border-radius: var(--radius-card);
                 padding-bottom: calc(100% * var(--poster-shape-ratio, 1.5));
-                background: linear-gradient(90deg, var(--bg-surface-2) 25%, var(--bg-surface-1) 50%, var(--bg-surface-2) 75%);
+                background-color: var(--bg-surface-1);
+            }
+            
+            .skeleton-shimmer {
+                background: linear-gradient(90deg, var(--bg-surface-1) 25%, var(--bg-surface-2) 50%, var(--bg-surface-1) 75%);
                 background-size: 200% 100%;
                 animation: shimmer 1.5s ease-in-out infinite;
+                border: 1px solid rgba(255, 255, 255, 0.05);
             }
 
             .title-bar-container {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                justify-content: center;
-                height: 2.8rem;
+                justify-content: flex-start;
+                padding-top: 0.75rem;
 
                 .title-label {
                     flex: none;
-                    width: 60%;
-                    height: 1.2rem;
-                    border-radius: var(--border-radius);
-                    background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%);
-                    background-size: 200% 100%;
-                    animation: shimmer 1.5s ease-in-out infinite;
-                    animation-delay: 0.15s;
+                    width: 70%;
+                    height: 1rem;
+                    border-radius: 999px;
+                    background-color: var(--bg-surface-1);
                 }
             }
         }

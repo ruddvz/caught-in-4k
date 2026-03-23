@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 import styles from './styles.less';
 import useFullscreen from '../../../common/useFullscreen';
 
-
 type Props = {
     className?: string;
     route?: string;
@@ -77,7 +76,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                     <AppLogo variant="compact" className={styles['logo']} />
                 </a>
             </div>
-            
+
             <div className={styles['center-section']}>
                 {route === 'search' ? (
                     <div className={styles['search-input-wrapper']}>
@@ -94,7 +93,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                     <div className={styles['nav-pill-wrapper']}>
                         <div className={styles['nav-pill']}>
                             {tabs.map((tab) => (
-                                <Button 
+                                <Button
                                     key={tab.id}
                                     href={tab.href}
                                     className={classnames(styles['nav-tab'], { [styles['active']]: route === tab.id })}
@@ -107,10 +106,10 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                     </div>
                 )}
             </div>
-            
+
             <div className={styles['right-section']}>
-                <Button 
-                    className={classnames(styles['action-btn'], styles['fullscreen-btn'])} 
+                <Button
+                    className={classnames(styles['action-btn'], styles['fullscreen-btn'])}
                     onClick={onFullscreenClick}
                     title={t(fullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN')}
                 >
@@ -118,9 +117,9 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                 </Button>
                 <Button className={classnames(styles['action-btn'], styles['profile-btn'])} href="#/profiles">
                     {currentProfile ? (
-                        <div 
-                            className={styles['profile-avatar']} 
-                            style={{ backgroundImage: `url(${avatars[currentProfile.avatarIndex]})` }} 
+                        <div
+                            className={styles['profile-avatar']}
+                            style={{ backgroundImage: `url(${avatars[currentProfile.avatarIndex]})` }}
                         />
                     ) : (
                         <Icon name="person-outline" className={styles['icon']} />

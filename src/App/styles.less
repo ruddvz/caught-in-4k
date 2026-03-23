@@ -160,7 +160,7 @@ svg {
 html {
     width: @html-width;
     height: @html-height;
-    font-family: 'PlusJakartaSans', 'Arial', 'Helvetica', 'sans-serif';
+    font-family: 'Inter', 'Arial', 'Helvetica', 'sans-serif';
     overflow: auto;
     overscroll-behavior: none;
     -webkit-user-select: none;
@@ -313,4 +313,14 @@ html {
     :root {
         --bottom-overlay-size: 6rem;
     }
+}
+
+.animation-fade-in {
+    opacity: 0;
+    animation: globalFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes globalFadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
 }

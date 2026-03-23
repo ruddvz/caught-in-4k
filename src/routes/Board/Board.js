@@ -82,9 +82,12 @@ const Board = () => {
                 <div ref={scrollContainerRef} className={styles['board-content']} onScroll={onScroll}>
                     {
                         heroItems.length > 0 ?
-                            <div className={classnames(styles['board-row'], styles['hero-shelf-row'])} ref={heroRef} style={{ opacity: heroOpacity, transition: 'opacity 0.1s ease-out' }}>
-                                <HeroShelf items={heroItems} />
-                            </div>
+                            <React.Fragment>
+                                <div className={classnames(styles['board-row'], styles['hero-shelf-row'])} ref={heroRef} style={{ opacity: heroOpacity, transition: 'opacity 0.1s ease-out' }}>
+                                    <HeroShelf items={heroItems} />
+                                </div>
+                                <CategoryBar />
+                            </React.Fragment>
                             :
                             null
                     }

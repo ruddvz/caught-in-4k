@@ -1,0 +1,184 @@
+
+> caught-in-4k@1.0.0-genesis lint C:\Users\pvr66\Downloads\caught-in-4k
+> eslint src
+
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\common\useTranslate.js
+  37:18  error  'e' is defined but never used. Allowed unused caught errors must match /_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\components\CanonTakeBox\CanonTakeBox.js
+  17:25  error  'title' is missing in props validation  react/prop-types
+  17:32  error  'year' is missing in props validation   react/prop-types
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\components\MainNavBars\MainNavBars.tsx
+   5:10  error  'HorizontalNavBar' is defined but never used. Allowed unused vars must match /_/u                                    @typescript-eslint/no-unused-vars
+   5:28  error  'VerticalNavBar' is defined but never used. Allowed unused vars must match /_/u                                      @typescript-eslint/no-unused-vars
+   6:1   error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+   8:1   error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  28:47  error  'query' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\components\MetaItem\MetaItem.js
+  15:7    error  'SatisfactionMeterBar' is assigned a value but never used. Allowed unused vars must match /_/u  @typescript-eslint/no-unused-vars
+  18:106  error  'newVideos' is defined but never used                                                           @typescript-eslint/no-unused-vars
+  18:213  error  'releaseInfo' is missing in props validation                                                    react/prop-types
+  21:11   error  'tier' is assigned a value but never used. Allowed unused vars must match /_/u                  @typescript-eslint/no-unused-vars
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\components\MetaPreview\MetaPreview.js
+  339:31  error  'title' is missing in props validation                 react/prop-types
+  339:38  error  'released' is missing in props validation              react/prop-types
+  339:48  error  'releaseInfo' is missing in props validation           react/prop-types
+  339:61  error  'description' is missing in props validation           react/prop-types
+  339:74  error  'voteAverage' is missing in props validation           react/prop-types
+  343:62  error  'released.getTime' is missing in props validation      react/prop-types
+  343:84  error  'released.getFullYear' is missing in props validation  react/prop-types
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\components\MetaRow\MetaRow.js
+  15:86  error  'index' is missing in props validation                        react/prop-types
+  29:34  error  'catalog.content.posterShape' is missing in props validation  react/prop-types
+  29:58  error  'catalog.posterShape' is missing in props validation          react/prop-types
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\components\MetaRow\MetaRowPlaceholder\MetaRowPlaceholder.js
+  13:69  error  'index' is missing in props validation  react/prop-types
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\components\NavBar\TopNavigationBar\TopNavigationBar.tsx
+   1:23  error  'useCallback' is defined but never used. Allowed unused vars must match /_/u                                         @typescript-eslint/no-unused-vars
+   3:1   error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+   5:1   error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+   7:1   error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  10:1   error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\components\NavBar\index.ts
+  3:1  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  5:1  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\routes\Board\Board.js
+  14:7  error  'CategoryBar' is assigned a value but never used. Allowed unused vars must match /_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\routes\Intro\Intro.js
+   33:11  error  'marketingRef' is assigned a value but never used. Allowed unused vars must match /_/u             @typescript-eslint/no-unused-vars
+   86:11  error  'loginWithFacebook' is assigned a value but never used. Allowed unused vars must match /_/u        @typescript-eslint/no-unused-vars
+  112:11  error  'loginWithApple' is assigned a value but never used. Allowed unused vars must match /_/u           @typescript-eslint/no-unused-vars
+  248:11  error  'toggleMarketingAccepted' is assigned a value but never used. Allowed unused vars must match /_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\routes\PrivacyPolicy\PrivacyPolicy.js
+   20:71   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   20:100  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   21:42   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   21:49   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   21:125  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   21:134  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   22:94   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   22:127  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   31:115  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   31:141  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   43:69   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   43:100  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   49:99   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   60:100  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   61:23   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   67:73   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   74:77   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   77:101  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   77:112  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   84:62   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   94:74   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   94:96   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  106:32   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  107:27   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  107:64   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  107:91   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  110:27   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  123:104  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  123:115  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  124:29   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  124:40   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  129:99   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  130:101  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  138:27   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  141:29   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  147:57   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  147:73   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  147:77   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  147:115  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  148:66   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  148:80   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  148:97   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  148:109  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  151:72   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\pvr66\Downloads\caught-in-4k\src\routes\Tos\Tos.js
+    8:11   error  'backButtonOnClick' is assigned a value but never used. Allowed unused vars must match /_/u  @typescript-eslint/no-unused-vars
+   24:40   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   24:49   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   24:77   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   25:23   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   30:46   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   30:55   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   30:68   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   32:46   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   32:59   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   32:84   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   34:46   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   34:52   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   36:46   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   36:54   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   38:46   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   38:59   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   40:46   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   40:65   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   42:46   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   42:66   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   44:46   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   44:55   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   46:46   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   46:51   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   48:47   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   48:63   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   48:77   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   48:81   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                              react/no-unescaped-entities
+   50:87   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   52:69   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   52:104  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   52:211  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   54:190  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   54:242  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   60:127  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   62:132  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   64:86   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   64:155  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   66:87   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   68:48   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   68:251  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   70:143  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   72:81   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   74:180  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   76:120  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   76:148  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   76:191  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   78:45   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   78:130  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   78:149  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   78:184  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   82:92   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   84:44   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   86:59   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   86:160  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   88:48   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   90:86   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   92:48   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   92:197  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   94:111  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   94:190  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   96:141  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   96:175  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+   98:84   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+  100:44   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+  102:191  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+  106:128  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+  108:162  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+  112:133  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+  114:107  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                              react/no-unescaped-entities
+
+G£û 150 problems (150 errors, 0 warnings)
+
+GÇëELIFECYCLEGÇë Command failed with exit code 1.

@@ -14,11 +14,11 @@ type Props = {
 };
 
 const MENU_ITEMS = [
-    { id: 'GENERAL',    labelKey: 'SETTINGS_NAV_GENERAL' },
-    { id: 'INTERFACE',  labelKey: 'INTERFACE' },
-    { id: 'PLAYER',     labelKey: 'SETTINGS_NAV_PLAYER' },
-    { id: 'STREAMING',  labelKey: 'SETTINGS_NAV_STREAMING' },
-    { id: 'SHORTCUTS',  labelKey: 'SETTINGS_NAV_SHORTCUTS', mobileHide: true },
+    { id: 'GENERAL', labelKey: 'SETTINGS_NAV_GENERAL' },
+    { id: 'INTERFACE', labelKey: 'INTERFACE' },
+    { id: 'PLAYER', labelKey: 'SETTINGS_NAV_PLAYER' },
+    { id: 'STREAMING', labelKey: 'SETTINGS_NAV_STREAMING' },
+    { id: 'SHORTCUTS', labelKey: 'SETTINGS_NAV_SHORTCUTS', mobileHide: true },
 ];
 
 const Menu = ({ selected, streamingServer, onSelect }: Props) => {

@@ -236,7 +236,7 @@ const App = () => {
                                                 <SearchParamsHandler />
                                                 <UpdaterBanner className={styles['updater-banner-container']} />
                                                 <RouterWithProtectedRoutes
-                                                    className={styles['router']}
+                                                    className={classnames(styles['router'], 'animation-fade-in')}
                                                     viewsConfig={routerViewsConfig}
                                                     onPathNotMatch={onPathNotMatch}
                                                 />

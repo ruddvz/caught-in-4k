@@ -36,7 +36,7 @@ const MainNavBars = memo(({ className, route, query, children }: Props) => {
             <div className={styles['nav-content-container']}>{children}</div>
             <div className={styles['mobile-bottom-nav']}>
                 {TABS.slice(0, 6).map((tab) => (
-                    <Button 
+                    <Button
                         key={tab.id}
                         href={tab.href}
                         className={classnames(styles['bottom-nav-tab'], { [styles['active']]: route === tab.id })}

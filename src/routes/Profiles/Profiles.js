@@ -80,17 +80,17 @@ const Profiles = () => {
             {/* Dynamic Background */}
             <div className={styles['dynamic-bg']} style={{ backgroundImage: currentAvatar ? `url(${currentAvatar})` : 'none' }} />
             <div className={styles['bg-overlay']} />
-            
+
             <div className={classnames(styles['profiles-content'], 'animation-fade-in')}>
-                
+
                 {view === 'select' && (
                     <div className={styles['select-view']}>
                         <h1 className={styles['welcome-text']}>Welcome back</h1>
-                        
+
                         <div className={styles['main-profile-display']}>
                             {profiles.length > 0 ? (
-                                <div 
-                                    className={styles['focus-avatar']} 
+                                <div
+                                    className={styles['focus-avatar']}
                                     style={{ backgroundImage: `url(${currentAvatar})` }}
                                     onClick={() => onSelectProfile(profiles[focusedIndex])}
                                 >
@@ -109,19 +109,19 @@ const Profiles = () => {
                         <div className={styles['carousel-wrapper']}>
                             <div className={styles['profile-carousel']}>
                                 {profiles.map((p, i) => (
-                                    <div 
-                                        key={p.id} 
+                                    <div
+                                        key={p.id}
                                         className={classnames(styles['mini-card'], { [styles['active']]: i === focusedIndex })}
                                         onMouseEnter={() => setFocusedIndex(i)}
                                         onClick={() => onSelectProfile(p)}
                                     >
-                                        <div 
-                                            className={styles['mini-avatar']} 
+                                        <div
+                                            className={styles['mini-avatar']}
                                             style={{ backgroundImage: `url(${p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar})` }}
                                         />
                                     </div>
                                 ))}
-                                
+
                                 {profiles.length < 4 && (
                                     <div className={styles['mini-card']} onClick={() => setView('add')}>
                                         <div className={classnames(styles['mini-avatar'], styles['add-node'])}>
@@ -142,18 +142,18 @@ const Profiles = () => {
                     <div className={styles['add-view']}>
                         <div className={styles['add-glass-card']}>
                             <h1 className={styles['add-title']}>New Profile</h1>
-                            
+
                             <div className={styles['avatar-display-large']}>
-                                <div 
-                                    className={styles['current-pick-avatar']} 
-                                    style={{ backgroundImage: `url(${AVAILABLE_AVATARS[newAvatarIndex]})` }} 
+                                <div
+                                    className={styles['current-pick-avatar']}
+                                    style={{ backgroundImage: `url(${AVAILABLE_AVATARS[newAvatarIndex]})` }}
                                 />
                             </div>
 
                             <div className={styles['avatar-grid-picker']}>
                                 {AVAILABLE_AVATARS.map((url, i) => (
-                                    <div 
-                                        key={i} 
+                                    <div
+                                        key={i}
                                         className={classnames(styles['picker-avatar'], { [styles['selected']]: i === newAvatarIndex })}
                                         style={{ backgroundImage: `url(${url})` }}
                                         onClick={() => setNewAvatarIndex(i)}
@@ -162,9 +162,9 @@ const Profiles = () => {
                             </div>
 
                             <div className={styles['name-input-container']}>
-                                <input 
-                                    className={styles['modern-input']} 
-                                    placeholder="Who is this?" 
+                                <input
+                                    className={styles['modern-input']}
+                                    placeholder="Who is this?"
                                     value={newName}
                                     onChange={(e) => setNewName(e.target.value)}
                                     autoFocus
@@ -172,15 +172,15 @@ const Profiles = () => {
                             </div>
 
                             <div className={styles['modal-actions']}>
-                                <Button 
-                                    className={classnames(styles['modal-btn'], styles['primary-btn'])} 
+                                <Button
+                                    className={classnames(styles['modal-btn'], styles['primary-btn'])}
                                     onClick={handleCreateProfile}
                                     disabled={!newName.trim()}
                                 >
                                     Start Browsing
                                 </Button>
-                                <Button 
-                                    className={classnames(styles['modal-btn'], styles['secondary-btn'])} 
+                                <Button
+                                    className={classnames(styles['modal-btn'], styles['secondary-btn'])}
                                     onClick={() => setView('select')}
                                 >
                                     Cancel

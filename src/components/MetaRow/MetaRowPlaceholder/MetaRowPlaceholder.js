@@ -14,7 +14,7 @@ const MetaRowPlaceholder = ({ className, title, deepLinks, catalog, index = 0 })
     const { t } = useTranslation();
     const ref = React.useRef(null);
     const isVisible = useInViewport(ref);
-    
+
     const posterShape = React.useMemo(() => {
         return catalog?.content?.posterShape ?? catalog?.posterShape ?? 'poster';
     }, [catalog]);
@@ -38,9 +38,9 @@ const MetaRowPlaceholder = ({ className, title, deepLinks, catalog, index = 0 })
             <div className={styles['meta-items-container']}>
                 {Array(CONSTANTS.CATALOG_PREVIEW_SIZE).fill(null).map((_, index) => (
                     <div key={index} className={classnames(styles['meta-item'], styles[`poster-shape-${posterShape}`])}>
-                        <div className={styles['poster-container']} />
+                        <div className={classnames(styles['poster-container'], styles['skeleton-shimmer'])} />
                         <div className={styles['title-bar-container']}>
-                            <div className={styles['title-label']} />
+                            <div className={classnames(styles['title-label'], styles['skeleton-shimmer'])} />
                         </div>
                     </div>
                 ))}
