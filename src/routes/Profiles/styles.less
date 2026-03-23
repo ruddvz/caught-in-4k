@@ -67,18 +67,18 @@
 }
 
 // ──── Profile row ────
-// Padding here is critical: gives the glow box-shadow room so it
-// never hits the overflow:hidden boundary and creates a "square" clip.
+// 50px padding gives the focused glow enough room to fade out naturally
+// without hitting any invisible container boundary.
 .profiles-row {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
-    gap: 4rem;
+    gap: 40px;
     flex-wrap: wrap;
-    // Generous padding so box-shadow glow never clips at container edge
-    padding: 2.5rem 3rem;
+    padding: 50px;
     margin-bottom: 1rem;
+    overflow: visible;
 }
 
 // ──── Each profile card ────
@@ -89,8 +89,8 @@
     gap: 1.2rem;
     cursor: pointer;
     position: relative;
-    // Padding gives room for the delete button and overflow glow
     padding: 1.5rem;
+    overflow: visible;
 
     .profile-avatar {
         width: 12rem;
@@ -511,8 +511,8 @@
     }
 
     .profiles-row {
-        gap: 2rem;
-        padding: 1.5rem 1rem;
+        gap: 24px;
+        padding: 30px 20px;
     }
 
     .profile-card {
