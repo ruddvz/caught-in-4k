@@ -9,8 +9,6 @@ import AppLogo from 'stremio/components/AppLogo/AppLogo';
 import { useTranslation } from 'react-i18next';
 // @ts-ignore
 import styles from './styles.less';
-// @ts-ignore
-import styles from './styles.less';
 import useFullscreen from '../../../common/useFullscreen';
 
 
