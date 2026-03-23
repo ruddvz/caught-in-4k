@@ -195,7 +195,7 @@ const Discover = ({ urlParams, queryParams }) => {
                             toggleInLibrary={selectedMetaItem.inLibrary ? removeFromLibrary : addToLibrary}
                             metaId={selectedMetaItem.id}
                             like={selectedMetaItem.like}
-                            voteAverage={selectedMetaItem.vote_average}
+                            voteAverage={(selectedMetaItem.voteAverage ?? selectedMetaItem.vote_average) || (selectedMetaItem.imdbRating ? parseFloat(selectedMetaItem.imdbRating) : null)}
                         />
                         :
                         discover.catalog !== null && discover.catalog.content.type === 'Loading' ?

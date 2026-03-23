@@ -118,16 +118,6 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                                 <Icon className={styles['icon']} name={'star'} />
                                 <span className={styles['text']}>{voteAverage.toFixed(1)}/10</span>
                             </div>
-                            <div className={styles['stat-icons']}>
-                                <div className={styles['stat-item']}>
-                                    <Icon className={styles['icon']} name={'heart-outline'} />
-                                    <span className={styles['text']}>{Math.floor(Math.random() * 20 + 80)}%</span>
-                                </div>
-                                <div className={styles['stat-item']}>
-                                    <Icon className={styles['icon']} name={'person-outline'} />
-                                    <span className={styles['text']}>{Math.floor(Math.random() * 30 + 60)}%</span>
-                                </div>
-                            </div>
                         </div>
                         :
                         null

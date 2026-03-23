@@ -174,7 +174,7 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                                             toggleInLibrary={metaDetails.metaItem.content.content.inLibrary ? removeFromLibrary : addToLibrary}
                                             metaId={metaDetails.metaItem.content.content.id}
                                             ratingInfo={metaDetails.ratingInfo}
-                                            voteAverage={metaDetails.metaItem.content.content.vote_average}
+                                            voteAverage={(metaDetails.metaItem.content.content.voteAverage ?? metaDetails.metaItem.content.content.vote_average) || (metaDetails.metaItem.content.content.imdbRating ? parseFloat(metaDetails.metaItem.content.content.imdbRating) : null)}
                                         />
                                     </React.Fragment>
                 }

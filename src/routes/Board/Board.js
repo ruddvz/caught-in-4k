@@ -11,7 +11,6 @@ const useCanonTakesQueue = require('stremio/services/CanonTakesQueue/CanonTakesQ
 const useBoard = require('./useBoard');
 const useContinueWatchingPreview = require('./useContinueWatchingPreview');
 const HeroShelf = require('./HeroShelf');
-const CategoryBar = require('./CategoryBar');
 const styles = require('./styles');
 const { default: StreamingServerWarning } = require('./StreamingServerWarning');
 
@@ -86,7 +85,6 @@ const Board = () => {
                                 <div className={classnames(styles['board-row'], styles['hero-shelf-row'])} ref={heroRef} style={{ opacity: heroOpacity, transition: 'opacity 0.1s ease-out' }}>
                                     <HeroShelf items={heroItems} />
                                 </div>
-                                <CategoryBar />
                             </React.Fragment>
                             :
                             null

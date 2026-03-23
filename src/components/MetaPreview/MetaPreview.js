@@ -29,9 +29,20 @@ const ALLOWED_LINK_REDIRECTS = [
     routesRegexp.metadetails.regexp
 ];
 
-const MetaPreview = React.forwardRef(({ className, compact, name, logo, background, runtime, releaseInfo, released, description, deepLinks, links, trailerStreams, inLibrary, toggleInLibrary, ratingInfo, voteAverage }, ref) => {
+const MetaPreview = React.forwardRef(({ className, compact, name, logo, background, runtime, releaseInfo, released, description, deepLinks, links, trailerStreams, inLibrary, toggleInLibrary, ratingInfo, voteAverage: voteAverageProp }, ref) => {
     const { t } = useTranslation();
     const [shareModalOpen, openShareModal, closeShareModal] = useBinaryState(false);
+    // Derive voteAverage from IMDB link if prop is not provided
+    const voteAverage = React.useMemo(() => {
+        if (typeof voteAverageProp === 'number' && !isNaN(voteAverageProp)) return voteAverageProp;
+        if (!Array.isArray(links)) return null;
+        const imdbLink = links.find((l) => l && l.category === CONSTANTS.IMDB_LINK_CATEGORY);
+        if (imdbLink && imdbLink.name) {
+            const parsed = parseFloat(imdbLink.name);
+            if (!isNaN(parsed)) return parsed;
+        }
+        return null;
+    }, [voteAverageProp, links]);
     const tier = useSatisfactionMeter(voteAverage);
     const linksGroups = React.useMemo(() => {
         return Array.isArray(links) ?
@@ -301,7 +312,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
             {/* === CANON TAKE WIDGET === */}
             {
                 !compact ? (
-                    <CanonTakeWithLogic title={name} released={released} releaseInfo={releaseInfo} description={description} voteAverage={voteAverage} />
+                    <CanonTakeWithLogic title={name} released={released} releaseInfo={releaseInfo} links={links} voteAverage={voteAverage} />
                 ) : null
             }
         </div>
@@ -337,16 +348,23 @@ MetaPreview.propTypes = {
     voteAverage: PropTypes.number,
 };
 
-const CanonTakeWithLogic = ({ title, released, releaseInfo, description, voteAverage }) => {
+const CanonTakeWithLogic = ({ title, released, releaseInfo, links, voteAverage }) => {
     const useCanonTakes = (require('stremio/common/useCanonTakes').default || require('stremio/common/useCanonTakes'));
     const { fetchCanonTake } = useCanonTakes();
     const [take, setTake] = React.useState(null);
     const year = released instanceof Date && !isNaN(released.getTime()) ? released.getFullYear() : releaseInfo;
+    const genres = React.useMemo(() => {
+        if (!Array.isArray(links)) return 'unknown';
+        return links
+            .filter((l) => l && l.category === 'Genres')
+            .map((l) => l.name)
+            .join(', ') || 'unknown';
+    }, [links]);
 
     React.useEffect(() => {
         if (!title) return;
         let cancelled = false;
-        fetchCanonTake(title, year, description, voteAverage).then((result) => {
+        fetchCanonTake(title, year, genres, voteAverage).then((result) => {
             if (!cancelled) setTake(result);
         });
         return () => { cancelled = true; };
