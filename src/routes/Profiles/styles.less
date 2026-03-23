@@ -1,377 +1,369 @@
 @import (reference) "~stremio/common/screen-sizes.less";
 
-// Modern Profile Styles
 .profiles-page-container {
     height: 100vh;
     width: 100%;
-    background-color: #0c0e12; // Deeper matte slate
+    background-color: #000;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
 
-    // Background Blobs for depth
-    .bg-blob-1 {
+    // Dynamic Blurred Background
+    .dynamic-bg {
         position: absolute;
-        top: -10%;
-        left: -10%;
-        width: 50vw;
-        height: 50vw;
-        background: radial-gradient(circle, rgba(96, 165, 250, 0.08) 0%, transparent 70%);
-        filter: blur(80px);
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        filter: blur(80px) saturate(1.8) brightness(0.4);
+        transform: scale(1.2);
+        transition: background-image 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 0;
     }
 
-    .bg-blob-2 {
+    .bg-overlay {
         position: absolute;
-        bottom: -10%;
-        right: -10%;
-        width: 40vw;
-        height: 40vw;
-        background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
-        filter: blur(80px);
-        z-index: 0;
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+        z-index: 1;
     }
 
     .profiles-content {
         width: 100%;
-        max-width: 1200px;
+        max-width: 1400px;
         z-index: 10;
-        padding: 2rem;
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-
-    // Glassmorphic Main Card
-    .glass-main-card {
-        width: 100%;
-        padding: 4rem 3rem;
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 4rem; // Extreme rounded
-        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .view-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        color: #fff;
-        margin-bottom: 3.5rem;
-        text-align: center;
-        letter-spacing: -0.04em;
-    }
-
-    .view-subtitle {
-        font-size: 1.2rem;
-        color: rgba(255, 255, 255, 0.4);
-        margin-top: -2.5rem;
-        margin-bottom: 3.5rem;
-        text-align: center;
-        max-width: 400px;
-    }
-
-    // --- Profile Grid ---
-    .profiles-grid {
-        display: flex;
-        flex-wrap: wrap;
         justify-content: center;
-        gap: 3rem;
-        margin-bottom: 4rem;
+        height: 100%;
+        padding: 2rem;
     }
 
-    .profile-card {
-        width: 12rem;
+    // --- Select View ---
+    .select-view {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1.5rem;
+        width: 100%;
+    }
+
+    .welcome-text {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        margin-bottom: 2rem;
+    }
+
+    .main-profile-display {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 5rem;
         cursor: pointer;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-        &:hover {
-            transform: translateY(-12px);
-
-            .profile-avatar {
-                border-color: #fff;
-                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.1);
-                
-                .avatar-hover-overlay {
-                    opacity: 1;
-                }
-            }
-
-            .profile-name {
-                color: #fff;
-                transform: scale(1.05);
-            }
-        }
-
-        .profile-avatar {
-            width: 12rem;
-            height: 12rem;
-            border-radius: 3rem; // High radius
+        .focus-avatar {
+            width: 18rem;
+            height: 18rem;
+            border-radius: 50%; // Perfect Circles for modern feel
             background-size: cover;
             background-position: center;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 4px solid transparent;
-            transition: all 0.4s ease;
+            border: 4px solid #fff;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.15), 0 30px 60px rgba(0, 0, 0, 0.6);
+            margin-bottom: 1.5rem;
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             position: relative;
             overflow: hidden;
 
-            .avatar-hover-overlay {
+            .play-hint {
                 position: absolute;
-                inset: 0;
-                background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3));
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 30%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+                color: #fff;
+                font-size: 0.9rem;
+                font-weight: 700;
                 opacity: 0;
-                transition: opacity 0.3s ease;
+                transform: translateY(10px);
+                transition: all 0.4s ease;
+            }
+
+            &:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 60px rgba(255, 255, 255, 0.25);
+                .play-hint {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
         }
 
-        .profile-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.6);
+        .empty-avatar {
+            width: 15rem;
+            height: 15rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 1.5rem;
             transition: all 0.3s ease;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.08);
+                color: #fff;
+                border: 2px solid #fff;
+            }
         }
 
-        &.add-btn {
-            .profile-avatar {
-                background: rgba(255, 255, 255, 0.02);
-                border: 2px dashed rgba(255, 255, 255, 0.15);
-
-                .add-icon {
-                    font-size: 5rem;
-                    color: rgba(255, 255, 255, 0.1);
-                    font-weight: 200;
-                    margin-top: -0.5rem;
-                }
-            }
-
-            &:hover .profile-avatar {
-                background: rgba(255, 255, 255, 0.05);
-                border-style: solid;
-                border-color: rgba(255, 255, 255, 0.4);
-                
-                .add-icon {
-                    color: #fff;
-                    transform: rotate(90deg);
-                    transition: transform 0.4s ease;
-                }
-            }
+        .focus-name {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.02em;
         }
     }
 
-    // --- Actions ---
-    .footer-actions {
+    .carousel-wrapper {
+        width: 100%;
         display: flex;
-        gap: 2rem;
+        justify-content: center;
+        margin-bottom: 3rem;
     }
 
-    .action-pill-btn {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.6);
-        padding: 1rem 3rem;
-        border-radius: 999px; // Pill
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
+    .profile-carousel {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
 
-        &:hover {
-            background: #fff;
-            color: #000;
-            border-color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        .mini-card {
+            cursor: pointer;
+            transition: all 0.4s ease;
+
+            .mini-avatar {
+                width: 4rem;
+                height: 4rem;
+                border-radius: 50%;
+                background-size: cover;
+                background-position: center;
+                opacity: 0.4;
+                border: 2px solid transparent;
+                transition: all 0.3s ease;
+            }
+
+            &:hover .mini-avatar {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+
+            &.active .mini-avatar {
+                opacity: 1;
+                border-color: #fff;
+                transform: scale(1.2);
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            }
+
+            .add-node {
+                background: rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                color: rgba(255, 255, 255, 0.3);
+            }
+        }
+    }
+
+    .bottom-controls {
+        .glass-btn {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            padding: 0.8rem 2.5rem;
+            border-radius: 999px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+
+            &:hover {
+                color: #fff;
+                background: rgba(255, 255, 255, 0.1);
+                border-color: #fff;
+            }
         }
     }
 
     // --- Add View ---
     .add-view {
         width: 100%;
-        max-width: 500px;
+        max-width: 600px;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-    .avatar-selection {
+    .add-glass-card {
         width: 100%;
-        margin-bottom: 3rem;
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(32px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 3rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    }
 
-        .avatar-label {
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            margin-bottom: 2rem;
-            text-align: center;
+    .add-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 2.5rem;
+    }
+
+    .avatar-display-large {
+        margin-bottom: 2rem;
+        .current-pick-avatar {
+            width: 10rem;
+            height: 10rem;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid #fff;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
+    }
 
-        .avatars-scroll {
-            display: flex;
-            gap: 1.25rem;
-            padding: 1rem;
-            overflow-x: auto;
-            scrollbar-width: none;
-            &::-webkit-scrollbar { display: none; }
-            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-        }
+    .avatar-grid-picker {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 2.5rem;
 
-        .avatar-option {
-            width: 5.5rem;
-            height: 5.5rem;
-            flex: none;
-            border-radius: 1.5rem;
+        .picker-avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
             background-size: cover;
             background-position: center;
             cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0.4;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
 
             &:hover {
-                transform: scale(1.15) translateY(-5px);
+                opacity: 0.8;
+                transform: scale(1.1);
             }
 
             &.selected {
+                opacity: 1;
                 border-color: #fff;
-                transform: scale(1.2) translateY(-5px);
-                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+                transform: scale(1.2);
             }
         }
     }
 
-    .input-section {
+    .name-input-container {
         width: 100%;
-        margin-bottom: 3.5rem;
+        margin-bottom: 2.5rem;
 
-        .name-input {
+        .modern-input {
             width: 100%;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            padding: 1.5rem 2rem;
+            border-radius: 999px;
+            padding: 1.25rem 2rem;
             color: #fff;
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: 600;
             text-align: center;
             transition: all 0.3s ease;
 
             &:focus {
                 outline: none;
-                background: rgba(255, 255, 255, 0.08);
-                border-color: rgba(255, 255, 255, 0.3);
-                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-                transform: scale(1.02);
-            }
-
-            &::placeholder {
-                color: rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.4);
             }
         }
     }
 
-    .action-buttons {
+    .modal-actions {
         display: flex;
         flex-direction: column;
-        gap: 1.25rem;
+        gap: 1rem;
         width: 100%;
 
-        .action-btn {
+        .modal-btn {
             width: 100%;
-            padding: 1.5rem;
+            padding: 1.25rem;
             border-radius: 999px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
 
-            &.save-btn {
+            &.primary-btn {
                 background: #fff;
                 color: #000;
-
-                &:hover:not(:disabled) {
-                    transform: scale(1.02) translateY(-2px);
-                    box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
-                }
-
-                &:disabled {
-                    opacity: 0.2;
-                    cursor: not-allowed;
-                }
+                &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+                &:disabled { opacity: 0.3; }
             }
 
-            &.cancel-btn {
+            &.secondary-btn {
                 background: transparent;
+                color: rgba(255, 255, 255, 0.5);
                 border: 1px solid rgba(255, 255, 255, 0.1);
-                color: rgba(255, 255, 255, 0.4);
-
-                &:hover {
-                    color: #fff;
-                    border-color: rgba(255, 255, 255, 0.4);
-                    background: rgba(255, 255, 255, 0.03);
-                }
+                &:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
             }
         }
     }
 }
 
-// Responsive
+// Mobile
 @media (max-width: @small) {
     .profiles-page-container {
-        .glass-main-card {
-            padding: 3rem 1.5rem;
-            border-radius: 3rem;
-            box-shadow: none;
-            background: transparent;
-            border: none;
-            backdrop-filter: none;
-        }
+        padding: 1rem;
 
-        .view-title {
-            font-size: 2.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .profiles-grid {
-            gap: 2rem;
-        }
-
-        .profile-card {
-            width: 9rem;
-
-            .profile-avatar {
-                width: 9rem;
-                height: 9rem;
-                border-radius: 2.25rem;
+        .main-profile-display {
+            .focus-avatar {
+                width: 12rem;
+                height: 12rem;
             }
-
-            .profile-name {
-                font-size: 1.25rem;
+            .focus-name {
+                font-size: 2rem;
             }
         }
 
-        .footer-actions {
-            flex-direction: column;
-            width: 100%;
-            gap: 1rem;
+        .welcome-text {
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
         }
-        
-        .action-pill-btn {
-            width: 100%;
-            padding: 1.25rem;
+
+        .add-glass-card {
+            padding: 2rem 1.5rem;
+            border-radius: 2rem;
+        }
+
+        .add-title {
+            font-size: 1.75rem;
         }
     }
 }

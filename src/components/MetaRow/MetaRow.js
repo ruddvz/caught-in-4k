@@ -25,6 +25,10 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
         return catalog?.items ?? catalog?.content?.content;
     }, [catalog]);
 
+    const posterShape = React.useMemo(() => {
+        return catalog?.content?.posterShape ?? catalog?.posterShape ?? 'poster';
+    }, [catalog]);
+
     const href = React.useMemo(() => {
         return catalog?.deepLinks?.discover ?? catalog?.deepLinks?.library;
     }, [catalog]);
@@ -59,8 +63,8 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
                                     return React.createElement(itemComponent, {
                                         ...item,
                                         key: index,
-                                        posterShape: 'poster',
-                                        className: classnames(styles['meta-item'], styles['poster-shape-poster'], 'animation-fade-in'),
+                                        posterShape,
+                                        className: classnames(styles['meta-item'], styles[`poster-shape-${posterShape}`], 'animation-fade-in'),
                                         notifications,
                                         voteAverage: (item.voteAverage ?? item.vote_average) || (item.imdbRating ? parseFloat(item.imdbRating) : null),
                                     });
