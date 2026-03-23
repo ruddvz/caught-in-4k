@@ -2,6 +2,8 @@
 
 @import (reference) '~stremio/common/screen-sizes.less';
 
+@carousel-tablet-breakpoint: 1100px;
+
 .meta-row-placeholder-container {
     opacity: 0;
     transform: translateY(20px);
@@ -123,6 +125,43 @@
     }
 }
 
+@media only screen and (max-width: @carousel-tablet-breakpoint) {
+    .meta-row-placeholder-container {
+        .header-container {
+            padding: 0 1rem;
+
+            .title-container {
+                font-size: 1.35rem;
+            }
+        }
+
+        .meta-items-container {
+            padding: 0 1rem 1rem;
+            gap: 1rem;
+
+            .meta-item {
+                &.poster-shape-poster { width: 148px; }
+                &.poster-shape-square { width: 148px; }
+                &.poster-shape-landscape { width: 248px; }
+
+                .title-bar-container {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    min-height: 3.9rem;
+                    padding-top: 0;
+
+                    .title-label {
+                        width: 85%;
+                        height: 2.5rem;
+                        border-radius: 1rem;
+                    }
+                }
+            }
+        }
+    }
+}
+
 @media only screen and (max-width: @minimum) {
     .meta-row-placeholder-container {
         .header-container {
@@ -147,7 +186,13 @@
                 &.poster-shape-landscape { width: 200px; }
 
                 .title-bar-container {
-                    margin-top: 0.5rem;
+                    padding-top: 0;
+                    min-height: 3.7rem;
+                    margin-top: 0.35rem;
+
+                    .title-label {
+                        height: 2.4rem;
+                    }
                 }
             }
         }

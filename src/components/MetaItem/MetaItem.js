@@ -15,7 +15,7 @@ const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
 const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
 const styles = require('./styles');
 
-const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, releaseInfo, ...props }) => {
+const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, releaseInfo, carouselLayout, ...props }) => {
     const t = useTranslate();
     const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
     const tier = useSatisfactionMeter(voteAverage);
@@ -65,7 +65,7 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
         <Icon className={styles['icon']} name={'more-vertical'} />
     ), []);
     return (
-        <Button title={name} href={href} {...filterInvalidDOMProps(props)} className={classnames(className, styles['meta-item-container'], styles['poster-shape-poster'], styles[`poster-shape-${posterShape}`], { 'active': menuOpen })} onClick={metaItemOnClick}>
+        <Button title={name} href={href} {...filterInvalidDOMProps(props)} className={classnames(className, styles['meta-item-container'], styles['poster-shape-poster'], styles[`poster-shape-${posterShape}`], { [styles['carousel-layout']]: carouselLayout, 'active': menuOpen })} onClick={metaItemOnClick}>
             <div className={classnames(styles['poster-container'], { 'poster-change-cursor': posterChangeCursor })}>
                 {
                     onDismissClick ?
@@ -189,7 +189,8 @@ MetaItem.propTypes = {
     onPlayClick: PropTypes.func,
     onClick: PropTypes.func,
     watched: PropTypes.bool,
-    voteAverage: PropTypes.number
+    voteAverage: PropTypes.number,
+    carouselLayout: PropTypes.bool,
 };
 
 module.exports = MetaItem;

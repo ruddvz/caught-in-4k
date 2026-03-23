@@ -65,6 +65,7 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
                                         key: index,
                                         posterShape,
                                         className: classnames(styles['meta-item'], styles[`poster-shape-${posterShape}`], 'animation-fade-in'),
+                                        carouselLayout: true,
                                         notifications,
                                         voteAverage: (item.voteAverage ?? item.vote_average) || (item.imdbRating ? parseFloat(item.imdbRating) : null),
                                     });

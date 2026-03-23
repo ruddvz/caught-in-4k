@@ -3,6 +3,8 @@
 @import (reference) '~@stremio/stremio-colors/less/stremio-colors.less';
 @import (reference) '~stremio/common/screen-sizes.less';
 
+@carousel-tablet-breakpoint: 1100px;
+
 .meta-row-container {
     overflow: visible;
     opacity: 0;
@@ -118,6 +120,29 @@
     100% {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@media only screen and (max-width: @carousel-tablet-breakpoint) {
+    .meta-row-container {
+        .header-container {
+            padding: 0 1rem;
+
+            .title-container {
+                font-size: 1.35rem;
+            }
+        }
+
+        .meta-items-container {
+            padding: 0 1rem 1rem;
+            gap: 1rem;
+
+            .meta-item {
+                &.poster-shape-poster { width: 148px; }
+                &.poster-shape-square { width: 148px; }
+                &.poster-shape-landscape { width: 248px; }
+            }
+        }
     }
 }
 

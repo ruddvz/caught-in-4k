@@ -3,6 +3,8 @@
 @import (reference) '~@stremio/stremio-colors/less/stremio-colors.less';
 @import (reference) '~stremio/common/screen-sizes.less';
 
+@carousel-tablet-breakpoint: 1100px;
+
 :import('~stremio/components/Popup/styles.less') {
     popup-menu-container: menu-container;
 }
@@ -188,16 +190,52 @@
     }
 }
 
+@media only screen and (max-width: @carousel-tablet-breakpoint) {
+    .meta-item-container.carousel-layout {
+        padding: 0.6rem;
+        gap: 0.6rem;
+
+        .title-bar-container {
+            gap: 0.3rem;
+            min-height: 3.9rem;
+            padding: 0 0.1rem;
+
+            .title-label {
+                display: -webkit-box;
+                min-height: 2.5em;
+                font-size: 1rem;
+                line-height: 1.25;
+                overflow: hidden;
+                text-overflow: initial;
+                white-space: normal;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+            }
+
+            .meta-info-row {
+                min-height: 1rem;
+                gap: 0.45rem;
+                font-size: 0.8rem;
+                flex-wrap: wrap;
+                row-gap: 0.15rem;
+            }
+        }
+    }
+}
+
 @media only screen and (max-width: @minimum) {
-    .meta-item-container {
+    .meta-item-container.carousel-layout {
         padding: 0.5rem;
 
         .title-bar-container {
-            margin-top: 0.5rem;
+            min-height: 3.7rem;
+            margin-top: 0.35rem;
             
             .title-label {
+                min-height: 2.5em;
                 font-size: 0.95rem; // Slightly smaller for mobile grid
             }
+
             .meta-info-row {
                 font-size: 0.8rem;
             }
