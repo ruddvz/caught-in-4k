@@ -55,6 +55,7 @@
         "@babel/preset-env": "7.26.0",
         "@babel/preset-react": "7.26.3",
         "@eslint/js": "^9.16.0",
+        "@playwright/test": "^1.58.2",
         "@stylistic/eslint-plugin": "^5.4.0",
         "@stylistic/eslint-plugin-jsx": "^4.4.1",
         "@types/hat": "^0.0.4",
