@@ -149,6 +149,7 @@ const Profiles = () => {
                             <div
                                 key={p.id}
                                 className={classnames(styles['profile-card'], { [styles['focused']]: i === focusedIndex })}
+                                style={{ '--accent': getAccent(p) }}
                                 onMouseEnter={() => setFocusedIndex(i)}
                                 onClick={() => doSelectProfile(p)}
                             >
