@@ -25,13 +25,13 @@
 
             .board-row {
                 padding: 0 0.5rem;
-                margin-top: 0.5rem;
-                margin-bottom: 2.5rem;
+                margin-top: 0;
+                margin-bottom: 2.5rem; // Consistent spacing everywhere
 
                 &.hero-shelf-row {
                     padding: 0;
-                    margin-top: 0;
-                    margin-bottom: 2rem;
+                    margin: 0; // completely flush full-width
+                    margin-bottom: 2.5rem; // spacing before the next carousel
                 }
             }
 
@@ -63,7 +63,11 @@
                 .board-row {
                     padding: 0;
                     margin-top: 0;
-                    margin-bottom: 1rem; // Tighter but consistent mobile spacing
+                    margin-bottom: 1.5rem; // Tighter but consistent mobile spacing
+
+                    &.hero-shelf-row {
+                        margin-bottom: 1.5rem;
+                    }
                 }
             }
         }

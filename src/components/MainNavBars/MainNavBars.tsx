@@ -42,6 +42,7 @@ const MainNavBars = memo(({ className, route, query, children }: Props) => {
                         className={classnames(styles['bottom-nav-tab'], { [styles['active']]: route === tab.id })}
                     >
                         <Icon name={tab.icon} className={styles['bottom-tab-icon']} />
+                        <span className={styles['bottom-tab-label']}>{tab.label.toUpperCase()}</span>
                     </Button>
                 ))}
             </div>

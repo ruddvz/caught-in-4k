@@ -66,9 +66,9 @@
 - **Responsiveness (CRITICAL):** Must be perfectly mobile-friendly (e.g., iPhone web app). If the screen is too narrow, the center pill and right cluster must adapt (scale down, reduce paddings, or use a mobile-friendly overflow/bottom menu) ensuring absolutely nothing gets cut off or clipped. Touch targets must remain accessible.
 
 ### 4b. Hero Banners
-- **Layout:** Horizontal scroll container instead of edge-to-edge absolute backgrounds.
-- **Cards:** Huge `32px` rounded cards featuring movie artwork as a background image.
-- **Content:** Headline, subtitle, and primary `[▶ Play]` pill button are nested *inside* the card, left-aligned, overlapping the artwork safely.
+- **Layout:** Edge-to-edge full width background banners.
+- **Cards:** Huge full-bleed backgrounds sliding horizontally. No border radius on the outer container, sitting flush against the screen edges.
+- **Content:** Headline, subtitle, and primary `[▶ Play]` pill button are left-aligned inside the safe-area bounds over the artwork.
 
 ### 4c. Category Filters Row
 - **Layout:** Horizontal flex row of pills.
@@ -104,17 +104,15 @@ Instead of a single scrolling list, the details page is broken into distinct vis
 
 ### ✅ What is Completed:
 1. **Top Navigation (Replaces Sidebar):** Fully implemented. It has the horizontal pill with legacy icons, responsive zoom, and profile buttons (`person-outline` & `maximize` icons). Verified mobile-responsive.
-2. **Matte Slate / Drop Shadow Overhaul:** Removed neon green selections and replaced them with `rgba(0,0,0,0.5)` deep shadows and floating widget glassmorphism on the main elements.
-3. **Hero Shelf Button Glows:** Fixed action-button hover shadow clipping so the glows properly diffuse horizontally and vertically without being artificially cropped.
-4. **Consolidated Meta Details View:** The movie/series details widgets are consolidated horizontally on larger screens. Fixed wrapped links that were being accidentally clipped. 
-5. **Board Page Carousels (Fixed sizes!):** 
-   - *Previous Issue:* Carousels were weirdly sized on the board page because they relied on CSS flexing against empty placeholders while being limited by `nth-child` breakpoints.
-   - *Fix Implemented:* We ripped out the `nth-child` breakpoints from `Board/styles.less` and introduced standard horizontal scrollable carousels (`overflow-x: auto`) for `MetaRow`. Item widths are now locked via `calc(100vw / X)` rather than squishing/expanding depending on window breakpoints or array item count. You should no longer see different sizes of carousels.
+2. **Bottom Mobile Nav Pill:** Centered bottom-pill layout implemented with icons AND text labels (strictly ALL CAPS). Fits screen cleanly on mobile.
+3. **Discover Mobile Layout:** Restored the horizontal carousel of "Category Pills" on mobile Discover instead of completely hiding them behind a filter button.
+4. **Hero Banners Edge-To-Edge:** HeroShelf was reverted to edge-to-edge full size layout for maximum cinematic effect, seamlessly integrating above the board carousels.
+5. **Board Page Carousels (Fixed sizes!):** MetaRow placeholder font-sizes and widths were aligned with normal items. Universal `margin-bottom: 2.5rem` on `.board-row` fixes spacing inconsistencies between carousels.
 
 ### 📝 To-Do List for the Next Agent:
-1. **Validate Empty Placeholders in Discover (If any):** Now that `MetaRow` uses `overflow-x: auto` and no longer pads empty objects for CSS flex mapping, check the `Discover` and `Search` screens to ensure their grid views (`MetaItem` map rendering) are laying out properly and not scrolling horizontally by accident. `Discover` uses the grid format, not `MetaRow`, but confirm just to be safe.
-2. **Hero Banners Aspect Ratio Check:** In `HeroShelf` components, make sure the text sits fully *inside* the rounded banner card structure accurately on mobile and tablet without bleeding or wrapping awkwardly.
-3. **Category Pills cleanup:** Ensure the "Trending / Action..." filters are indeed completely removed from the Board if requested, OR if the user re-adds them, format them as horizontal pill filters. (Current implementation removed them from Board rendering as per previous request, but verify user intent).
+1. **Consolidate Safe Area Offsets (Suggesion):** The `calc(env(safe-area-inset-top, 0px) + xrem)` code is manually duplicated across `.route-library`, `.route-settings`, etc. in `MainNavBars.less`. Consolidate these into a clean mobile-spacing mixin for better maintainability.
+2. **Settings/Addon Pages Alignment:** Check `Addons` and `Settings` to ensure they are using the new Matte Slate bg classes and following the Dashboard card logic, as currently they still sit below the top nav.
+3. **Hero Banners Aspect Ratio Check:** In `HeroShelf` components, verify text sits correctly within the edge-to-edge padding across ultra-wide desktop monitors without wrapping too far out of bounds.
 4. **Ratings and Widgets on MetaPreview Detail:** Complete the "Reviews dial gauge visualization", Rotten Tomatoes/IMDb chips, and Ensure "Cast & Crew" uses the rounded Squircle avatar shapes natively. 
 5. **"Right Side Menu" on Detail View:** Re-arrange the Meta details so there is a clean distinction between the left hero/poster, the middle body text, and a proper widget column on the exact right side for Mini-Trailer, Cast, and Menu.
 

@@ -33,8 +33,8 @@ This app is moving away from edge-to-edge "cinematic" full-bleed layouts into a 
   - **Right Cluster:** Must have a **Fullscreen (Zoom) button** on the left and the **User profile** circle on the right.
 - **Mobile Responsiveness (CRITICAL):** This header must NOT cut off or hide important features on small screens (like an iPhone Safari web app). It must perfectly adapt by shrinking paddings, scaling icons, using horizontal scroll if necessary, or collapsing into an elegant bottom-nav on strict mobile resolutions. Nothing must clip!
 **2. Hero Banners**
--   Horizontal scrolling carousel of distinct wide cards (not edge-to-edge wallpapers).
--   Titles, descriptions, and "Play" buttons sit *inside* the rounded banner card structure.
+-   Edge-to-edge full-bleed background images with horizontal scrolling carousel capabilities.
+-   Titles, descriptions, and "Play" buttons sit correctly left-aligned within the safe area padding, with the wallpaper stretching end-to-end.
 
 **3. Category Pills**
 -   A horizontal scrolling row of category icons + labels acting as quick filters (Trending, Action, Romance, Animation, etc.).

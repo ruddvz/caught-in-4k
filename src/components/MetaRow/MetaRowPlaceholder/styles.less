@@ -22,10 +22,11 @@
         .title-container {
             flex: 1;
             max-height: 2.4em;
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: var(--text-secondary);
+            font-size: 1.6rem; // Changed to exactly match MetaRow (was 1.7rem)
+            font-weight: 800; // Changed to match exactly MetaRow (was 700)
+            color: var(--text-primary); // Using primary text
             padding-left: 0.5rem;
+            letter-spacing: -0.02em;
 
             &:empty {
                 height: 1.5rem;
@@ -119,12 +120,24 @@
 
 @media only screen and (max-width: @minimum) {
     .meta-row-placeholder-container {
+        .header-container {
+            padding: 0 1rem;
+            margin-bottom: 0.5rem;
+
+            .title-container {
+                font-size: 1.2rem; // Fix mobile inconsistency
+                font-weight: 800;
+            }
+        }
+
         .meta-items-container {
             .meta-item {
                 margin: 0.5rem;
+                flex: none;
+                width: 120px; // Match mobile width from normal meta row
 
                 &:not(:first-child) {
-                    margin-left: 0.5rem;
+                    margin-left: 0.75rem; // Match gap!
                 }
 
                 .title-bar-container {
