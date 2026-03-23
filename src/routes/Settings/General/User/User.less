@@ -2,35 +2,70 @@
 
 .user {
     width: 100%;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 
     .user-info-content {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 1.5rem;
+        gap: 2rem;
+        width: 100%;
 
         .avatar-container {
             flex: none;
-            width: 4.5rem;
-            height: 4.5rem;
-            border-radius: 1rem;
+            width: 6rem;
+            height: 6rem;
+            border-radius: 50%; // Circular avatars for premium feel
             background-size: cover;
             background-position: center;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
+
+            &:hover {
+                transform: scale(1.05);
+                box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
+            }
         }
 
         .email-logout-container {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 0.5rem;
+            min-width: 0;
 
             .email-label-container {
                 .email-label {
-                    font-size: 1.25rem;
-                    font-weight: 700;
+                    font-size: 1.6rem;
+                    font-weight: 800;
                     color: var(--text-primary);
+                    letter-spacing: -0.02em;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            // Logout/Action buttons inside user info
+            :global(.logout-btn) {
+                align-self: flex-start;
+                font-size: 0.85rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.15rem;
+                color: var(--text-secondary);
+                opacity: 0.4;
+                transition: all 0.3s ease;
+                background: transparent;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+
+                &:hover {
+                    opacity: 1;
+                    color: #ff4d4f;
+                    transform: translateX(4px);
                 }
             }
         }
@@ -39,17 +74,19 @@
 
 @media only screen and (max-width: @small) {
     .user {
+        margin-bottom: 1.5rem;
         .user-info-content {
-            gap: 1rem;
+            gap: 1.25rem;
             
             .avatar-container {
-                width: 3.5rem;
-                height: 3.5rem;
+                width: 4rem;
+                height: 4rem;
+                border-width: 2px;
             }
 
             .email-label-container {
                 .email-label {
-                    font-size: 1.1rem;
+                    font-size: 1.3rem;
                 }
             }
         }

@@ -1,11 +1,9 @@
-// Copyright (C) 2017-2024 Caught In 4K
-
 @import (reference) '~stremio/common/screen-sizes.less';
 
 .settings-container {
     height: 100%;
     width: 100%;
-    background-color: var(--bg-body);
+    background-color: transparent;
 
     .settings-content {
         height: 100%;
@@ -20,14 +18,95 @@
             flex: 1;
             padding: 2.5rem 4rem 8rem 0;
             overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            &::-webkit-scrollbar { display: none; }
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.05) transparent;
+            scroll-behavior: smooth;
+            padding-bottom: 20rem; // Add extra padding for bottom scrolling
 
-            // Fade bottom to indicate scroll
-            mask-image: linear-gradient(to bottom, black 85%, transparent);
+            &::-webkit-scrollbar { width: 4px; }
+            &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 2px; }
+
+            // Individual section styling
+            :global(.section) {
+                margin-bottom: 6rem;
+                animation: sectionFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+                
+                .section-header {
+                    margin-bottom: 3rem;
+                    
+                    .section-title {
+                        font-size: 2.5rem;
+                        font-weight: 800;
+                        color: var(--text-primary);
+                        letter-spacing: -0.04em;
+                    }
+
+                    .section-description {
+                        font-size: 1.1rem;
+                        color: var(--text-secondary);
+                        opacity: 0.5;
+                        margin-top: 0.75rem;
+                        max-width: 40rem;
+                        line-height: 1.5;
+                    }
+                }
+
+                // Grid based settings widget
+                .section-content {
+                    width: 100%;
+                    max-width: 900px;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+                    gap: 1.5rem;
+
+                    :global(.setting-item) {
+                        background: rgba(255, 255, 255, 0.02);
+                        border: 1px solid rgba(255, 255, 255, 0.05);
+                        border-radius: 2rem;
+                        padding: 1.5rem 2rem;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1.25rem;
+                        transition: all 0.3s ease;
+
+                        &:hover {
+                            background: rgba(255, 255, 255, 0.04);
+                            border-color: rgba(255, 255, 255, 0.1);
+                            transform: translateY(-2px);
+                        }
+
+                        .setting-label {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0.25rem;
+                            
+                            .title {
+                                font-size: 1.1rem;
+                                font-weight: 700;
+                                color: var(--text-primary);
+                            }
+
+                            .description {
+                                font-size: 0.9rem;
+                                color: var(--text-secondary);
+                                opacity: 0.5;
+                                line-height: 1.4;
+                            }
+                        }
+
+                        .setting-input {
+                            align-self: flex-start;
+                        }
+                    }
+                }
+            }
         }
     }
+}
+
+@keyframes sectionFadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @media only screen and (max-width: @small) {
@@ -37,10 +116,28 @@
             gap: 0;
 
             .sections-container {
-                padding: 1.5rem 1.5rem 12rem;
-                mask-image: none;
+                padding: 2rem 1.5rem 12rem;
                 width: 100%;
                 box-sizing: border-box;
+
+                :global(.section) {
+                    margin-bottom: 4rem;
+
+                    .section-header {
+                        margin-bottom: 2rem;
+                        .section-title { font-size: 1.8rem; }
+                        .section-description { font-size: 1rem; }
+                    }
+
+                    .section-content {
+                        grid-template-columns: 1fr;
+                        
+                        :global(.setting-item) {
+                            padding: 1.25rem 1.5rem;
+                            border-radius: 1.5rem;
+                        }
+                    }
+                }
             }
         }
     }

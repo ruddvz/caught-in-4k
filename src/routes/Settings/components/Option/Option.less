@@ -7,8 +7,9 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: all 0.3s ease;
 
     &:last-child {
         border-bottom: none;
@@ -18,57 +19,96 @@
         flex: 1;
         display: flex;
         align-items: center;
-        gap: 1.25rem;
+        gap: 1.5rem;
+        min-width: 0;
 
         .icon {
-            width: 1.5rem;
-            height: 1.5rem;
-            opacity: 0.5;
+            flex: none;
+            width: 1.6rem;
+            height: 1.6rem;
+            opacity: 0.25;
             color: var(--text-primary);
+            transition: all 0.3s ease;
         }
 
         .label {
-            font-size: 1.05rem;
-            font-weight: 500;
+            flex: 1;
+            font-size: 1.15rem;
+            font-weight: 700;
             color: var(--text-primary);
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+    }
+
+    &:hover .heading .icon {
+        opacity: 0.8;
+        transform: scale(1.1);
     }
 
     .content {
         flex: none;
         display: flex;
         justify-content: flex-end;
-        min-width: 12rem;
+        align-items: center;
+        min-width: 15rem;
+        margin-left: 2rem;
 
+        // Custom styling for elements inside content
         :global(.multiselect) {
-            background: var(--bg-surface-2);
-            border-radius: 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-weight: 600;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-weight: 700;
+            height: 3.25rem;
+            padding: 0 1.25rem;
+            color: var(--text-primary);
+            transition: all 0.25s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
         }
 
         :global(.button) {
-            background: var(--bg-surface-2);
-            color: var(--text-primary);
-            border-radius: 0.75rem;
-            padding: 0.75rem 1.5rem;
+            background: #fff;
+            color: #000;
+            border-radius: 999px;
+            padding: 0.85rem 2rem;
             height: auto;
-            font-weight: 600;
-            font-size: 0.95rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.2s ease;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.05);
 
             &:hover {
-                background: var(--text-primary);
-                color: var(--bg-body);
-                transform: translateY(-2px);
+                transform: translateY(-4px) scale(1.02);
+                box-shadow: 0 16px 32px rgba(255, 255, 255, 0.12);
+            }
+
+            &:active {
+                transform: scale(0.96);
+                box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+            }
+            
+            &:disabled {
+                background: rgba(255, 255, 255, 0.06);
+                color: rgba(255, 255, 255, 0.2);
+                box-shadow: none;
             }
         }
 
         :global(.color-input) {
-            background: var(--bg-surface-2);
-            border-radius: 0.75rem;
-            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1.25rem;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
     }
 }
@@ -77,21 +117,37 @@
     .option {
         flex-direction: column;
         align-items: stretch;
-        gap: 1rem;
-        padding: 1.5rem 0;
+        gap: 1.25rem;
+        padding: 1.5rem 0.5rem;
+        border-radius: 1.5rem;
 
         .heading {
             .icon {
-                display: none; // Save space on small mobile settings
+                width: 1.4rem;
+                height: 1.4rem;
+                opacity: 0.4;
+            }
+            .label {
+                font-size: 1.05rem;
+                white-space: normal;
+                line-height: 1.4;
             }
         }
 
         .content {
-            min-width: 100%;
+            margin-left: 0;
+            min-width: 0;
+            justify-content: stretch;
             
-            :global(.button) {
+            :global(.multiselect),
+            :global(.button),
+            :global(.color-input),
+            :global(.input) {
                 flex: 1;
+                width: 100%;
+                justify-content: center;
+                text-align: center;
             }
         }
     }
-}
+}

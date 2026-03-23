@@ -20,18 +20,18 @@
             padding: 0;
             padding-top: 0;
             overflow-y: auto;
-            /* Allow hero to bleed left behind the nav pill without creating a horizontal scrollbar */
             overflow-x: clip;
             overflow-clip-margin: calc(var(--vertical-nav-bar-size) + 2.5rem);
 
             .board-row {
-                padding: 0 1rem; // Add back padding for non-hero rows
-                margin-top: 1rem;
-                margin-bottom: 2rem;
+                padding: 0 0.5rem;
+                margin-top: 0.5rem;
+                margin-bottom: 2.5rem;
 
                 &.hero-shelf-row {
                     padding: 0;
                     margin-top: 0;
+                    margin-bottom: 2rem;
                 }
             }
 
@@ -61,7 +61,9 @@
         .board-content-container {
             .board-content {
                 .board-row {
-                    margin-bottom: 1.5rem;
+                    padding: 0;
+                    margin-top: 0;
+                    margin-bottom: 1rem; // Tighter but consistent mobile spacing
                 }
             }
         }

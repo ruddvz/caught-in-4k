@@ -2,30 +2,53 @@
     position: relative;
     display: flex;
     align-items: center;
-    padding: 1.25rem 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 1.5rem 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    border-radius: 1.25rem;
 
     &:last-child {
         border-bottom: none;
     }
 
     .label {
-        font-size: 1.05rem;
-        font-weight: 500;
+        font-size: 1.15rem;
+        font-weight: 700;
         color: var(--text-primary);
-        opacity: 0.85;
+        opacity: 0.6;
+        transition: all 0.3s ease;
+        letter-spacing: -0.01em;
+    }
+
+    // Modern indicator for external links
+    &::after {
+        content: '→';
+        margin-left: auto;
+        font-size: 1.4rem;
+        color: var(--text-primary);
+        opacity: 0;
+        transform: translate(-10px, 0);
+        transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
     &:hover {
-        background: rgba(255, 255, 255, 0.03);
-        transform: translateX(4px);
+        background: rgba(255, 255, 255, 0.035);
+        transform: translateX(8px);
         
         .label {
             opacity: 1;
             text-decoration: none;
+            color: #fff;
         }
+
+        &::after {
+            opacity: 0.5;
+            transform: translate(0, 0);
+        }
+    }
+
+    &:active {
+        transform: scale(0.98) translateX(4px);
     }
 }
