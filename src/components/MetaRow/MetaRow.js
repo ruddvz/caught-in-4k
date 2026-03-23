@@ -68,9 +68,6 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
                                 :
                                 null
                         }
-                        {Array(Math.max(0, CONSTANTS.CATALOG_PREVIEW_SIZE - items.length)).fill(null).map((_, index) => (
-                            <div key={index} className={classnames(styles['meta-item'], styles['poster-shape-poster'])} />
-                        ))}
                     </div>
             }
         </div>

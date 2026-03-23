@@ -97,3 +97,27 @@ Instead of a single scrolling list, the details page is broken into distinct vis
 - **Ditch the Apple TV scale hover:** No extreme 3D twisting hooks. 
 - **Subtle Lift:** Hovering a card gently shifts `transform: translateY(-4px)` and increases the opacity of its soft drop-shadow.
 - **Pill Toggles:** Clicking a category pill smoothly transitions the background color via standard CSS `transition: background 0.3s ease`.
+
+---
+
+## 6. Implementation Status & To-Do List (Handoff)
+
+### ✅ What is Completed:
+1. **Top Navigation (Replaces Sidebar):** Fully implemented. It has the horizontal pill with legacy icons, responsive zoom, and profile buttons (`person-outline` & `maximize` icons). Verified mobile-responsive.
+2. **Matte Slate / Drop Shadow Overhaul:** Removed neon green selections and replaced them with `rgba(0,0,0,0.5)` deep shadows and floating widget glassmorphism on the main elements.
+3. **Hero Shelf Button Glows:** Fixed action-button hover shadow clipping so the glows properly diffuse horizontally and vertically without being artificially cropped.
+4. **Consolidated Meta Details View:** The movie/series details widgets are consolidated horizontally on larger screens. Fixed wrapped links that were being accidentally clipped. 
+5. **Board Page Carousels (Fixed sizes!):** 
+   - *Previous Issue:* Carousels were weirdly sized on the board page because they relied on CSS flexing against empty placeholders while being limited by `nth-child` breakpoints.
+   - *Fix Implemented:* We ripped out the `nth-child` breakpoints from `Board/styles.less` and introduced standard horizontal scrollable carousels (`overflow-x: auto`) for `MetaRow`. Item widths are now locked via `calc(100vw / X)` rather than squishing/expanding depending on window breakpoints or array item count. You should no longer see different sizes of carousels.
+
+### 📝 To-Do List for the Next Agent:
+1. **Validate Empty Placeholders in Discover (If any):** Now that `MetaRow` uses `overflow-x: auto` and no longer pads empty objects for CSS flex mapping, check the `Discover` and `Search` screens to ensure their grid views (`MetaItem` map rendering) are laying out properly and not scrolling horizontally by accident. `Discover` uses the grid format, not `MetaRow`, but confirm just to be safe.
+2. **Hero Banners Aspect Ratio Check:** In `HeroShelf` components, make sure the text sits fully *inside* the rounded banner card structure accurately on mobile and tablet without bleeding or wrapping awkwardly.
+3. **Category Pills cleanup:** Ensure the "Trending / Action..." filters are indeed completely removed from the Board if requested, OR if the user re-adds them, format them as horizontal pill filters. (Current implementation removed them from Board rendering as per previous request, but verify user intent).
+4. **Ratings and Widgets on MetaPreview Detail:** Complete the "Reviews dial gauge visualization", Rotten Tomatoes/IMDb chips, and Ensure "Cast & Crew" uses the rounded Squircle avatar shapes natively. 
+5. **"Right Side Menu" on Detail View:** Re-arrange the Meta details so there is a clean distinction between the left hero/poster, the middle body text, and a proper widget column on the exact right side for Mini-Trailer, Cast, and Menu.
+
+**General instructions to next UI Agent:**
+- When updating anything, strictly open the corresponding `.LESS` files and review `#app` hierarchies.
+- The theme runs deeply. If you insert a background color, ensure it's `var(--bg-surface-x)` and never `#000` or `#fff` straight up. Always use high radii (`var(--radius-card)` and `var(--radius-pill)`).
