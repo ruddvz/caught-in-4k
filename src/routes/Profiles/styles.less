@@ -305,9 +305,9 @@
 .add-split {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: center;
-    gap: 3rem;
+    gap: 2rem;
     width: 100%;
     max-width: 1100px;
     padding: 0 2rem;
@@ -322,8 +322,9 @@
     align-items: center;
     justify-content: center;
     gap: 1.6rem;
-    padding: 1rem 1.5rem 0;
+    padding: 1.5rem 2rem 0;
     overflow: visible;
+    box-sizing: border-box;
 
     .preview-circle {
         width: 250px;
@@ -365,7 +366,9 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 1.25rem;
     width: 100%;
-    padding: 0 0.5rem;
+    padding: 30px;
+    overflow: visible;
+    box-sizing: border-box;
 
     .grid-avatar {
         aspect-ratio: 1 / 1;
