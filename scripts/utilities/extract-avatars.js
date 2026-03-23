@@ -3,14 +3,17 @@ const path = require('path');
 
 const OUT = path.join(__dirname, '../../assets/images/avatars');
 
-// Shifted centers (+24px X total) to eliminate left-side "moon" bleed from neighbors
+// Images are 5632x3072 — exactly 4× the 1408x768 originals.
+// Scale all coords by 4.
 const centers = [
-    {x:169, y:215}, {x:437, y:215}, {x:705, y:215}, {x:973, y:215}, {x:1241, y:215},
-    {x:169, y:555}, {x:437, y:555}, {x:705, y:555}, {x:973, y:555}, {x:1241, y:555},
+    {x:676,  y:860},  {x:1748, y:860},  {x:2820, y:860},  {x:3892, y:860},  {x:4964, y:860},
+    {x:676,  y:2220}, {x:1748, y:2220}, {x:2820, y:2220}, {x:3892, y:2220}, {x:4964, y:2220},
 ];
 
-const radius = 115;  // tightened from 120 — safety buffer against neighbor bleed
-const side   = 230;  // 2 * radius
+const IMG_W  = 5632;
+const IMG_H  = 3072;
+const radius = 460;  // 115 × 4
+const side   = 920;  // 230 × 4
 
 console.log('radius:', radius, 'px  |  crop size:', side + 'x' + side, 'px');
 
@@ -29,8 +32,8 @@ async function extract(src, startNum) {
         const n    = startNum + i;
         const left = Math.max(0, c.x - radius);
         const top  = Math.max(0, c.y - radius);
-        const w    = Math.min(side, 1408 - left);
-        const h    = Math.min(side, 768  - top);
+        const w    = Math.min(side, IMG_W - left);
+        const h    = Math.min(side, IMG_H - top);
         const dest = path.join(OUT, 'c4k-avatar-' + n + '.png');
         console.log('  avatar', n, '| center:', c.x + ',' + c.y,
                     '| crop:', left + ',' + top, w + 'x' + h);
