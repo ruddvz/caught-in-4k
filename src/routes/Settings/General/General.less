@@ -1,108 +1,50 @@
-@c4k-green: #a1ff00;
-
-.trakt-section {
-    margin-top: auto;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-
-    .option-icon {
-        color: var(--color-trakt) !important;
-    }
-}
-
 .account-widget {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    justify-content: center;
+    height: 100%; // Fill the widget-card height
 
     .account-header {
         display: flex;
         align-items: center;
-        gap: 1.2rem;
+        gap: 1.5rem;
 
         .master-avatar {
-            width: 4rem; // Compact size
-            height: 4rem;
-            border-radius: 50%;
+            width: 5rem;
+            height: 5rem;
+            border-radius: 999px;
             background-size: cover;
             background-position: center;
             border: 2px solid rgba(255, 255, 255, 0.1);
             flex-shrink: 0;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
         }
 
         .user-details {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
             min-width: 0;
 
             .display-name {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
                 font-weight: 800;
                 color: #fff;
                 white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                margin-bottom: 0.1rem;
-            }
-        }
-    }
-
-    .account-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 0.6rem; // Compact stack
-
-        .login-link {
-            font-size: 1.2rem;
-            color: @c4k-green;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        .action-btn {
-            width: 100%;
-            padding: 0.75rem 1.25rem;
-            border-radius: 1rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            border: 1px solid transparent;
-            text-align: left; // Left aligned as requested
-            transition: all 0.2s;
-
-            &:active {
-                transform: scale(0.98);
+                letter-spacing: -0.02em;
             }
 
-            &.btn-logout {
-                background: rgba(255, 255, 255, 0.05);
-                color: rgba(255, 255, 255, 0.6);
+            .login-link {
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: @c4k-green;
+                opacity: 0.8;
+                text-decoration: none;
+                transition: opacity 0.2s;
 
                 &:hover {
-                    background: rgba(255, 255, 255, 0.08);
-                    color: #fff;
-                }
-            }
-
-            &.btn-secondary {
-                background: rgba(255, 255, 255, 0.03);
-                border-color: rgba(255, 255, 255, 0.05);
-                color: rgba(255, 255, 255, 0.8);
-
-                &:hover {
-                    background: rgba(255, 255, 255, 0.07);
-                    border-color: rgba(255, 255, 255, 0.1);
-                    color: @c4k-green;
-                }
-            }
-
-            &.btn-danger {
-                background: rgba(255, 60, 60, 0.05);
-                color: rgba(255, 60, 60, 0.5);
-
-                &:hover {
-                    background: rgba(255, 60, 60, 0.1);
-                    color: #ff5050;
-                    border-color: rgba(255, 60, 60, 0.2);
+                    opacity: 1;
                 }
             }
         }

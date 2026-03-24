@@ -88,31 +88,12 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     <div className={styles['display-name']}>
                         Stranger.
                     </div>
+                    <Link 
+                        label={`${t('LOG_IN')} / ${t('SIGN_UP')}`} 
+                        href={'#/intro'} 
+                        className={styles['login-link']} 
+                    />
                 </div>
-            </div>
-
-            <div className={styles['account-actions']}>
-                {profile.auth ? (
-                    <>
-                        <Button className={classnames(styles['action-btn'], styles['btn-logout'])} onClick={onLogout}>
-                            {t('LOG_OUT')}
-                        </Button>
-                        <Button
-                            className={classnames(styles['action-btn'], styles['btn-secondary'])}
-                            onClick={onToggleTrakt}
-                        >
-                            {isTraktAuthenticated ? 'Log out of Trakt' : 'Authenticate Trakt'}
-                        </Button>
-                        <Button className={classnames(styles['action-btn'], styles['btn-secondary'])} onClick={onChangePassword}>
-                            Change Password
-                        </Button>
-                        <Button className={classnames(styles['action-btn'], styles['btn-danger'])} onClick={onDeleteAccount}>
-                            Delete Account
-                        </Button>
-                    </>
-                ) : (
-                    <Link label={`${t('LOG_IN')} / ${t('SIGN_UP')}`} href={'#/intro'} className={styles['login-link']} />
-                )}
             </div>
         </div>
     );

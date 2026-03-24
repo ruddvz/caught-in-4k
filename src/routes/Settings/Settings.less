@@ -22,60 +22,57 @@
         // THE UNIFIED GRID: 35% / 65% SPLIT
         .dashboard-grid {
             display: flex;
-            gap: 40px;
+            gap: 2rem;
             width: 100%;
-            height: calc(100vh - 160px); 
-            align-items: flex-start; // Align top of widgets
-        }
-
-        // LEFT COLUMN: 3 stacked items — Account + Profiles + Footer
-        .column-left {
-            flex: 0 0 32%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-width: 0;
+            height: calc(100vh - 18rem); // Fixed cinematic height
+            align-items: stretch; // VERTICAL LOCK: match all column heights
             overflow: visible;
         }
 
-        .column-right {
-            flex: 1 1 0;
+        // LEFT COLUMN: Managed Identity & Profiles
+        .column-left {
+            flex: 0 0 35%;
             display: flex;
             flex-direction: column;
-            min-width: 0;
-            overflow: visible; // ESSENTIAL for dropdowns
+            justify-content: space-between; // Push Stranger to top, Profiles to bottom
+            overflow: visible;
         }
 
-        // WIDGET CARDS
-        .widget-card {
-            background-color: @bg-charcoal;
-            border: 1px solid @border-grey;
+        // RIGHT COLUMN: The Engine Room
+        .column-right {
+            flex: 0 0 65%;
+            display: flex;
+            flex-direction: column;
+            overflow: visible; 
+        }
+
+        // THE BOX CONSTRAINT: Uniform Widget Cards
+        .widget-card, .player-widget {
+            background-color: rgba(20, 23, 28, 0.7); // Semi-transparent charcoal
+            border: 1px solid rgba(255, 255, 255, 0.08); // Subtle 1px border
             border-radius: @radius-card;
             padding: 2.5rem;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
             overflow: visible;
-
-            // Account widget — compact height
-            &:first-child { flex: 0 1 auto; }
-
-            // Profiles widget — compact height
-            &.profiles-card { flex: 0 1 auto; }
         }
 
-        // RIGHT COLUMN — full-height Engine Room card
+        .widget-card {
+            flex: 0 0 auto; // Keep fixed height based on content
+            width: 100%;
+            
+            &:first-child {
+                min-height: 120px; // Stranger widget height
+            }
+            &.profiles-card {
+                flex: 0 1 auto; // Profiles occupies remaining space if needed, or stays at bottom
+            }
+        }
+
         .player-widget {
-            background-color: @bg-charcoal;
-            border: 1px solid @border-grey;
-            border-radius: @radius-card;
-            padding: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
-            overflow: visible;
-            flex: 1;
+            flex: 1; // Fills the 65% height
         }
 
         // GLOBAL FOOTER — center-aligned at the bottom

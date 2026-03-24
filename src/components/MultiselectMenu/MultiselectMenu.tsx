@@ -16,10 +16,11 @@ type Props = {
     value?: any;
     disabled?: boolean,
     onSelect: (value: any) => void;
+    isOpen?: boolean,
 };
 
-const MultiselectMenu = ({ className, title, options, value, disabled, onSelect }: Props) => {
-    const [menuOpen, , closeMenu, toggleMenu] = useBinaryState(false);
+const MultiselectMenu = ({ className, title, options, value, disabled, onSelect, isOpen = false }: Props) => {
+    const [menuOpen, , closeMenu, toggleMenu] = useBinaryState(isOpen);
     const multiselectMenuRef = useOutsideClick(() => closeMenu());
     const [level, setLevel] = React.useState<number>(0);
 
