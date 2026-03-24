@@ -16,10 +16,6 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         subtitlesTextColorInput,
         subtitlesBackgroundColorInput,
         subtitlesOutlineColorInput,
-        audioLanguageSelect,
-        surroundSoundToggle,
-        seekTimeDurationSelect,
-        seekShortTimeDurationSelect,
         playInExternalPlayerSelect,
         nextVideoPopupDurationSelect,
         bingeWatchingToggle,
@@ -53,23 +49,8 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     </Category>
                 </div>
 
-                {/* Column 2 — Audio, Automation, Advanced, System Integration */}
+                {/* Column 2 — Automation, Advanced, System Integration */}
                 <div className={styles['col']}>
-                    <Category icon={'volume-medium'} label={'SETTINGS_SECTION_AUDIO'}>
-                        <Option label={'SETTINGS_DEFAULT_AUDIO_TRACK'}>
-                            <MultiselectMenu className={styles['multiselect']} {...audioLanguageSelect} />
-                        </Option>
-                        <Option label={'SETTINGS_SURROUND_SOUND'}>
-                            <Toggle tabIndex={-1} {...surroundSoundToggle} />
-                        </Option>
-                        <Option label={'Seek Time'}>
-                            <MultiselectMenu className={styles['multiselect']} {...seekTimeDurationSelect} />
-                        </Option>
-                        <Option label={'Secondary Seek'}>
-                            <MultiselectMenu className={styles['multiselect']} {...seekShortTimeDurationSelect} />
-                        </Option>
-                    </Category>
-
                     <Category icon={'play'} label={'SETTINGS_SECTION_AUTO_PLAY'}>
                         <Option label={'AUTO_PLAY'}>
                             <Toggle tabIndex={-1} {...bingeWatchingToggle} />
@@ -80,7 +61,7 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     </Category>
 
                     <Category icon={'glasses'} label={'SETTINGS_SECTION_ADVANCED'}>
-                        <Option label={'SETTINGS_HARDWARE_DECODING'}>
+                        <Option label={'Hardware Acceleration'}>
                             <Toggle tabIndex={-1} {...hardwareDecodingToggle} />
                         </Option>
                         <Option label={'SETTINGS_PLAY_IN_EXTERNAL_PLAYER'}>

@@ -85,41 +85,41 @@ const ProfileManagement = () => {
         <div className={styles['profile-management']}>
             <div className={styles['widget-label']}>SUB-PROFILES</div>
 
-            {profiles.length === 0 ? (
-                <div className={styles['empty-state']}>
-                    <span className={styles['empty-text']}>No profiles yet</span>
-                    <a href="#/profiles" className={styles['cta-link']}>+ Create your first profile</a>
-                </div>
-            ) : (
-                <div className={styles['profiles-grid']}>
-                    {profiles.slice(0, 4).map(p => (
+            <div className={styles['profiles-grid']}>
+                {profiles.slice(0, 4).map(p => (
+                    <div
+                        key={p.id}
+                        className={classnames(styles['profile-item'], {
+                            [styles['profile-active']]: currentProfile?.id === p.id,
+                        })}
+                        onClick={() => handleSelect(p)}
+                        title={`Switch to ${p.name}`}
+                    >
                         <div
-                            key={p.id}
-                            className={classnames(styles['profile-item'], {
-                                [styles['profile-active']]: currentProfile?.id === p.id,
-                            })}
-                            onClick={() => handleSelect(p)}
-                            title={`Switch to ${p.name}`}
+                            className={styles['profile-avatar']}
+                            style={{ '--avatar-url': `url(${getAvatarUrl(p)})` } as React.CSSProperties}
+                        />
+                        <span className={styles['profile-name']}>{p.name}</span>
+                        {currentProfile?.id === p.id && (
+                            <span className={styles['active-badge']}>Active</span>
+                        )}
+                        <button
+                            type="button"
+                            className={styles['remove-btn']}
+                            onClick={(e) => handleRemove(e, p.id)}
+                            title={`Remove ${p.name}`}
                         >
-                            <div
-                                className={styles['profile-avatar']}
-                                style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
-                            />
-                            <span className={styles['profile-name']}>{p.name}</span>
-                            {currentProfile?.id === p.id && (
-                                <span className={styles['active-badge']}>Active</span>
-                            )}
-                            <button
-                                className={styles['remove-btn']}
-                                onClick={(e) => handleRemove(e, p.id)}
-                                title={`Remove ${p.name}`}
-                            >
-                                ✕
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            )}
+                            ✕
+                        </button>
+                    </div>
+                ))}
+                {profiles.length < 4 && (
+                    <a href="#/profiles" className={styles['add-profile-card']} title="Add a new profile">
+                        <span className={styles['add-icon']}>+</span>
+                        <span className={styles['add-label']}>Add Profile</span>
+                    </a>
+                )}
+            </div>
 
             <a href="#/profiles" className={styles['manage-link']}>Manage Profiles →</a>
         </div>
