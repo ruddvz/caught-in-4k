@@ -291,131 +291,119 @@ const Intro = ({ queryParams }) => {
             core.transport.off('CoreEvent', onCoreEvent);
         };
     }, [routeFocused]);
+    const onFormSubmit = React.useCallback((e) => {
+        e.preventDefault();
+        loginWithEmail();
+    }, [loginWithEmail]);
+
     return (
         <div className={styles['intro-container']}>
-            <div className={styles['background-container']} />
-            <div className={styles['heading-container']}>
-                <div className={styles['logo-container']}>
-                    <AppLogo variant="compact" className={styles['logo']} />
+            {/* 1. Branding & Header */}
+            <div className={styles['branding-header']}>
+                <div className={styles['c4k-logo']}>
+                    C4k<span className={styles['red-dot']}>.</span>
                 </div>
-                <div className={styles['title-container']}>
-                    {t('WEBSITE_SLOGAN_NEW_NEW')}
-                </div>
-                <div className={styles['slogan-container']}>
-                    {t('WEBSITE_SLOGAN_ALL')}
-                </div>
+                <div className={styles['slogan']}>Freedom to Stream</div>
+                <div className={styles['sub-header']}>All the video content you enjoy in one place</div>
             </div>
-            <div className={styles['content-container']}>
-                <div className={styles['form-container']}>
-                    <CredentialsTextInput
-                        ref={emailRef}
-                        className={styles['credentials-text-input']}
-                        type={'email'}
-                        placeholder={t('EMAIL')}
-                        value={state.email}
-                        onChange={emailOnChange}
-                        onSubmit={emailOnSubmit}
-                    />
-                    <CredentialsTextInput
-                        ref={passwordRef}
-                        className={styles['credentials-text-input']}
-                        type={'password'}
-                        placeholder={t('PASSWORD')}
-                        value={state.password}
-                        onChange={passwordOnChange}
-                        onSubmit={passwordOnSubmit}
-                    />
-                    {
-                        state.form === SIGNUP_FORM ?
-                            <React.Fragment>
-                                <CredentialsTextInput
-                                    ref={confirmPasswordRef}
-                                    className={styles['credentials-text-input']}
-                                    type={'password'}
-                                    placeholder={t('PASSWORD_CONFIRM')}
-                                    value={state.confirmPassword}
-                                    onChange={confirmPasswordOnChange}
-                                    onSubmit={confirmPasswordOnSubmit}
-                                />
-                                <Checkbox
-                                    ref={termsRef}
-                                    label={t('READ_AND_AGREE')}
-                                    link={t('TOS')}
-                                    href={'#/tos'}
-                                    checked={state.termsAccepted}
-                                    onChange={toggleTermsAccepted}
-                                />
-                                <Checkbox
-                                    ref={privacyPolicyRef}
-                                    label={t('READ_AND_AGREE')}
-                                    link={t('PRIVACY_POLICY')}
-                                    href={'#/privacy'}
-                                    checked={state.privacyPolicyAccepted}
-                                    onChange={togglePrivacyPolicyAccepted}
-                                />
-                            </React.Fragment>
-                            :
-                            <div className={styles['forgot-password-link-container']}>
-                                <Button className={styles['forgot-password-link']} onClick={openPasswordRestModal}>{t('FORGOT_PASSWORD')}</Button>
+
+            {/* Main Content Area: Form (Left) | Actions (Right) */}
+            <div className={styles['main-dashboard-wrap']}>
+                
+                {/* 2. Form Field Styling (The Glow Fix) */}
+                <div className={styles['form-side']}>
+                    <div className={styles['glow-buffer-container']}>
+                        <form className={styles['credentials-form']} onSubmit={onFormSubmit}>
+                            <CredentialsTextInput
+                                ref={emailRef}
+                                className={styles['input-field']}
+                                type={'email'}
+                                placeholder={'E-mail'}
+                                value={state.email}
+                                onChange={emailOnChange}
+                                onSubmit={emailOnSubmit}
+                            />
+                            {/* Focus state simulated on Password field as requested */}
+                            <CredentialsTextInput
+                                ref={passwordRef}
+                                className={classnames(styles['input-field'], styles['password-field-glow'])}
+                                type={'password'}
+                                placeholder={'Password'}
+                                value={state.password}
+                                onChange={passwordOnChange}
+                                onSubmit={passwordOnSubmit}
+                                autoFocus
+                            />
+                            <CredentialsTextInput
+                                ref={confirmPasswordRef}
+                                className={styles['input-field']}
+                                type={'password'}
+                                placeholder={'Confirm password'}
+                                value={state.confirmPassword}
+                                onChange={confirmPasswordOnChange}
+                                onSubmit={confirmPasswordOnSubmit}
+                            />
+                            
+                            <div className={styles['legal-checkboxes']}>
+                                <div className={styles['check-row']}>
+                                    <Checkbox
+                                        ref={termsRef}
+                                        checked={state.termsAccepted}
+                                        onChange={toggleTermsAccepted}
+                                    />
+                                    <span className={styles['legal-label']}>I agree to the Terms of Service</span>
+                                </div>
+                                <div className={styles['check-row']}>
+                                    <Checkbox
+                                        ref={privacyPolicyRef}
+                                        checked={state.privacyPolicyAccepted}
+                                        onChange={togglePrivacyPolicyAccepted}
+                                    />
+                                    <span className={styles['legal-label']}>I agree to the Privacy Policy</span>
+                                </div>
                             </div>
-                    }
-                    {
-                        state.error && state.error.length > 0 ?
-                            <div ref={errorRef} className={styles['error-message']}>{state.error}</div>
-                            :
-                            null
-                    }
-                    <Button className={classnames(styles['form-button'], styles['submit-button'])} onClick={state.form === SIGNUP_FORM ? signup : loginWithEmail}>
-                        <div className={styles['label']}>{state.form === SIGNUP_FORM ? t('SIGN_UP') : t('LOG_IN')}</div>
-                    </Button>
+                        </form>
+                    </div>
                 </div>
-                <div className={styles['options-container']}>
-                    {
-                        state.form === SIGNUP_FORM ?
-                            <Button className={classnames(styles['form-button'], styles['login-form-button'])} onClick={switchFormOnClick}>
-                                <div className={styles['label']}>{t('LOG_IN')}</div>
-                            </Button>
-                            :
-                            null
-                    }
-                    {
-                        state.form === LOGIN_FORM ?
-                            <Button className={classnames(styles['form-button'], styles['signup-form-button'])} onClick={switchFormOnClick}>
-                                <div className={styles['label']}>{t('SIGN_UP_EMAIL')}</div>
-                            </Button>
-                            :
-                            null
-                    }
-                    {
-                        state.form === SIGNUP_FORM ?
-                            <Button className={classnames(styles['form-button'], styles['guest-login-button'])} onClick={loginAsGuest}>
-                                <div className={styles['label']}>{t('GUEST_LOGIN')}</div>
-                            </Button>
-                            :
-                            null
-                    }
+
+                {/* 3. Action Buttons (Strict Vertical Stack) */}
+                <div className={styles['actions-side']}>
+                    <div className={styles['actions-stack']}>
+                        <Button className={classnames(styles['intro-btn'], styles['btn-google'])} onClick={loginWithEmail}>
+                            <div className={styles['google-icon']}>G</div>
+                            Login with Google
+                        </Button>
+                        <Button className={classnames(styles['intro-btn'], styles['btn-charcoal'])} onClick={loginWithEmail}>
+                            Log in
+                        </Button>
+                        <Button className={classnames(styles['intro-btn'], styles['btn-charcoal'])} onClick={loginAsGuest}>
+                            Guest login
+                        </Button>
+                    </div>
                 </div>
+
             </div>
-            {
-                passwordRestModalOpen ?
-                    <PasswordResetModal email={state.email} onCloseRequest={closePasswordResetModal} />
-                    :
-                    null
-            }
-            {
-                loaderModalOpen ?
-                    <Modal className={styles['loading-modal-container']}>
-                        <div className={styles['loader-container']}>
-                            <Icon className={styles['icon']} name={'person'} />
-                            <div className={styles['label']}>{t('AUTHENTICATING')}</div>
-                            <Button className={styles['button']} onClick={cancelLoginWithFacebook && cancelLoginWithApple}>
-                                {t('BUTTON_CANCEL')}
-                            </Button>
-                        </div>
-                    </Modal>
-                    :
-                    null
-            }
+
+            {/* 4. Footer Action */}
+            <div className={styles['footer-action']}>
+                <Button className={styles['sign-up-footer-btn']} onClick={signup}>
+                    Sign up
+                </Button>
+            </div>
+
+            {/* Modals & Loaders */}
+            {passwordRestModalOpen && <PasswordResetModal email={state.email} onCloseRequest={closePasswordResetModal} />}
+            {loaderModalOpen && (
+                <Modal className={styles['loading-modal-container']}>
+                    <div className={styles['loader-container']}>
+                        <Icon className={styles['icon']} name={'person'} />
+                        <div className={styles['label']}>{t('AUTHENTICATING')}</div>
+                        <Button className={styles['button']} onClick={cancelLoginWithFacebook && cancelLoginWithApple}>
+                            {t('BUTTON_CANCEL')}
+                        </Button>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 };
