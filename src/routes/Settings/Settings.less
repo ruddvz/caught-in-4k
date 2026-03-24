@@ -4,7 +4,6 @@
 @c4k-green: #a1ff00;
 @bg-charcoal: #161616;
 @border-grey: #333;
-@radius-card: 2.5rem; // 40px
 
 .settings-container {
     height: 100vh;
@@ -13,9 +12,13 @@
     overflow: hidden;
 
     .settings-content {
+        display: flex;
+        flex-direction: column;
         height: 100%;
         width: 100%;
-        padding: 8rem 4rem 2rem; // Large top padding to offset nav
+        // Match the Board hero-shelf-row offset: hero starts at padding 0 1.5rem
+        // with the nav bar above. We apply the same 1.5rem horizontal + minimal top.
+        padding: 1.5rem 1.5rem 0;
         box-sizing: border-box;
         background: transparent;
 
@@ -24,8 +27,9 @@
             display: flex;
             gap: 2rem;
             width: 100%;
-            height: calc(100vh - 12rem); // Zero-scroll lock
-            align-items: stretch; // VERTICAL LOCK
+            flex: 1 1 auto;
+            min-height: 0; // Prevent overflow
+            align-items: stretch; // VERTICAL LOCK — "Perfect Box"
             overflow: visible;
         }
 
@@ -35,7 +39,6 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
-            justify-content: space-between; // Lock top to top, bottom to bottom
             overflow: visible;
         }
 
@@ -44,15 +47,15 @@
             flex: 1 1 0;
             display: flex;
             flex-direction: column;
-            overflow: visible; 
+            overflow: visible;
         }
 
         // THE BOX CONSTRAINT: Uniform Widget Cards
         .widget-card, .player-widget {
-            background-color: #161616; // Solid charcoal
-            border: 1px solid rgba(255, 255, 255, 0.08); // Subtle 1px border
-            border-radius: 12px; // 12px corners mandate
-            padding: 2.5rem;
+            background-color: #161616;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 2rem 2.5rem;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -63,25 +66,26 @@
             width: 100%;
 
             &:first-child {
-                flex: 0 0 auto;
+                flex: 0 0 auto; // Identity card: compact
             }
             &.profiles-card {
-                flex: 1 1 auto; // Stretch to fill bottom gap
+                flex: 1 1 auto; // Stretch to fill remaining space → bottom lock
             }
         }
 
         .player-widget {
-            flex: 1 1 100%; // Fill right column fully
+            flex: 1 1 100%; // Fill right column fully → bottom lock
         }
 
-        // GLOBAL FOOTER — center-aligned at the bottom
+        // GLOBAL FOOTER — centered gray legal links at viewport bottom
         .settings-footer {
+            flex: 0 0 auto;
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: center;
             gap: 1.5rem;
-            padding: 1.5rem 0;
+            padding: 1rem 0;
             width: 100%;
 
             .footer-separator {
@@ -91,7 +95,7 @@
 
             .footer-link {
                 font-size: 1rem;
-                color: #b0b0b0; // Soft gray per spec
+                color: #b0b0b0;
                 text-decoration: none;
                 transition: color 0.2s;
                 white-space: nowrap;
@@ -123,10 +127,15 @@
         // Dropdown menus must float above everything
         .multiselect-menu-dropdown {
             z-index: 9999 !important;
-            border-radius: 1.5rem;
+            border-radius: 12px;
             border: 1px solid @border-grey;
             background: #1a1a1a;
             box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+        }
+
+        // No label truncation — all labels must be fully visible
+        .stremio-settings-option .label {
+            white-space: nowrap;
         }
     }
 }
@@ -156,7 +165,7 @@
             .player-widget {
                 padding: 1.5rem;
                 height: auto;
-                border-radius: 2rem;
+                border-radius: 12px;
                 flex: none !important;
             }
 
