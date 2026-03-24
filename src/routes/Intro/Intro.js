@@ -294,128 +294,106 @@ const Intro = ({ queryParams }) => {
     return (
         <div className={styles['intro-container']}>
             <div className={styles['background-container']} />
+            
+            {/* 1. Branding & Header */}
             <div className={styles['heading-container']}>
-                <div className={styles['logo-container']}>
-                    <AppLogo variant="compact" className={styles['logo']} />
+                <div className={styles['logo-text']}>
+                    C4k<span className={styles['dot']}>.</span>
                 </div>
                 <div className={styles['title-container']}>
-                    {t('WEBSITE_SLOGAN_NEW_NEW')}
+                    Freedom to Stream
                 </div>
                 <div className={styles['slogan-container']}>
-                    {t('WEBSITE_SLOGAN_ALL')}
+                    All the video content you enjoy in one place
                 </div>
             </div>
-            <div className={styles['content-container']}>
-                <div className={styles['form-container']}>
-                    <CredentialsTextInput
-                        ref={emailRef}
-                        className={styles['credentials-text-input']}
-                        type={'email'}
-                        placeholder={t('EMAIL')}
-                        value={state.email}
-                        onChange={emailOnChange}
-                        onSubmit={emailOnSubmit}
-                    />
-                    <CredentialsTextInput
-                        ref={passwordRef}
-                        className={styles['credentials-text-input']}
-                        type={'password'}
-                        placeholder={t('PASSWORD')}
-                        value={state.password}
-                        onChange={passwordOnChange}
-                        onSubmit={passwordOnSubmit}
-                    />
-                    {
-                        state.form === SIGNUP_FORM ?
-                            <React.Fragment>
-                                <CredentialsTextInput
-                                    ref={confirmPasswordRef}
-                                    className={styles['credentials-text-input']}
-                                    type={'password'}
-                                    placeholder={t('PASSWORD_CONFIRM')}
-                                    value={state.confirmPassword}
-                                    onChange={confirmPasswordOnChange}
-                                    onSubmit={confirmPasswordOnSubmit}
-                                />
-                                <Checkbox
-                                    ref={termsRef}
-                                    label={t('READ_AND_AGREE')}
-                                    link={t('TOS')}
-                                    href={'#/tos'}
-                                    checked={state.termsAccepted}
-                                    onChange={toggleTermsAccepted}
-                                />
-                                <Checkbox
-                                    ref={privacyPolicyRef}
-                                    label={t('READ_AND_AGREE')}
-                                    link={t('PRIVACY_POLICY')}
-                                    href={'#/privacy'}
-                                    checked={state.privacyPolicyAccepted}
-                                    onChange={togglePrivacyPolicyAccepted}
-                                />
-                            </React.Fragment>
-                            :
-                            <div className={styles['forgot-password-link-container']}>
-                                <Button className={styles['forgot-password-link']} onClick={openPasswordRestModal}>{t('FORGOT_PASSWORD')}</Button>
-                            </div>
-                    }
-                    {
-                        state.error && state.error.length > 0 ?
-                            <div ref={errorRef} className={styles['error-message']}>{state.error}</div>
-                            :
-                            null
-                    }
-                    <Button className={classnames(styles['form-button'], styles['submit-button'])} onClick={state.form === SIGNUP_FORM ? signup : loginWithEmail}>
-                        <div className={styles['label']}>{state.form === SIGNUP_FORM ? t('SIGN_UP') : t('LOG_IN')}</div>
+
+            <div className={styles['main-layout']}>
+                {/* 2. Form Field Column (Left) */}
+                <div className={styles['form-column']}>
+                    <div className={styles['input-wrapper']}>
+                        <CredentialsTextInput
+                            ref={emailRef}
+                            className={styles['credentials-text-input']}
+                            type={'email'}
+                            placeholder={'E-mail'}
+                            value={state.email}
+                            onChange={emailOnChange}
+                            onSubmit={emailOnSubmit}
+                        />
+                    </div>
+                    <div className={classnames(styles['input-wrapper'], styles['glow-field'])}>
+                        <CredentialsTextInput
+                            ref={passwordRef}
+                            className={styles['credentials-text-input']}
+                            type={'password'}
+                            placeholder={'Password'}
+                            value={state.password}
+                            onChange={passwordOnChange}
+                            onSubmit={passwordOnSubmit}
+                        />
+                    </div>
+                    {state.form === SIGNUP_FORM && (
+                        <div className={styles['input-wrapper']}>
+                            <CredentialsTextInput
+                                ref={confirmPasswordRef}
+                                className={styles['credentials-text-input']}
+                                type={'password'}
+                                placeholder={'Confirm password'}
+                                value={state.confirmPassword}
+                                onChange={confirmPasswordOnChange}
+                                onSubmit={confirmPasswordOnSubmit}
+                            />
+                        </div>
+                    )}
+
+                    <div className={styles['legal-container']}>
+                        <Checkbox
+                            ref={termsRef}
+                            label={t('READ_AND_AGREE')}
+                            link={t('TOS')}
+                            href={'#/tos'}
+                            checked={state.termsAccepted}
+                            onChange={toggleTermsAccepted}
+                            className={styles['legal-checkbox']}
+                        />
+                        <Checkbox
+                            ref={privacyPolicyRef}
+                            label={t('READ_AND_AGREE')}
+                            link={t('PRIVACY_POLICY')}
+                            href={'#/privacy'}
+                            checked={state.privacyPolicyAccepted}
+                            onChange={togglePrivacyPolicyAccepted}
+                            className={styles['legal-checkbox']}
+                        />
+                    </div>
+
+                    {state.error && <div className={styles['error-message']}>{state.error}</div>}
+                </div>
+
+                {/* 3. Action Buttons Column (Right) */}
+                <div className={styles['buttons-column']}>
+                    <Button className={classnames(styles['stack-button'], styles['google-button'])} onClick={() => {}}>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" className={styles['google-icon']} alt="G" />
+                        <div className={styles['label']}>Login with Google</div>
+                    </Button>
+                    <Button className={classnames(styles['stack-button'], styles['charcoal-button'])} onClick={loginWithEmail}>
+                        <div className={styles['label']}>Log in</div>
+                    </Button>
+                    <Button className={classnames(styles['stack-button'], styles['charcoal-button'])} onClick={loginAsGuest}>
+                        <div className={styles['label']}>Guest login</div>
                     </Button>
                 </div>
-                <div className={styles['options-container']}>
-                    {
-                        state.form === SIGNUP_FORM ?
-                            <Button className={classnames(styles['form-button'], styles['login-form-button'])} onClick={switchFormOnClick}>
-                                <div className={styles['label']}>{t('LOG_IN')}</div>
-                            </Button>
-                            :
-                            null
-                    }
-                    {
-                        state.form === LOGIN_FORM ?
-                            <Button className={classnames(styles['form-button'], styles['signup-form-button'])} onClick={switchFormOnClick}>
-                                <div className={styles['label']}>{t('SIGN_UP_EMAIL')}</div>
-                            </Button>
-                            :
-                            null
-                    }
-                    {
-                        state.form === SIGNUP_FORM ?
-                            <Button className={classnames(styles['form-button'], styles['guest-login-button'])} onClick={loginAsGuest}>
-                                <div className={styles['label']}>{t('GUEST_LOGIN')}</div>
-                            </Button>
-                            :
-                            null
-                    }
-                </div>
             </div>
-            {
-                passwordRestModalOpen ?
-                    <PasswordResetModal email={state.email} onCloseRequest={closePasswordResetModal} />
-                    :
-                    null
-            }
-            {
-                loaderModalOpen ?
-                    <Modal className={styles['loading-modal-container']}>
-                        <div className={styles['loader-container']}>
-                            <Icon className={styles['icon']} name={'person'} />
-                            <div className={styles['label']}>{t('AUTHENTICATING')}</div>
-                            <Button className={styles['button']} onClick={cancelLoginWithFacebook && cancelLoginWithApple}>
-                                {t('BUTTON_CANCEL')}
-                            </Button>
-                        </div>
-                    </Modal>
-                    :
-                    null
-            }
+
+            {/* 4. Sign Up Action (Bottom) */}
+            <div className={styles['bottom-signup-container']}>
+                <Button className={styles['signup-large-button']} onClick={switchFormOnClick}>
+                    {state.form === SIGNUP_FORM ? 'Already have an account? Log in' : 'Sign up'}
+                </Button>
+            </div>
+
+            {passwordRestModalOpen && <PasswordResetModal email={state.email} onCloseRequest={closePasswordResetModal} />}
         </div>
     );
 };
