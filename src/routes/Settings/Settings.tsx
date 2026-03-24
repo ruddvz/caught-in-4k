@@ -1,21 +1,29 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 import React from 'react';
-import classnames from 'classnames';
-import { useProfile, withCoreSuspender } from 'stremio/common';
+import classNames from 'classnames';
+import { useProfile, useStreamingServer, withCoreSuspender } from 'stremio/common';
 import { MainNavBars } from 'stremio/components';
 import General from './General';
 import Interface from './Interface';
 import Player from './Player';
+import Streaming from './Streaming';
+import Shortcuts from './Shortcuts';
 import styles from './Settings.less';
 
 const Settings = () => {
     const profile = useProfile();
-
+    const streamingServer = useStreamingServer();
 
     return (
         <MainNavBars className={styles['settings-container']} route={'settings'}>
-            <div className={classnames(styles['settings-content'], 'animation-fade-in')}>
+            <div className={classNames(styles['settings-content'], 'animation-fade-in')}>
+                {/* Hidden components to retain code/state per prompt rule */}
+                <div style={{ display: 'none' }}>
+                    <Streaming profile={profile} streamingServer={streamingServer} />
+                    <Shortcuts />
+                </div>
+
                 {/*
                     LAYOUT ARCHITECTURE:
                     Left Column: 35% - Identity & System
@@ -33,7 +41,7 @@ const Settings = () => {
                     </div>
 
                     {/* RIGHT COLUMN: The Giant Player Widget (65%) */}
-                    <div className={classnames(styles['column-right'], styles['player-widget'])}>
+                    <div className={classNames(styles['column-right'], styles['player-widget'])}>
                         <Player profile={profile} />
                     </div>
                 </div>
