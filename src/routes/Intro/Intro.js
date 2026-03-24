@@ -22,6 +22,15 @@ const logoSrc = require('/assets/images/logo1.png');
 const SIGNUP_FORM = 'signup';
 const LOGIN_FORM = 'login';
 
+const GoogleIcon = () => (
+    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+    </svg>
+);
+
 const Intro = ({ queryParams }) => {
     const { core } = useServices();
     const { t } = useTranslation();
@@ -36,7 +45,7 @@ const Intro = ({ queryParams }) => {
     const privacyPolicyRef = React.useRef(null);
     const errorRef = React.useRef(null);
 
-    const [passwordRestModalOpen, openPasswordRestModal, closePasswordResetModal] = useBinaryState(false);
+    const [passwordRestModalOpen, , closePasswordResetModal] = useBinaryState(false);
     const [loaderModalOpen, openLoaderModal, closeLoaderModal] = useBinaryState(false);
 
     const [state, dispatch] = React.useReducer(
@@ -142,6 +151,12 @@ const Intro = ({ queryParams }) => {
         });
     }, [state.email, state.password, state.confirmPassword, state.termsAccepted, state.privacyPolicyAccepted, state.marketingAccepted, core, t, openLoaderModal]);
 
+    const handleGoogleLogin = React.useCallback(() => {
+        console.warn('Google auth not yet configured');
+        // eslint-disable-next-line no-alert
+        alert('Google sign-in coming soon.');
+    }, []);
+
     // Form field handlers
     const emailOnChange = React.useCallback((event) => {
         dispatch({ type: 'change-credentials', name: 'email', value: event.currentTarget.value });
@@ -152,9 +167,8 @@ const Intro = ({ queryParams }) => {
         dispatch({ type: 'change-credentials', name: 'password', value: event.currentTarget.value });
     }, []);
     const passwordOnSubmit = React.useCallback(() => {
-        if (state.form === SIGNUP_FORM) { confirmPasswordRef.current.focus(); }
-        else { loginWithEmail(); }
-    }, [state.form, loginWithEmail]);
+        confirmPasswordRef.current.focus();
+    }, []);
 
     const confirmPasswordOnChange = React.useCallback((event) => {
         dispatch({ type: 'change-credentials', name: 'confirmPassword', value: event.currentTarget.value });
@@ -167,11 +181,6 @@ const Intro = ({ queryParams }) => {
     const togglePrivacyPolicyAccepted = React.useCallback(() => {
         dispatch({ type: 'toggle-checkbox', name: 'privacyPolicyAccepted' });
     }, []);
-
-    const switchFormOnClick = React.useCallback(() => {
-        const qp = new URLSearchParams([['form', state.form === SIGNUP_FORM ? LOGIN_FORM : SIGNUP_FORM]]);
-        window.location = `#/intro?${qp.toString()}`;
-    }, [state.form]);
 
     const cancelLoginWithFacebook = React.useCallback(() => {
         stopFacebookLogin();
@@ -217,25 +226,28 @@ const Intro = ({ queryParams }) => {
         return () => { core.transport.off('CoreEvent', onCoreEvent); };
     }, [routeFocused, core, closeLoaderModal]);
 
+    // Keep hooks alive — buttons removed from UI but hooks must be called unconditionally
+    void startFacebookLogin;
+    void startAppleLogin;
+
     return (
         <div className={styles['intro-container']}>
             <div className={styles['background-container']} />
 
-            {/* 1. LOGO IMAGE + HEADLINE */}
+            {/* BRANDING — Logo + tagline */}
             <div className={styles['branding-header']}>
                 <img
                     src={logoSrc}
                     className={styles['logo-image']}
                     alt="Caught in 4K"
                 />
-                <div className={styles['headline']}>Freedom to Stream</div>
-                <div className={styles['sub-headline']}>All the video content you enjoy in one place</div>
+                <p className={styles['tagline']}>Raw. Real. Rated.</p>
             </div>
 
-            {/* 2. TWO-COLUMN LAYOUT */}
+            {/* TWO-COLUMN LAYOUT */}
             <div className={styles['main-dashboard-wrap']}>
 
-                {/* LEFT COLUMN — Form inputs + legal */}
+                {/* LEFT COLUMN — Form inputs + legal + sign up */}
                 <div className={styles['form-side']}>
                     <div className={styles['glow-buffer-container']}>
                         <CredentialsTextInput
@@ -256,17 +268,15 @@ const Intro = ({ queryParams }) => {
                             onChange={passwordOnChange}
                             onSubmit={passwordOnSubmit}
                         />
-                        {state.form === SIGNUP_FORM && (
-                            <CredentialsTextInput
-                                ref={confirmPasswordRef}
-                                className={styles['credentials-text-input']}
-                                type={'password'}
-                                placeholder={'Confirm password'}
-                                value={state.confirmPassword}
-                                onChange={confirmPasswordOnChange}
-                                onSubmit={confirmPasswordOnSubmit}
-                            />
-                        )}
+                        <CredentialsTextInput
+                            ref={confirmPasswordRef}
+                            className={styles['credentials-text-input']}
+                            type={'password'}
+                            placeholder={'Confirm password'}
+                            value={state.confirmPassword}
+                            onChange={confirmPasswordOnChange}
+                            onSubmit={confirmPasswordOnSubmit}
+                        />
                     </div>
 
                     <div className={styles['legal-checkboxes']}>
@@ -293,17 +303,29 @@ const Intro = ({ queryParams }) => {
                     {state.error && (
                         <div ref={errorRef} className={styles['error-message']}>{state.error}</div>
                     )}
+
+                    <Button
+                        className={classnames(styles['intro-btn'], styles['btn-signup'])}
+                        onClick={signup}
+                    >
+                        <div className={styles['label']}>Sign up</div>
+                    </Button>
                 </div>
 
-                {/* RIGHT COLUMN — Log in + Guest login (NO Google button) */}
+                {/* RIGHT COLUMN — Google Sign In, Log in, Guest login */}
                 <div className={styles['actions-side']}>
                     <Button
-                        className={classnames(styles['intro-btn'], styles['btn-login'])}
-                        onClick={state.form === SIGNUP_FORM ? signup : loginWithEmail}
+                        className={classnames(styles['intro-btn'], styles['btn-google'])}
+                        onClick={handleGoogleLogin}
                     >
-                        <div className={styles['label']}>
-                            {state.form === SIGNUP_FORM ? 'Sign up' : 'Log in'}
-                        </div>
+                        <GoogleIcon />
+                        <div className={styles['label']}>Continue with Google</div>
+                    </Button>
+                    <Button
+                        className={classnames(styles['intro-btn'], styles['btn-login'])}
+                        onClick={loginWithEmail}
+                    >
+                        <div className={styles['label']}>Log in</div>
                     </Button>
                     <Button
                         className={classnames(styles['intro-btn'], styles['btn-guest'])}
@@ -312,13 +334,6 @@ const Intro = ({ queryParams }) => {
                         <div className={styles['label']}>Guest login</div>
                     </Button>
                 </div>
-            </div>
-
-            {/* 4. FOOTER — Wide "Sign up" / "Log in" switcher button */}
-            <div className={styles['footer-action']}>
-                <button className={styles['sign-up-footer-btn']} onClick={switchFormOnClick}>
-                    {state.form === SIGNUP_FORM ? 'Already have an account? Log in' : 'Sign up'}
-                </button>
             </div>
 
             {/* Modals & Loaders */}

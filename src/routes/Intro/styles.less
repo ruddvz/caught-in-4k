@@ -1,7 +1,7 @@
 @import (reference) '~stremio/common/screen-sizes.less';
 
 // ============================================================
-// INTRO / LOGIN PAGE — RESTORED ORIGINAL DESIGN
+// INTRO / LOGIN PAGE
 // ============================================================
 
 .intro-container {
@@ -12,66 +12,62 @@
     justify-content: center;
     min-height: 100vh;
     width: 100vw;
-    background-color: #000000; // SOLID DEEP BLACK
+    background-color: #000000;
     overflow: hidden;
     color: #fff;
     font-family: 'Inter', 'Arial', sans-serif;
     box-sizing: border-box;
-    padding: 2rem 2rem 8rem; // Bottom pad for the footer btn
+    padding: 1.5rem;
 
     .background-container {
-        display: none; // Disable old blob shapes
+        display: none;
     }
 
-    // 1. LOGO IMAGE + HEADLINE
+    // BRANDING — Logo + tagline
     .branding-header {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-bottom: 4rem;
+        margin-bottom: 2rem;
 
         .logo-image {
-            width: min(22rem, 75vw);
-            height: auto;
+            max-height: 90px;
+            width: auto;
             object-fit: contain;
             display: block;
-            margin-bottom: 2.5rem;
         }
 
-        .headline {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.01em;
-        }
-
-        .sub-headline {
-            font-size: 1.1rem;
-            font-weight: 400;
+        .tagline {
+            margin: 8px 0 0 0;
+            padding: 0;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
             color: rgba(255, 255, 255, 0.5);
+            text-align: center;
         }
     }
 
-    // 2. MAIN FORM + BUTTONS ROW
+    // TWO-COLUMN FORM AREA
     .main-dashboard-wrap {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
         justify-content: center;
-        gap: 5rem;
+        gap: 4rem;
         width: 100%;
         max-width: 860px;
     }
 
-    // LEFT COLUMN — Form inputs + legal
+    // LEFT COLUMN — Form inputs + legal + sign up
     .form-side {
         flex: 1;
         max-width: 380px;
-        overflow: visible; // ALLOW GLOW TO RADIATE
+        overflow: visible; // Allow focus glow to radiate
 
-        // 30px Buffer wraps around inputs to prevent glow clip
+        // 30px buffer prevents glow clip
         .glow-buffer-container {
             display: flex;
             flex-direction: column;
@@ -84,22 +80,21 @@
         .credentials-text-input {
             display: block;
             width: 100%;
-            height: 4.5rem;
+            height: 4rem;
             padding: 0 1.5rem;
             background-color: #1a1a1a;
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 12px;
             color: #ffffff;
-            font-size: 1.1rem;
+            font-size: 1rem;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
-            margin-bottom: 1.25rem;
+            margin-bottom: 12px;
 
             &::placeholder {
                 color: rgba(255, 255, 255, 0.3);
             }
 
-            // THE BLUE NEON FOCUS GLOW
             &:focus {
                 border-color: #007aff;
                 box-shadow: 0 0 30px rgba(0, 122, 255, 0.5);
@@ -109,14 +104,13 @@
         .legal-checkboxes {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
+            gap: 8px;
+            margin-top: 8px;
 
             .legal-checkbox {
                 :global(.label) {
-                    color: #b0b0b0 !important; // SPEC: SOFT GRAY
-                    font-size: 0.95rem;
+                    color: #b0b0b0 !important;
+                    font-size: 0.9rem;
                 }
                 :global(.link) {
                     color: #b0b0b0 !important;
@@ -127,80 +121,82 @@
 
         .error-message {
             color: #ff4d4d;
-            font-size: 0.9rem;
-            margin-top: 1rem;
+            font-size: 0.85rem;
+            margin-top: 8px;
             text-align: center;
         }
+
+        // Sign up — bottom of left column, full width
+        .btn-signup {
+            margin-top: 16px;
+            width: 100%;
+        }
     }
 
-    // RIGHT COLUMN — Action buttons (vertical stack)
+    // RIGHT COLUMN — Action buttons stack
     .actions-side {
-        flex: 0 0 300px;
+        flex: 0 0 280px;
         display: flex;
         flex-direction: column;
-        gap: 1.25rem;
-        padding-top: 30px; // Align baseline with first input
+        gap: 12px;
+        padding-top: 30px; // Align baseline with first input (glow buffer offset)
+    }
 
-        .intro-btn {
-            width: 100%;
-            height: 4.5rem; // UNIFORM HEIGHT FOR ALL BUTTONS
-            border-radius: 12px;
-            font-size: 1.15rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-sizing: border-box;
+    // ---- BASE BUTTON ----
+    .intro-btn {
+        width: 100%;
+        height: 3.75rem;
+        border-radius: 9999px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+        padding: 14px 32px;
+        border: none;
 
-            &:active { transform: scale(0.98); }
-        }
+        &:active { transform: scale(0.98); }
 
-        // "Log in" button
-        .btn-login {
-            background-color: #1a1a1a;
-            border: 1px solid #ffffff;
-            color: #ffffff;
-            &:hover { background-color: rgba(255, 255, 255, 0.08); }
-        }
-
-        // "Guest login" button
-        .btn-guest {
-            background-color: #1a1a1a;
-            border: 1px solid #ffffff;
-            color: #ffffff;
-            &:hover { background-color: rgba(255, 255, 255, 0.08); }
+        .label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            line-height: 1;
         }
     }
 
-    // 4. FOOTER — Wide "Sign up" button, centered, bottom of page
-    .footer-action {
-        position: absolute;
-        bottom: 3rem;
-        width: 100%;
-        max-width: 860px;
-        display: flex;
-        justify-content: center;
-        padding: 0 2rem;
-        box-sizing: border-box;
+    // ---- DARK GRADIENT — Sign up, Log in, Guest login ----
+    .btn-signup,
+    .btn-login,
+    .btn-guest {
+        background: linear-gradient(135deg, rgba(30, 28, 50, 1) 0%, rgba(18, 16, 32, 1) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
-        .sign-up-footer-btn {
-            width: 100%;
-            height: 4.5rem;
-            background: transparent;
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s;
+        &:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.15);
+        }
+    }
 
-            &:hover {
-                background-color: #ffffff;
-                color: #000000;
-            }
+    // ---- GOOGLE SIGN IN — White pill ----
+    .btn-google {
+        background: #ffffff;
+        color: #1f1f1f;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+        .label { color: #1f1f1f; }
+
+        &:hover {
+            background: #f8f8f8;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
     }
 }
@@ -208,6 +204,7 @@
 // Loading Modal
 .loading-modal-container {
     background-color: rgba(0, 0, 0, 0.9);
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
@@ -229,24 +226,23 @@
 }
 
 // ============================================================
-// MOBILE — Stack vertically at <= 640px
+// MOBILE — Stack vertically at <= 640px, allow scroll
 // ============================================================
 @media only screen and (max-width: @small) {
     .intro-container {
-        padding: 2rem 1rem 10rem;
+        padding: 2rem 1rem;
         justify-content: flex-start;
         overflow-y: auto;
 
         .branding-header {
-            margin-bottom: 2.5rem;
-            .logo-image { width: min(16rem, 60vw); }
-            .headline { font-size: 1.6rem; }
+            margin-bottom: 1.5rem;
+            .logo-image { max-height: 70px; }
         }
 
         .main-dashboard-wrap {
             flex-direction: column;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .form-side {
@@ -257,12 +253,8 @@
         .actions-side {
             width: 100%;
             max-width: 100%;
+            flex: none;
             padding-top: 0;
-        }
-
-        .footer-action {
-            bottom: 2rem;
-            padding: 0 1rem;
         }
     }
 }
