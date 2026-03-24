@@ -2,8 +2,12 @@
     option-icon: icon;
 }
 
-.trakt-container {
-    margin-top: 2rem;
+@c4k-green: #a1ff00;
+
+.trakt-section {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 
     .option-icon {
         color: var(--color-trakt) !important;
@@ -14,49 +18,45 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 1.5rem;
 
     .account-header {
         display: flex;
         align-items: center;
-        gap: 2rem;
-        margin-bottom: 2rem;
+        gap: 1.5rem;
 
-        .avatar-container {
-            width: 8rem;
-            height: 8rem;
-            border-radius: 2rem;
+        .master-avatar {
+            width: 7rem;
+            height: 7rem;
+            border-radius: 50%;
             background-size: cover;
             background-position: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(161, 255, 0, 0.3);
             flex-shrink: 0;
         }
 
         .user-details {
             flex: 1;
-            min-width: 0; // Essential for truncation
+            min-width: 0;
 
-            .email-label {
-                font-size: 1.8rem;
-                font-weight: 800;
+            .display-name {
+                font-size: 2rem;
+                font-weight: 900;
                 color: #fff;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                margin-bottom: 0.5rem;
-                max-width: 100%;
+                text-transform: capitalize;
+                margin-bottom: 0.3rem;
             }
 
-            .logout-link {
+            .email-label {
                 font-size: 1.2rem;
+                font-weight: 500;
                 color: rgba(255, 255, 255, 0.4);
-                cursor: pointer;
-                text-decoration: none;
-                transition: color 0.2s;
-
-                &:hover {
-                    color: var(--accent-primary, #a1ff00);
-                }
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
     }
@@ -64,21 +64,53 @@
     .account-actions {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 0.8rem;
 
-        :global {
-            .stremio-settings-option {
-                background: rgba(255, 255, 255, 0.03);
-                padding: 1.2rem 1.6rem;
-                border-radius: 1.5rem;
-                border: 1px solid rgba(255, 255, 255, 0.05);
+        .login-link {
+            font-size: 1.4rem;
+            color: @c4k-green;
+            text-decoration: none;
+            font-weight: 700;
+        }
 
-                .label {
-                    font-size: 1.1rem;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                    letter-spacing: 0.1em;
-                    color: rgba(255, 255, 255, 0.5);
+        .action-btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 1.2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid transparent;
+            text-align: center;
+            transition: background 0.2s, border-color 0.2s;
+
+            &.btn-logout {
+                background: rgba(255, 255, 255, 0.06);
+                border-color: rgba(255, 255, 255, 0.1);
+                color: #fff;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                }
+            }
+
+            &.btn-secondary {
+                background: rgba(161, 255, 0, 0.08);
+                border-color: rgba(161, 255, 0, 0.2);
+                color: @c4k-green;
+
+                &:hover {
+                    background: rgba(161, 255, 0, 0.14);
+                }
+            }
+
+            &.btn-danger {
+                background: rgba(255, 60, 60, 0.08);
+                border-color: rgba(255, 60, 60, 0.2);
+                color: #ff5050;
+
+                &:hover {
+                    background: rgba(255, 60, 60, 0.14);
                 }
             }
         }

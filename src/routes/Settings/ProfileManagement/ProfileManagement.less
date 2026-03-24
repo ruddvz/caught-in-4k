@@ -1,0 +1,152 @@
+@c4k-green: #a1ff00;
+@border-subtle: rgba(255, 255, 255, 0.07);
+
+.profile-management {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .widget-label {
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: 0.15em;
+        color: rgba(255, 255, 255, 0.4);
+        text-transform: uppercase;
+    }
+
+    // 2×2 grid for up to 4 profiles
+    .profiles-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        flex: 1;
+    }
+
+    .profile-item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 1.2rem 0.8rem 0.8rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid @border-subtle;
+        border-radius: 1.5rem;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+
+            .remove-btn {
+                opacity: 1;
+            }
+        }
+
+        &.profile-active {
+            border-color: @c4k-green;
+            background: rgba(161, 255, 0, 0.04);
+        }
+    }
+
+    .profile-avatar {
+        width: 5.5rem;
+        height: 5.5rem;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        border: 2px solid @border-subtle;
+        flex-shrink: 0;
+
+        .profile-active & {
+            border-color: @c4k-green;
+        }
+    }
+
+    .profile-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .active-badge {
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: @c4k-green;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .remove-btn {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.6rem;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        border: none;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 1rem;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s, background 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            background: rgba(255, 80, 80, 0.3);
+            color: #ff5050;
+        }
+    }
+
+    .empty-state {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px dashed rgba(255, 255, 255, 0.1);
+        border-radius: 1.5rem;
+
+        .empty-text {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-link {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: @c4k-green;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .manage-link {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.3);
+        text-decoration: none;
+        text-align: right;
+        transition: color 0.2s;
+
+        &:hover {
+            color: @c4k-green;
+        }
+    }
+}

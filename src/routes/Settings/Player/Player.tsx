@@ -1,9 +1,8 @@
 import React, { forwardRef } from 'react';
 import { ColorInput, MultiselectMenu, Toggle } from 'stremio/components';
-import { useServices } from 'stremio/services';
 import { Category, Option } from '../components';
 import usePlayerOptions from './usePlayerOptions';
-import { usePlatform } from 'stremio/common';
+import useInterfaceOptions from '../Interface/useInterfaceOptions';
 import styles from './Player.less';
 
 type Props = {
@@ -11,8 +10,6 @@ type Props = {
 };
 
 const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
-    const platform = usePlatform();
-
     const {
         subtitlesLanguageSelect,
         subtitlesSizeSelect,
@@ -26,12 +23,16 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         playInExternalPlayerSelect,
         nextVideoPopupDurationSelect,
         bingeWatchingToggle,
+        hardwareDecodingToggle,
     } = usePlayerOptions(profile);
+
+    const { hideSpoilersToggle } = useInterfaceOptions(profile);
 
     return (
         <div ref={ref} className={styles['player-dashboard']}>
-            <div className={styles['giant-widget-grid']}>
-                {/* Column 1: Subtitles */}
+            <div className={styles['engine-grid']}>
+
+                {/* Column 1 — Subtitle Settings (VIP centre) */}
                 <div className={styles['col']}>
                     <Category icon={'subtitles'} label={'SETTINGS_SECTION_SUBTITLES'}>
                         <Option label={'SETTINGS_SUBTITLES_LANGUAGE'}>
@@ -52,7 +53,7 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     </Category>
                 </div>
 
-                {/* Column 2: Audio & Playback */}
+                {/* Column 2 — Audio, Automation, Advanced, System Integration */}
                 <div className={styles['col']}>
                     <Category icon={'volume-medium'} label={'SETTINGS_SECTION_AUDIO'}>
                         <Option label={'SETTINGS_DEFAULT_AUDIO_TRACK'}>
@@ -61,8 +62,6 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                         <Option label={'SETTINGS_SURROUND_SOUND'}>
                             <Toggle tabIndex={-1} {...surroundSoundToggle} />
                         </Option>
-                    </Category>
-                    <Category icon={'remote'} label={'Seek Controls'}>
                         <Option label={'Seek Time'}>
                             <MultiselectMenu className={styles['multiselect']} {...seekTimeDurationSelect} />
                         </Option>
@@ -70,10 +69,7 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                             <MultiselectMenu className={styles['multiselect']} {...seekShortTimeDurationSelect} />
                         </Option>
                     </Category>
-                </div>
 
-                {/* Column 3: Advanced & Auto-play */}
-                <div className={styles['col']}>
                     <Category icon={'play'} label={'SETTINGS_SECTION_AUTO_PLAY'}>
                         <Option label={'AUTO_PLAY'}>
                             <Toggle tabIndex={-1} {...bingeWatchingToggle} />
@@ -82,16 +78,29 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                             <MultiselectMenu className={styles['multiselect']} {...nextVideoPopupDurationSelect} />
                         </Option>
                     </Category>
+
                     <Category icon={'glasses'} label={'SETTINGS_SECTION_ADVANCED'}>
+                        <Option label={'SETTINGS_HARDWARE_DECODING'}>
+                            <Toggle tabIndex={-1} {...hardwareDecodingToggle} />
+                        </Option>
                         <Option label={'SETTINGS_PLAY_IN_EXTERNAL_PLAYER'}>
                             <MultiselectMenu className={styles['multiselect']} {...playInExternalPlayerSelect} />
                         </Option>
                     </Category>
+
+                    {/* System Integration — fills remaining space at the bottom */}
+                    <div className={styles['system-integration']}>
+                        <Category icon={'eye'} label={'System'}>
+                            <Option label={'SETTINGS_BLUR_UNWATCHED_IMAGE'}>
+                                <Toggle tabIndex={-1} {...hideSpoilersToggle} />
+                            </Option>
+                        </Category>
+                    </div>
                 </div>
+
             </div>
         </div>
     );
 });
 
 export default Player;
-

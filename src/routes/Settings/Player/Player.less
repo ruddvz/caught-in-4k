@@ -1,64 +1,24 @@
 @import (reference) '~stremio/common/screen-sizes.less';
 
-/* Player section fills the entire player-layout height */
-.player-section {
-    overflow: visible !important; /* allow dropdowns to escape */
-    padding: 2.5rem;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-
-    .player-columns {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2.5rem;
-        flex: 1;
-        overflow: visible; /* dropdowns need visible — no scroll container here */
-
-        .col {
-            display: flex;
-            flex-direction: column;
-            gap: 0.375rem;
-            min-width: 0;
-            overflow: visible;
-        }
-    }
-}
-
-@media only screen and (max-width: @small) {
-    .player-section {
-        overflow-y: auto !important;
-        padding: 1.25rem;
-
-        .player-columns {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            overflow: visible;
-
-            .col {
-                overflow: visible;
-            }
-        }
-    }
-}
-
 .player-dashboard {
     height: 100%;
     display: flex;
     flex-direction: column;
 
-    .giant-widget-grid {
+    // 2-column: Subtitles (left) | Everything else (right)
+    .engine-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 40px;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
         height: 100%;
-        width: 100%;
+        overflow: visible; // Required so dropdown menus escape
 
         .col {
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1.5rem;
             min-width: 0;
+            overflow: visible;
 
             :global {
                 .stremio-settings-category {
@@ -66,7 +26,7 @@
                     padding: 1.5rem;
                     border-radius: 2rem;
                     border: 1px solid rgba(255, 255, 255, 0.05);
-                    
+
                     .label {
                         font-size: 1.2rem;
                         font-weight: 800;
@@ -78,17 +38,36 @@
 
                 .stremio-settings-option {
                     margin-bottom: 1rem;
+                    overflow: visible;
                     &:last-child { margin-bottom: 0; }
                 }
             }
         }
     }
 
+    // Pushes the System Integration block to the bottom of col 2
+    .system-integration {
+        margin-top: auto;
+    }
+
     .multiselect {
-        max-width: 15rem;
+        max-width: 16rem;
     }
 
     .color-input {
         width: 100%;
+    }
+}
+
+@media only screen and (max-width: @small) {
+    .player-dashboard {
+        .engine-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .system-integration {
+            margin-top: 0;
+        }
     }
 }

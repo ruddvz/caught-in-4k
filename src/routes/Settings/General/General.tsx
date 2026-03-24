@@ -5,7 +5,7 @@ import { Button } from 'stremio/components';
 import { useServices } from 'stremio/services';
 
 import { usePlatform, useToast } from 'stremio/common';
-import { Section, Option, Link } from '../components';
+import { Option, Link } from '../components';
 import useDataExport from './useDataExport';
 import styles from './General.less';
 
@@ -47,6 +47,17 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         });
     }, []);
 
+    const onChangePassword = useCallback(() => {
+        platform.openExternal('https://www.strem.io/acc-management');
+    }, []);
+
+    const onDeleteAccount = useCallback(() => {
+        const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+        if (confirmed) {
+            platform.openExternal('https://www.strem.io/acc-management');
+        }
+    }, []);
+
     const onToggleTrakt = useCallback(() => {
         if (!isTraktAuthenticated && profile.auth !== null && profile.auth.user !== null && typeof profile.auth.user._id === 'string') {
             platform.openExternal(`https://www.strem.io/trakt/auth/${profile.auth.user._id}`);
@@ -78,28 +89,36 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     return (
         <div ref={ref} className={styles['account-widget']}>
             <div className={styles['account-header']}>
-                <div className={styles['avatar-container']} style={{ backgroundImage: avatar }} />
+                <div className={styles['master-avatar']} style={{ backgroundImage: avatar }} />
                 <div className={styles['user-details']}>
+                    <div className={styles['display-name']}>
+                        {profile.auth?.user?.email?.split('@')[0] ?? 'Guest'}
+                    </div>
                     <div className={styles['email-label']} title={profile.auth === null ? t('ANONYMOUS_USER') : profile.auth.user.email}>
                         {profile.auth === null ? t('ANONYMOUS_USER') : profile.auth.user.email}
                     </div>
-                    {profile.auth ? (
-                        <Link label={t('LOG_OUT')} onClick={onLogout} className={styles['logout-link']} />
-                    ) : (
-                        <Link label={t('LOG_IN')} href={'#/intro'} className={styles['logout-link']} />
-                    )}
                 </div>
             </div>
 
             <div className={styles['account-actions']}>
-                {profile?.auth?.user && (
-                    <Option label={t('SETTINGS_DATA_EXPORT')}>
-                        <Button className={'button'} onClick={onExportData}>
-                            {t('SETTINGS_DATA_EXPORT')}
+                {profile.auth ? (
+                    <>
+                        <Button className={classnames(styles['action-btn'], styles['btn-logout'])} onClick={onLogout}>
+                            {t('LOG_OUT')}
                         </Button>
-                    </Option>
+                        <Button className={classnames(styles['action-btn'], styles['btn-secondary'])} onClick={onChangePassword}>
+                            Change Password
+                        </Button>
+                        <Button className={classnames(styles['action-btn'], styles['btn-danger'])} onClick={onDeleteAccount}>
+                            Delete Account
+                        </Button>
+                    </>
+                ) : (
+                    <Link label={`${t('LOG_IN')} / ${t('SIGN_UP')}`} href={'#/intro'} className={styles['login-link']} />
                 )}
+            </div>
 
+            <div className={styles['trakt-section']}>
                 <Option label={t('SETTINGS_TRAKT')} icon={'trakt'}>
                     <Button
                         className={classnames('button', { 'active': isTraktAuthenticated })}
