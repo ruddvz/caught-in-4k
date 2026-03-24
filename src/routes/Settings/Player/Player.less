@@ -4,23 +4,16 @@
 .player-section {
     overflow: visible !important; /* allow dropdowns to escape */
     padding: 2.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
     .player-columns {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 2.5rem;
         flex: 1;
-        min-height: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255, 255, 255, 0.04) transparent;
-
-        &::-webkit-scrollbar { width: 3px; }
-        &::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 2px;
-        }
+        overflow: visible; /* dropdowns need visible — no scroll container here */
 
         .col {
             display: flex;
@@ -40,7 +33,7 @@
         .player-columns {
             grid-template-columns: 1fr;
             gap: 1.5rem;
-            overflow-y: visible;
+            overflow: visible;
 
             .col {
                 overflow: visible;

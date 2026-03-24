@@ -2,28 +2,21 @@
 
 import React from 'react';
 import classNames from 'classnames';
-import { useProfile, useStreamingServer, withCoreSuspender } from 'stremio/common';
+import { useProfile, withCoreSuspender } from 'stremio/common';
 import { MainNavBars } from 'stremio/components';
 import General from './General';
 import Interface from './Interface';
 import Player from './Player';
-import Streaming from './Streaming';
-import Shortcuts from './Shortcuts';
+// Streaming and Shortcuts are parked — components exist in their directories
+// and can be re-enabled by adding them back to this render.
 import styles from './Settings.less';
 
 const Settings = () => {
     const profile = useProfile();
-    const streamingServer = useStreamingServer();
 
     return (
         <MainNavBars className={styles['settings-container']} route={'settings'}>
             <div className={classNames(styles['settings-content'], 'animation-fade-in')}>
-                {/* Hidden components to retain code/state per prompt rule */}
-                <div style={{ display: 'none' }}>
-                    <Streaming profile={profile} streamingServer={streamingServer} />
-                    <Shortcuts />
-                </div>
-
                 {/*
                     LAYOUT ARCHITECTURE:
                     Left Column: 35% - Identity & System
@@ -55,4 +48,3 @@ const SettingsFallback = () => (
 );
 
 export default withCoreSuspender(Settings, SettingsFallback);
-
