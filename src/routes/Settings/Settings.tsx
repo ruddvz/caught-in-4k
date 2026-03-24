@@ -40,6 +40,7 @@ const Settings = () => {
                         {/* Footer — Legal links */}
                         <div className={styles['settings-footer']}>
                             <a href="#/tos" className={styles['footer-link']}>Terms of Service</a>
+                            <span className={styles['footer-separator']}>|</span>
                             <a href="#/privacy-policy" className={styles['footer-link']}>Privacy Policy</a>
                         </div>
                     </div>

@@ -38,11 +38,24 @@ type SubProfile = {
 const ProfileManagement = () => {
     const [profiles, setProfiles] = useState<SubProfile[]>([]);
     const [currentProfile, setCurrentProfile] = useState<SubProfile | null>(null);
+    const [deletingProfile, setDeletingProfile] = useState<string | null>(null);
+    const [accessCode, setAccessCode] = useState('');
 
     const load = () => {
         try {
             const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
-            if (Array.isArray(stored)) setProfiles(stored);
+            // For visualization purposes, if empty, inject requested demo profiles
+            if (!Array.isArray(stored) || stored.length === 0) {
+                const demo = [
+                    { id: '1', name: 'Rudra', avatarIndex: 1 },
+                    { id: '2', name: 'hitü', avatarIndex: 2 },
+                    { id: '3', name: 'dohi', avatarIndex: 3 },
+                ];
+                setProfiles(demo);
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(demo));
+            } else {
+                setProfiles(stored);
+            }
         } catch (_) { /* ignore parse errors */ }
 
         try {
@@ -63,18 +76,23 @@ const ProfileManagement = () => {
         setCurrentProfile(p);
     }, []);
 
-    const handleRemove = useCallback((e: React.MouseEvent, profileId: string) => {
-        e.stopPropagation();
-        setProfiles(prev => {
-            const updated = prev.filter(p => p.id !== profileId);
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
-            return updated;
-        });
-        if (currentProfile?.id === profileId) {
-            localStorage.removeItem(CURRENT_PROFILE_KEY);
-            setCurrentProfile(null);
+    const confirmDelete = useCallback(() => {
+        if (accessCode === '1234') { // Mock master code
+            setProfiles(prev => {
+                const updated = prev.filter(p => p.id !== deletingProfile);
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+                return updated;
+            });
+            if (currentProfile?.id === deletingProfile) {
+                localStorage.removeItem(CURRENT_PROFILE_KEY);
+                setCurrentProfile(null);
+            }
+            setDeletingProfile(null);
+            setAccessCode('');
+        } else {
+            alert('Invalid Master Access Code');
         }
-    }, [currentProfile]);
+    }, [accessCode, deletingProfile, currentProfile]);
 
     const getAvatarUrl = (p: SubProfile): string =>
         p.avatarIndex !== undefined && p.avatarIndex < AVAILABLE_AVATARS.length
@@ -83,45 +101,60 @@ const ProfileManagement = () => {
 
     return (
         <div className={styles['profile-management']}>
-            <div className={styles['widget-label']}>SUB-PROFILES</div>
-
-            <div className={styles['profiles-grid']}>
-                {profiles.slice(0, 4).map(p => (
-                    <div
-                        key={p.id}
-                        className={classnames(styles['profile-item'], {
-                            [styles['profile-active']]: currentProfile?.id === p.id,
-                        })}
-                        onClick={() => handleSelect(p)}
-                        title={`Switch to ${p.name}`}
-                    >
-                        <div
-                            className={styles['profile-avatar']}
-                            style={{ '--avatar-url': `url(${getAvatarUrl(p)})` } as React.CSSProperties}
-                        />
-                        <span className={styles['profile-name']}>{p.name}</span>
-                        {currentProfile?.id === p.id && (
-                            <span className={styles['active-badge']}>Active</span>
-                        )}
-                        <button
-                            type="button"
-                            className={styles['remove-btn']}
-                            onClick={(e) => handleRemove(e, p.id)}
-                            title={`Remove ${p.name}`}
-                        >
-                            ✕
-                        </button>
-                    </div>
-                ))}
-                {profiles.length < 4 && (
-                    <a href="#/profiles" className={styles['add-profile-card']} title="Add a new profile">
-                        <span className={styles['add-icon']}>+</span>
-                        <span className={styles['add-label']}>Add Profile</span>
-                    </a>
-                )}
+            {/* Active User Label */}
+            <div className={styles['active-user-section']}>
+                <span className={styles['active-label']}>User Cosmo4350</span>
+                <span className={styles['status-badge']}>ACTIVE</span>
             </div>
 
-            <a href="#/profiles" className={styles['manage-link']}>Manage Profiles →</a>
+            {/* Profile List */}
+            <div className={styles['profile-list']}>
+                {profiles.map(p => (
+                    <div key={p.id} className={styles['profile-row']} onClick={() => handleSelect(p)}>
+                        <div
+                            className={styles['tiny-avatar']}
+                            style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
+                        />
+                        <span className={styles['profile-name']}>{p.name}</span>
+                        <div
+                            className={styles['trash-icon']}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setDeletingProfile(p.id);
+                            }}
+                        >
+                            🗑️
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Add Profile Button */}
+            <a href="#/profiles" className={styles['add-profile-btn']}>
+                <span className={styles['plus-icon']}>[+]</span> Add Profile
+            </a>
+
+            {/* Master Access Code Modal (Overlaid) */}
+            {deletingProfile && (
+                <div className={styles['modal-overlay']}>
+                    <div className={styles['access-modal']}>
+                        <div className={styles['modal-title']}>Master Access Code</div>
+                        <div className={styles['modal-desc']}>Secure verification required to delete profile.</div>
+                        <input
+                            type="password"
+                            className={styles['access-input']}
+                            placeholder="****"
+                            value={accessCode}
+                            onChange={(e) => setAccessCode(e.target.value)}
+                            autoFocus
+                        />
+                        <div className={styles['modal-actions']}>
+                            <button className={styles['cancel-btn']} onClick={() => setDeletingProfile(null)}>Cancel</button>
+                            <button className={styles['confirm-btn']} onClick={confirmDelete}>Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

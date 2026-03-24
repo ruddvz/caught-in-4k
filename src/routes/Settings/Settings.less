@@ -15,26 +15,27 @@
     .settings-content {
         height: 100%;
         width: 100%;
-        padding: 2rem;
+        padding: 8rem 4rem 2rem; // Large top padding to offset nav
         box-sizing: border-box;
         background: transparent;
 
         // THE UNIFIED GRID: 35% / 65% SPLIT
         .dashboard-grid {
             display: flex;
-            gap: 30px;
+            gap: 40px;
             width: 100%;
-            height: calc(100vh - 120px);
-            align-items: stretch;
+            height: calc(100vh - 160px); 
+            align-items: flex-start; // Align top of widgets
         }
 
         // LEFT COLUMN: 3 stacked items — Account + Profiles + Footer
         .column-left {
-            flex: 0 0 35%;
+            flex: 0 0 32%;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
             min-width: 0;
+            overflow: visible;
         }
 
         .column-right {
@@ -54,14 +55,14 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
             overflow: visible;
 
-            // Account widget — larger share
-            &:first-child { flex: 1.4; }
+            // Account widget — compact height
+            &:first-child { flex: 0 1 auto; }
 
-            // Profiles widget — medium share
-            &.profiles-card { flex: 1; }
+            // Profiles widget — compact height
+            &.profiles-card { flex: 0 1 auto; }
         }
 
         // RIGHT COLUMN — full-height Engine Room card
@@ -72,23 +73,25 @@
             padding: 2.5rem;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
             overflow: visible;
             flex: 1;
         }
 
-        // FOOTER — sits below the two left cards
+        // FOOTER — sit horizontally at the very bottom
         .settings-footer {
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            padding: 0 0.5rem 0.5rem;
+            flex-direction: row; // Horizontal line
+            gap: 1.5rem;
+            padding: 1rem 0.5rem;
+            margin-top: auto; // Push to bottom of column-left
 
             .footer-link {
                 font-size: 1.1rem;
-                color: rgba(255, 255, 255, 0.25);
+                color: rgba(255, 255, 255, 0.2);
                 text-decoration: none;
                 transition: color 0.2s;
+                white-space: nowrap;
 
                 &:hover {
                     color: @c4k-green;

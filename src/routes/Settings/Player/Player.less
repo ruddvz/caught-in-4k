@@ -9,67 +9,75 @@
     .engine-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 3rem;
+        gap: 4rem; // More space between columns
         height: 100%;
-        overflow: visible; // Required so dropdown menus escape
+        overflow: visible;
 
         .col {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2.5rem; // Space between categories
             min-width: 0;
             overflow: visible;
 
             :global {
                 .stremio-settings-category {
-                    background: linear-gradient(
-                        135deg,
-                        rgba(255, 255, 255, 0.03) 0%,
-                        rgba(255, 255, 255, 0.015) 100%
-                    );
-                    -webkit-backdrop-filter: blur(4px);
-                    backdrop-filter: blur(4px);
-                    padding: 1.5rem;
-                    border-radius: 2rem;
-                    border: 1px solid rgba(255, 255, 255, 0.07);
-                    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-                    transition: border-color 0.25s;
+                    background: transparent; // Clean background
+                    padding: 0;
+                    border: none;
+                    box-shadow: none;
+                    overflow: visible;
 
-                    &:hover {
-                        border-color: rgba(255, 255, 255, 0.12);
+                    .heading {
+                        background: transparent !important; // Removal of green background
+                        border-left: none !important;
+                        padding-left: 0 !important;
+                        margin-bottom: 1.5rem;
+
+                        .label {
+                            font-size: 1.35rem;
+                            font-weight: 800;
+                            letter-spacing: 0.1em;
+                            text-transform: uppercase;
+                            color: #fff; // White text
+                        }
+
+                        .icon {
+                            width: 1.5rem;
+                            height: 1.5rem;
+                            color: rgba(255, 255, 255, 0.5); // Gray icon
+                        }
                     }
 
-                    .label {
-                        font-size: 1.1rem;
-                        font-weight: 800;
-                        letter-spacing: 0.08em;
-                        text-transform: uppercase;
-                        margin-bottom: 1.25rem;
-                        color: rgba(255, 255, 255, 0.7);
-                        opacity: 1;
+                    .options-container {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1.25rem;
                     }
                 }
 
                 .stremio-settings-option {
-                    margin-bottom: 1rem;
+                    margin-bottom: 0;
                     overflow: visible;
-                    &:last-child { margin-bottom: 0; }
+                    
+                    .label {
+                        font-size: 1.1rem;
+                        color: rgba(255, 255, 255, 0.4);
+                        font-weight: 600;
+                    }
                 }
             }
         }
     }
 
-    // Pushes the System Integration block to the bottom of col 2
-    .system-integration {
-        margin-top: auto;
-    }
-
     .multiselect {
-        max-width: 16rem;
+        width: 100%;
+        max-width: 20rem;
     }
 
     .color-input {
         width: 100%;
+        max-width: 20rem;
     }
 }
 
@@ -77,11 +85,7 @@
     .player-dashboard {
         .engine-grid {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .system-integration {
-            margin-top: 0;
+            gap: 3rem;
         }
     }
 }

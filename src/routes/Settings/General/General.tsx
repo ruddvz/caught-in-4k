@@ -27,14 +27,8 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     }, [profile.auth]);
 
     const avatar = useMemo(() => (
-        !profile.auth ?
-            `url('${require('/assets/images/anonymous.png')}')`
-            :
-            profile.auth.user.avatar ?
-                `url('${profile.auth.user.avatar}')`
-                :
-                `url('${require('/assets/images/default_avatar.png')}')`
-    ), [profile.auth]);
+        `url('${require('/assets/images/avatars/c4k-avatar-4.png')}')`
+    ), []);
 
     const onExportData = useCallback(() => {
         loadDataExport();
@@ -56,7 +50,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         if (confirmed) {
             platform.openExternal('https://www.strem.io/acc-management');
         }
-    }, []);
+    }, [platform]);
 
     const onToggleTrakt = useCallback(() => {
         if (!isTraktAuthenticated && profile.auth !== null && profile.auth.user !== null && typeof profile.auth.user._id === 'string') {
@@ -68,13 +62,13 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                 args: { action: 'LogoutTrakt' }
             });
         }
-    }, [isTraktAuthenticated, profile.auth]);
+    }, [isTraktAuthenticated, profile.auth, platform, core]);
 
     useEffect(() => {
         if (dataExport.exportUrl) {
             platform.openExternal(dataExport.exportUrl);
         }
-    }, [dataExport.exportUrl]);
+    }, [dataExport.exportUrl, platform]);
 
     useEffect(() => {
         if (isTraktAuthenticated && traktAuthStarted) {
@@ -84,7 +78,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
             });
             setTraktAuthStarted(false);
         }
-    }, [isTraktAuthenticated, traktAuthStarted]);
+    }, [isTraktAuthenticated, traktAuthStarted, core]);
 
     return (
         <div ref={ref} className={styles['account-widget']}>
@@ -92,10 +86,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                 <div className={styles['master-avatar']} style={{ backgroundImage: avatar }} />
                 <div className={styles['user-details']}>
                     <div className={styles['display-name']}>
-                        {profile.auth?.user?.email?.split('@')[0] ?? 'Guest'}
-                    </div>
-                    <div className={styles['email-label']} title={profile.auth === null ? t('ANONYMOUS_USER') : profile.auth.user.email}>
-                        {profile.auth === null ? t('ANONYMOUS_USER') : profile.auth.user.email}
+                        User Cosmo4350
                     </div>
                 </div>
             </div>
@@ -105,6 +96,12 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     <>
                         <Button className={classnames(styles['action-btn'], styles['btn-logout'])} onClick={onLogout}>
                             {t('LOG_OUT')}
+                        </Button>
+                        <Button
+                            className={classnames(styles['action-btn'], styles['btn-secondary'])}
+                            onClick={onToggleTrakt}
+                        >
+                            {isTraktAuthenticated ? 'Log out of Trakt' : 'Authenticate Trakt'}
                         </Button>
                         <Button className={classnames(styles['action-btn'], styles['btn-secondary'])} onClick={onChangePassword}>
                             Change Password
@@ -116,17 +113,6 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                 ) : (
                     <Link label={`${t('LOG_IN')} / ${t('SIGN_UP')}`} href={'#/intro'} className={styles['login-link']} />
                 )}
-            </div>
-
-            <div className={styles['trakt-section']}>
-                <Option label={t('SETTINGS_TRAKT')} icon={'trakt'}>
-                    <Button
-                        className={classnames('button', { 'active': isTraktAuthenticated })}
-                        onClick={onToggleTrakt}
-                    >
-                        {isTraktAuthenticated ? t('LOG_OUT') : t('SETTINGS_TRAKT_AUTHENTICATE')}
-                    </Button>
-                </Option>
             </div>
         </div>
     );
