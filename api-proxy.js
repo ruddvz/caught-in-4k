@@ -8,11 +8,39 @@
 
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
+
+// Security headers — applied first, before all other middleware
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
+
 app.use(cors());
 app.use(express.json());
+
+// General API rate limiter: 30 requests per IP per minute
+const limiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests. Please slow down.' },
+});
+app.use('/api/', limiter);
+
+// Stricter limiter for Canon Takes endpoint: 10 per IP per minute
+const canonTakeLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Canon Takes rate limit reached.' },
+});
+app.use('/api/canon-take', canonTakeLimiter);
 
 const handleCanonTake = async (req, res) => {
   if (req.method !== 'POST') {
