@@ -2,7 +2,7 @@
 
 import React from 'react';
 import classnames from 'classnames';
-import { useProfile, useStreamingServer, withCoreSuspender } from 'stremio/common';
+import { useProfile, withCoreSuspender } from 'stremio/common';
 import { MainNavBars } from 'stremio/components';
 import General from './General';
 import Interface from './Interface';
@@ -11,12 +11,12 @@ import styles from './Settings.less';
 
 const Settings = () => {
     const profile = useProfile();
-    const streamingServer = useStreamingServer();
+
 
     return (
         <MainNavBars className={styles['settings-container']} route={'settings'}>
             <div className={classnames(styles['settings-content'], 'animation-fade-in')}>
-                {/* 
+                {/*
                     LAYOUT ARCHITECTURE:
                     Left Column: 35% - Identity & System
                     Right Column: 65% - Giant Player Widget

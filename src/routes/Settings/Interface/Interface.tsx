@@ -21,7 +21,7 @@ const Interface = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) =>
     return (
         <div ref={ref} className={styles['interface-widget']}>
             <div className={styles['widget-label']}>INTERFACE & SYSTEM</div>
-            
+
             <div className={styles['options-stack']}>
                 <Option label={'SETTINGS_BLUR_UNWATCHED_IMAGE'}>
                     <Toggle tabIndex={-1} {...hideSpoilersToggle} />

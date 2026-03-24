@@ -1,7 +1,8 @@
 import React, { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Icon } from 'stremio/components';
+import { Button } from 'stremio/components';
 import { useServices } from 'stremio/services';
+
 import { usePlatform, useToast } from 'stremio/common';
 import { Section, Option, Link } from '../components';
 import useDataExport from './useDataExport';
@@ -97,10 +98,10 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                         </Button>
                     </Option>
                 )}
-                
+
                 <Option label={t('SETTINGS_TRAKT')} icon={'trakt'}>
-                    <Button 
-                        className={classnames('button', { 'active': isTraktAuthenticated })} 
+                    <Button
+                        className={classnames('button', { 'active': isTraktAuthenticated })}
                         onClick={onToggleTrakt}
                     >
                         {isTraktAuthenticated ? t('LOG_OUT') : t('SETTINGS_TRAKT_AUTHENTICATE')}
