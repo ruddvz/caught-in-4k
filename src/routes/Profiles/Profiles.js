@@ -81,10 +81,10 @@ const Profiles = () => {
         if (view !== 'select') return;
         const handleKey = (e) => {
             if (e.key === 'ArrowLeft') {
-                setFocusedIndex(i => Math.max(0, i - 1));
+                setFocusedIndex((i) => Math.max(0, i - 1));
             } else if (e.key === 'ArrowRight') {
                 const max = profiles.length < 4 ? profiles.length : profiles.length - 1;
-                setFocusedIndex(i => Math.min(max, i + 1));
+                setFocusedIndex((i) => Math.min(max, i + 1));
             } else if (e.key === 'Enter') {
                 if (focusedIndex < profiles.length) {
                     doSelectProfile(profiles[focusedIndex]);
@@ -118,7 +118,7 @@ const Profiles = () => {
 
     const handleDeleteProfile = (e, profileId) => {
         e.stopPropagation();
-        const updated = profiles.filter(p => p.id !== profileId);
+        const updated = profiles.filter((p) => p.id !== profileId);
         if (focusedIndex >= updated.length) {
             setFocusedIndex(Math.max(0, updated.length - 1));
         }

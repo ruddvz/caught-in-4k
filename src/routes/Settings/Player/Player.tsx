@@ -1,7 +1,6 @@
 import React, { forwardRef } from 'react';
-import { ColorInput, MultiselectMenu, Toggle } from 'stremio/components';
-import { Category, Option } from '../components';
-import { useServices } from 'stremio/services';
+import { MultiselectMenu, Toggle } from 'stremio/components';
+import { Option } from '../components';
 import usePlayerOptions from './usePlayerOptions';
 import useInterfaceOptions from '../Interface/useInterfaceOptions';
 import styles from './Player.less';
@@ -11,23 +10,13 @@ type Props = {
 };
 
 const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
-    const { shell } = useServices();
     const {
-        subtitlesLanguageSelect,
-        subtitlesSizeSelect,
-        subtitlesTextColorInput,
-        subtitlesBackgroundColorInput,
-        subtitlesOutlineColorInput,
-        playInExternalPlayerSelect,
-        nextVideoPopupDurationSelect,
         bingeWatchingToggle,
         hardwareDecodingToggle,
     } = usePlayerOptions(profile);
 
     const { 
         hideSpoilersToggle,
-        quitOnCloseToggle,
-        escExitFullscreenToggle,
     } = useInterfaceOptions(profile);
 
     return (
@@ -46,10 +35,10 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     
                     <div className={styles['options-group']}>
                         <Option label={'Language'}>
-                            <MultiselectMenu className={styles['multiselect']} options={[{value:'eng', label:'English'}]} value={'eng'} onSelect={()=>{}} />
+                            <MultiselectMenu className={styles['multiselect']} options={[{value:'eng', label:'English'}]} value={'eng'} onSelect={() => {}} />
                         </Option>
                         <Option label={'Size'}>
-                            <MultiselectMenu className={styles['multiselect']} options={[{value:'1', label:'100%'}]} value={'1'} onSelect={()=>{}} />
+                            <MultiselectMenu className={styles['multiselect']} options={[{value:'1', label:'100%'}]} value={'1'} onSelect={() => {}} />
                         </Option>
 
                         <Option label={'Color'}>
@@ -111,7 +100,7 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                                 className={styles['multiselect']} 
                                 options={[{value:'35', label:'35 seconds'}]}
                                 value={'35'}
-                                onSelect={()=>{}} 
+                                onSelect={() => {}} 
                             />
                         </Option>
                     </div>
@@ -132,7 +121,7 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                                 className={styles['multiselect']} 
                                 options={[{value:'disabled', label:'Disabled'}]}
                                 value={'disabled'}
-                                onSelect={()=>{}} 
+                                onSelect={() => {}} 
                             />
                         </Option>
                     </div>

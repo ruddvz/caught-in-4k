@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import classnames from 'classnames';
 import styles from './ProfileManagement.less';
 
 const LOCAL_STORAGE_KEY = 'c4k_profiles';
@@ -42,14 +41,13 @@ const ProfileManagement = () => {
         { id: '3', name: 'dohi', avatarIndex: 3 },
         { id: '4', name: 'Lodo', avatarIndex: 4 },
     ]);
-    const [currentProfile, setCurrentProfile] = useState<SubProfile | null>(null);
     const [deletingProfile, setDeletingProfile] = useState<string | null>(null);
     const [accessCode, setAccessCode] = useState('');
 
     const loadCurrent = () => {
         try {
-            const current = JSON.parse(localStorage.getItem(CURRENT_PROFILE_KEY) || 'null');
-            setCurrentProfile(current);
+            // Unused loaded current omitted to fix linter
+            JSON.parse(localStorage.getItem(CURRENT_PROFILE_KEY) || 'null');
         } catch (_) { /* ignore */ }
     };
 
@@ -62,11 +60,10 @@ const ProfileManagement = () => {
     const handleSelect = useCallback((p: SubProfile) => {
         localStorage.setItem(CURRENT_PROFILE_KEY, JSON.stringify(p));
         window.dispatchEvent(new Event('c4k-profile-changed'));
-        setCurrentProfile(p);
     }, []);
 
     const confirmDelete = useCallback(() => {
-        if (accessCode === '1234') { 
+        if (accessCode === '1234') {
             // Mock delete for visualization
             setDeletingProfile(null);
             setAccessCode('');
@@ -92,7 +89,7 @@ const ProfileManagement = () => {
 
             {/* Profile List */}
             <div className={styles['profile-list']}>
-                {profiles.map(p => (
+                {profiles.map((p) => (
                     <div key={p.id} className={styles['profile-row']} onClick={() => handleSelect(p)}>
                         <div
                             className={styles['tiny-avatar']}

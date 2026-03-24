@@ -18,7 +18,7 @@ const Settings = () => {
     return (
         <MainNavBars className={styles['settings-container']} route={'settings'}>
             <div className={classNames(styles['settings-content'], 'animation-fade-in')}>
-                {/* 
+                {/*
                     UNIFIED DASHBOARD: 35% Left | 65% Right
                 */}
                 <div className={styles['dashboard-grid']}>

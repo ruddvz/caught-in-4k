@@ -294,7 +294,7 @@ const Intro = ({ queryParams }) => {
     return (
         <div className={styles['intro-container']}>
             <div className={styles['background-container']} />
-            
+
             {/* 1. Branding & Header */}
             <div className={styles['heading-container']}>
                 <div className={styles['logo-text']}>
