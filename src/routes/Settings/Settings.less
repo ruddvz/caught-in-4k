@@ -1,133 +1,133 @@
 @import (reference) '~stremio/common/screen-sizes.less';
 
+// SETTINGS VARIABLES
+@c4k-green: #a1ff00;
+@bg-charcoal: #161616;
+@border-grey: #333;
+@radius-card: 2.5rem; // 40px
+
 .settings-container {
-    height: 100%;
-    width: 100%;
-    background-color: #161616;
+    height: 100vh;
+    width: 100vw;
+    background-color: @bg-charcoal;
+    overflow: hidden;
 
     .settings-content {
         height: 100%;
         width: 100%;
-        display: flex;
-        flex-direction: column;
+        padding: 2rem;
+        box-sizing: border-box;
         background: transparent;
 
-        .tab-content {
-            flex: 1;
-            min-height: 0;
-            padding: 0 2.5rem 1.5rem;
-            overflow: hidden;
-        }
-
-        .general-layout {
+        // THE UNIFIED GRID: 35% / 65% SPLIT
+        .dashboard-grid {
             display: flex;
-            flex-direction: row;
+            gap: 30px;
+            width: 100%;
+            height: calc(100vh - 120px); // Estimated header + padding
             align-items: stretch;
-            gap: 1rem;
-            height: 100%;
-
-            .left-widget {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                min-height: 0;
-                overflow-y: auto;
-                scrollbar-width: thin;
-                scrollbar-color: rgba(255, 255, 255, 0.05) transparent;
-                &::-webkit-scrollbar { width: 3px; }
-                &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.06); border-radius: 2px; }
-
-                > div {
-                    flex: 1;
-                }
-            }
-
-            .right-widget {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                min-height: 0;
-                overflow-y: auto;
-                scrollbar-width: thin;
-                scrollbar-color: rgba(255, 255, 255, 0.05) transparent;
-                &::-webkit-scrollbar { width: 3px; }
-                &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.06); border-radius: 2px; }
-
-                > div {
-                    flex: 1;
-                }
-            }
         }
 
-        .player-layout {
-            height: 100%;
+        .column-left {
+            flex: 0 0 35%;
             display: flex;
             flex-direction: column;
+            gap: 20px;
+            min-width: 0; // Prevent flex item overflow
+        }
+
+        .column-right {
+            flex: 0 0 65%;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: visible; // ESSENTIAL for dropdowns
+        }
+
+        // WIDGET STYLING
+        .widget-card {
+            background-color: @bg-charcoal;
+            border: 1px solid @border-grey;
+            border-radius: @radius-card;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; // Fills vertical space
+            position: relative;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+            overflow: visible; 
+
+            &:first-child { flex: 0.6; } // Account slightly larger
+            &:last-child { flex: 0.4; } // Interface
+        }
+
+        .player-widget {
+            background-color: @bg-charcoal;
+            border: 1px solid @border-grey;
+            border-radius: @radius-card;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
             overflow: visible;
-
-            > div {
-                flex: 1;
-                min-height: 0;
-            }
-        }
-
-        .shortcuts-layout {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-
-            > div {
-                flex: 1;
-                min-height: 0;
-            }
         }
     }
 }
 
+// GLOBAL ACCENTS FOR SETTINGS
+:global {
+    .settings-container {
+        // Active Toggles/Buttons override
+        .stremio-toggle--active .stremio-toggle-circle {
+            background-color: @c4k-green !important;
+        }
+        
+        .button.primary, 
+        .button.active {
+            background-color: @c4k-green !important;
+            color: #111 !important;
+            border-radius: 999px;
+            font-weight: 800;
+        }
+
+        // Dropdown menu fix
+        .multiselect-menu-dropdown {
+            z-index: 9999 !important;
+            border-radius: 1.5rem;
+            border: 1px solid @border-grey;
+            background: #1a1a1a;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+        }
+    }
+}
+
+// MOBILE COLLAPSE
 @media only screen and (max-width: @small) {
     .settings-container {
-        .settings-content {
-            .tab-content {
-                padding: 0 1rem 8rem;
-                overflow-y: auto;
-            }
+        height: auto;
+        overflow-y: auto;
 
-            .general-layout {
+        .settings-content {
+            padding: 1rem;
+            
+            .dashboard-grid {
                 flex-direction: column;
                 height: auto;
-                align-items: initial;
-
-                .left-widget,
-                .right-widget {
-                    flex: none;
-                    overflow-y: visible;
-
-                    > div {
-                        flex: none;
-                    }
-                }
+                gap: 1.5rem;
             }
 
-            .player-layout {
-                height: auto;
-                overflow: visible;
-
-                > div {
-                    flex: none;
-                }
+            .column-left, 
+            .column-right {
+                flex: none;
+                width: 100%;
             }
 
-            .shortcuts-layout {
+            .widget-card,
+            .player-widget {
+                padding: 1.5rem;
                 height: auto;
-                overflow-y: auto;
-
-                > div {
-                    flex: none;
-                }
+                border-radius: 2rem;
             }
         }
     }
-}
+}

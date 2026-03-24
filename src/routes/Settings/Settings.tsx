@@ -1,58 +1,41 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import { useProfile, useStreamingServer, withCoreSuspender } from 'stremio/common';
 import { MainNavBars } from 'stremio/components';
-import { SECTIONS } from './constants';
-import Menu from './Menu';
 import General from './General';
 import Interface from './Interface';
 import Player from './Player';
-import Streaming from './Streaming';
-import Shortcuts from './Shortcuts';
 import styles from './Settings.less';
 
 const Settings = () => {
     const profile = useProfile();
     const streamingServer = useStreamingServer();
 
-    const [activeTab, setActiveTab] = useState<string>(SECTIONS.GENERAL);
-
-    const onTabSelect = useCallback((sectionId: string) => {
-        setActiveTab(sectionId);
-    }, []);
-
     return (
         <MainNavBars className={styles['settings-container']} route={'settings'}>
             <div className={classnames(styles['settings-content'], 'animation-fade-in')}>
-                <Menu
-                    selected={activeTab}
-                    onSelect={onTabSelect}
-                />
+                {/* 
+                    LAYOUT ARCHITECTURE:
+                    Left Column: 35% - Identity & System
+                    Right Column: 65% - Giant Player Widget
+                */}
+                <div className={styles['dashboard-grid']}>
+                    {/* LEFT COLUMN: Identity & System (35%) */}
+                    <div className={styles['column-left']}>
+                        <div className={styles['widget-card']}>
+                            <General profile={profile} />
+                        </div>
+                        <div className={styles['widget-card']}>
+                            <Interface profile={profile} />
+                        </div>
+                    </div>
 
-                <div className={styles['tab-content']}>
-                    {activeTab === SECTIONS.GENERAL && (
-                        <div className={styles['general-layout']}>
-                            <div className={styles['left-widget']}>
-                                <General profile={profile} />
-                            </div>
-                            <div className={styles['right-widget']}>
-                                <Interface profile={profile} />
-                                <Streaming profile={profile} streamingServer={streamingServer} />
-                            </div>
-                        </div>
-                    )}
-                    {activeTab === SECTIONS.PLAYER && (
-                        <div className={styles['player-layout']}>
-                            <Player profile={profile} />
-                        </div>
-                    )}
-                    {activeTab === SECTIONS.SHORTCUTS && (
-                        <div className={styles['shortcuts-layout']}>
-                            <Shortcuts />
-                        </div>
-                    )}
+                    {/* RIGHT COLUMN: The Giant Player Widget (65%) */}
+                    <div className={classnames(styles['column-right'], styles['player-widget'])}>
+                        <Player profile={profile} />
+                    </div>
                 </div>
             </div>
         </MainNavBars>
@@ -64,3 +47,4 @@ const SettingsFallback = () => (
 );
 
 export default withCoreSuspender(Settings, SettingsFallback);
+

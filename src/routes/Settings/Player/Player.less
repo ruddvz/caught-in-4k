@@ -48,3 +48,54 @@
         }
     }
 }
+
+.player-dashboard {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .giant-widget-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        height: 100%;
+        width: 100%;
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            min-width: 0;
+
+            :global {
+                .stremio-settings-category {
+                    background: rgba(255, 255, 255, 0.02);
+                    padding: 1.5rem;
+                    border-radius: 2rem;
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    
+                    .label {
+                        font-size: 1.2rem;
+                        font-weight: 800;
+                        margin-bottom: 1.5rem;
+                        color: #fff;
+                        opacity: 1;
+                    }
+                }
+
+                .stremio-settings-option {
+                    margin-bottom: 1rem;
+                    &:last-child { margin-bottom: 0; }
+                }
+            }
+        }
+    }
+
+    .multiselect {
+        max-width: 15rem;
+    }
+
+    .color-input {
+        width: 100%;
+    }
+}

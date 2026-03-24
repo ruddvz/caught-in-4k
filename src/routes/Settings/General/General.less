@@ -9,3 +9,78 @@
         color: var(--color-trakt) !important;
     }
 }
+
+.account-widget {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .account-header {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+
+        .avatar-container {
+            width: 8rem;
+            height: 8rem;
+            border-radius: 2rem;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0; // Essential for truncation
+
+            .email-label {
+                font-size: 1.8rem;
+                font-weight: 800;
+                color: #fff;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin-bottom: 0.5rem;
+                max-width: 100%;
+            }
+
+            .logout-link {
+                font-size: 1.2rem;
+                color: rgba(255, 255, 255, 0.4);
+                cursor: pointer;
+                text-decoration: none;
+                transition: color 0.2s;
+
+                &:hover {
+                    color: var(--accent-primary, #a1ff00);
+                }
+            }
+        }
+    }
+
+    .account-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        :global {
+            .stremio-settings-option {
+                background: rgba(255, 255, 255, 0.03);
+                padding: 1.2rem 1.6rem;
+                border-radius: 1.5rem;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+
+                .label {
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    color: rgba(255, 255, 255, 0.5);
+                }
+            }
+        }
+    }
+}
