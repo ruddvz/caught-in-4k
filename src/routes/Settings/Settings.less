@@ -24,23 +24,24 @@
             display: flex;
             gap: 2rem;
             width: 100%;
-            height: calc(100vh - 18rem); // Fixed cinematic height
-            align-items: stretch; // VERTICAL LOCK: match all column heights
+            height: calc(100vh - 12rem); // Zero-scroll lock
+            align-items: stretch; // VERTICAL LOCK
             overflow: visible;
         }
 
         // LEFT COLUMN: Managed Identity & Profiles
         .column-left {
-            flex: 0 0 35%;
+            flex: 0 0 32%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; // Push Stranger to top, Profiles to bottom
+            gap: 2rem;
+            justify-content: space-between; // Lock top to top, bottom to bottom
             overflow: visible;
         }
 
         // RIGHT COLUMN: The Engine Room
         .column-right {
-            flex: 0 0 65%;
+            flex: 1 1 0;
             display: flex;
             flex-direction: column;
             overflow: visible; 
@@ -48,50 +49,49 @@
 
         // THE BOX CONSTRAINT: Uniform Widget Cards
         .widget-card, .player-widget {
-            background-color: rgba(20, 23, 28, 0.7); // Semi-transparent charcoal
+            background-color: #161616; // Solid charcoal
             border: 1px solid rgba(255, 255, 255, 0.08); // Subtle 1px border
-            border-radius: @radius-card;
+            border-radius: 12px; // 12px corners mandate
             padding: 2.5rem;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
             overflow: visible;
         }
 
         .widget-card {
-            flex: 0 0 auto; // Keep fixed height based on content
             width: 100%;
-            
+
             &:first-child {
-                min-height: 120px; // Stranger widget height
+                flex: 0 0 auto;
             }
             &.profiles-card {
-                flex: 0 1 auto; // Profiles occupies remaining space if needed, or stays at bottom
+                flex: 1 1 auto; // Stretch to fill bottom gap
             }
         }
 
         .player-widget {
-            flex: 1; // Fills the 65% height
+            flex: 1 1 100%; // Fill right column fully
         }
 
         // GLOBAL FOOTER — center-aligned at the bottom
         .settings-footer {
             display: flex;
             flex-direction: row;
-            justify-content: center; // CENTER
+            justify-content: center;
             align-items: center;
             gap: 1.5rem;
-            padding: 2rem 0;
+            padding: 1.5rem 0;
             width: 100%;
 
             .footer-separator {
-                color: rgba(255, 255, 255, 0.1);
+                color: rgba(176, 176, 176, 0.3);
+                font-size: 1rem;
             }
 
             .footer-link {
-                font-size: 1.1rem;
-                color: rgba(255, 255, 255, 0.2); // Gray
+                font-size: 1rem;
+                color: #b0b0b0; // Soft gray per spec
                 text-decoration: none;
                 transition: color 0.2s;
                 white-space: nowrap;

@@ -1,8 +1,10 @@
+@c4k-green: #a1ff00;
+
 .account-widget {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    height: 100%; // Fill the widget-card height
+    gap: 1.5rem;
+    height: 100%;
 
     .account-header {
         display: flex;
@@ -17,7 +19,6 @@
             background-position: center;
             border: 2px solid rgba(255, 255, 255, 0.1);
             flex-shrink: 0;
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
         }
 
         .user-details {
@@ -34,18 +35,66 @@
                 white-space: nowrap;
                 letter-spacing: -0.02em;
             }
+        }
+    }
 
-            .login-link {
-                font-size: 1.15rem;
-                font-weight: 700;
-                color: #a1ff00;
-                opacity: 0.8;
-                text-decoration: none;
-                transition: opacity 0.2s;
+    .account-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
 
-                &:hover {
-                    opacity: 1;
-                }
+        .action-btn {
+            width: 100%;
+            padding: 0.7rem 1.25rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            text-align: left;
+            white-space: nowrap;
+            transition: all 0.2s;
+
+            &:active {
+                transform: scale(0.98);
+            }
+
+            &.btn-logout {
+                background: rgba(255, 255, 255, 0.05);
+                color: rgba(255, 255, 255, 0.6);
+                &:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+            }
+
+            &.btn-secondary {
+                background: rgba(255, 255, 255, 0.03);
+                border-color: rgba(255, 255, 255, 0.05);
+                color: rgba(255, 255, 255, 0.5);
+                &:hover { background: rgba(255, 255, 255, 0.07); color: @c4k-green; }
+            }
+
+            &.btn-danger {
+                background: rgba(255, 60, 60, 0.04);
+                color: rgba(255, 60, 60, 0.4);
+                &:hover { background: rgba(255, 60, 60, 0.08); color: #ff5050; }
+            }
+        }
+
+        .action-link {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.35);
+            padding: 0.4rem 0;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: color 0.2s;
+
+            &:hover {
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            &.danger-link {
+                color: rgba(255, 60, 60, 0.35);
+                &:hover { color: #ff5050; }
             }
         }
     }

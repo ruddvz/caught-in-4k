@@ -3,8 +3,9 @@ import styles from './ProfileManagement.less';
 
 const LOCAL_STORAGE_KEY = 'c4k_profiles';
 const CURRENT_PROFILE_KEY = 'c4k_current_profile';
+const MAX_PROFILES = 4;
 
-/* Mirror of the AVAILABLE_AVATARS array from Profiles.js */
+/* Mirror of the AVAILABLE_AVATARS array from Profiles.js — DATA PARITY */
 const AVAILABLE_AVATARS: string[] = [
     require('/assets/images/avatars/c4k-avatar-1.png'),
     require('/assets/images/avatars/c4k-avatar-2.png'),
@@ -34,28 +35,38 @@ type SubProfile = {
     avatarIndex: number;
 };
 
+const DEMO_PROFILES: SubProfile[] = [
+    { id: '1', name: 'Rudra', avatarIndex: 1 },
+    { id: '2', name: 'hitü', avatarIndex: 2 },
+    { id: '3', name: 'dohi', avatarIndex: 3 },
+];
+
 const ProfileManagement = () => {
-    const [profiles] = useState<SubProfile[]>([
-        { id: '1', name: 'Rudra', avatarIndex: 1 },
-        { id: '2', name: 'hitu', avatarIndex: 2 },
-        { id: '3', name: 'dohi', avatarIndex: 3 },
-        { id: '4', name: 'Lodo', avatarIndex: 4 },
-    ]);
+    const [profiles, setProfiles] = useState<SubProfile[]>([]);
     const [deletingProfile, setDeletingProfile] = useState<string | null>(null);
     const [accessCode, setAccessCode] = useState('');
 
-    const loadCurrent = () => {
+    // DATA PARITY: Load from the exact same localStorage key as Profiles.js
+    const load = useCallback(() => {
         try {
-            // Unused loaded current omitted to fix linter
-            JSON.parse(localStorage.getItem(CURRENT_PROFILE_KEY) || 'null');
-        } catch (_) { /* ignore */ }
-    };
+            const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+            if (Array.isArray(stored) && stored.length > 0) {
+                setProfiles(stored);
+            } else {
+                // Seed demo profiles if none exist
+                setProfiles(DEMO_PROFILES);
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(DEMO_PROFILES));
+            }
+        } catch (_) {
+            setProfiles(DEMO_PROFILES);
+        }
+    }, []);
 
     useEffect(() => {
-        loadCurrent();
-        window.addEventListener('c4k-profile-changed', loadCurrent);
-        return () => window.removeEventListener('c4k-profile-changed', loadCurrent);
-    }, []);
+        load();
+        window.addEventListener('c4k-profile-changed', load);
+        return () => window.removeEventListener('c4k-profile-changed', load);
+    }, [load]);
 
     const handleSelect = useCallback((p: SubProfile) => {
         localStorage.setItem(CURRENT_PROFILE_KEY, JSON.stringify(p));
@@ -64,7 +75,12 @@ const ProfileManagement = () => {
 
     const confirmDelete = useCallback(() => {
         if (accessCode === '1234') {
-            // Mock delete for visualization
+            setProfiles(prev => {
+                const updated = prev.filter(p => p.id !== deletingProfile);
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+                window.dispatchEvent(new Event('c4k-profile-changed'));
+                return updated;
+            });
             setDeletingProfile(null);
             setAccessCode('');
         } else {
@@ -87,7 +103,7 @@ const ProfileManagement = () => {
                 <div className={styles['header-divider']} />
             </div>
 
-            {/* Profile List */}
+            {/* Profile List — SYNCED with Profile Selection page */}
             <div className={styles['profile-list']}>
                 {profiles.map((p) => (
                     <div key={p.id} className={styles['profile-row']} onClick={() => handleSelect(p)}>
@@ -109,7 +125,14 @@ const ProfileManagement = () => {
                 ))}
             </div>
 
-            {/* Master Access Code Modal (Overlaid) */}
+            {/* CONSTRAINT: Hide [+] Add Profile when exactly MAX_PROFILES */}
+            {profiles.length < MAX_PROFILES && (
+                <a href="#/profiles" className={styles['add-profile-btn']}>
+                    <span className={styles['plus-icon']}>[+]</span> Add Profile
+                </a>
+            )}
+
+            {/* Master Access Code Modal */}
             {deletingProfile && (
                 <div className={styles['modal-overlay']}>
                     <div className={styles['access-modal']}>
@@ -124,7 +147,7 @@ const ProfileManagement = () => {
                             autoFocus
                         />
                         <div className={styles['modal-actions']}>
-                            <button className={styles['cancel-btn']} onClick={() => setDeletingProfile(null)}>Cancel</button>
+                            <button className={styles['cancel-btn']} onClick={() => { setDeletingProfile(null); setAccessCode(''); }}>Cancel</button>
                             <button className={styles['confirm-btn']} onClick={confirmDelete}>Confirm</button>
                         </div>
                     </div>

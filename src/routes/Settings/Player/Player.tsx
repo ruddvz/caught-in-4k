@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import { MultiselectMenu, Toggle } from 'stremio/components';
 import { Option } from '../components';
+import { useServices } from 'stremio/services';
 import usePlayerOptions from './usePlayerOptions';
 import useInterfaceOptions from '../Interface/useInterfaceOptions';
 import styles from './Player.less';
@@ -10,20 +11,30 @@ type Props = {
 };
 
 const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
+    const { shell } = useServices();
     const {
+        subtitlesLanguageSelect,
+        subtitlesSizeSelect,
+        subtitlesTextColorInput,
+        subtitlesBackgroundColorInput,
+        subtitlesOutlineColorInput,
+        playInExternalPlayerSelect,
+        nextVideoPopupDurationSelect,
         bingeWatchingToggle,
         hardwareDecodingToggle,
     } = usePlayerOptions(profile);
 
-    const { 
+    const {
         hideSpoilersToggle,
+        quitOnCloseToggle,
+        escExitFullscreenToggle,
     } = useInterfaceOptions(profile);
 
     return (
         <div ref={ref} className={styles['player-dashboard']}>
             <div className={styles['engine-grid']}>
 
-                {/* Internal Column 1 — Subtitles Sub-Column */}
+                {/* Internal Sub-Column 1 — Visuals & Subtitles */}
                 <div className={styles['col']}>
                     <div className={styles['section-header']}>
                         <div className={styles['header-top']}>
@@ -32,57 +43,71 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                         </div>
                         <div className={styles['header-divider']} />
                     </div>
-                    
+
                     <div className={styles['options-group']}>
                         <Option label={'Language'}>
-                            <MultiselectMenu className={styles['multiselect']} options={[{value:'eng', label:'English'}]} value={'eng'} onSelect={() => {}} />
+                            <MultiselectMenu className={styles['multiselect']} {...subtitlesLanguageSelect} />
                         </Option>
-                        <Option label={'Size'}>
-                            <MultiselectMenu className={styles['multiselect']} options={[{value:'1', label:'100%'}]} value={'1'} onSelect={() => {}} />
+                        <Option label={'Font Size'}>
+                            <MultiselectMenu className={styles['multiselect']} {...subtitlesSizeSelect} />
                         </Option>
-
-                        <Option label={'Color'}>
-                            <MultiselectMenu 
-                                className={styles['multiselect']} 
+                        <Option label={'Font Color'}>
+                            <MultiselectMenu
+                                className={styles['multiselect']}
                                 options={[
                                     { value: '#ffffff', label: 'White' },
                                     { value: '#ffff00', label: 'Yellow' },
                                     { value: '#00ff00', label: 'Green' },
                                     { value: '#00ffff', label: 'Cyan' }
                                 ]}
-                                value={'#ffffff'}
-                                onSelect={() => {}}
+                                value={subtitlesTextColorInput.value || '#ffffff'}
+                                onSelect={(v) => subtitlesTextColorInput.onChange(v)}
                             />
                         </Option>
-
-                        {/* VISUALIZATION: Open Background Dropdown */}
-                        <Option label={'Background'}>
-                            <MultiselectMenu 
-                                className={styles['multiselect']} 
-                                isOpen={true} 
+                        <Option label={'Background Opacity'}>
+                            <MultiselectMenu
+                                className={styles['multiselect']}
                                 options={[
-                                    { value: 'semi-black', label: 'Semi-black' },
+                                    { value: 'rgba(0,0,0,0.5)', label: 'Semi-black' },
                                     { value: 'transparent', label: 'Transparent' }
                                 ]}
-                                value={'semi-black'}
-                                onSelect={() => {}}
+                                value={subtitlesBackgroundColorInput.value || 'rgba(0,0,0,0.5)'}
+                                onSelect={(v) => subtitlesBackgroundColorInput.onChange(v)}
                             />
                         </Option>
                         <Option label={'Edge Style'}>
-                             <MultiselectMenu 
-                                className={styles['multiselect']} 
-                                options={[{ value: 'outline', label: 'Outline' }]}
-                                value={'outline'}
+                            <MultiselectMenu
+                                className={styles['multiselect']}
+                                options={[
+                                    { value: 'outline', label: 'Outline' },
+                                    { value: 'shadow', label: 'Drop Shadow' },
+                                    { value: 'none', label: 'None' }
+                                ]}
+                                value={subtitlesOutlineColorInput.value ? 'outline' : 'none'}
                                 onSelect={() => {}}
                             />
                         </Option>
+                    </div>
+
+                    {/* Visual Logic: Blur toggle at the bottom */}
+                    <div className={styles['options-group']} style={{ marginTop: 'auto' }}>
                         <Option label={'Blur unwatched episodes image'}>
                             <Toggle tabIndex={-1} {...hideSpoilersToggle} />
                         </Option>
+                        {shell.active && (
+                            <Option label={'Quit on close'}>
+                                <Toggle tabIndex={-1} {...quitOnCloseToggle} />
+                            </Option>
+                        )}
+                        {shell.active && (
+                            <Option label={'Exit Fullscreen (ESC)'}>
+                                <Toggle tabIndex={-1} {...escExitFullscreenToggle} />
+                            </Option>
+                        )}
                     </div>
                 </div>
 
-                {/* Internal Column 2 — System Sub-Column */}
+                {/* Internal Sub-Column 2 — Performance & Automation */}
                 <div className={styles['col']}>
                     <div className={styles['section-header']}>
                         <div className={styles['header-top']}>
@@ -96,12 +121,7 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                             <Toggle tabIndex={-1} {...bingeWatchingToggle} />
                         </Option>
                         <Option label={'Next Video Popup Duration'}>
-                            <MultiselectMenu 
-                                className={styles['multiselect']} 
-                                options={[{value:'35', label:'35 seconds'}]}
-                                value={'35'}
-                                onSelect={() => {}} 
-                            />
+                            <MultiselectMenu className={styles['multiselect']} {...nextVideoPopupDurationSelect} />
                         </Option>
                     </div>
 
@@ -117,12 +137,7 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                             <Toggle tabIndex={-1} {...hardwareDecodingToggle} />
                         </Option>
                         <Option label={'Play in External Player'}>
-                            <MultiselectMenu 
-                                className={styles['multiselect']} 
-                                options={[{value:'disabled', label:'Disabled'}]}
-                                value={'disabled'}
-                                onSelect={() => {}} 
-                            />
+                            <MultiselectMenu className={styles['multiselect']} {...playInExternalPlayerSelect} />
                         </Option>
                     </div>
                 </div>

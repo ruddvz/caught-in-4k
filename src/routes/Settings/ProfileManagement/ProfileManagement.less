@@ -28,6 +28,7 @@
                 letter-spacing: 0.15em;
                 color: #fff;
                 text-transform: uppercase;
+                white-space: nowrap;
             }
         }
 
@@ -77,6 +78,7 @@
             font-weight: 500;
             color: rgba(255, 255, 255, 0.3);
             transition: color 0.2s;
+            white-space: nowrap;
         }
 
         .trash-icon {
@@ -85,11 +87,34 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
 
             &:hover {
                 color: #ff4d4d !important;
                 transform: scale(1.1);
             }
+        }
+    }
+
+    .add-profile-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: @c4k-green;
+        text-decoration: none;
+        margin-top: 1rem;
+        opacity: 0.5;
+        transition: opacity 0.2s;
+        white-space: nowrap;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        .plus-icon {
+            font-weight: normal;
         }
     }
 
@@ -112,7 +137,7 @@
     .access-modal {
         background: #111;
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 2.5rem;
+        border-radius: 12px;
         padding: 3.5rem;
         width: 100%;
         max-width: 420px;
@@ -137,7 +162,7 @@
         .access-input {
             background: rgba(255, 255, 255, 0.03);
             border: 2px solid rgba(255, 255, 255, 0.08);
-            border-radius: 1.5rem;
+            border-radius: 12px;
             padding: 1.5rem;
             font-size: 2.5rem;
             text-align: center;
@@ -157,7 +182,7 @@
             button {
                 flex: 1;
                 padding: 1.4rem;
-                border-radius: 1.25rem;
+                border-radius: 12px;
                 font-size: 1.1rem;
                 font-weight: 800;
                 cursor: pointer;
