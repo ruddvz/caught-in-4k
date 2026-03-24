@@ -27,7 +27,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     }, [profile.auth]);
 
     const avatar = useMemo(() => (
-        `url('${require('/assets/images/avatars/c4k-avatar-4.png')}')`
+        `url('${require('/assets/images/anonymous.png')}')`
     ), []);
 
     const onExportData = useCallback(() => {
@@ -86,7 +86,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                 <div className={styles['master-avatar']} style={{ backgroundImage: avatar }} />
                 <div className={styles['user-details']}>
                     <div className={styles['display-name']}>
-                        User Cosmo4350
+                        Stranger.
                     </div>
                 </div>
             </div>

@@ -9,75 +9,58 @@
     .engine-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 4rem; // More space between columns
+        gap: 5rem; 
         height: 100%;
         overflow: visible;
 
         .col {
             display: flex;
             flex-direction: column;
-            gap: 2.5rem; // Space between categories
+            gap: 3rem; 
             min-width: 0;
             overflow: visible;
+        }
 
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(161, 255, 0, 0.4); // 1px green underline
+            margin-bottom: 1.5rem;
+
+            .header-icon {
+                width: 18px;
+                height: 18px;
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            .header-text {
+                font-size: 1.15rem;
+                font-weight: 300; // Thin
+                letter-spacing: 0.15em;
+                color: #fff;
+                text-transform: uppercase;
+            }
+        }
+
+        .options-group, .system-toggles {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            overflow: visible;
+        }
+
+        .multiselect, .color-input {
+            width: 100%;
+            max-width: 18rem;
+            
             :global {
-                .stremio-settings-category {
-                    background: transparent; // Clean background
-                    padding: 0;
-                    border: none;
-                    box-shadow: none;
-                    overflow: visible;
-
-                    .heading {
-                        background: transparent !important; // Removal of green background
-                        border-left: none !important;
-                        padding-left: 0 !important;
-                        margin-bottom: 1.5rem;
-
-                        .label {
-                            font-size: 1.35rem;
-                            font-weight: 800;
-                            letter-spacing: 0.1em;
-                            text-transform: uppercase;
-                            color: #fff; // White text
-                        }
-
-                        .icon {
-                            width: 1.5rem;
-                            height: 1.5rem;
-                            color: rgba(255, 255, 255, 0.5); // Gray icon
-                        }
-                    }
-
-                    .options-container {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 1.25rem;
-                    }
-                }
-
-                .stremio-settings-option {
-                    margin-bottom: 0;
-                    overflow: visible;
-                    
-                    .label {
-                        font-size: 1.1rem;
-                        color: rgba(255, 255, 255, 0.4);
-                        font-weight: 600;
-                    }
+                .multiselect-menu-dropdown {
+                    z-index: 9999 !important;
                 }
             }
         }
-    }
-
-    .multiselect {
-        width: 100%;
-        max-width: 20rem;
-    }
-
-    .color-input {
-        width: 100%;
-        max-width: 20rem;
     }
 }
 

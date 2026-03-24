@@ -78,17 +78,23 @@
             flex: 1;
         }
 
-        // FOOTER — sit horizontally at the very bottom
+        // GLOBAL FOOTER — center-aligned at the bottom
         .settings-footer {
             display: flex;
-            flex-direction: row; // Horizontal line
+            flex-direction: row;
+            justify-content: center; // CENTER
+            align-items: center;
             gap: 1.5rem;
-            padding: 1rem 0.5rem;
-            margin-top: auto; // Push to bottom of column-left
+            padding: 2rem 0;
+            width: 100%;
+
+            .footer-separator {
+                color: rgba(255, 255, 255, 0.1);
+            }
 
             .footer-link {
                 font-size: 1.1rem;
-                color: rgba(255, 255, 255, 0.2);
+                color: rgba(255, 255, 255, 0.2); // Gray
                 text-decoration: none;
                 transition: color 0.2s;
                 white-space: nowrap;

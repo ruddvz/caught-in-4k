@@ -18,41 +18,36 @@ const Settings = () => {
     return (
         <MainNavBars className={styles['settings-container']} route={'settings'}>
             <div className={classNames(styles['settings-content'], 'animation-fade-in')}>
-                {/*
-                    LAYOUT: 35 / 65 two-column dashboard
-                    Left  → Identity: Master Account + Sub-Profiles + Legal footer
-                    Right → Engine Room: Subtitles | Audio + Automation + Advanced + System
+                {/* 
+                    UNIFIED DASHBOARD: 35% Left | 65% Right
                 */}
                 <div className={styles['dashboard-grid']}>
 
-                    {/* LEFT COLUMN — Identity (35%) */}
+                    {/* IDENTITY & PROFILES (35%) */}
                     <div className={styles['column-left']}>
-                        {/* Widget 1 — Master Account */}
                         <div className={styles['widget-card']}>
                             <General profile={profile} />
                         </div>
-
-                        {/* Widget 2 — Sub-Profile Management */}
                         <div className={classNames(styles['widget-card'], styles['profiles-card'])}>
                             <ProfileManagement />
                         </div>
-
-                        {/* Footer — Legal links */}
-                        <div className={styles['settings-footer']}>
-                            <a href="#/tos" className={styles['footer-link']}>Terms of Service</a>
-                            <span className={styles['footer-separator']}>|</span>
-                            <a href="#/privacy-policy" className={styles['footer-link']}>Privacy Policy</a>
-                        </div>
                     </div>
 
-                    {/* RIGHT COLUMN — Engine Room (65%) */}
+                    {/* PLAYER ENGINE (65%) */}
                     <div className={classNames(styles['column-right'], styles['player-widget'])}>
                         <Player profile={profile} />
                     </div>
 
                 </div>
 
-                {/* PARKED COMPONENTS — kept in DOM but invisible so state is preserved */}
+                {/* GLOBAL FOOTER — center-aligned */}
+                <div className={styles['settings-footer']}>
+                    <a href="#/tos" className={styles['footer-link']}>Terms of Service</a>
+                    <span className={styles['footer-separator']}>|</span>
+                    <a href="#/privacy-policy" className={styles['footer-link']}>Privacy Policy</a>
+                </div>
+
+                {/* PARKED COMPONENTS */}
                 <div style={{ display: 'none' }}>
                     <Shortcuts />
                 </div>

@@ -185,13 +185,6 @@ const Profiles = () => {
                                     style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
                                 />
                                 <span className={styles['profile-name']}>{p.name}</span>
-                                <button
-                                    className={styles['delete-btn']}
-                                    onClick={(e) => handleDeleteProfile(e, p.id)}
-                                    title={`Remove ${p.name}`}
-                                >
-                                    ✕
-                                </button>
                             </div>
                         ))}
 
