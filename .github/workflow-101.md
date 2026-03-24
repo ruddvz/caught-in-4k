@@ -9,10 +9,14 @@
 - [ ] **Read `claude.md`:** Load the project's `claude.md` at the repo root for the tech stack, file organization rules, and available commands.
 - [ ] **Scan Project Structure:** Quickly understand what directories and files exist (`src/`, `tests/`, `docs/`, etc.) so you know where things live before planning.
 - [ ] **Check Git Status:** Run `git status` and `git log --oneline -5` to understand the current branch, any uncommitted work, and recent history.
+- [ ] **Read Codemaps:** Read `docs/CODEMAPS/OVERVIEW.md` for the full codebase architecture at a glance, then drill into the relevant module map(s) for the task at hand. This replaces full codebase scanning — only read the source files you actually need to modify.
+    - *Available maps:* `OVERVIEW.md`, `app-shell.md`, `common.md`, `components.md`, `routes.md`, `services.md`, `types.md`, `config-and-backend.md`
+    - *Target context:* Each map lists files with their purpose, exports, and dependency relationships. Use this to identify exactly which files to read for your task.
 
 ---
 
 ## Phase 1: Planning and Analysis
+- [ ] **Blast-Radius Analysis:** Before planning, consult the relevant codemap(s) in `docs/CODEMAPS/` to identify all callers, dependents, and associated tests of the files you expect to touch. Each codemap lists dependency relationships and import chains. Add all impacted files to your planning scope — never assume a change is isolated. If the blast radius surprises you, flag it to the user before proceeding.
 - [ ] **Invoke Planner:** Pass the user's prompt directly to the `planner` agent (located in `everything-claude-code/agents/planner.md`) to deeply analyze the request and break it down into steps.
 - [ ] **Consult Architect (if structural):** If the prompt involves new components, route changes, or architectural decisions, invoke the `architect` agent (`everything-claude-code/agents/architect.md`) for a design review before coding.
 - [ ] **Initialize GSD:** Use the appropriate get-shit-done command (e.g., `/gsd-plan-phase` or run the workflow from `.github/skills/gsd-*`) to formalize the milestone and tasks.
@@ -46,8 +50,9 @@
 ---
 
 ## Phase 5: Deep Quality Review
-- [ ] **Code Review:** Hand off the staged diff (`git diff --staged`) to the `code-reviewer` agent (`everything-claude-code/agents/code-reviewer.md`). It must flag at least CRITICAL or HIGH issues.
-- [ ] **Security Review:** Hand off the diff to the `security-reviewer` agent (`everything-claude-code/agents/security-reviewer.md`) to ensure no secrets, injection vulnerabilities, or OWASP Top 10 issues are present.
+- [ ] **Codemap-Informed Review Scope:** Consult the codemaps in `docs/CODEMAPS/` to identify the complete blast radius of all modified files (callers, dependents, related tests). Hand this expanded file set — not just the raw diff — to both reviewers below. This prevents silently breaking callers that aren't in the diff.
+- [ ] **Code Review:** Hand off the staged diff (`git diff --staged`) plus the blast-radius file set to the `code-reviewer` agent (`everything-claude-code/agents/code-reviewer.md`). It must flag at least CRITICAL or HIGH issues.
+- [ ] **Security Review:** Hand off the same expanded set to the `security-reviewer` agent (`everything-claude-code/agents/security-reviewer.md`) to ensure no secrets, injection vulnerabilities, or OWASP Top 10 issues are present.
 - [ ] **Review Loop-Back:** If the code-reviewer or security-reviewer flags CRITICAL issues, **go back to Phase 3** and fix them. Do NOT proceed to Phase 6 with unresolved critical findings.
 
 > **Tip:** Code review and security review can run in parallel since they are independent.
@@ -100,3 +105,16 @@
 | `build-error-resolver` | `everything-claude-code/agents/build-error-resolver.md` | When build/tests fail |
 | `doc-updater` | `everything-claude-code/agents/doc-updater.md` | When UI or behavior changes |
 | `refactor-cleaner` | `everything-claude-code/agents/refactor-cleaner.md` | Dead code / cleanup tasks |
+
+## Quick Reference: Codemaps
+
+| Map File | Covers | Use When |
+|----------|--------|----------|
+| `docs/CODEMAPS/OVERVIEW.md` | Full architecture, dependency graph, C4K additions | Start of every session |
+| `docs/CODEMAPS/app-shell.md` | `src/App/`, `src/router/` | Routing changes, app shell modifications |
+| `docs/CODEMAPS/common.md` | `src/common/` hooks, utils, contexts | Common utility or hook changes |
+| `docs/CODEMAPS/components.md` | `src/components/` reusable UI | Component modifications |
+| `docs/CODEMAPS/routes.md` | `src/routes/` page-level routes | Route/page changes |
+| `docs/CODEMAPS/services.md` | `src/services/` WASM bridge, Shell, Chromecast | Service layer changes |
+| `docs/CODEMAPS/types.md` | `src/types/` TypeScript definitions | Type changes |
+| `docs/CODEMAPS/config-and-backend.md` | webpack, tsconfig, eslint, api-proxy, CI/CD | Build/config/backend changes |

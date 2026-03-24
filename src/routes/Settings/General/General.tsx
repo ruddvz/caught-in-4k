@@ -1,4 +1,5 @@
 import React, { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
+import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'stremio/components';
 import { useServices } from 'stremio/services';

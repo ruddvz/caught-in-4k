@@ -2,6 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with this repository.
 
+## MANDATORY: Workflow 101 — Read First, Every Time
+
+> **CRITICAL INSTRUCTION — NON-NEGOTIABLE**
+>
+> Before doing ANY work on ANY prompt, you MUST:
+> 1. Read `.github/workflow-101.md` in full
+> 2. Follow every phase (0 through 8) sequentially as a checklist
+> 3. Never skip phases — if a phase doesn't apply, explicitly note it and move on
+>
+> This applies to EVERY prompt: features, bug fixes, refactors, documentation, and even research tasks.
+> The workflow uses `docs/CODEMAPS/` for targeted context gathering and blast-radius analysis.
+> See the workflow file for details.
+>
+> **If you did not read `.github/workflow-101.md` before starting work, STOP and read it now.**
+
 ## Project Overview
 
 **Caught in 4K** is a Gen Z-themed, AI-powered fork of Stremio Web. It streams movies/shows via Stremio add-ons, enriched with AI-generated "Canon Takes" (Gemini-powered commentary).

@@ -7,3 +7,8 @@
 - Do not apply GSD workflows unless the user explicitly asks for them.
 - After completing any `gsd-*` command (or any deliverable it triggers: feature, bug fix, tests, docs, etc.), ALWAYS: (1) offer the user the next step by prompting via `ask_user`; repeat this feedback loop until the user explicitly indicates they are done.
 <!-- /GSD Configuration -->
+
+# MANDATORY: Workflow 101
+
+Before doing ANY work on ANY prompt, read and follow `.github/workflow-101.md` in full.
+Every phase (0–8) must be executed sequentially as a checklist. Never skip phases.
