@@ -27,6 +27,7 @@
     background: transparent;
     border: none;
     outline: none;
+    animation: metaItemEntrance 0.35s ease-out both;
 
     &:hover, &:focus, &:global(.active), &:global(.selected) {
         transform: translateY(-8px);
@@ -326,6 +327,17 @@
                 font-size: 0.8rem;
             }
         }
+    }
+}
+
+@keyframes metaItemEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 

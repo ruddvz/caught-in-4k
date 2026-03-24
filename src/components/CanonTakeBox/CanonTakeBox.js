@@ -48,7 +48,11 @@ const CanonTakeBox = ({ title, year, takeOverride }) => {
                     </span>
                 )}
             </div>
-            <div className={styles.content}>
+            <div
+                key={canonTake ? 'loaded' : 'loading'}
+                className={`${styles.content}${canonTake ? ' animate__animated animate__fadeIn' : ''}`}
+                style={canonTake ? { '--animate-duration': '0.5s' } : undefined}
+            >
                 {canonTake ? (
                     <React.Fragment>
                         <span className={styles.quoteMark}>{'"'}</span>

@@ -23,6 +23,7 @@
         "@stremio/stremio-icons": "5.8.0",
         "@stremio/stremio-video": "0.0.70",
         "a-color-picker": "1.2.1",
+        "animate.css": "^4.1.1",
         "bowser": "2.11.0",
         "buffer": "6.0.3",
         "classnames": "2.5.1",

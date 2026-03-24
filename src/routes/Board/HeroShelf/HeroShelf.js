@@ -87,7 +87,7 @@ const HeroShelf = ({ items }) => {
 
     return (
         <div className={styles['hero-shelf-container']} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <div className={styles['hero-slide']}>
+            <div key={currentIndex} className={`${styles['hero-slide']} animate__animated animate__fadeIn`} style={{ '--animate-duration': '0.6s' }}>
                 <Image
                     className={styles['hero-background']}
                     src={item.background}
