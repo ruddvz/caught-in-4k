@@ -52,11 +52,9 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                             <MultiselectMenu className={styles['multiselect']} options={[{value:'1', label:'100%'}]} value={'1'} onSelect={()=>{}} />
                         </Option>
 
-                        {/* VISUALIZATION: Open Color Dropdown */}
                         <Option label={'Color'}>
                             <MultiselectMenu 
                                 className={styles['multiselect']} 
-                                isOpen={true} 
                                 options={[
                                     { value: '#ffffff', label: 'White' },
                                     { value: '#ffff00', label: 'Yellow' },
@@ -68,10 +66,15 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                             />
                         </Option>
 
+                        {/* VISUALIZATION: Open Background Dropdown */}
                         <Option label={'Background'}>
                             <MultiselectMenu 
                                 className={styles['multiselect']} 
-                                options={[{value:'semi-black', label:'Semi-black'}, {value:'transparent', label:'Transparent'}]}
+                                isOpen={true} 
+                                options={[
+                                    { value: 'semi-black', label: 'Semi-black' },
+                                    { value: 'transparent', label: 'Transparent' }
+                                ]}
                                 value={'semi-black'}
                                 onSelect={() => {}}
                             />
