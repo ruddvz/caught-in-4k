@@ -4,16 +4,20 @@ const React = require('react');
 const { useTranslation } = require('react-i18next');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
+const { default: Icon } = require('@stremio/stremio-icons/react');
 const { Modal, useRouteFocused } = require('stremio-router');
 const { useServices } = require('stremio/services');
 const { useBinaryState } = require('stremio/common');
-const { Button, Checkbox, AppLogo } = require('stremio/components');
+const { Button, Checkbox } = require('stremio/components');
 const CredentialsTextInput = require('./CredentialsTextInput');
 const PasswordResetModal = require('./PasswordResetModal');
 const useFacebookLogin = require('./useFacebookLogin');
 const { default: useAppleLogin } = require('./useAppleLogin');
 
 const styles = require('./styles');
+
+// Logo image — the C4k. asset with transparent background
+const logoSrc = require('/assets/images/logo1.png');
 
 const SIGNUP_FORM = 'signup';
 const LOGIN_FORM = 'login';
@@ -24,15 +28,17 @@ const Intro = ({ queryParams }) => {
     const routeFocused = useRouteFocused();
     const [startFacebookLogin, stopFacebookLogin] = useFacebookLogin();
     const [startAppleLogin, stopAppleLogin] = useAppleLogin();
+
     const emailRef = React.useRef(null);
     const passwordRef = React.useRef(null);
     const confirmPasswordRef = React.useRef(null);
     const termsRef = React.useRef(null);
     const privacyPolicyRef = React.useRef(null);
-    const marketingRef = React.useRef(null);
     const errorRef = React.useRef(null);
+
     const [passwordRestModalOpen, openPasswordRestModal, closePasswordResetModal] = useBinaryState(false);
     const [loaderModalOpen, openLoaderModal, closeLoaderModal] = useBinaryState(false);
+
     const [state, dispatch] = React.useReducer(
         (state, action) => {
             switch (action.type) {
@@ -51,22 +57,11 @@ const Intro = ({ queryParams }) => {
                     }
                     return state;
                 case 'change-credentials':
-                    return {
-                        ...state,
-                        error: '',
-                        [action.name]: action.value
-                    };
+                    return { ...state, error: '', [action.name]: action.value };
                 case 'toggle-checkbox':
-                    return {
-                        ...state,
-                        error: '',
-                        [action.name]: !state[action.name]
-                    };
+                    return { ...state, error: '', [action.name]: !state[action.name] };
                 case 'error':
-                    return {
-                        ...state,
-                        error: action.error
-                    };
+                    return { ...state, error: action.error };
                 default:
                     return state;
             }
@@ -97,11 +92,7 @@ const Intro = ({ queryParams }) => {
             action: 'Ctx',
             args: {
                 action: 'Authenticate',
-                args: {
-                    type: 'Login',
-                    email: state.email,
-                    password: state.password
-                }
+                args: { type: 'Login', email: state.email, password: state.password }
             }
         });
     }, [state.email, state.password, core, t, openLoaderModal]);
@@ -151,53 +142,46 @@ const Intro = ({ queryParams }) => {
         });
     }, [state.email, state.password, state.confirmPassword, state.termsAccepted, state.privacyPolicyAccepted, state.marketingAccepted, core, t, openLoaderModal]);
 
+    // Form field handlers
     const emailOnChange = React.useCallback((event) => {
-        dispatch({
-            type: 'change-credentials',
-            name: 'email',
-            value: event.currentTarget.value
-        });
+        dispatch({ type: 'change-credentials', name: 'email', value: event.currentTarget.value });
     }, []);
-    const emailOnSubmit = React.useCallback(() => {
-        passwordRef.current.focus();
-    }, []);
+    const emailOnSubmit = React.useCallback(() => { passwordRef.current.focus(); }, []);
+
     const passwordOnChange = React.useCallback((event) => {
-        dispatch({
-            type: 'change-credentials',
-            name: 'password',
-            value: event.currentTarget.value
-        });
+        dispatch({ type: 'change-credentials', name: 'password', value: event.currentTarget.value });
     }, []);
     const passwordOnSubmit = React.useCallback(() => {
-        if (state.form === SIGNUP_FORM) {
-            confirmPasswordRef.current.focus();
-        } else {
-            loginWithEmail();
-        }
+        if (state.form === SIGNUP_FORM) { confirmPasswordRef.current.focus(); }
+        else { loginWithEmail(); }
     }, [state.form, loginWithEmail]);
+
     const confirmPasswordOnChange = React.useCallback((event) => {
-        dispatch({
-            type: 'change-credentials',
-            name: 'confirmPassword',
-            value: event.currentTarget.value
-        });
+        dispatch({ type: 'change-credentials', name: 'confirmPassword', value: event.currentTarget.value });
     }, []);
-    const confirmPasswordOnSubmit = React.useCallback(() => {
-        termsRef.current.focus();
-    }, []);
+    const confirmPasswordOnSubmit = React.useCallback(() => { termsRef.current.focus(); }, []);
+
     const toggleTermsAccepted = React.useCallback(() => {
         dispatch({ type: 'toggle-checkbox', name: 'termsAccepted' });
     }, []);
     const togglePrivacyPolicyAccepted = React.useCallback(() => {
         dispatch({ type: 'toggle-checkbox', name: 'privacyPolicyAccepted' });
     }, []);
-    const toggleMarketingAccepted = React.useCallback(() => {
-        dispatch({ type: 'toggle-checkbox', name: 'marketingAccepted' });
-    }, []);
+
     const switchFormOnClick = React.useCallback(() => {
-        const queryParams = new URLSearchParams([['form', state.form === SIGNUP_FORM ? LOGIN_FORM : SIGNUP_FORM]]);
-        window.location = `#/intro?${queryParams.toString()}`;
+        const qp = new URLSearchParams([['form', state.form === SIGNUP_FORM ? LOGIN_FORM : SIGNUP_FORM]]);
+        window.location = `#/intro?${qp.toString()}`;
     }, [state.form]);
+
+    const cancelLoginWithFacebook = React.useCallback(() => {
+        stopFacebookLogin();
+        closeLoaderModal();
+    }, [stopFacebookLogin, closeLoaderModal]);
+
+    const cancelLoginWithApple = React.useCallback(() => {
+        stopAppleLogin();
+        closeLoaderModal();
+    }, [stopAppleLogin, closeLoaderModal]);
 
     React.useEffect(() => {
         if ([LOGIN_FORM, SIGNUP_FORM].includes(queryParams.get('form'))) {
@@ -212,9 +196,7 @@ const Intro = ({ queryParams }) => {
     }, [state.error, routeFocused]);
 
     React.useEffect(() => {
-        if (routeFocused) {
-            emailRef.current?.focus();
-        }
+        if (routeFocused) { emailRef.current?.focus(); }
     }, [state.form, routeFocused]);
 
     React.useEffect(() => {
@@ -222,43 +204,40 @@ const Intro = ({ queryParams }) => {
             switch (event) {
                 case 'UserAuthenticated': {
                     closeLoaderModal();
-                    if (routeFocused) {
-                        window.location = '#/';
-                    }
+                    if (routeFocused) { window.location = '#/'; }
                     break;
                 }
                 case 'Error': {
-                    if (args.source.event === 'UserAuthenticated') {
-                        closeLoaderModal();
-                    }
+                    if (args.source.event === 'UserAuthenticated') { closeLoaderModal(); }
                     break;
                 }
             }
         };
         core.transport.on('CoreEvent', onCoreEvent);
-        return () => {
-            core.transport.off('CoreEvent', onCoreEvent);
-        };
+        return () => { core.transport.off('CoreEvent', onCoreEvent); };
     }, [routeFocused, core, closeLoaderModal]);
 
     return (
         <div className={styles['intro-container']}>
             <div className={styles['background-container']} />
 
-            {/* 1. Header & Branding - Raw. Real. Rated. */}
-            <div className={styles['heading-container']}>
-                <div className={styles['logo-text']}>
-                    C4k<span className={styles['dot']}>.</span>
-                </div>
-                <div className={styles['slogan-container']}>
-                    Raw. Real. Rated.
-                </div>
+            {/* 1. LOGO IMAGE + HEADLINE */}
+            <div className={styles['branding-header']}>
+                <img
+                    src={logoSrc}
+                    className={styles['logo-image']}
+                    alt="Caught in 4K"
+                />
+                <div className={styles['headline']}>Freedom to Stream</div>
+                <div className={styles['sub-headline']}>All the video content you enjoy in one place</div>
             </div>
 
-            <div className={styles['main-layout']}>
-                {/* 2. Form Column (Left) */}
-                <div className={styles['form-column']}>
-                    <div className={styles['input-wrapper']}>
+            {/* 2. TWO-COLUMN LAYOUT */}
+            <div className={styles['main-dashboard-wrap']}>
+
+                {/* LEFT COLUMN — Form inputs + legal */}
+                <div className={styles['form-side']}>
+                    <div className={styles['glow-buffer-container']}>
                         <CredentialsTextInput
                             ref={emailRef}
                             className={styles['credentials-text-input']}
@@ -268,8 +247,6 @@ const Intro = ({ queryParams }) => {
                             onChange={emailOnChange}
                             onSubmit={emailOnSubmit}
                         />
-                    </div>
-                    <div className={styles['input-wrapper']}>
                         <CredentialsTextInput
                             ref={passwordRef}
                             className={styles['credentials-text-input']}
@@ -279,9 +256,7 @@ const Intro = ({ queryParams }) => {
                             onChange={passwordOnChange}
                             onSubmit={passwordOnSubmit}
                         />
-                    </div>
-                    {state.form === SIGNUP_FORM && (
-                        <div className={styles['input-wrapper']}>
+                        {state.form === SIGNUP_FORM && (
                             <CredentialsTextInput
                                 ref={confirmPasswordRef}
                                 className={styles['credentials-text-input']}
@@ -291,15 +266,15 @@ const Intro = ({ queryParams }) => {
                                 onChange={confirmPasswordOnChange}
                                 onSubmit={confirmPasswordOnSubmit}
                             />
-                        </div>
-                    )}
+                        )}
+                    </div>
 
-                    <div className={styles['legal-container']}>
+                    <div className={styles['legal-checkboxes']}>
                         <Checkbox
                             ref={termsRef}
                             label={t('READ_AND_AGREE')}
                             link={t('TOS')}
-                            href={'#/tos'}
+                            href={'https://www.stremio.com/tos'}
                             checked={state.termsAccepted}
                             onChange={toggleTermsAccepted}
                             className={styles['legal-checkbox']}
@@ -308,47 +283,59 @@ const Intro = ({ queryParams }) => {
                             ref={privacyPolicyRef}
                             label={t('READ_AND_AGREE')}
                             link={t('PRIVACY_POLICY')}
-                            href={'#/privacy'}
+                            href={'https://www.stremio.com/privacy'}
                             checked={state.privacyPolicyAccepted}
                             onChange={togglePrivacyPolicyAccepted}
                             className={styles['legal-checkbox']}
                         />
                     </div>
 
-                    {state.error && <div ref={errorRef} className={styles['error-message']}>{state.error}</div>}
+                    {state.error && (
+                        <div ref={errorRef} className={styles['error-message']}>{state.error}</div>
+                    )}
                 </div>
 
-                {/* 3. Action Buttons - Strict Vertical Stack (Right) */}
-                <div className={styles['buttons-column']}>
-                    {/* Google Login (White) */}
-                    <div className={classnames(styles['stack-button'], styles['google-button'])} onClick={() => {}}>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" className={styles['google-icon']} alt="G" />
-                        <div className={styles['label']}>Login with Google</div>
-                    </div>
-                    
-                    {/* Mode-Aware Log in/Sign up Button (Charcoal) */}
-                    <div
-                        className={classnames(styles['stack-button'], styles['charcoal-button'])}
+                {/* RIGHT COLUMN — Log in + Guest login (NO Google button) */}
+                <div className={styles['actions-side']}>
+                    <Button
+                        className={classnames(styles['intro-btn'], styles['btn-login'])}
                         onClick={state.form === SIGNUP_FORM ? signup : loginWithEmail}
                     >
-                        <div className={styles['label']}>{state.form === SIGNUP_FORM ? 'Sign up' : 'Log in'}</div>
-                    </div>
-                    
-                    {/* Guest login (Charcoal) */}
-                    <div className={classnames(styles['stack-button'], styles['charcoal-button'])} onClick={loginAsGuest}>
+                        <div className={styles['label']}>
+                            {state.form === SIGNUP_FORM ? 'Sign up' : 'Log in'}
+                        </div>
+                    </Button>
+                    <Button
+                        className={classnames(styles['intro-btn'], styles['btn-guest'])}
+                        onClick={loginAsGuest}
+                    >
                         <div className={styles['label']}>Guest login</div>
-                    </div>
+                    </Button>
                 </div>
             </div>
 
-            {/* 4. Footer "Sign Up" centered wide button with white outline */}
-            <div className={styles['bottom-signup-container']}>
-                <button className={styles['signup-footer-button']} onClick={switchFormOnClick}>
+            {/* 4. FOOTER — Wide "Sign up" / "Log in" switcher button */}
+            <div className={styles['footer-action']}>
+                <button className={styles['sign-up-footer-btn']} onClick={switchFormOnClick}>
                     {state.form === SIGNUP_FORM ? 'Already have an account? Log in' : 'Sign up'}
                 </button>
             </div>
 
-            {passwordRestModalOpen && <PasswordResetModal email={state.email} onCloseRequest={closePasswordResetModal} />}
+            {/* Modals & Loaders */}
+            {loaderModalOpen && (
+                <Modal className={styles['loading-modal-container']}>
+                    <div className={styles['loader-container']}>
+                        <Icon className={styles['icon']} name={'person'} />
+                        <div className={styles['label']}>{t('AUTHENTICATING')}</div>
+                        <Button className={styles['button']} onClick={cancelLoginWithFacebook && cancelLoginWithApple}>
+                            {t('BUTTON_CANCEL')}
+                        </Button>
+                    </div>
+                </Modal>
+            )}
+            {passwordRestModalOpen && (
+                <PasswordResetModal email={state.email} onCloseRequest={closePasswordResetModal} />
+            )}
         </div>
     );
 };
