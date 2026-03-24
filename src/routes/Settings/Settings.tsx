@@ -7,7 +7,6 @@ import { MainNavBars } from 'stremio/components';
 import General from './General';
 import ProfileManagement from './ProfileManagement';
 import Player from './Player';
-// Streaming and Shortcuts are parked — kept imported so they can be re-enabled
 import Shortcuts from './Shortcuts';
 import styles from './Settings.less';
 
@@ -18,19 +17,22 @@ const FOCUSABLE_SELECTOR = [
     '[tabindex]:not([tabindex="-1"])',
     '.stremio-toggle',
     '[role="button"]',
+    '.option-button',
 ].join(', ');
 
 const Settings = () => {
     const profile = useProfile();
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // KEYBOARD NAVIGATION: ArrowUp / ArrowDown through all focusable items
+    // KEYBOARD NAVIGATION: Full support for ArrowUp / ArrowDown navigation 
+    // Through all list items and setting elements in the dashboard.
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
 
         const container = containerRef.current;
         if (!container) return;
 
+        // Collect all focusable elements in the current viewport
         const focusable = Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR)) as HTMLElement[];
         if (focusable.length === 0) return;
 
@@ -44,7 +46,8 @@ const Settings = () => {
         }
 
         e.preventDefault();
-        focusable[nextIndex].focus();
+        focusable[nextIndex]?.focus();
+        focusable[nextIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, []);
 
     useEffect(() => {
@@ -55,7 +58,10 @@ const Settings = () => {
     return (
         <MainNavBars className={styles['settings-container']} route={'settings'}>
             <div ref={containerRef} className={classNames(styles['settings-content'], 'animation-fade-in')}>
-                {/* UNIFIED DASHBOARD: 35% Left | 65% Right */}
+                {/* 
+                     DASHBOARD GRID: Unified 35% / 65% Dual-column 
+                     Vertical Rhythm Alignment per Board Hero actions offset
+                */}
                 <div className={styles['dashboard-grid']}>
 
                     {/* IDENTITY & PROFILES (32%) */}
@@ -75,14 +81,14 @@ const Settings = () => {
 
                 </div>
 
-                {/* GLOBAL FOOTER */}
+                {/* GLOBAL FOOTER: Centered Soft Gray Legal Links */}
                 <div className={styles['settings-footer']}>
                     <a href="#/tos" className={styles['footer-link']}>Terms of Service</a>
                     <span className={styles['footer-separator']}>|</span>
                     <a href="#/privacy-policy" className={styles['footer-link']}>Privacy Policy</a>
                 </div>
 
-                {/* PARKED COMPONENTS */}
+                {/* PARKED LOGIC */}
                 <div style={{ display: 'none' }}>
                     <Shortcuts />
                 </div>

@@ -4,7 +4,6 @@ const React = require('react');
 const { useTranslation } = require('react-i18next');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-const { default: Icon } = require('@stremio/stremio-icons/react');
 const { Modal, useRouteFocused } = require('stremio-router');
 const { useServices } = require('stremio/services');
 const { useBinaryState } = require('stremio/common');
@@ -83,59 +82,7 @@ const Intro = ({ queryParams }) => {
             error: ''
         }
     );
-    const loginWithFacebook = React.useCallback(() => {
-        openLoaderModal();
-        startFacebookLogin()
-            .then(({ email, password }) => {
-                core.transport.dispatch({
-                    action: 'Ctx',
-                    args: {
-                        action: 'Authenticate',
-                        args: {
-                            type: 'Login',
-                            email,
-                            password,
-                            facebook: true
-                        }
-                    }
-                });
-            })
-            .catch((error) => {
-                closeLoaderModal();
-                dispatch({ type: 'error', error: error.message });
-            });
-    }, []);
-    const cancelLoginWithFacebook = React.useCallback(() => {
-        stopFacebookLogin();
-        closeLoaderModal();
-    }, []);
-    const loginWithApple = React.useCallback(() => {
-        openLoaderModal();
-        startAppleLogin()
-            .then(({ token, sub, email, name }) => {
-                core.transport.dispatch({
-                    action: 'Ctx',
-                    args: {
-                        action: 'Authenticate',
-                        args: {
-                            type: 'Apple',
-                            token,
-                            sub,
-                            email,
-                            name
-                        }
-                    }
-                });
-            })
-            .catch((error) => {
-                closeLoaderModal();
-                dispatch({ type: 'error', error: error.message });
-            });
-    }, []);
-    const cancelLoginWithApple = React.useCallback(() => {
-        stopAppleLogin();
-        closeLoaderModal();
-    }, []);
+
     const loginWithEmail = React.useCallback(() => {
         if (typeof state.email !== 'string' || state.email.length === 0 || !emailRef.current.validity.valid) {
             dispatch({ type: 'error', error: t('INVALID_EMAIL') });
@@ -157,14 +104,12 @@ const Intro = ({ queryParams }) => {
                 }
             }
         });
-    }, [state.email, state.password]);
+    }, [state.email, state.password, core, t, openLoaderModal]);
+
     const loginAsGuest = React.useCallback(() => {
-        if (!state.termsAccepted) {
-            dispatch({ type: 'error', error: t('MUST_ACCEPT_TERMS') });
-            return;
-        }
         window.location = '#/';
-    }, [state.termsAccepted]);
+    }, []);
+
     const signup = React.useCallback(() => {
         if (typeof state.email !== 'string' || state.email.length === 0 || !emailRef.current.validity.valid) {
             dispatch({ type: 'error', error: t('INVALID_EMAIL') });
@@ -204,7 +149,8 @@ const Intro = ({ queryParams }) => {
                 }
             }
         });
-    }, [state.email, state.password, state.confirmPassword, state.termsAccepted, state.privacyPolicyAccepted, state.marketingAccepted]);
+    }, [state.email, state.password, state.confirmPassword, state.termsAccepted, state.privacyPolicyAccepted, state.marketingAccepted, core, t, openLoaderModal]);
+
     const emailOnChange = React.useCallback((event) => {
         dispatch({
             type: 'change-credentials',
@@ -252,21 +198,25 @@ const Intro = ({ queryParams }) => {
         const queryParams = new URLSearchParams([['form', state.form === SIGNUP_FORM ? LOGIN_FORM : SIGNUP_FORM]]);
         window.location = `#/intro?${queryParams.toString()}`;
     }, [state.form]);
+
     React.useEffect(() => {
         if ([LOGIN_FORM, SIGNUP_FORM].includes(queryParams.get('form'))) {
             dispatch({ type: 'set-form', form: queryParams.get('form') });
         }
     }, [queryParams]);
+
     React.useEffect(() => {
         if (routeFocused && typeof state.error === 'string' && state.error.length > 0) {
-            errorRef.current.scrollIntoView();
+            errorRef.current?.scrollIntoView();
         }
-    }, [state.error]);
+    }, [state.error, routeFocused]);
+
     React.useEffect(() => {
         if (routeFocused) {
-            emailRef.current.focus();
+            emailRef.current?.focus();
         }
     }, [state.form, routeFocused]);
+
     React.useEffect(() => {
         const onCoreEvent = ({ event, args }) => {
             switch (event) {
@@ -281,7 +231,6 @@ const Intro = ({ queryParams }) => {
                     if (args.source.event === 'UserAuthenticated') {
                         closeLoaderModal();
                     }
-
                     break;
                 }
             }
@@ -290,26 +239,24 @@ const Intro = ({ queryParams }) => {
         return () => {
             core.transport.off('CoreEvent', onCoreEvent);
         };
-    }, [routeFocused]);
+    }, [routeFocused, core, closeLoaderModal]);
+
     return (
         <div className={styles['intro-container']}>
             <div className={styles['background-container']} />
 
-            {/* 1. Branding & Header */}
+            {/* 1. Header & Branding - Raw. Real. Rated. */}
             <div className={styles['heading-container']}>
                 <div className={styles['logo-text']}>
                     C4k<span className={styles['dot']}>.</span>
                 </div>
-                <div className={styles['title-container']}>
-                    Freedom to Stream
-                </div>
                 <div className={styles['slogan-container']}>
-                    All the video content you enjoy in one place
+                    Raw. Real. Rated.
                 </div>
             </div>
 
             <div className={styles['main-layout']}>
-                {/* 2. Form Field Column (Left) */}
+                {/* 2. Form Column (Left) */}
                 <div className={styles['form-column']}>
                     <div className={styles['input-wrapper']}>
                         <CredentialsTextInput
@@ -322,7 +269,7 @@ const Intro = ({ queryParams }) => {
                             onSubmit={emailOnSubmit}
                         />
                     </div>
-                    <div className={classnames(styles['input-wrapper'], styles['glow-field'])}>
+                    <div className={styles['input-wrapper']}>
                         <CredentialsTextInput
                             ref={passwordRef}
                             className={styles['credentials-text-input']}
@@ -368,29 +315,37 @@ const Intro = ({ queryParams }) => {
                         />
                     </div>
 
-                    {state.error && <div className={styles['error-message']}>{state.error}</div>}
+                    {state.error && <div ref={errorRef} className={styles['error-message']}>{state.error}</div>}
                 </div>
 
-                {/* 3. Action Buttons Column (Right) */}
+                {/* 3. Action Buttons - Strict Vertical Stack (Right) */}
                 <div className={styles['buttons-column']}>
-                    <Button className={classnames(styles['stack-button'], styles['google-button'])} onClick={() => {}}>
+                    {/* Google Login (White) */}
+                    <div className={classnames(styles['stack-button'], styles['google-button'])} onClick={() => {}}>
                         <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" className={styles['google-icon']} alt="G" />
                         <div className={styles['label']}>Login with Google</div>
-                    </Button>
-                    <Button className={classnames(styles['stack-button'], styles['charcoal-button'])} onClick={loginWithEmail}>
-                        <div className={styles['label']}>Log in</div>
-                    </Button>
-                    <Button className={classnames(styles['stack-button'], styles['charcoal-button'])} onClick={loginAsGuest}>
+                    </div>
+                    
+                    {/* Mode-Aware Log in/Sign up Button (Charcoal) */}
+                    <div
+                        className={classnames(styles['stack-button'], styles['charcoal-button'])}
+                        onClick={state.form === SIGNUP_FORM ? signup : loginWithEmail}
+                    >
+                        <div className={styles['label']}>{state.form === SIGNUP_FORM ? 'Sign up' : 'Log in'}</div>
+                    </div>
+                    
+                    {/* Guest login (Charcoal) */}
+                    <div className={classnames(styles['stack-button'], styles['charcoal-button'])} onClick={loginAsGuest}>
                         <div className={styles['label']}>Guest login</div>
-                    </Button>
+                    </div>
                 </div>
             </div>
 
-            {/* 4. Sign Up Action (Bottom) */}
+            {/* 4. Footer "Sign Up" centered wide button with white outline */}
             <div className={styles['bottom-signup-container']}>
-                <Button className={styles['signup-large-button']} onClick={switchFormOnClick}>
+                <button className={styles['signup-footer-button']} onClick={switchFormOnClick}>
                     {state.form === SIGNUP_FORM ? 'Already have an account? Log in' : 'Sign up'}
-                </Button>
+                </button>
             </div>
 
             {passwordRestModalOpen && <PasswordResetModal email={state.email} onCloseRequest={closePasswordResetModal} />}

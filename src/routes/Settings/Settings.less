@@ -8,7 +8,7 @@
 .settings-container {
     height: 100vh;
     width: 100vw;
-    background-color: @bg-charcoal;
+    background-color: #0c0c0c; 
     overflow: hidden;
 
     .settings-content {
@@ -16,24 +16,24 @@
         flex-direction: column;
         height: 100%;
         width: 100%;
-        // Match the Board hero-shelf-row offset: hero starts at padding 0 1.5rem
-        // with the nav bar above. We apply the same 1.5rem horizontal + minimal top.
-        padding: 1.5rem 1.5rem 0;
+        // MEASURED OFFSET: Matching Board hero rhythm
+        // Nav Pill center is ~2.5rem. Content gap to Hero Actions top is ~8rem offset.
+        padding: 5rem 4rem 1rem; 
         box-sizing: border-box;
         background: transparent;
 
-        // THE UNIFIED GRID: 35% / 65% SPLIT
+        // THE DASHBOARD GRID
         .dashboard-grid {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             width: 100%;
             flex: 1 1 auto;
-            min-height: 0; // Prevent overflow
-            align-items: stretch; // VERTICAL LOCK — "Perfect Box"
+            min-height: 0; // Lock to footprint
+            align-items: stretch; // VERTICAL LOCK MANDATE
             overflow: visible;
         }
 
-        // LEFT COLUMN: Managed Identity & Profiles
+        // LEFT COLUMN: Managed Identity & Profiles (32%)
         .column-left {
             flex: 0 0 32%;
             display: flex;
@@ -42,7 +42,7 @@
             overflow: visible;
         }
 
-        // RIGHT COLUMN: The Engine Room
+        // RIGHT COLUMN: The Engine Room (68%)
         .column-right {
             flex: 1 1 0;
             display: flex;
@@ -50,12 +50,12 @@
             overflow: visible;
         }
 
-        // THE BOX CONSTRAINT: Uniform Widget Cards
+        // UNIFORM BOX CONSTRAINT
         .widget-card, .player-widget {
-            background-color: #161616;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 2rem 2.5rem;
+            background-color: @bg-charcoal; 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 12px; // 12px Corners Per Prompt
+            padding: 2.5rem;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -66,114 +66,79 @@
             width: 100%;
 
             &:first-child {
-                flex: 0 0 auto; // Identity card: compact
+                flex: 0 0 auto;
             }
             &.profiles-card {
-                flex: 1 1 auto; // Stretch to fill remaining space → bottom lock
+                flex: 1 1 auto; // STRETCH TO LOCK BOTTOM
             }
         }
 
         .player-widget {
-            flex: 1 1 100%; // Fill right column fully → bottom lock
+            flex: 1 1 100%; // STRETCH TO LOCK BOTTOM
         }
 
-        // GLOBAL FOOTER — centered gray legal links at viewport bottom
+        // GLOBAL FOOTER - Center Gray Legal Text
         .settings-footer {
             flex: 0 0 auto;
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: center;
-            gap: 1.5rem;
-            padding: 1rem 0;
+            gap: 2rem;
+            padding: 1.5rem 0;
             width: 100%;
 
             .footer-separator {
-                color: rgba(176, 176, 176, 0.3);
-                font-size: 1rem;
+                color: rgba(176, 176, 176, 0.4);
             }
 
             .footer-link {
                 font-size: 1rem;
-                color: #b0b0b0;
+                font-weight: 500;
+                color: #b0b0b0; // SOFT CLEAR GRAY
                 text-decoration: none;
                 transition: color 0.2s;
-                white-space: nowrap;
 
                 &:hover {
-                    color: @c4k-green;
+                    color: #fff;
                 }
             }
         }
     }
 }
 
-// GLOBAL ACCENTS FOR SETTINGS
+// GLOBAL FIXES
 :global {
     .settings-container {
-        // Active toggles → C4K green
-        .stremio-toggle--active .stremio-toggle-circle {
-            background-color: @c4k-green !important;
-        }
-
-        .button.primary,
-        .button.active {
-            background-color: @c4k-green !important;
-            color: #111 !important;
-            border-radius: 999px;
-            font-weight: 800;
-        }
-
-        // Dropdown menus must float above everything
+        // Dropdown clipping prevention
         .multiselect-menu-dropdown {
             z-index: 9999 !important;
             border-radius: 12px;
             border: 1px solid @border-grey;
-            background: #1a1a1a;
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+            background: @bg-charcoal;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
         }
 
-        // No label truncation — all labels must be fully visible
-        .stremio-settings-option .label {
-            white-space: nowrap;
+        // Label No-Truncate Fix
+        .label {
+            white-space: nowrap !important;
+        }
+
+        // Focus Glow
+        .button:focus, .input:focus {
+             box-shadow: 0 0 20px rgba(161, 255, 0, 0.2);
         }
     }
 }
 
-// MOBILE COLLAPSE
 @media only screen and (max-width: @small) {
     .settings-container {
         height: auto;
         overflow-y: auto;
-
         .settings-content {
             padding: 1rem;
-
-            .dashboard-grid {
-                flex-direction: column;
-                height: auto;
-                gap: 1.5rem;
-            }
-
-            .column-left,
-            .column-right {
-                flex: none;
-                width: 100%;
-            }
-
-            .widget-card,
-            .player-widget {
-                padding: 1.5rem;
-                height: auto;
-                border-radius: 12px;
-                flex: none !important;
-            }
-
-            .settings-footer {
-                flex-direction: row;
-                gap: 1.5rem;
-                justify-content: center;
-            }
+            .dashboard-grid { flex-direction: column; height: auto; }
+            .column-left, .column-right { width: 100%; }
         }
     }
 }

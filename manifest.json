@@ -2,8 +2,8 @@
     "name": "Caught in 4K",
     "short_name": "C4K",
     "description": "watch in 4K",
-    "background_color": "#050A07",
-    "theme_color": "#16A34A",
+    "background_color": "#000000",
+    "theme_color": "#000000",
     "orientation": "any",
     "display": "standalone",
     "display_override": ["standalone"],
@@ -16,25 +16,25 @@
             "type": "image/vnd.microsoft.icon"
         },
         {
-            "src": "images/maskable_icon_512x512.png",
+            "src": "assets/images/icon_512x512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
         },
         {
-            "src": "images/maskable_icon_196x196.png",
+            "src": "assets/images/icon_196x196.png",
             "sizes": "196x196",
             "type": "image/png",
             "purpose": "maskable"
         },
         {
-            "src": "images/icon_512x512.png",
+            "src": "assets/images/icon_512x512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "images/icon_196x196.png",
+            "src": "assets/images/icon_196x196.png",
             "sizes": "196x196",
             "type": "image/png",
             "purpose": "any"
@@ -45,15 +45,13 @@
             "src": "screenshots/board_wide.webp",
             "sizes": "1440x900",
             "type": "image/webp",
-            "form_factor": "wide",
-            "label": "Homescreen of Caught in 4K"
+            "form_factor": "wide"
         },
         {
             "src": "screenshots/board_narrow.webp",
             "sizes": "414x896",
             "type": "image/webp",
-            "form_factor": "narrow",
-            "label": "Homescreen of Caught in 4K"
+            "form_factor": "narrow"
         }
     ]
 }
