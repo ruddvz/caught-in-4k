@@ -68,20 +68,16 @@
         height: 100vh;
         overflow: hidden;
 
-        .top-nav-bar {
-            display: none !important;
-        }
-
-        // DEFAULT: hero pages (board) bleed under header
+        // DEFAULT: hero route (board) — safe-area only, hero fills from below status bar
         .nav-content-container {
-            padding-top: 0;
+            padding-top: env(safe-area-inset-top, 0px);
             padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6rem);
             height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
         }
 
-        // NON-HERO pages: content starts from top (top nav hidden on mobile)
+        // NON-HERO pages: also clear the floating top bar (~4rem height)
         &.route-library,
         &.route-discover,
         &.route-settings,
@@ -89,7 +85,7 @@
         &.route-continue_watching,
         &.route-addons {
             .nav-content-container {
-                padding-top: env(safe-area-inset-top, 0px);
+                padding-top: calc(env(safe-area-inset-top, 0px) + 4rem);
             }
         }
 
