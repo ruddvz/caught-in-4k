@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Button } from 'stremio/components';
 import { useServices } from 'stremio/services';
 import { usePlatform } from 'stremio/common';
-import { Link } from '../components';
 import useDataExport from './useDataExport';
 import styles from './General.less';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -124,15 +123,9 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                         </Button>
                     </>
                 ) : (
-                    <>
-                        <Link label={`${t('LOG_IN')} / ${t('SIGN_UP')}`} href={'#/intro'} />
-                        <div className={styles['action-link']} onClick={onChangePassword}>
-                            Change Password
-                        </div>
-                        <div className={classnames(styles['action-link'], styles['danger-link'])} onClick={onDeleteAccount}>
-                            Delete Account
-                        </div>
-                    </>
+                    <Button className={styles['login-button']} onClick={() => { window.location.hash = '#/intro'; }}>
+                        {t('LOG_IN')} / {t('SIGN_UP')}
+                    </Button>
                 )}
             </div>
         </div>

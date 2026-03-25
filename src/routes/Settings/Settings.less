@@ -24,27 +24,33 @@
 
         // THE DASHBOARD GRID
         .dashboard-grid {
-            display: flex;
+            display: grid;
+            grid-template-columns: 32% 1fr;
             gap: 2.5rem;
             width: 100%;
-            align-items: start; // Each column uses its natural height — no forced equal stretch
+            align-items: stretch; // Both columns stretch to the same height (the taller one wins)
             overflow: visible;
         }
 
         // LEFT COLUMN: Managed Identity & Profiles (32%)
         .column-left {
-            flex: 0 0 32%;
             display: flex;
             flex-direction: column;
             gap: 2rem;
+            height: 100%; // Fill the grid row height
             overflow: visible;
+
+            > *:last-child {
+                flex: 1; // Last card (profiles) grows to fill remaining space
+                min-height: 0;
+            }
         }
 
         // RIGHT COLUMN: The Engine Room (68%)
         .column-right {
-            flex: 1 1 0;
             display: flex;
             flex-direction: column;
+            height: 100%;
             overflow: visible;
         }
 
