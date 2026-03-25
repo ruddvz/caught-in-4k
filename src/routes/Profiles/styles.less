@@ -191,7 +191,7 @@
         }
     }
 
-    // Focused/selected state — full glow
+    // Keyboard-focused state — full glow
     &.focused {
         .profile-avatar {
             transform: scale(1.12);
@@ -212,6 +212,42 @@
             opacity: 0.35;
             filter: blur(50px);
         }
+    }
+
+    // Active/selected profile — persisted across page opens (Phase 3)
+    &.selected {
+        .profile-avatar {
+            border-color: var(--accent, #fff);
+            box-shadow:
+                0 0 0 4px rgba(255, 255, 255, 0.10),
+                0 0 50px 12px var(--accent-rgba, rgba(255, 255, 255, 0.18)),
+                0 24px 60px rgba(0, 0, 0, 0.55);
+        }
+
+        .profile-name {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        &::before {
+            opacity: 0.28;
+        }
+    }
+
+    // "Active" badge — small pill below the selected profile's name
+    .active-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent, #fff);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--accent-rgba, rgba(255, 255, 255, 0.18));
+        border-radius: 999px;
+        padding: 0.2rem 0.7rem;
+        margin-top: -0.4rem;
+        pointer-events: none;
+        z-index: 1;
     }
 }
 

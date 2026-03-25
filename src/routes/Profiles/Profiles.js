@@ -4,6 +4,7 @@ const React = require('react');
 const classnames = require('classnames');
 const { Button } = require('stremio/components');
 const { withCoreSuspender } = require('stremio/common');
+const { extractAccentFromAvatar } = require('../../common/useAvatarAccentColor');
 const styles = require('./styles.less');
 
 const APP_LOGO = require('/assets/images/logo1.png');
@@ -33,28 +34,28 @@ const AVAILABLE_AVATARS = [
 
 const LOCAL_STORAGE_KEY = 'c4k_profiles';
 
-// Dominant accent color per avatar — matches the circle background in each avatar image
+// Dominant accent color per avatar — fallback when Canvas extraction hasn't run yet
 const AVATAR_ACCENTS = [
-    '#7ecec4', // 1  — teal (winking girl with glasses)
-    '#f48fb0', // 2  — pink (laughing guy)
-    '#f5d76e', // 3  — yellow (blonde girl blowing kiss)
-    '#f0a050', // 4  — orange (bearded guy with glasses)
-    '#c3a8e0', // 5  — lavender (Indian girl)
-    '#9ccf6c', // 6  — green (tongue-out guy)
-    '#f07070', // 7  — coral red (hat guy with cap)
-    '#6bb8de', // 8  — blue (curly hair, 3D glasses)
-    '#b59fd9', // 9  — purple (red-hair girl)
-    '#f0a080', // 10 — peach (waving glasses guy)
-    '#5bbfb5', // 11 — teal (smart glasses guy)
-    '#e87aa3', // 12 — pink (shushing girl)
-    '#f0d040', // 13 — yellow (detective with magnifier)
-    '#f5a838', // 14 — orange (tongue-out with red glasses)
-    '#9478c3', // 15 — purple (old professor)
-    '#86b868', // 16 — sage green (hijab girl)
-    '#7ab3d8', // 17 — blue (beanie blue-hair)
-    '#d47890', // 18 — rose (Indian girl with nose ring)
-    '#8fad8a', // 19 — muted green (silver-hair grandma)
-    '#e88070', // 20 — coral (cowboy hat)
+    '#7ecec4', // 1  — teal
+    '#f48fb0', // 2  — pink
+    '#f5d76e', // 3  — yellow
+    '#f0a050', // 4  — orange
+    '#c3a8e0', // 5  — lavender
+    '#9ccf6c', // 6  — green
+    '#f07070', // 7  — coral red
+    '#6bb8de', // 8  — blue
+    '#b59fd9', // 9  — purple
+    '#f0a080', // 10 — peach
+    '#5bbfb5', // 11 — teal
+    '#e87aa3', // 12 — pink
+    '#f0d040', // 13 — yellow
+    '#f5a838', // 14 — orange
+    '#9478c3', // 15 — purple
+    '#86b868', // 16 — sage green
+    '#7ab3d8', // 17 — blue
+    '#d47890', // 18 — rose
+    '#8fad8a', // 19 — muted green
+    '#e88070', // 20 — coral
 ];
 
 const Profiles = () => {
@@ -64,6 +65,16 @@ const Profiles = () => {
     const [newAvatarIndex, setNewAvatarIndex] = React.useState(0);
     const [focusedIndex, setFocusedIndex] = React.useState(0);
     const [isExiting, setIsExiting] = React.useState(false);
+
+    // Phase 3: track which profile is active (persisted across page opens)
+    const [selectedProfileId, setSelectedProfileId] = React.useState(() => {
+        return localStorage.getItem('c4k_active_profile_id') || null;
+    });
+
+    // Phase 2: Canvas-extracted accent colors, keyed by avatarIndex
+    // extractionAttempted ref prevents duplicate Canvas operations
+    const [extractedAccents, setExtractedAccents] = React.useState({});
+    const extractionAttempted = React.useRef({});
 
     React.useEffect(() => {
         try {
@@ -75,6 +86,13 @@ const Profiles = () => {
             console.error('Failed to parse profiles', e);
         }
     }, []);
+
+    // Phase 3: once profiles load, set focusedIndex to the currently active profile
+    React.useEffect(() => {
+        if (profiles.length === 0 || !selectedProfileId) return;
+        const idx = profiles.findIndex((p) => p.id === selectedProfileId);
+        if (idx !== -1) setFocusedIndex(idx);
+    }, [profiles.length, selectedProfileId]);
 
     // Keyboard navigation in select view
     React.useEffect(() => {
@@ -125,23 +143,10 @@ const Profiles = () => {
         saveProfiles(updated);
     };
 
-    const doSelectProfile = (profile) => {
-        setIsExiting(true);
-        setTimeout(() => {
-            localStorage.setItem('c4k_current_profile', JSON.stringify(profile));
-            // Notify nav bar in the same tab to re-read the profile immediately
-            window.dispatchEvent(new Event('c4k-profile-changed'));
-            window.location.hash = '#/';
-        }, 400);
-    };
-
     const getAvatarUrl = (p) =>
         p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar;
 
-    const getAccent = (p) =>
-        p.avatarIndex !== undefined ? (AVATAR_ACCENTS[p.avatarIndex] || '#fff') : '#fff';
-
-    // Convert a #rrggbb hex to an rgba() string for CSS custom property use
+    // Phase 2: get per-card CSS variables — extracted first, fallback to AVATAR_ACCENTS
     const hexToRgba = (hex, alpha) => {
         const h = hex.replace('#', '');
         const r = parseInt(h.slice(0, 2), 16);
@@ -150,34 +155,94 @@ const Profiles = () => {
         return `rgba(${r},${g},${b},${alpha})`;
     };
 
-    const getAccentStyle = (p) => {
-        const hex = getAccent(p);
+    const getAccentStyle = React.useCallback((p) => {
+        const extracted = extractedAccents[p.avatarIndex];
+        if (extracted) {
+            const { h, s, l } = extracted.hsl;
+            return {
+                '--accent': extracted.accent,
+                '--accent-rgba': `hsla(${h}, ${s}%, ${l}%, 0.28)`,
+            };
+        }
+        // Fallback to manually curated AVATAR_ACCENTS
+        const hex = p.avatarIndex !== undefined
+            ? (AVATAR_ACCENTS[p.avatarIndex] || '#fff')
+            : '#fff';
         return {
             '--accent': hex,
             '--accent-rgba': hexToRgba(hex, 0.28),
         };
-    };
+    }, [extractedAccents]);
+
+    // Phase 2: trigger Canvas extraction on first hover; cache result in state
+    const handleCardMouseEnter = React.useCallback((p, i) => {
+        setFocusedIndex(i);
+        const key = p.avatarIndex;
+        if (extractionAttempted.current[key] !== undefined) return;
+        extractionAttempted.current[key] = true;
+        const url = getAvatarUrl(p);
+        extractAccentFromAvatar(url).then((accent) => {
+            if (accent) {
+                setExtractedAccents((prev) => ({ ...prev, [key]: accent }));
+            }
+        });
+    }, []);
+
+    // Phase 2 + 3: apply accent to CSS variables AND persist selected profile
+    const doSelectProfile = React.useCallback((profile) => {
+        setIsExiting(true);
+        setSelectedProfileId(profile.id);
+
+        // Persist selected profile ID immediately (Phase 3)
+        localStorage.setItem('c4k_active_profile_id', profile.id);
+
+        // Apply accent from extraction cache if available; otherwise extract now
+        const applyAccent = (accent) => {
+            if (!accent) return;
+            document.documentElement.style.setProperty('--primary-accent-color', accent.accent);
+            document.documentElement.style.setProperty('--outer-glow', accent.glow);
+            document.documentElement.style.setProperty('--accent-dark', accent.accentDark);
+            localStorage.setItem('c4k_active_profile_accent', JSON.stringify(accent));
+        };
+
+        const cached = extractedAccents[profile.avatarIndex];
+        if (cached) {
+            applyAccent(cached);
+        } else {
+            extractAccentFromAvatar(getAvatarUrl(profile)).then(applyAccent);
+        }
+
+        setTimeout(() => {
+            localStorage.setItem('c4k_current_profile', JSON.stringify(profile));
+            window.dispatchEvent(new Event('c4k-profile-changed'));
+            window.location.hash = '#/';
+        }, 400);
+    }, [extractedAccents]);
 
     return (
         <div className={classnames(styles['profiles-page'], { [styles['exiting']]: isExiting })}>
 
             {view === 'select' && (
                 <div className={styles['select-view']}>
-                    {/* Logo at top — where "Google TV" would be */}
+                    {/* Logo at top */}
                     <div className={styles['brand-header']}>
                         <img src={APP_LOGO} className={styles['brand-logo']} alt="Caught in 4K" />
                     </div>
 
-                    <h1 className={styles['heading']}>Who's watching?</h1>
+                    <h1 className={styles['heading']}>Who&apos;s watching?</h1>
 
                     {/* Single row of profile cards */}
                     <div className={styles['profiles-row']}>
                         {profiles.map((p, i) => (
                             <div
                                 key={p.id}
-                                className={classnames(styles['profile-card'], { [styles['focused']]: i === focusedIndex })}
+                                className={classnames(
+                                    styles['profile-card'],
+                                    { [styles['focused']]: i === focusedIndex },
+                                    { [styles['selected']]: p.id === selectedProfileId }
+                                )}
                                 style={getAccentStyle(p)}
-                                onMouseEnter={() => setFocusedIndex(i)}
+                                onMouseEnter={() => handleCardMouseEnter(p, i)}
                                 onClick={() => doSelectProfile(p)}
                             >
                                 <div
@@ -185,6 +250,9 @@ const Profiles = () => {
                                     style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
                                 />
                                 <span className={styles['profile-name']}>{p.name}</span>
+                                {p.id === selectedProfileId && (
+                                    <span className={styles['active-badge']}>Active</span>
+                                )}
                             </div>
                         ))}
 

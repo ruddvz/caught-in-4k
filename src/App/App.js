@@ -47,6 +47,19 @@ const App = () => {
     React.useEffect(() => {
         document.body.classList.add('caught-in-4k');
 
+        // Restore dynamic accent color from the last selected profile
+        try {
+            const savedAccent = localStorage.getItem('c4k_active_profile_accent');
+            if (savedAccent) {
+                const accent = JSON.parse(savedAccent);
+                document.documentElement.style.setProperty('--primary-accent-color', accent.accent);
+                document.documentElement.style.setProperty('--outer-glow', accent.glow);
+                document.documentElement.style.setProperty('--accent-dark', accent.accentDark);
+            }
+        } catch (_e) {
+            // Keep default cyan accent on any error
+        }
+
         // Start Background Agents
         c4kAgents.start();
 
