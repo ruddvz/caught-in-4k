@@ -144,24 +144,12 @@
             flex: 0 0 28rem; // Fixed width side panel
             max-width: 28rem;
             height: 100%;
+            min-height: 0;
             overflow-y: auto;
             scrollbar-width: thin;
             border-left: 1px solid rgba(255, 255, 255, 0.06);
             display: flex;
             flex-direction: column;
-
-            // Force the glass container to grow and fill the panel height
-            // so content (title → summary → genres) fills top-to-bottom with no gap
-            :global(.main-details-glass) {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-
-                // Description section expands to fill remaining space
-                :global(.description-widget) {
-                    flex: 1;
-                }
-            }
         }
     }
 }
@@ -187,6 +175,49 @@
 
             .meta-preview-container {
                 display: none; // Hide preview panel entirely on tablet/mobile
+            }
+        }
+    }
+}
+
+// Desktop — 4 layout fixes (> 768px only, no mobile impact)
+@media (min-width: 769px) {
+    .discover-container {
+        .discover-content {
+            // Fix 1: Center the 3 filter dropdowns over the catalog grid
+            .selectable-inputs-container {
+                justify-content: center;
+
+                .select-input {
+                    flex: 0 0 160px; // Fixed width — overrides the stretching flex: 1
+                }
+            }
+
+            // Fix 2: 5 columns instead of variable auto-fill
+            .meta-items-container {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            // Fix 3 + 4: Meta panel fills full height; equal left/right margins
+            .meta-preview-container {
+                margin-right: 1.5rem; // Fix 4: matches catalog's 1.5rem right padding
+
+                // Fix 3: target main-details-glass via direct child (CSS modules
+                // hash the class name, so :global() selectors don't match)
+                > *:first-child {
+                    flex: 1;
+                    min-height: 0;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+
+                    // description-widget (2nd child of glass) fills middle
+                    > *:nth-child(2) {
+                        flex: 1;
+                        min-height: 0;
+                        overflow-y: auto;
+                    }
+                }
             }
         }
     }
