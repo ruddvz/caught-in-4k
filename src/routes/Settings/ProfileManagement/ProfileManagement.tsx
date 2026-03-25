@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from './ProfileManagement.less';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const PinModal = require('../../Profiles/PinModal/PinModal');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { hashPin } = require('../../Profiles/PinModal/PinModal');
+
 const LOCAL_STORAGE_KEY = 'c4k_profiles';
 const CURRENT_PROFILE_KEY = 'c4k_current_profile';
 const MAX_PROFILES = 4;
@@ -41,10 +46,18 @@ const DEMO_PROFILES: SubProfile[] = [
     { id: '3', name: 'dohi', avatarIndex: 3 },
 ];
 
+const isProfileLocked = (profileId: string) =>
+    !!localStorage.getItem(`c4k_profile_pin_${profileId}`);
+
+type PinState =
+    | { type: 'delete'; profileId: string; profileName: string }
+    | { type: 'lock-set'; profileId: string }
+    | { type: 'lock-remove'; profileId: string }
+    | null;
+
 const ProfileManagement = () => {
     const [profiles, setProfiles] = useState<SubProfile[]>([]);
-    const [deletingProfile, setDeletingProfile] = useState<string | null>(null);
-    const [accessCode, setAccessCode] = useState('');
+    const [pinState, setPinState] = useState<PinState>(null);
 
     // DATA PARITY: Load from the exact same localStorage key as Profiles.js
     const load = useCallback(() => {
@@ -73,20 +86,31 @@ const ProfileManagement = () => {
         window.dispatchEvent(new Event('c4k-profile-changed'));
     }, []);
 
-    const confirmDelete = useCallback(() => {
-        if (accessCode === '1234') {
-            setProfiles(prev => {
-                const updated = prev.filter(p => p.id !== deletingProfile);
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
-                window.dispatchEvent(new Event('c4k-profile-changed'));
-                return updated;
-            });
-            setDeletingProfile(null);
-            setAccessCode('');
-        } else {
-            alert('Invalid Master Access Code');
-        }
-    }, [accessCode, deletingProfile]);
+    // Phase 6: delete requires master code 0000 only
+    const handleDeleteConfirmed = useCallback((profileId: string) => {
+        setProfiles(prev => {
+            const updated = prev.filter(p => p.id !== profileId);
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+            window.dispatchEvent(new Event('c4k-profile-changed'));
+            return updated;
+        });
+        setPinState(null);
+    }, []);
+
+    // Phase 1 Step 4: set PIN for a profile
+    const handlePinSet = useCallback((profileId: string, pinHash: string) => {
+        localStorage.setItem(`c4k_profile_pin_${profileId}`, pinHash);
+        setPinState(null);
+        // Force re-render by updating profiles state (triggers locked state recalc)
+        setProfiles(prev => [...prev]);
+    }, []);
+
+    // Phase 1 Step 4: remove PIN from a profile
+    const handlePinRemoved = useCallback((profileId: string) => {
+        localStorage.removeItem(`c4k_profile_pin_${profileId}`);
+        setPinState(null);
+        setProfiles(prev => [...prev]);
+    }, []);
 
     const getAvatarUrl = (p: SubProfile): string =>
         p.avatarIndex !== undefined && p.avatarIndex < AVAILABLE_AVATARS.length
@@ -105,24 +129,58 @@ const ProfileManagement = () => {
 
             {/* Profile List — SYNCED with Profile Selection page */}
             <div className={styles['profile-list']}>
-                {profiles.map((p) => (
-                    <div key={p.id} className={styles['profile-row']} onClick={() => handleSelect(p)}>
-                        <div
-                            className={styles['tiny-avatar']}
-                            style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
-                        />
-                        <span className={styles['profile-name']}>{p.name}</span>
-                        <div
-                            className={styles['trash-icon']}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setDeletingProfile(p.id);
-                            }}
-                        >
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                {profiles.map((p) => {
+                    const locked = isProfileLocked(p.id);
+                    return (
+                        <div key={p.id} className={styles['profile-row']} onClick={() => handleSelect(p)}>
+                            <div
+                                className={styles['tiny-avatar']}
+                                style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
+                            />
+                            <span className={styles['profile-name']}>{p.name}</span>
+
+                            {/* Lock / unlock icon button */}
+                            <div
+                                className={`${styles['lock-icon']}${locked ? ` ${styles['lock-active']}` : ''}`}
+                                title={locked ? 'Disable PIN' : 'Set PIN'}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (locked) {
+                                        setPinState({ type: 'lock-remove', profileId: p.id });
+                                    } else {
+                                        setPinState({ type: 'lock-set', profileId: p.id });
+                                    }
+                                }}
+                            >
+                                {locked ? (
+                                    // Closed lock
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                    </svg>
+                                ) : (
+                                    // Open lock
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                        <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                                    </svg>
+                                )}
+                            </div>
+
+                            {/* Trash delete icon */}
+                            <div
+                                className={styles['trash-icon']}
+                                title="Delete profile"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setPinState({ type: 'delete', profileId: p.id, profileName: p.name });
+                                }}
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             {/* CONSTRAINT: Hide [+] Add Profile when exactly MAX_PROFILES */}
@@ -132,26 +190,33 @@ const ProfileManagement = () => {
                 </a>
             )}
 
-            {/* Master Access Code Modal */}
-            {deletingProfile && (
-                <div className={styles['modal-overlay']}>
-                    <div className={styles['access-modal']}>
-                        <div className={styles['modal-title']}>Master Access Code</div>
-                        <div className={styles['modal-desc']}>Secure verification required to delete profile.</div>
-                        <input
-                            type="password"
-                            className={styles['access-input']}
-                            placeholder="****"
-                            value={accessCode}
-                            onChange={(e) => setAccessCode(e.target.value)}
-                            autoFocus
-                        />
-                        <div className={styles['modal-actions']}>
-                            <button className={styles['cancel-btn']} onClick={() => { setDeletingProfile(null); setAccessCode(''); }}>Cancel</button>
-                            <button className={styles['confirm-btn']} onClick={confirmDelete}>Confirm</button>
-                        </div>
-                    </div>
-                </div>
+            {/* PIN Modal — delete mode: master code 0000 only */}
+            {pinState?.type === 'delete' && (
+                <PinModal
+                    mode="delete"
+                    profileName={pinState.profileName}
+                    onSuccess={() => handleDeleteConfirmed(pinState.profileId)}
+                    onCancel={() => setPinState(null)}
+                />
+            )}
+
+            {/* PIN Modal — set mode: two-step enter + confirm */}
+            {pinState?.type === 'lock-set' && (
+                <PinModal
+                    mode="set"
+                    onSuccess={(pinHash: string) => handlePinSet(pinState.profileId, pinHash)}
+                    onCancel={() => setPinState(null)}
+                />
+            )}
+
+            {/* PIN Modal — remove mode: profile PIN or 0000 */}
+            {pinState?.type === 'lock-remove' && (
+                <PinModal
+                    mode="remove"
+                    profileId={pinState.profileId}
+                    onSuccess={() => handlePinRemoved(pinState.profileId)}
+                    onCancel={() => setPinState(null)}
+                />
             )}
         </div>
     );

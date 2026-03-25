@@ -27,9 +27,7 @@
             display: flex;
             gap: 2.5rem;
             width: 100%;
-            flex: 1 1 auto;
-            min-height: 0; // Lock to footprint
-            align-items: stretch; // VERTICAL LOCK MANDATE
+            align-items: start; // Each column uses its natural height — no forced equal stretch
             overflow: visible;
         }
 
@@ -64,17 +62,10 @@
 
         .widget-card {
             width: 100%;
-
-            &:first-child {
-                flex: 0 0 auto;
-            }
-            &.profiles-card {
-                flex: 1 1 auto; // STRETCH TO LOCK BOTTOM
-            }
         }
 
         .player-widget {
-            flex: 1 1 100%; // STRETCH TO LOCK BOTTOM
+            flex: 1 1 0;
         }
 
         // GLOBAL FOOTER - Center Gray Legal Text

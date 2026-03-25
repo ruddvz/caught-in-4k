@@ -5,6 +5,7 @@ const classnames = require('classnames');
 const { Button } = require('stremio/components');
 const { withCoreSuspender } = require('stremio/common');
 const { extractAccentFromAvatar } = require('../../common/useAvatarAccentColor');
+const PinModal = require('./PinModal/PinModal');
 const styles = require('./styles.less');
 
 const APP_LOGO = require('/assets/images/logo1.png');
@@ -58,6 +59,10 @@ const AVATAR_ACCENTS = [
     '#e88070', // 20 — coral
 ];
 
+// Returns true if a profile has a stored PIN
+const isProfileLocked = (profileId) =>
+    !!localStorage.getItem(`c4k_profile_pin_${profileId}`);
+
 const Profiles = () => {
     const [profiles, setProfiles] = React.useState([]);
     const [view, setView] = React.useState('select'); // 'select' | 'add'
@@ -65,6 +70,7 @@ const Profiles = () => {
     const [newAvatarIndex, setNewAvatarIndex] = React.useState(0);
     const [focusedIndex, setFocusedIndex] = React.useState(0);
     const [isExiting, setIsExiting] = React.useState(false);
+    const [pinModalProfile, setPinModalProfile] = React.useState(null); // profile awaiting PIN
 
     // Phase 3: track which profile is active (persisted across page opens)
     const [selectedProfileId, setSelectedProfileId] = React.useState(() => {
@@ -105,7 +111,12 @@ const Profiles = () => {
                 setFocusedIndex((i) => Math.min(max, i + 1));
             } else if (e.key === 'Enter') {
                 if (focusedIndex < profiles.length) {
-                    doSelectProfile(profiles[focusedIndex]);
+                    const p = profiles[focusedIndex];
+                    if (isProfileLocked(p.id)) {
+                        setPinModalProfile(p);
+                    } else {
+                        doSelectProfile(p);
+                    }
                 } else {
                     setView('add');
                 }
@@ -222,6 +233,20 @@ const Profiles = () => {
     return (
         <div className={classnames(styles['profiles-page'], { [styles['exiting']]: isExiting })}>
 
+            {/* PIN unlock modal for locked profiles */}
+            {pinModalProfile && (
+                <PinModal
+                    mode="unlock"
+                    profileId={pinModalProfile.id}
+                    onSuccess={() => {
+                        const p = pinModalProfile;
+                        setPinModalProfile(null);
+                        doSelectProfile(p);
+                    }}
+                    onCancel={() => setPinModalProfile(null)}
+                />
+            )}
+
             {view === 'select' && (
                 <div className={styles['select-view']}>
                     {/* Logo at top */}
@@ -239,16 +264,32 @@ const Profiles = () => {
                                 className={classnames(
                                     styles['profile-card'],
                                     { [styles['focused']]: i === focusedIndex },
-                                    { [styles['selected']]: p.id === selectedProfileId }
+                                    { [styles['selected']]: p.id === selectedProfileId },
+                                    { [styles['locked']]: isProfileLocked(p.id) }
                                 )}
                                 style={getAccentStyle(p)}
                                 onMouseEnter={() => handleCardMouseEnter(p, i)}
-                                onClick={() => doSelectProfile(p)}
+                                onClick={() => {
+                                    if (isProfileLocked(p.id)) {
+                                        setPinModalProfile(p);
+                                    } else {
+                                        doSelectProfile(p);
+                                    }
+                                }}
                             >
                                 <div
                                     className={styles['profile-avatar']}
                                     style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
                                 />
+                                {/* Padlock overlay — visible when profile is locked */}
+                                {isProfileLocked(p.id) && (
+                                    <div className={styles['lock-overlay']}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>
+                                    </div>
+                                )}
                                 <span className={styles['profile-name']}>{p.name}</span>
                                 {p.id === selectedProfileId && (
                                     <span className={styles['active-badge']}>Active</span>

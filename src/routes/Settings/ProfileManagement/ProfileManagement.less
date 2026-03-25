@@ -81,6 +81,31 @@
             white-space: nowrap;
         }
 
+        // Lock icon — shows open lock when no PIN, closed + tinted when PIN is set
+        .lock-icon {
+            color: rgba(255, 255, 255, 0.18);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+
+            &:hover {
+                color: rgba(255, 255, 255, 0.6);
+                transform: scale(1.1);
+            }
+
+            &.lock-active {
+                color: @c4k-green;
+                opacity: 0.75;
+
+                &:hover {
+                    opacity: 1;
+                    color: @c4k-green;
+                }
+            }
+        }
+
         .trash-icon {
             color: rgba(255, 255, 255, 0.2);
             transition: all 0.2s;

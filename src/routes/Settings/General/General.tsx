@@ -7,6 +7,8 @@ import { usePlatform } from 'stremio/common';
 import { Link } from '../components';
 import useDataExport from './useDataExport';
 import styles from './General.less';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const PinModal = require('../../Profiles/PinModal/PinModal');
 
 type Props = {
     profile: Profile,
@@ -18,6 +20,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const platform = usePlatform();
     const [dataExport, loadDataExport] = useDataExport();
     const [traktAuthStarted, setTraktAuthStarted] = useState(false);
+    const [deleteAccountPinOpen, setDeleteAccountPinOpen] = useState(false);
 
     const isTraktAuthenticated = useMemo(() => {
         const trakt = profile?.auth?.user?.trakt;
@@ -40,6 +43,13 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     }, []);
 
     const onDeleteAccount = useCallback(() => {
+        // Gate 1: PIN verification — opens PIN modal
+        setDeleteAccountPinOpen(true);
+    }, []);
+
+    const onDeleteAccountConfirmed = useCallback(() => {
+        setDeleteAccountPinOpen(false);
+        // Gate 2: final confirmation dialog before proceeding
         const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
         if (confirmed) {
             platform.openExternal('https://www.strem.io/acc-management');
@@ -76,6 +86,15 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
 
     return (
         <div ref={ref} className={styles['account-widget']}>
+            {deleteAccountPinOpen && (
+                <PinModal
+                    mode="delete"
+                    title="Confirm Account Deletion"
+                    subtitle="Enter your master code to continue"
+                    onSuccess={onDeleteAccountConfirmed}
+                    onCancel={() => setDeleteAccountPinOpen(false)}
+                />
+            )}
             <div className={styles['account-header']}>
                 <div className={styles['master-avatar']} style={{ backgroundImage: avatar }} />
                 <div className={styles['user-details']}>
