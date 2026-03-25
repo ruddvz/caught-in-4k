@@ -213,14 +213,8 @@
                     min-height: 0;
                     display: flex;
                     flex-direction: column;
-                    overflow: hidden;
-
-                    // description-widget (2nd child of glass) fills middle
-                    > *:nth-child(2) {
-                        flex: 1;
-                        min-height: 0;
-                        overflow-y: auto;
-                    }
+                    overflow-y: auto;   // Glass scrolls — shows description + meta-links
+                    overflow-x: hidden; // Keep border-radius clip on x-axis
                 }
             }
         }
