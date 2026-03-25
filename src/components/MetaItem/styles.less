@@ -67,11 +67,6 @@
         box-shadow: var(--shadow-soft);
         transition: all 0.3s ease;
 
-        &::before {
-            content: "";
-            display: block;
-        }
-
         .poster-image-layer {
             position: absolute;
             inset: 0;
@@ -169,9 +164,9 @@
         }
     }
 
-    &.poster-shape-poster { .poster-container { aspect-ratio: 2 / 3; &::before { padding-top: 150%; } } }
-    &.poster-shape-square { .poster-container { aspect-ratio: 1 / 1; &::before { padding-top: 100%; } } }
-    &.poster-shape-landscape { .poster-container { aspect-ratio: 16 / 9; &::before { padding-top: 56.25%; } } }
+    &.poster-shape-poster { .poster-container { aspect-ratio: 2 / 3; } }
+    &.poster-shape-square { .poster-container { aspect-ratio: 1 / 1; } }
+    &.poster-shape-landscape { .poster-container { aspect-ratio: 16 / 9; } }
 
     .title-bar-container {
         display: flex;
