@@ -111,7 +111,8 @@
         .videos-list,
         .streams-list {
             grid-column: 2;
-            align-self: stretch;
+            align-self: start;        // Size to content — no empty green void
+            max-height: calc(100vh - 5rem); // Cap at viewport; streams scroll inside
             border-radius: var(--radius-card);
             background: var(--bg-surface-1);
             box-shadow: var(--shadow-soft);
@@ -152,6 +153,8 @@
             .videos-list,
             .streams-list {
                 grid-column: 1;
+                align-self: stretch; // Full width in landscape single-column
+                max-height: none;
                 min-height: 20rem;
             }
         }
@@ -173,6 +176,8 @@
 
             .videos-list,
             .streams-list {
+                align-self: stretch; // Full width on mobile
+                max-height: none;    // No viewport cap on mobile
                 min-height: 18rem;
                 border-radius: var(--radius-card);
             }
