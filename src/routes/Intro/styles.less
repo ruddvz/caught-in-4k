@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;      // Change 2: vertically center on screen
     min-height: 100vh;
     width: 100vw;
     background-color: #000000;
@@ -17,61 +17,60 @@
     color: #fff;
     font-family: 'Inter', 'Arial', sans-serif;
     box-sizing: border-box;
-    padding: 1.5rem;
-    padding-top: 10vh;
+    padding: 40px 20px;           // Change 2: uniform padding, no 10vh top offset
 
     .background-container {
         display: none;
     }
 
-    // BRANDING — Logo + tagline
+    // BRANDING — Logo + tagline (Change 1)
     .branding-header {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 100px;     // Change 1: 100px breathing room to form area
 
         .logo-image {
-            max-height: 130px;
+            height: 160px;        // Change 1: 160px, scale proportionally
             width: auto;
             object-fit: contain;
             display: block;
         }
 
         .tagline {
-            margin: 8px 0 0 0;
+            margin: 10px 0 0 0;  // Change 1: tight 10px gap from logo
             padding: 0;
-            font-size: 1rem;
+            font-size: 1.1rem;   // Change 1: slightly larger
             font-weight: 500;
-            letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.55);
             text-align: center;
+            text-transform: none; // Change 1: sentence case, not uppercase
         }
     }
 
-    // TWO-COLUMN FORM AREA
+    // TWO-COLUMN FORM AREA (Change 2 + 6)
     .main-dashboard-wrap {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
         justify-content: center;
-        gap: 4rem;
+        gap: 32px;               // Change 2: tighter gap
         width: 100%;
-        max-width: 860px;
+        max-width: 780px;        // Change 2: slightly tighter max-width
     }
 
-    // LEFT COLUMN — Form inputs + legal + sign up
+    // LEFT COLUMN — Form inputs + legal + sign up (Change 6)
     .form-side {
-        flex: 1;
-        max-width: 380px;
-        overflow: visible; // Allow focus glow to radiate
+        flex: 1.2;               // Change 6: slightly wider — has more content
+        overflow: visible;
 
         // 30px buffer prevents glow clip
         .glow-buffer-container {
             display: flex;
             flex-direction: column;
-            gap: 0;
+            gap: 10px;           // Change 3: 10px gap between inputs
             padding: 30px;
             margin: -30px;
             overflow: visible;
@@ -80,41 +79,65 @@
         .credentials-text-input {
             display: block;
             width: 100%;
-            height: 4rem;
-            padding: 0 1.5rem;
-            background-color: #1a1a1a;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            height: 50px;                          // Change 3
+            padding: 0 18px;                       // Change 3
+            background: rgba(255, 255, 255, 0.05); // Change 3
+            border: 1px solid rgba(255, 255, 255, 0.1); // Change 3
             border-radius: 12px;
             color: #ffffff;
-            font-size: 1rem;
+            font-size: 0.95rem;                    // Change 3
+            font-family: inherit;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            margin-bottom: 12px;
+            transition: border-color 0.2s ease, background 0.2s ease;
 
             &::placeholder {
                 color: rgba(255, 255, 255, 0.3);
             }
 
             &:focus {
-                border-color: #007aff;
-                box-shadow: 0 0 30px rgba(0, 122, 255, 0.5);
+                border-color: var(--primary-accent-color); // Change 3
+                background: rgba(255, 255, 255, 0.08);     // Change 3
+                box-shadow: none;
             }
         }
 
         .legal-checkboxes {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 8px;            // Change 5: 8px between checkboxes
+            margin-top: 16px;    // Change 3: 16px gap after last input
 
             .legal-checkbox {
-                :global(.label) {
-                    color: #b0b0b0 !important;
-                    font-size: 0.9rem;
+                height: 28px;    // Change 5: fixed row height
+                display: flex;
+                align-items: center;
+
+                :global(.checkbox) {
+                    width: 18px;
+                    height: 18px;
+                    min-width: 18px;
+                    border-radius: 5px;
+                    border: 1.5px solid rgba(255, 255, 255, 0.25);
+                    flex-shrink: 0;
+
+                    &:global(.checked) {
+                        background: var(--primary-accent-color);
+                        border-color: var(--primary-accent-color);
+                    }
                 }
+
+                :global(.label) {
+                    color: rgba(255, 255, 255, 0.55) !important; // Change 5
+                    font-size: 0.82rem;                           // Change 5
+                }
+
                 :global(.link) {
-                    color: #b0b0b0 !important;
-                    text-decoration: underline;
+                    color: var(--primary-accent-color) !important; // Change 5
+                    text-decoration: none;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
                 }
             }
         }
@@ -128,24 +151,24 @@
 
         // Sign up — bottom of left column, full width
         .btn-signup {
-            margin-top: 16px;
+            margin-top: 20px;    // Change 3: 20px gap after checkboxes
             width: 100%;
         }
     }
 
-    // RIGHT COLUMN — Action buttons stack
+    // RIGHT COLUMN — Action buttons stack (Change 6)
     .actions-side {
-        flex: 0 0 280px;
+        flex: 1;                 // Change 6: equal flex with left
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        padding-top: 30px; // Align baseline with first input (glow buffer offset)
+        gap: 10px;               // Change 4: 10px between right column buttons
+        padding-top: 0;          // Change 6: top of first button aligns with first input
     }
 
     // ---- BASE BUTTON ----
     .intro-btn {
         width: 100%;
-        height: 3.75rem;
+        height: 50px;            // Change 4: 50px height
         border-radius: 9999px;
         font-size: 0.95rem;
         font-weight: 600;
@@ -157,10 +180,8 @@
         cursor: pointer;
         transition: all 0.2s ease;
         box-sizing: border-box;
-        padding: 14px 32px;
+        padding: 0 24px;         // Change 4: uniform padding
         border: none;
-
-        &:active { transform: scale(0.98); }
 
         .label {
             font-size: 0.95rem;
@@ -170,22 +191,30 @@
         }
     }
 
-    // ---- DARK GRADIENT — Sign up, Log in, Guest login (charcoal/anthracite — no purple tint) ----
+    // ---- DARK GRADIENT — Sign up, Log in, Guest login (Change 4) ----
     .btn-signup,
     .btn-login,
     .btn-guest {
-        background: linear-gradient(135deg, #1e1e1e 0%, #141414 100%);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: linear-gradient(160deg, #1c1c1c 0%, #111111 100%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
         color: #ffffff;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.07);
 
         &:hover {
-            border-color: rgba(255, 255, 255, 0.3);
-            background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%);
+            background: linear-gradient(160deg, #242424 0%, #171717 100%);
+            border-color: rgba(255, 255, 255, 0.28);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        &:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
     }
 
-    // ---- GOOGLE SIGN IN — White pill ----
+    // ---- GOOGLE SIGN IN — White pill (unchanged) ----
     .btn-google {
         background: #ffffff;
         color: #1f1f1f;
@@ -226,18 +255,17 @@
 }
 
 // ============================================================
-// MOBILE — Stack vertically at <= 640px, allow scroll
+// MOBILE — Stack vertically at <= 600px
 // ============================================================
-@media only screen and (max-width: @small) {
+@media only screen and (max-width: 600px) {
     .intro-container {
         padding: 2rem 1rem;
-        padding-top: 2rem;
         justify-content: flex-start;
         overflow-y: auto;
 
         .branding-header {
-            margin-bottom: 1.5rem;
-            .logo-image { max-height: 90px; }
+            margin-bottom: 60px;             // Mobile: reduced gap
+            .logo-image { height: 120px; }   // Mobile: smaller logo
         }
 
         .main-dashboard-wrap {
@@ -248,12 +276,11 @@
 
         .form-side {
             width: 100%;
-            max-width: 100%;
+            flex: none;
         }
 
         .actions-side {
             width: 100%;
-            max-width: 100%;
             flex: none;
             padding-top: 0;
         }
