@@ -14,8 +14,11 @@ const getCached = (title, year) => {
     }
 };
 
+const TIMEOUT_MS = 12000;
+
 const CanonTakeBox = ({ title, year, takeOverride }) => {
     const [canonTake, setCanonTake] = useState(null);
+    const [isTimedOut, setIsTimedOut] = useState(false);
 
     useEffect(() => {
         if (takeOverride) {
@@ -28,6 +31,17 @@ const CanonTakeBox = ({ title, year, takeOverride }) => {
             setCanonTake(cached.canonTake);
         }
     }, [title, year, takeOverride]);
+
+    // Reset and start timeout whenever title/year changes or take loads
+    useEffect(() => {
+        if (canonTake) {
+            setIsTimedOut(false);
+            return;
+        }
+        setIsTimedOut(false);
+        const timer = setTimeout(() => setIsTimedOut(true), TIMEOUT_MS);
+        return () => clearTimeout(timer);
+    }, [title, year, canonTake]);
 
     // Skeleton/loading state when no cached take yet
     const renderSkeleton = () => (
@@ -59,6 +73,8 @@ const CanonTakeBox = ({ title, year, takeOverride }) => {
                         {canonTake}
                         <span className={styles.quoteMark}>{'"'}</span>
                     </React.Fragment>
+                ) : isTimedOut ? (
+                    <span className={styles.fallback}>{'No take yet — check back soon.'}</span>
                 ) : (
                     renderSkeleton()
                 )}
