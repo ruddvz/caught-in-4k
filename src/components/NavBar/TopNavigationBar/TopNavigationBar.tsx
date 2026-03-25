@@ -139,15 +139,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                         : <IconMaximize className={styles['icon']} strokeWidth={1.5} aria-hidden="true" />
                     }
                 </Button>
-                {route !== 'search' && (
-                    <Button
-                        className={classnames(styles['action-btn'], styles['search-btn-mobile'])}
-                        href="#/search"
-                        aria-label="Search"
-                    >
-                        <IconSearch className={styles['icon']} strokeWidth={1.5} aria-hidden="true" />
-                    </Button>
-                )}
+
                 <Button
                     className={classnames(styles['action-btn'], styles['profile-btn'])}
                     href="#/profiles"

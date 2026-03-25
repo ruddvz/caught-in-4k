@@ -8,7 +8,7 @@ const useFullscreen = () => {
     const shell = useShell();
     const [settings] = useSettings();
 
-    const [fullscreen, setFullscreen] = useState(false);
+    const [fullscreen, setFullscreen] = useState(() => document.fullscreenElement === document.documentElement);
 
     const requestFullscreen = useCallback(async () => {
         if (shell.active) {
