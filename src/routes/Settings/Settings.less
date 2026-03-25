@@ -130,8 +130,9 @@
 
 @media only screen and (max-width: 768px) {
     .settings-container {
-        height: auto;
-        overflow-y: auto;
+        // Do NOT set height: auto here — main-nav-bars-container must stay 100vh
+        // so nav-content-container's overflow-y: auto creates a proper scroll region.
+        // Only override the inner content height.
         .settings-content {
             height: auto; // Allow content to grow beyond viewport so nav-content-container can scroll
             padding-top: 6px; // 16px default - 10px = 6px per spec

@@ -42,11 +42,11 @@ export const IconMinimize = ({ className, strokeWidth = 1.5, ...rest }: IconProp
         <path d="M5 9l4 0l0 -4" />
         <path d="M3 7l6 6" />
         <path d="M19 9l-4 0l0 -4" />
-        <path d="M15 7l6 6" />
+        <path d="M21 7l-6 6" />
         <path d="M5 15l4 0l0 4" />
         <path d="M3 17l6 -6" />
         <path d="M19 15l-4 0l0 4" />
-        <path d="M15 17l6 -6" />
+        <path d="M21 17l-6 -6" />
     </svg>
 );
 

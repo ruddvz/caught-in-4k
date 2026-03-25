@@ -193,9 +193,10 @@
                 }
             }
 
-            // Fix 2: 6 columns on desktop
+            // Fix 2: 6 columns on desktop; align-items: start prevents rows stretching
             .meta-items-container {
                 grid-template-columns: repeat(6, 1fr);
+                align-items: start;
             }
 
             // Fix 3 + 4: Meta panel fills full height; equal left/right margins
