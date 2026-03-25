@@ -10,6 +10,8 @@ import { useTranslation } from 'react-i18next';
 // @ts-ignore
 import styles from './styles.less';
 import useFullscreen from '../../../common/useFullscreen';
+// Inline Tabler SVG icons — zero bundle cost (see NavIcons.tsx)
+import { IconSearch, IconMaximize, IconMinimize, IconUser } from './NavIcons';
 
 type Props = {
     className?: string;
@@ -90,7 +92,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
     return (
         <nav className={classnames(className, styles['top-nav-bar-container'])}>
             <div className={styles['left-section']}>
-                <a href="#/" className={styles['logo-wrapper']}>
+                <a href="#/" className={styles['logo-wrapper']} aria-label="Caught in 4K — Home">
                     <AppLogo variant="compact" className={styles['logo']} />
                 </a>
             </div>
@@ -98,7 +100,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
             <div className={styles['center-section']}>
                 {route === 'search' ? (
                     <div className={styles['search-input-wrapper']}>
-                        <Icon name="search" className={styles['search-icon']} />
+                        <IconSearch className={styles['search-icon']} strokeWidth={1.5} aria-hidden="true" />
                         <input
                             autoFocus
                             className={styles['search-input']}
@@ -130,17 +132,25 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                     className={classnames(styles['action-btn'], styles['fullscreen-btn'])}
                     onClick={onFullscreenClick}
                     title={t(fullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN')}
+                    aria-label={t(fullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN')}
                 >
-                    <Icon name={fullscreen ? 'minimize' : 'maximize'} className={styles['icon']} />
+                    {fullscreen
+                        ? <IconMinimize className={styles['icon']} strokeWidth={1.5} aria-hidden="true" />
+                        : <IconMaximize className={styles['icon']} strokeWidth={1.5} aria-hidden="true" />
+                    }
                 </Button>
-                <Button className={classnames(styles['action-btn'], styles['profile-btn'])} href="#/profiles">
+                <Button
+                    className={classnames(styles['action-btn'], styles['profile-btn'])}
+                    href="#/profiles"
+                    aria-label={currentProfile ? `Switch profile — ${currentProfile.name}` : 'Select profile'}
+                >
                     {currentProfile ? (
                         <div
                             className={styles['profile-avatar']}
                             style={{ backgroundImage: `url(${avatars[currentProfile.avatarIndex]})` }}
                         />
                     ) : (
-                        <Icon name="person-outline" className={styles['icon']} />
+                        <IconUser className={styles['icon']} strokeWidth={1.5} aria-hidden="true" />
                     )}
                 </Button>
             </div>

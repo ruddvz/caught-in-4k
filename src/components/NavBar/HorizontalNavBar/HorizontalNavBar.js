@@ -30,8 +30,8 @@ const HorizontalNavBar = React.memo(({ className, route, query, title, backButto
         <nav {...props} className={classnames(className, styles['horizontal-nav-bar-container'])}>
             {
                 backButton ?
-                    <Button className={classnames(styles['button-container'], styles['back-button-container'])} tabIndex={-1} onClick={backButtonOnClick}>
-                        <Icon className={styles['icon']} name={'chevron-back'} />
+                    <Button className={classnames(styles['button-container'], styles['back-button-container'])} tabIndex={-1} aria-label={t('BACK')} onClick={backButtonOnClick}>
+                        <Icon className={styles['icon']} name={'chevron-back'} aria-hidden="true" />
                     </Button>
                     :
                     <div className={styles['logo-container']}>
