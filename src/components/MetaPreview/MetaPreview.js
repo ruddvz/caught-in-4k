@@ -206,13 +206,13 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                                     null
                             }
                             {
-                                typeof showHref === 'string' && compact ?
+                                compact ?
                                     <ActionButton
                                         className={classnames(styles['action-button'], styles['show-button'])}
                                         icon={'play'}
                                         label={t('SHOW')}
-                                        tabIndex={compact ? -1 : 0}
-                                        href={showHref}
+                                        tabIndex={-1}
+                                        href={showHref || undefined}
                                     />
                                     :
                                     null
