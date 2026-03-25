@@ -30,13 +30,17 @@
     animation: metaItemEntrance 0.35s ease-out both;
 
     &:hover, &:focus, &:global(.active), &:global(.selected) {
-        transform: translateY(-8px);
         outline: none;
+
+        // Lift + scale effects are decorative motion — skip when reduce-motion is set
+        @media (prefers-reduced-motion: no-preference) {
+            transform: translateY(-8px);
+        }
 
         .poster-container {
             box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
             border-color: rgba(255, 255, 255, 0.1);
-            
+
             &::after {
                 content: '';
                 position: absolute;
@@ -45,8 +49,10 @@
                 pointer-events: none;
             }
 
-            .poster-image-layer {
-                transform: scale(1.05);
+            @media (prefers-reduced-motion: no-preference) {
+                .poster-image-layer {
+                    transform: scale(1.05);
+                }
             }
         }
     }

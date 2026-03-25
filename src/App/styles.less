@@ -325,3 +325,22 @@ html {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
 }
+
+// ─── HIG §1.8 — prefers-reduced-motion ───────────────────────────────────────
+// Users who enable "Reduce Motion" in their OS get no decorative animation.
+// Setting duration to 0.01ms (not 0) lets fill-mode:both still render the
+// final keyframe state so elements remain visible. Shimmer skeletons become
+// static placeholders, which is correct behaviour.
+// animate.css 4.x already handles its own classes — this block is the safety
+// net for all custom keyframes and CSS transitions across the codebase.
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+// ─────────────────────────────────────────────────────────────────────────────
