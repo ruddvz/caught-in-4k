@@ -184,12 +184,14 @@
 @media (min-width: 769px) {
     .discover-container {
         .discover-content {
-            // Fix 1: Center the 3 filter dropdowns over the catalog grid
+            // Fix 1: Wider filter dropdowns filling the catalog area width equally
             .selectable-inputs-container {
-                justify-content: center;
+                justify-content: flex-start;
 
                 .select-input {
-                    flex: 0 0 160px; // Fixed width — overrides the stretching flex: 1
+                    flex: 1;        // Equal share of available width
+                    min-width: 0;
+                    max-width: 280px; // Cap on very wide screens
                 }
             }
 
@@ -199,9 +201,10 @@
                 align-items: start;
             }
 
-            // Fix 3 + 4: Meta panel fills full height; equal left/right margins
+            // Fix 3 + 4: Meta panel fills full height; equal left/right/bottom margins
             .meta-preview-container {
                 margin-right: 1.5rem; // Fix 4: matches catalog's 1.5rem right padding
+                padding-bottom: 1.5rem; // Fix: match the right-side offset for breathing room at bottom
 
                 // Fix 3: target main-details-glass via direct child (CSS modules
                 // hash the class name, so :global() selectors don't match)

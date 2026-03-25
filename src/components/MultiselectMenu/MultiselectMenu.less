@@ -49,6 +49,17 @@
     }
 }
 
+@media (min-width: 769px) {
+    .multiselect-menu {
+        width: 100%; // Fill the flex slot allocated by parent (e.g. Discover .select-input)
+
+        .multiselect-button {
+            width: 100%; // Trigger spans full container width
+            justify-content: space-between; // Label left, caret right
+        }
+    }
+}
+
 @media (max-width: @minimum) {
     .multiselect-menu {
         min-width: 0; // Allow full shrink on mobile so 3 dropdowns fit one row
