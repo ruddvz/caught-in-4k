@@ -199,19 +199,24 @@
             flex-direction: column;
 
             .selectable-inputs-container {
-                padding: 1rem;
+                padding: 6px 1rem 1rem; // top: 16px - 10px = 6px per spec
                 gap: 0.5rem;
-                
-                .select-input { 
-                    min-width: unset;
+                flex-wrap: nowrap; // Keep all 3 dropdowns on one row
+                overflow-x: auto; // Allow horizontal scroll if needed
+
+                .select-input {
+                    flex: 1;
+                    min-width: 0; // Allow shrinking below content size
+                    max-width: none; // Remove desktop max-width cap on mobile
                     height: 2.75rem;
-                    padding: 0 1rem;
-                    font-size: 0.85rem;
+                    padding: 0 0.5rem;
+                    font-size: 0.82rem;
                 }
-                
+
                 .filter-container {
                     display: flex;
-                    
+                    flex-shrink: 0;
+
                     .filter-button {
                         display: flex;
                     }

@@ -128,14 +128,34 @@
     }
 }
 
-@media only screen and (max-width: @small) {
+@media only screen and (max-width: 768px) {
     .settings-container {
         height: auto;
         overflow-y: auto;
         .settings-content {
-            padding: 1rem;
-            .dashboard-grid { flex-direction: column; height: auto; }
-            .column-left, .column-right { width: 100%; }
+            padding-top: 6px; // 16px default - 10px = 6px per spec
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-bottom: 1rem;
+
+            .dashboard-grid {
+                grid-template-columns: 1fr; // Single column on mobile
+                gap: 1rem;
+            }
+
+            .column-left {
+                order: 1; // Left column cards appear first
+                width: 100%;
+
+                > *:last-child {
+                    flex: unset; // Remove flex-grow on mobile (no second column to align with)
+                }
+            }
+
+            .column-right {
+                order: 2; // Right column below
+                width: 100%;
+            }
         }
     }
 }

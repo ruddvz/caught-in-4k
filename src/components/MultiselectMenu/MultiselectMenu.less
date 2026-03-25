@@ -1,5 +1,7 @@
 // Copyright (C) 2017-2024 Smart code 203358507
 
+@import (reference) '~stremio/common/screen-sizes.less';
+
 @border-radius: 2.75rem;
 @height: 3rem;
 
@@ -44,5 +46,20 @@
 
     &:hover, &.active {
         background-color: var(--overlay-color);
+    }
+}
+
+@media (max-width: @minimum) {
+    .multiselect-menu {
+        min-width: 0; // Allow full shrink on mobile so 3 dropdowns fit one row
+
+        .multiselect-button {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.82rem;
+
+            .label {
+                font-size: 0.82rem;
+            }
+        }
     }
 }

@@ -55,7 +55,7 @@
             }
 
             &.active {
-                background: var(--accent-primary);
+                background: var(--primary-accent-color);
                 color: #000;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             }
@@ -63,19 +63,13 @@
     }
 }
 
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
     .main-nav-bars-container {
         height: 100vh;
         overflow: hidden;
 
         .top-nav-bar {
-            height: auto;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: transparent !important;
-            z-index: 1010;
+            display: none !important;
         }
 
         // DEFAULT: hero pages (board) bleed under header
@@ -87,7 +81,7 @@
             overflow-x: hidden;
         }
 
-        // NON-HERO pages: content starts BELOW the top nav buttons
+        // NON-HERO pages: content starts from top (top nav hidden on mobile)
         &.route-library,
         &.route-discover,
         &.route-settings,
@@ -95,7 +89,7 @@
         &.route-continue_watching,
         &.route-addons {
             .nav-content-container {
-                padding-top: calc(env(safe-area-inset-top, 0px) + 6rem); // Increased slightly for better room
+                padding-top: env(safe-area-inset-top, 0px);
             }
         }
 
