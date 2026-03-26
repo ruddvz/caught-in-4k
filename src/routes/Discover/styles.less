@@ -195,9 +195,12 @@
                 }
             }
 
-            // Fix 2: 6 columns on desktop; align-items: start prevents rows stretching
+            // Fix 2: auto-fill columns on desktop; align-items: start prevents rows stretching
+            // repeat(6, 1fr) would overflow when the 28rem preview panel is visible at narrower
+            // viewports — the outer overflow: clip on MainNavBars silently clips columns 4-6.
+            // auto-fill with minmax lets the grid self-adjust (6 cols at ~1400px, fewer at 900px).
             .meta-items-container {
-                grid-template-columns: repeat(6, 1fr);
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 align-items: start;
             }
 
