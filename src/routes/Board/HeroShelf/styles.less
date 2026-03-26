@@ -225,27 +225,6 @@
     }
 }
 
-@media only screen and (max-width: 768px) {
-    .hero-shelf-container {
-        height: calc(100dvh - 70px);
-        max-height: calc(100dvh - 70px);
-        overflow: hidden;
-
-        .hero-slide {
-            .hero-content {
-                .hero-actions {
-                    margin-bottom: 0;
-                    padding-bottom: 0;
-                }
-            }
-        }
-
-        .hero-dots {
-            bottom: 0.75rem;
-        }
-    }
-}
-
 @media only screen and (max-width: @small) {
     .hero-shelf-container {
         height: calc(100vh - 100px);
@@ -299,5 +278,26 @@
         }
 
         .hero-nav { display: none; }
+    }
+}
+
+// Mobile override — must come AFTER @small (1300px) so it wins the cascade
+@media only screen and (max-width: 768px) {
+    .hero-shelf-container {
+        height: calc(100dvh - 70px);
+        max-height: calc(100dvh - 70px);
+
+        .hero-slide {
+            .hero-content {
+                .hero-actions {
+                    margin-bottom: 0;
+                    padding-bottom: 0;
+                }
+            }
+        }
+
+        .hero-dots {
+            bottom: 0.75rem;
+        }
     }
 }

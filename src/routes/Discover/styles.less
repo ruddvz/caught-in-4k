@@ -262,7 +262,7 @@
             .meta-items-container {
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
                 grid-gap: 0.75rem;
-                padding: 0 1rem 10rem;
+                padding: 0 1rem calc(70px + env(safe-area-inset-bottom, 0px) + 1rem);
             }
 
             .meta-preview-container {
