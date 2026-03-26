@@ -51,6 +51,11 @@ function Shell() {
             return;
         }
 
+        // Not a Qt/shell environment — shell is unavailable in web browsers
+        if (typeof window === 'undefined' || !window.qt || !window.qt.webChannelTransport) {
+            return;
+        }
+
         active = false;
         starting = true;
 
