@@ -51,8 +51,11 @@ function Shell() {
             return;
         }
 
-        // Not a Qt/shell environment — shell is unavailable in web browsers
+        // Not a Qt/shell environment — mark shell as settled (error state, no console output)
+        // so App.js initialization condition is satisfied and the app can mount
         if (typeof window === 'undefined' || !window.qt || !window.qt.webChannelTransport) {
+            error = new Error('Shell not available in browser context');
+            onStateChanged();
             return;
         }
 
