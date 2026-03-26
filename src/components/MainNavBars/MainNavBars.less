@@ -111,20 +111,25 @@
             justify-content: space-evenly; // Better distribution
 
             .bottom-nav-tab {
-                padding: 0.5rem 1rem;
-                flex: none;
+                padding: 0.5rem 0.6rem;
+                flex: 1;
+                min-width: 0;
                 flex-direction: column;
                 gap: 0.25rem;
 
                 .bottom-tab-icon {
-                    width: 1.6rem;
-                    height: 1.6rem;
+                    width: 1.5rem;
+                    height: 1.5rem;
                 }
 
                 .bottom-tab-label {
-                    font-size: 0.65rem;
+                    font-size: 0.6rem;
                     font-weight: 700;
-                    letter-spacing: 0.05em;
+                    letter-spacing: 0.03em;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 100%;
                 }
             }
         }
