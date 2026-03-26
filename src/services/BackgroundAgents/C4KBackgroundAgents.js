@@ -43,7 +43,7 @@ class C4KBackgroundAgents {
     start() {
         if (this.interval) return;
         // Start immediately — Pollinations doesn't need a proxy
-        this.interval = setInterval(() => this._processQueues(), 10000);
+        this.interval = setInterval(() => this._processQueues(), 5000);
     }
 
     async _checkProxy() {
@@ -78,6 +78,17 @@ class C4KBackgroundAgents {
                 this.canonTakesQueue.set(id, item);
             }
         });
+    }
+
+    // Move a single item to the front of the queue so it's processed in the next batch
+    prioritizeForCanonTake(item) {
+        if (!item || !item.name) return;
+        const id = `${item.name}_${item.releaseInfo || 'unknown'}`;
+        if (getCached(item.name, item.releaseInfo)) return; // already cached
+        // Rebuild map with this item first
+        const rest = new Map(this.canonTakesQueue);
+        rest.delete(id);
+        this.canonTakesQueue = new Map([[id, item], ...rest]);
     }
 
     processSatisfactionMetrics(items = []) {

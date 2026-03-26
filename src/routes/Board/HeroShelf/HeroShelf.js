@@ -8,6 +8,7 @@ const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const CanonTakeBox = require('stremio/components/CanonTakeBox/CanonTakeBox');
+const { generateCanonTake } = require('stremio/common/pollinationsApi');
 const styles = require('./styles');
 
 const HeroShelf = ({ items }) => {
@@ -55,6 +56,34 @@ const HeroShelf = ({ items }) => {
         }
         touchStartX.current = null;
     }, [goToNext, goToPrev]);
+
+    // Direct Canon Take fetch for the visible hero item — bypasses the 5s queue batch
+    const [heroCanonTake, setHeroCanonTake] = React.useState(null);
+    const currentItem = validItems[currentIndex] || validItems[0] || {};
+    const heroYear = React.useMemo(() => {
+        if (currentItem.released instanceof Date && !isNaN(currentItem.released.getTime())) {
+            return currentItem.released.getFullYear();
+        }
+        return typeof currentItem.releaseInfo === 'string' && currentItem.releaseInfo.length > 0
+            ? currentItem.releaseInfo.split(' ')[0].substring(0, 4)
+            : null;
+    }, [currentItem]);
+    const heroGenres = React.useMemo(() => {
+        if (!Array.isArray(currentItem.links)) return 'unknown';
+        return currentItem.links
+            .filter((l) => l && l.category === 'Genres')
+            .map((l) => l.name)
+            .join(', ') || 'unknown';
+    }, [currentItem]);
+    React.useEffect(() => {
+        if (!currentItem.name) return;
+        setHeroCanonTake(null);
+        let cancelled = false;
+        generateCanonTake(currentItem.name, heroYear, heroGenres, currentItem.vote_average || 0)
+            .then((result) => { if (!cancelled && result) setHeroCanonTake(result); })
+            .catch(() => { /* timeout in CanonTakeBox handles this */ });
+        return () => { cancelled = true; };
+    }, [currentItem.name, heroYear]);
 
     const item = validItems[currentIndex] || validItems[0] || {};
 
@@ -113,7 +142,7 @@ const HeroShelf = ({ items }) => {
                                 : null
                         }
                         {
-                            imdbLink ?
+                            imdbLink && imdbLink.name ?
                                 <span className={styles['hero-imdb']}>★ {imdbLink.name}</span>
                                 : null
                         }
@@ -127,7 +156,7 @@ const HeroShelf = ({ items }) => {
                         <CanonTakeBox
                             title={item.name}
                             year={year}
-                            genres={typeof item.description === 'string' ? item.description.substring(0, 100) : ''}
+                            takeOverride={heroCanonTake}
                         />
                     </div>
                     <div className={styles['hero-actions']}>
