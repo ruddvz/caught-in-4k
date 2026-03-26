@@ -6,6 +6,18 @@ import usePlayerOptions from './usePlayerOptions';
 import useInterfaceOptions from '../Interface/useInterfaceOptions';
 import styles from './Player.less';
 
+const FONT_COLOR_OPTIONS = [
+    { value: '#ffffff', label: 'White' },
+    { value: '#ffff00', label: 'Yellow' },
+    { value: '#00ff00', label: 'Green' },
+    { value: '#00ffff', label: 'Cyan' },
+];
+
+const BG_OPACITY_OPTIONS = [
+    { value: 'rgba(0,0,0,0.5)', label: 'Semi-black' },
+    { value: 'transparent', label: 'Transparent' },
+];
+
 type Props = {
     profile: Profile,
 };
@@ -54,24 +66,24 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                         <Option label={'Font Color'}>
                             <MultiselectMenu
                                 className={styles['multiselect']}
-                                options={[
-                                    { value: '#ffffff', label: 'White' },
-                                    { value: '#ffff00', label: 'Yellow' },
-                                    { value: '#00ff00', label: 'Green' },
-                                    { value: '#00ffff', label: 'Cyan' }
-                                ]}
+                                options={FONT_COLOR_OPTIONS}
                                 value={subtitlesTextColorInput.value || '#ffffff'}
+                                title={() => {
+                                    const val = subtitlesTextColorInput.value || '#ffffff';
+                                    return FONT_COLOR_OPTIONS.find((o) => o.value === val)?.label ?? 'White';
+                                }}
                                 onSelect={(v) => subtitlesTextColorInput.onChange(v)}
                             />
                         </Option>
                         <Option label={'Background Opacity'}>
                             <MultiselectMenu
                                 className={styles['multiselect']}
-                                options={[
-                                    { value: 'rgba(0,0,0,0.5)', label: 'Semi-black' },
-                                    { value: 'transparent', label: 'Transparent' }
-                                ]}
+                                options={BG_OPACITY_OPTIONS}
                                 value={subtitlesBackgroundColorInput.value || 'rgba(0,0,0,0.5)'}
+                                title={() => {
+                                    const val = subtitlesBackgroundColorInput.value || 'rgba(0,0,0,0.5)';
+                                    return BG_OPACITY_OPTIONS.find((o) => o.value === val)?.label ?? 'Semi-black';
+                                }}
                                 onSelect={(v) => subtitlesBackgroundColorInput.onChange(v)}
                             />
                         </Option>
