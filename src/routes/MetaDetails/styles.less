@@ -172,6 +172,7 @@
 
             .meta-preview {
                 padding-right: 0;
+                flex-shrink: 0; // Prevent info card collapsing as streams load
             }
 
             .videos-list,
@@ -180,6 +181,7 @@
                 max-height: none;    // No viewport cap on mobile
                 min-height: 18rem;
                 border-radius: var(--radius-card);
+                transition: none; // No animated height change
             }
         }
     }

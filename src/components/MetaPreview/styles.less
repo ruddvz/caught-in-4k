@@ -227,6 +227,8 @@
     // === DESCRIPTION WIDGET ===
     .description-widget {
         padding: 1.75rem 3rem;
+        height: auto;
+        overflow: visible;
 
         .label-container {
             font-size: 0.8rem;
@@ -242,13 +244,18 @@
             font-size: 1rem;
             line-height: 1.9;
             color: var(--text-secondary);
+            word-break: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
         }
     }
 
     // === META LINKS WIDGET ===
     .meta-links-widget {
         padding: 1.5rem 3rem;
-        width: 100%; // Ensure it uses the full width of the glass to prevent cutting off text
+        width: 100%;
+        height: auto;
+        overflow: visible;
     }
 
     // === SATISFACTION / RATINGS WIDGET ===
