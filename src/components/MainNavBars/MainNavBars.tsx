@@ -7,8 +7,7 @@ import { HorizontalNavBar, VerticalNavBar, TopNavigationBar } from '../NavBar';
 import Icon from '@stremio/stremio-icons/react';
 // @ts-ignore
 import Button from 'stremio/components/Button';
-// @ts-ignore
-import { usePlatform } from 'stremio/common';
+import { isMobile } from 'stremio/common/Platform/device';
 import styles from './MainNavBars.less';
 
 const TABS = [
@@ -28,7 +27,6 @@ type Props = {
 };
 
 const MainNavBars = memo(({ className, route, query, children }: Props) => {
-    const { isMobile } = usePlatform();
     return (
         <div className={classnames(className, styles['main-nav-bars-container'], { [styles[`route-${route}`]]: !!route })}>
             {!isMobile && (
