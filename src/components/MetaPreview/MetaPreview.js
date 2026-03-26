@@ -13,6 +13,7 @@ const SharePrompt = require('stremio/components/SharePrompt');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const routesRegexp = require('stremio/common/routesRegexp');
 const useBinaryState = require('stremio/common/useBinaryState');
+const useProfile = require('stremio/common/useProfile');
 const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
 const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
 const CanonTakeBox = require('stremio/components/CanonTakeBox/CanonTakeBox');
@@ -32,6 +33,16 @@ const ALLOWED_LINK_REDIRECTS = [
 const MetaPreview = React.forwardRef(({ className, compact, name, logo, background, runtime, releaseInfo, released, description, deepLinks, links, trailerStreams, inLibrary, toggleInLibrary, ratingInfo, voteAverage: voteAverageProp }, ref) => {
     const { t } = useTranslation();
     const [shareModalOpen, openShareModal, closeShareModal] = useBinaryState(false);
+    const profile = useProfile();
+    const handleToggleInLibrary = React.useCallback(() => {
+        if (!profile?.auth) {
+            window.location.hash = '#/intro';
+            return;
+        }
+        if (typeof toggleInLibrary === 'function') {
+            toggleInLibrary();
+        }
+    }, [profile, toggleInLibrary]);
     // Derive voteAverage from IMDB link if prop is not provided
     const voteAverage = React.useMemo(() => {
         if (typeof voteAverageProp === 'number' && !isNaN(voteAverageProp)) return voteAverageProp;
@@ -187,7 +198,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
                                         label={inLibrary ? t('REMOVE_FROM_LIB') : t('ADD_TO_LIB')}
                                         tooltip={compact}
                                         tabIndex={compact ? -1 : 0}
-                                        onClick={toggleInLibrary}
+                                        onClick={handleToggleInLibrary}
                                     />
                                     :
                                     null
