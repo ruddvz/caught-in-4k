@@ -13,6 +13,23 @@ const styles = require('./styles');
 
 const THRESHOLD = 100;
 
+// Placeholder row that hides itself if loading hasn't resolved within 10 seconds
+const SearchRowWithTimeout = ({ className, catalog, title }) => {
+    const [timedOut, setTimedOut] = React.useState(false);
+    React.useEffect(() => {
+        const timer = setTimeout(() => setTimedOut(true), 10000);
+        return () => clearTimeout(timer);
+    }, []);
+    if (timedOut) return null;
+    return (
+        <MetaRow.Placeholder
+            className={className}
+            catalog={catalog}
+            title={title}
+        />
+    );
+};
+
 const Search = ({ queryParams }) => {
     const t = useTranslate();
     const [search, loadSearchRows] = useSearch(queryParams);
@@ -104,7 +121,7 @@ const Search = ({ queryParams }) => {
                                                     key={index}
                                                     className={classnames(styles['search-row'], 'animation-fade-in')}
                                                     catalog={catalog}
-                                                    message={catalog.content.content}
+                                                    message={'This source is currently unavailable.'}
                                                 />
                                             );
                                         }
@@ -112,7 +129,7 @@ const Search = ({ queryParams }) => {
                                     }
                                     default: {
                                         return (
-                                            <MetaRow.Placeholder
+                                            <SearchRowWithTimeout
                                                 key={index}
                                                 className={classnames(styles['search-row'], styles['search-row-poster'], 'animation-fade-in')}
                                                 catalog={catalog}
