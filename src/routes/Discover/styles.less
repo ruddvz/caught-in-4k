@@ -27,6 +27,7 @@
             gap: 0.75rem;
             width: 100%;
             z-index: 20;
+            position: relative;
             overflow: visible;
 
             .select-input {
@@ -47,9 +48,12 @@
                 }
 
                 :global(.multiselect-menu-container) {
+                    z-index: 100;
+                    position: absolute;
                     border-radius: 2rem;
                     background: var(--bg-surface-1);
                     border: 1px solid rgba(255, 255, 255, 0.1);
+                    -webkit-backdrop-filter: blur(40px);
                     backdrop-filter: blur(40px);
                     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
                 }
