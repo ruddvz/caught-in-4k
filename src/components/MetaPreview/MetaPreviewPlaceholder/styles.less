@@ -1,19 +1,26 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
+@placeholder-bg: var(--color-placeholder-background, rgba(255, 255, 255, 0.08));
+
 .meta-preview-placeholder-container {
     display: flex;
     flex-direction: column;
+    min-height: 24rem;
+    background: var(--bg-surface-1, #1a1e29);
+    border-radius: var(--radius-card, 1rem);
+    overflow: hidden;
 
     .meta-info-container {
         flex: 1;
         align-self: stretch;
+        padding: 3rem;
 
         .logo-container {
             width: 20rem;
             height: 8rem;
             max-width: 100%;
-            border-radius: var(--border-radius);
-            background-color: var(--color-placeholder-background);
+            border-radius: 0.5rem;
+            background-color: @placeholder-bg;
         }
 
         .duration-release-info-container {
@@ -21,20 +28,20 @@
             flex-direction: row;
             flex-wrap: wrap;
             margin: 1rem 0;
+            gap: 0.75rem;
 
             .duration-container {
                 flex-basis: 5rem;
-                height: 1.4rem;
-                margin-right: 1rem;
-                border-radius: var(--border-radius);
-                background-color: var(--color-placeholder-background);
+                height: 1.6rem;
+                border-radius: 999px;
+                background-color: @placeholder-bg;
             }
 
             .release-info-container {
                 flex-basis: 5rem;
-                height: 1.4rem;
-                border-radius: var(--border-radius);
-                background-color: var(--color-placeholder-background);
+                height: 1.6rem;
+                border-radius: 999px;
+                background-color: @placeholder-bg;
             }
         }
 
@@ -45,17 +52,17 @@
                 width: 6.5rem;
                 height: 1.6rem;
                 max-width: 100%;
-                border-radius: var(--border-radius);
-                background-color: var(--color-placeholder-background);
+                border-radius: 999px;
+                background-color: @placeholder-bg;
             }
 
             .genre-label-container {
                 width: 10rem;
                 height: 1.2rem;
                 max-width: 100%;
-                margin-top: 0.2rem;
-                border-radius: var(--border-radius);
-                background-color: var(--color-placeholder-background);
+                margin-top: 0.4rem;
+                border-radius: 999px;
+                background-color: @placeholder-bg;
             }
         }
     }
@@ -63,10 +70,20 @@
     .action-buttons-container {
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
-        height: 4rem;
-        margin-bottom: 1rem;
-        border-radius: 4rem;
-        background-color: var(--color-placeholder-background);
+        gap: 0.75rem;
+        padding: 0 3rem 2.5rem;
+        margin-top: auto;
+
+        &::before,
+        &::after {
+            content: '';
+            display: block;
+            height: 3.25rem;
+            border-radius: 999px;
+            background-color: @placeholder-bg;
+        }
+
+        &::before { flex: 1.4; }
+        &::after  { flex: 0.9; }
     }
 }
