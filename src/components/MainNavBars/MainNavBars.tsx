@@ -7,7 +7,6 @@ import { HorizontalNavBar, VerticalNavBar, TopNavigationBar } from '../NavBar';
 import Icon from '@stremio/stremio-icons/react';
 // @ts-ignore
 import Button from 'stremio/components/Button';
-import { isMobile } from 'stremio/common/Platform/device';
 import styles from './MainNavBars.less';
 
 const TABS = [
@@ -29,28 +28,24 @@ type Props = {
 const MainNavBars = memo(({ className, route, query, children }: Props) => {
     return (
         <div className={classnames(className, styles['main-nav-bars-container'], { [styles[`route-${route}`]]: !!route })}>
-            {!isMobile && (
-                <TopNavigationBar
-                    className={styles['top-nav-bar']}
-                    route={route}
-                    tabs={TABS}
-                />
-            )}
+            <TopNavigationBar
+                className={styles['top-nav-bar']}
+                route={route}
+                tabs={TABS}
+            />
             <div className={styles['nav-content-container']}>{children}</div>
-            {isMobile && (
-                <div className={styles['mobile-bottom-nav']}>
-                    {TABS.slice(0, 6).map((tab) => (
-                        <Button
-                            key={tab.id}
-                            href={tab.href}
-                            className={classnames(styles['bottom-nav-tab'], { [styles['active']]: route === tab.id })}
-                        >
-                            <Icon name={tab.icon} className={styles['bottom-tab-icon']} />
-                            <span className={styles['bottom-tab-label']}>{tab.label}</span>
-                        </Button>
-                    ))}
-                </div>
-            )}
+            <div className={styles['mobile-bottom-nav']}>
+                {TABS.slice(0, 6).map((tab) => (
+                    <Button
+                        key={tab.id}
+                        href={tab.href}
+                        className={classnames(styles['bottom-nav-tab'], { [styles['active']]: route === tab.id })}
+                    >
+                        <Icon name={tab.icon} className={styles['bottom-tab-icon']} />
+                        <span className={styles['bottom-tab-label']}>{tab.label}</span>
+                    </Button>
+                ))}
+            </div>
         </div>
     );
 });

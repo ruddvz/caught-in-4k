@@ -163,12 +163,22 @@
 
 @media only screen and (max-width: @minimum) {
     .metadetails-container {
+        .nav-bar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(8, 6, 16, 0.95);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+        }
+
         .metadetails-content {
             display: flex;
             flex-direction: column;
             overflow-y: auto;
             padding: 1rem;
             gap: 1rem;
+            padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px) + 1rem);
 
             .meta-preview {
                 padding-right: 0;

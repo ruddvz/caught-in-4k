@@ -25,6 +25,13 @@
         padding-bottom: var(--safe-area-inset-bottom);
     }
 
+    // Desktop: hide bottom nav above 768px
+    @media (min-width: 769px) {
+        .mobile-bottom-nav {
+            display: none !important;
+        }
+    }
+
     .mobile-bottom-nav {
         display: none;
         flex: none;
@@ -67,6 +74,11 @@
     .main-nav-bars-container {
         height: 100vh;
         overflow: hidden;
+
+        // Hide desktop top nav on mobile — bottom nav takes over
+        .top-nav-bar {
+            display: none !important;
+        }
 
         // DEFAULT: hero route (board) — safe-area only, hero fills from below status bar
         .nav-content-container {
@@ -111,15 +123,29 @@
             justify-content: space-evenly; // Better distribution
 
             .bottom-nav-tab {
-                padding: 0.5rem 0.6rem;
                 flex: 1;
                 min-width: 0;
                 flex-direction: column;
-                gap: 0.25rem;
+                align-items: center;
+                justify-content: center;
+                gap: 0.2rem;
+                padding: 0.4rem 0.5rem;
+                border-radius: 9999px;
+                color: rgba(255, 255, 255, 0.5);
+                background: transparent;
+                transition: background 0.2s ease, color 0.2s ease;
+
+                &.active {
+                    background: var(--primary-accent-color);
+                    color: #000000;
+                    padding: 0.4rem 0.8rem;
+                    border-radius: 9999px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                }
 
                 .bottom-tab-icon {
-                    width: 1.5rem;
-                    height: 1.5rem;
+                    width: 1.4rem;
+                    height: 1.4rem;
                 }
 
                 .bottom-tab-label {
