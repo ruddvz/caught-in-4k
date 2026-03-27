@@ -20,3 +20,5 @@ lint_result.json
 
 # Claude Organize — ephemeral log file
 docs/organization-log.json
+# Claude Code local settings
+.claude/settings.local.json
