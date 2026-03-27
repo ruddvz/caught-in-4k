@@ -28,7 +28,7 @@
             grid-template-columns: 32% 1fr;
             gap: 2.5rem;
             width: 100%;
-            align-items: stretch; // Both columns stretch to the same height (the taller one wins)
+            align-items: start;
             overflow: visible;
         }
 
@@ -37,7 +37,6 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
-            height: 100%; // Fill the grid row height
             overflow: visible;
 
             > *:last-child {
@@ -50,7 +49,6 @@
         .column-right {
             display: flex;
             flex-direction: column;
-            height: 100%;
             overflow: visible;
         }
 
@@ -71,7 +69,7 @@
         }
 
         .player-widget {
-            flex: 1 1 0;
+            flex: none;
         }
 
         // GLOBAL FOOTER - Center Gray Legal Text
