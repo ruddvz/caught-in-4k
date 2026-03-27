@@ -242,27 +242,27 @@
 
 @media only screen and (max-width: 768px) {
     .top-nav-bar-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        padding: calc(var(--safe-area-inset-top) + 0.5rem) 1rem 0.5rem;
+        // position/z-index are set by MainNavBars.less (fixed, z-index 1005)
+        padding: calc(env(safe-area-inset-top, 0px) + 0.5rem) 1rem 0.5rem;
         height: auto;
-        background: transparent !important;
+        background: linear-gradient(to bottom, rgba(8, 6, 16, 0.85) 0%, transparent 100%) !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
         box-shadow: none !important;
         border: none !important;
-        z-index: 1005;
 
         .center-section {
+            // On board/hero route: hide nav pill entirely — search icon is enough
             .nav-pill-wrapper {
-                display: none !important; // Hide the pill, but NOT the search input
+                display: none !important;
             }
+            // On search route: show the search input
             .search-input-wrapper {
                 display: flex !important;
                 max-width: none;
                 margin: 0;
-                padding: 0 1rem;
-                height: 3rem;
+                padding: 0 0.75rem;
+                height: 2.75rem;
                 .search-input {
                     font-size: 1rem;
                 }
@@ -275,8 +275,6 @@
             .fullscreen-btn {
                 display: none !important;
             }
-
-
         }
     }
 }

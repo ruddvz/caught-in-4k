@@ -32,15 +32,15 @@
         }
     }
 
-    // Mobile: top nav visible as minimal floating bar (logo + profile only)
-    @media (max-width: 768px) {
+    // Mobile: show top nav bar (logo + profile), pill is hidden inside TopNavigationBar styles
+    @media only screen and (max-width: 768px) {
         .top-nav-bar {
             display: flex !important;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1010;
+            z-index: 1005;
         }
     }
 
@@ -48,7 +48,6 @@
         display: none;
         flex: none;
         background: rgba(20, 24, 33, 0.75);
-        -webkit-backdrop-filter: blur(25px) saturate(180%);
         backdrop-filter: blur(25px) saturate(180%);
         border: 1px solid rgba(255, 255, 255, 0.08);
         padding: 0.5rem;
@@ -88,21 +87,16 @@
         height: 100vh;
         overflow: hidden;
 
-        // Hide desktop top nav on mobile — bottom nav takes over
-        .top-nav-bar {
-            display: none !important;
-        }
-
-        // DEFAULT: hero route (board) — safe-area only, hero fills from below status bar
+        // DEFAULT: hero route (board) — top bar is fixed/transparent, hero fills full height
         .nav-content-container {
-            padding-top: env(safe-area-inset-top, 0px);
+            padding-top: 0;
             padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6rem);
             height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
         }
 
-        // NON-HERO pages: also clear the floating top bar (~4rem height)
+        // NON-HERO pages: clear the fixed top bar (~4rem) + safe area
         &.route-library,
         &.route-discover,
         &.route-settings,
@@ -128,7 +122,6 @@
             border-radius: 2.25rem 2.25rem 0 0; // Highly rounded top corners
             padding: 0.75rem 0.75rem calc(env(safe-area-inset-bottom, 0px) + 1.25rem); // Extra bottom padding for safe area
             background: rgba(13, 17, 23, 0.95) !important;
-            -webkit-backdrop-filter: blur(50px) saturate(210%) !important;
             backdrop-filter: blur(50px) saturate(210%) !important;
             border: none !important;
             border-top: 1px solid rgba(255, 255, 255, 0.1) !important;

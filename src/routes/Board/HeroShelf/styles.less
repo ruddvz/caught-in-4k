@@ -201,6 +201,26 @@
         &.hero-nav-next { right: 3rem; }
     }
 
+    .hero-progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.12);
+        z-index: 6;
+        overflow: hidden;
+        border-radius: 0 0 2rem 2rem;
+
+        .hero-progress-fill {
+            height: 100%;
+            width: 100%;
+            background: var(--primary-accent-color, rgb(0, 240, 255));
+            transform-origin: left center;
+            animation: hero-progress 8s linear forwards;
+        }
+    }
+
     .hero-dots {
         position: absolute;
         bottom: 1.5rem;
@@ -226,6 +246,11 @@
             }
         }
     }
+}
+
+@keyframes hero-progress {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
 }
 
 @media only screen and (max-width: @small) {
