@@ -31,14 +31,13 @@ This project uses the **C4K Agent Ecosystem** — 4 specialized agents that comm
 | **Soul** | Canon Takes, AI, LLM APIs, proxy | `~/.claude/agents/c4k-soul.md` |
 | **Guardian** | QA, tests, security, verification | `~/.claude/agents/c4k-guardian.md` |
 
-**Workflow:** User prompt → Orchestrator reads ACTIVE.md + EXECUTION-PLAN.md → dispatches agent → agent works → HANDOFF to Guardian → VERDICT back → Orchestrator updates tracking.
+**Workflow:** User prompt → Orchestrator reads PLAN.md → dispatches agent → agent works → HANDOFF to Guardian → VERDICT back → Orchestrator updates tracking.
 
 ## Priority Files (Local)
 
 | File | Purpose |
 |------|---------|
-| `docs/planning/ACTIVE.md` | Bug queue — open bugs sorted by severity |
-| `docs/planning/EXECUTION-PLAN.md` | Roadmap — all tasks with dependencies and status |
+| `docs/planning/PLAN.md` | Bug queue + roadmap — single source of truth |
 | `.github/workflow-101.md` | Agent operating protocol — all agents follow this |
 | `docs/CODEMAPS/OVERVIEW.md` | Architecture map — read this, not the full codebase |
 
@@ -87,7 +86,7 @@ src/
 
 | Type | Location |
 |------|----------|
-| Plans, roadmaps, ACTIVE.md | `docs/planning/` |
+| Plans, roadmaps, PLAN.md | `docs/planning/` |
 | Architecture notes | `docs/architecture/` |
 | Test results | `docs/testing/` |
 | Debug investigations | `docs/troubleshooting/` |
