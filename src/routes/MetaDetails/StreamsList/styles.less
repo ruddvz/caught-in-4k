@@ -190,7 +190,9 @@
 
         .streams-container {
             margin-top: 0;
-            overflow: visible;
+            overflow-y: auto;
+            max-height: calc(100dvh - 300px);
+            padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px) + 1rem);
             scrollbar-color: @color-surface-light5-20 transparent;
 
             &::-webkit-scrollbar-thumb {

@@ -32,10 +32,23 @@
         }
     }
 
+    // Mobile: top nav visible as minimal floating bar (logo + profile only)
+    @media (max-width: 768px) {
+        .top-nav-bar {
+            display: flex !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1010;
+        }
+    }
+
     .mobile-bottom-nav {
         display: none;
         flex: none;
         background: rgba(20, 24, 33, 0.75);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
         backdrop-filter: blur(25px) saturate(180%);
         border: 1px solid rgba(255, 255, 255, 0.08);
         padding: 0.5rem;
@@ -115,6 +128,7 @@
             border-radius: 2.25rem 2.25rem 0 0; // Highly rounded top corners
             padding: 0.75rem 0.75rem calc(env(safe-area-inset-bottom, 0px) + 1.25rem); // Extra bottom padding for safe area
             background: rgba(13, 17, 23, 0.95) !important;
+            -webkit-backdrop-filter: blur(50px) saturate(210%) !important;
             backdrop-filter: blur(50px) saturate(210%) !important;
             border: none !important;
             border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
