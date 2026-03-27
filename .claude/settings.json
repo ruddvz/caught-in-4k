@@ -11,5 +11,8 @@
         ]
       }
     ]
+  },
+  "env": {
+    "RTK_TELEMETRY_DISABLED": "1"
   }
 }
