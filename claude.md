@@ -1,119 +1,96 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with this repository.
-
-## MANDATORY: Workflow 101 — Read First, Every Time
-
-> **CRITICAL INSTRUCTION — NON-NEGOTIABLE**
->
-> Before doing ANY work on ANY prompt, you MUST:
-> 1. Read `.github/workflow-101.md` in full
-> 2. Follow every phase (0 through 8) sequentially as a checklist
-> 3. Never skip phases — if a phase doesn't apply, explicitly note it and move on
->
-> This applies to EVERY prompt: features, bug fixes, refactors, documentation, and even research tasks.
-> The workflow uses `docs/CODEMAPS/` for targeted context gathering and blast-radius analysis.
-> See the workflow file for details.
->
-> **If you did not read `.github/workflow-101.md` before starting work, STOP and read it now.**
-
 ## Project Overview
 
-**Caught in 4K** is a Gen Z-themed, AI-powered fork of Stremio Web. It streams movies/shows via Stremio add-ons, enriched with AI-generated "Canon Takes" (Gemini-powered commentary).
+**Caught in 4K (C4K)** — Gen Z-themed, AI-powered Stremio Web fork. Streams movies/shows via Stremio add-ons, enriched with AI-generated "Canon Takes" (Gemini-powered commentary).
+
+## Token Efficiency — MANDATORY
+
+This project uses three token-saving stacks. All agents MUST use them:
+
+1. **RTK** — Prefix ALL shell commands with `rtk`. Saves 60-90% tokens on command output.
+   ```bash
+   rtk git status          # not: git status
+   rtk npm run build       # not: npm run build
+   rtk npm test            # not: npm test
+   rtk git diff -- file.js # not: git diff (entire repo)
+   ```
+
+2. **CODEMAPS** — Never scan the full codebase. Read `docs/CODEMAPS/OVERVIEW.md` first, drill into the specific codemap, then read only the files you'll modify.
+
+3. **Memstack** — Check Claude memory for past decisions before re-learning. Don't repeat what's already known.
+
+## Agent Ecosystem
+
+This project uses the **C4K Agent Ecosystem** — 4 specialized agents that communicate via structured contracts. See `docs/superpowers/specs/c4k-agent-ecosystem.md` for the full spec.
+
+| Agent | Role | Files |
+|-------|------|-------|
+| **C4K Orchestrator** | Dispatch, coordination, completion tracking | `~/.claude/agents/c4k-orchestrator.md` |
+| **Structure** | Layout, CSS, components, routes | `~/.claude/agents/c4k-structure.md` |
+| **Soul** | Canon Takes, AI, LLM APIs, proxy | `~/.claude/agents/c4k-soul.md` |
+| **Guardian** | QA, tests, security, verification | `~/.claude/agents/c4k-guardian.md` |
+
+**Workflow:** User prompt → Orchestrator reads ACTIVE.md + EXECUTION-PLAN.md → dispatches agent → agent works → HANDOFF to Guardian → VERDICT back → Orchestrator updates tracking.
+
+## Priority Files (Local)
+
+| File | Purpose |
+|------|---------|
+| `docs/planning/ACTIVE.md` | Bug queue — open bugs sorted by severity |
+| `docs/planning/EXECUTION-PLAN.md` | Roadmap — all tasks with dependencies and status |
+| `.github/workflow-101.md` | Agent operating protocol — all agents follow this |
+| `docs/CODEMAPS/OVERVIEW.md` | Architecture map — read this, not the full codebase |
 
 ## Tech Stack
 
-- **Frontend**: React + Webpack (`src/`)
-- **Backend proxy**: `api-proxy.js` — reverse-proxies Gemini API calls (keeps API key secret)
-- **Claude Code plugin**: `everything-claude-code/` — full agent/skill/hook system
+- **Frontend**: React 18 + Webpack 5 (`src/`)
+- **Styling**: LESS modules (scoped per component)
+- **Backend proxy**: `api-proxy.js` — Express, proxies Gemini API
 - **Build**: Webpack → `build/`
 - **Deploy**: GitHub Pages (`gh-pages` branch)
+- **WASM core**: Stremio core via `useModelState` + `withCoreSuspender`
 
-## File Organization Rules
-
-This project uses **`claude-organize`** via Claude Code hooks. Files you create are automatically sorted.
-
-### ✅ Where to put things
-| Type | Goes here |
-|------|-----------|
-| Test results, QA notes | `docs/testing/` |
-| Performance analysis | `docs/analysis/` |
-| Architecture notes | `docs/architecture/` |
-| Deploy guides, runbooks | `docs/operations/` |
-| Debug logs, investigations | `docs/troubleshooting/` |
-| Implementation notes | `docs/development/` |
-| Plans, roadmaps | `docs/planning/` |
-| Validation scripts | `scripts/checks/` |
-| Test scripts/runners | `scripts/testing/` |
-| Deploy/release scripts | `scripts/deployment/` |
-| General utilities | `scripts/utilities/` |
-| One-off fix scripts | `scripts/fixes/` |
-| Debug utilities | `scripts/debug/` |
-| Environment setup scripts | `scripts/setup/` |
-
-### 🚫 Do NOT create files at the project root
-Never create test scripts, debug files, or temporary docs in the project root. They will be automatically moved.
-
-### 🔒 Protected files — never move these
-```
-README.md, LICENSE, LICENSE.md, DESIGN.md, CHANGELOG.md
-CODE_OF_CONDUCT.md, CANON_TAKES_SETUP.md, QUICK_START.md
-organizing.md, READY_CHECKLIST.md, Dockerfile
-package.json, package-lock.json, pnpm-lock.yaml
-webpack.config.js, tsconfig.json, eslint.config.mjs
-api-proxy.js, api-proxy-template.js
-http_server.js, generate-icons.js
-setup.bat, setup.sh
-.env*, .gitignore, manifest.json
-src/*, build/*, assets/*, tests/*
-everything-claude-code/*
-```
-
-## Commands
+## Commands (always use RTK prefix)
 
 ```bash
-npm run dev           # Start dev server (http://localhost:3000)
-npm run build         # Production build → build/
-npm test              # Run tests
-node api-proxy.js     # Start backend proxy (port 3001)
-node http_server.js   # Start simple HTTP server
-npm run deploy        # Deploy to GitHub Pages
+rtk npm run dev           # Dev server (http://localhost:3000)
+rtk npm run build         # Production build → build/
+rtk npm test              # Run tests
+rtk node api-proxy.js     # Backend proxy (port 3001)
+rtk npm run deploy        # Deploy to GitHub Pages
 ```
 
 ## Architecture
 
-### Frontend (`src/`)
 ```
 src/
-├── App/           # Root app component
-├── components/    # Reusable UI components (MetaRow, etc.)
-├── common/        # Shared utilities
+├── App/           # Root app, shell
+├── components/    # Reusable UI (MetaRow, MetaPreview, CanonTakeBox, etc.)
+├── common/        # Shared hooks, utils, contexts
 ├── router/        # Client-side routing
-├── routes/        # Page-level route components
-├── services/      # API/data services
-└── types/         # TypeScript type definitions
+├── routes/        # Page components (Board, Discover, MetaDetails, Settings, etc.)
+├── services/      # WASM bridge, BackgroundAgents, CanonTakesQueue
+└── types/         # TypeScript definitions
 ```
 
-### Backend
-- `api-proxy.js` — Express server proxying Gemini API (keeps API key secure)
-- `api-proxy-template.js` — Template for deploying to Vercel/Netlify
+## Key Rules
 
-### Claude Code Plugin (`everything-claude-code/`)
-Contains agents, skills, commands, hooks, and rules from the everything-claude-code plugin. See `everything-claude-code/CLAUDE.md`.
+- **API keys**: Never in frontend code — only in `api-proxy.js` via `process.env`
+- **Proxy URL**: `REACT_APP_CANON_PROXY_URL` in `.env`
+- **i18n**: Wrap user-facing strings with `useTranslate()` hook
+- **Immutability**: Create new objects, never mutate
+- **No inline styles**: Always use LESS modules
+- **Safe areas**: Use `env(safe-area-inset-*)` for mobile padding
 
-## Development Notes
+## File Organization
 
-- **API key**: Never put `GEMINI_API_KEY` in frontend code — only in `api-proxy.js` server
-- **Proxy URL**: Set `REACT_APP_CANON_PROXY_URL` in `.env` to point at your running proxy
-- **Translation**: Uses i18n system — wrap strings with `useTranslate()` hook
-- **Organization log**: Auto-generated at `docs/organization-log.json` (gitignored)
+| Type | Location |
+|------|----------|
+| Plans, roadmaps, ACTIVE.md | `docs/planning/` |
+| Architecture notes | `docs/architecture/` |
+| Test results | `docs/testing/` |
+| Debug investigations | `docs/troubleshooting/` |
+| Validation scripts | `scripts/checks/` |
 
-## Everything Claude Code Integration
-
-The `everything-claude-code/` directory provides:
-- **59 commands** (`/tdd`, `/plan`, `/build-fix`, `/code-review`, etc.)
-- **28 specialized agents** (planner, code-reviewer, typescript-reviewer, etc.)
-- **116 skill directories** (frontend-patterns, deployment-patterns, etc.)
-- **Comprehensive hooks** (pre/post tool use, session management, quality gates)
-
-Set `CLAUDE_PLUGIN_ROOT` to the absolute path of `everything-claude-code/` for hooks to work.
+Do NOT create files at the project root. They will be auto-moved by hooks.

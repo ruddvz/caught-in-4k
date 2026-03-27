@@ -55,6 +55,16 @@
     }
 }
 
+@media only screen and (max-width: 768px) {
+    .board-container {
+        .board-content-container {
+            .board-content {
+                padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px) + 1rem);
+            }
+        }
+    }
+}
+
 @media only screen and (max-width: @minimum) {
     .board-container {
         position: relative;
