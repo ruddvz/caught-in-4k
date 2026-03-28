@@ -7,6 +7,41 @@ Last updated: 2026-03-27
 
 All confirmed, not yet fixed. Structured by session.
 
+### [B1] overflow:hidden Clips Hover Animations + Box-Shadows Globally
+**Severity:** High | **Status:** Open
+**Root cause:** Parent containers across the whole app have `overflow: hidden` which clips:
+- Button hover transforms (`translateY(-4px)`, `scale(1.05)`) — button moves up and gets cut off at parent edge
+- `box-shadow` and glow effects on cards, buttons, and avatars — shadow is invisible because it's outside the container's clip rect
+- Any `transform` animation that moves an element toward or past a parent boundary
+
+**Affected containers (confirmed or likely):**
+- `src/routes/Board/HeroShelf/styles.less` — `.hero-shelf-container` and `.hero-slide` both `overflow: hidden`; clips hero button hover-up
+- `src/components/MetaItem/styles.less` — card `overflow: hidden`; clips `translateY(-8px)` lift and `scale(1.05)` on hover
+- `src/components/MetaRow/styles.less` — row container `overflow: hidden`; clips card lift
+- `src/App/caught-in-4k-theme.less` — global theme wrappers with `overflow: hidden`
+- `src/App/styles.less` — app shell `overflow: hidden`
+- `src/components/MainNavBars/MainNavBars.less` — content area `overflow: hidden`
+
+**Fix strategy — for EACH affected parent:**
+1. If `overflow: hidden` is only there to clip background image or internal scroll: keep it on a dedicated wrapper div that does NOT contain the interactive element, OR
+2. Replace `overflow: hidden` with `overflow: clip` (CSS — clips without creating a scroll container, doesn't affect children's `position: fixed/sticky` or transforms that escape via `will-change`), OR
+3. Add `padding` equal to or greater than the maximum transform distance so the clipped region never reaches the element (`padding: 8px` minimum on sides where buttons hover-lift toward the edge), OR
+4. For containers that purely need to hide a background image overflow: move `overflow: hidden` to the background `<div>` layer only, not the content wrapper
+
+**Ordering:** Fix outermost containers first (App shell → NavBars → HeroShelf → MetaRow → MetaItem). Each inner fix may become unnecessary once the outer is resolved.
+
+**Agent:** Structure
+**Files to audit (start here):**
+- `src/App/caught-in-4k-theme.less`
+- `src/App/styles.less`
+- `src/components/MainNavBars/MainNavBars.less`
+- `src/routes/Board/HeroShelf/styles.less`
+- `src/components/MetaRow/styles.less`
+- `src/components/MetaItem/styles.less`
+- Any other file where a hover `transform` or `box-shadow` is defined on a child whose parent has `overflow: hidden`
+
+---
+
 ### [F5] Hero Arrow Removal
 **Severity:** Medium | **Status:** Open
 **Files:** `src/routes/Board/HeroShelf/HeroShelf.js`, `src/routes/Board/HeroShelf/styles.less`
