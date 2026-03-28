@@ -8,7 +8,7 @@ Last updated: 2026-03-27
 All confirmed, not yet fixed. Structured by session.
 
 ### [B1] overflow:hidden Clips Hover Animations + Box-Shadows Globally
-**Severity:** High | **Status:** Open
+**Severity:** High | **Status:** Fixed
 **Root cause:** Parent containers across the whole app have `overflow: hidden` which clips:
 - Button hover transforms (`translateY(-4px)`, `scale(1.05)`) — button moves up and gets cut off at parent edge
 - `box-shadow` and glow effects on cards, buttons, and avatars — shadow is invisible because it's outside the container's clip rect
@@ -130,6 +130,7 @@ All confirmed, not yet fixed. Structured by session.
 - S4.1 viewport-fit=cover missing — **VERIFIED FIXED** (already in webpack config)
 - S4.2 Content hides behind bottom nav — **FIXED** (padding-bottom added to Board; MainNavBars already handles others)
 - S4.3 Add to Library no feedback — **VERIFIED FIXED** (auth redirect already in MetaPreview.js)
+- B1 overflow:hidden clips hover animations + box-shadows globally — **FIXED** (changed `overflow: hidden` → `overflow: clip` on `*` universal selector in styles.less, .hero-shelf-container, and .main-nav-bars-container mobile override)
 
 ---
 
