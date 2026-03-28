@@ -67,14 +67,15 @@
         flex: 1.2;               // Change 6: slightly wider — has more content
         overflow: visible;
 
-        // 30px buffer prevents glow clip
+        // 50px buffer prevents glow clip on all sides.
+        // overflow: visible !important overrides the global * { overflow: clip } reset.
         .glow-buffer-container {
             display: flex;
             flex-direction: column;
             gap: 10px;           // Change 3: 10px gap between inputs
-            padding: 30px;
-            margin: -30px;
-            overflow: visible;
+            padding: 50px;
+            margin: -50px;
+            overflow: visible !important;
         }
 
         .credentials-text-input {
@@ -89,7 +90,9 @@
             font-size: 0.95rem;                    // Change 3
             font-family: inherit;
             outline: none;
-            transition: border-color 0.2s ease, background 0.2s ease;
+            // Override global * { overflow: clip } so focus glow paints outside bounds
+            overflow: visible;
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 
             &::placeholder {
                 color: rgba(255, 255, 255, 0.3);
@@ -98,7 +101,8 @@
             &:focus {
                 border-color: var(--primary-accent-color); // Change 3
                 background: rgba(255, 255, 255, 0.08);     // Change 3
-                box-shadow: none;
+                box-shadow: 0 0 0 3px rgba(var(--primary-accent-color-rgb, 0, 240, 255), 0.25),
+                            0 0 16px rgba(var(--primary-accent-color-rgb, 0, 240, 255), 0.15);
             }
         }
 
