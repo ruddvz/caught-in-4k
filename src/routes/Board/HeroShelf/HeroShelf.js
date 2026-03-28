@@ -7,7 +7,6 @@ const useTranslate = require('stremio/common/useTranslate');
 const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
 const CONSTANTS = require('stremio/common/CONSTANTS');
-const CanonTakeBox = require('stremio/components/CanonTakeBox/CanonTakeBox');
 const SatisfactionMeterDial = require('stremio/components/SatisfactionMeterDial/SatisfactionMeterDial');
 const { generateCanonTake } = require('stremio/common/pollinationsApi');
 const styles = require('./styles');
@@ -82,7 +81,7 @@ const HeroShelf = ({ items }) => {
         let cancelled = false;
         generateCanonTake(currentItem.name, heroYear, heroGenres, currentItem.vote_average || 0)
             .then((result) => { if (!cancelled && result) setHeroCanonTake(result); })
-            .catch(() => { /* timeout in CanonTakeBox handles this */ });
+            .catch(() => { /* timeout fallback handled in SatisfactionMeterDial */ });
         return () => { cancelled = true; };
     }, [currentItem.name, heroYear]);
 
@@ -163,30 +162,19 @@ const HeroShelf = ({ items }) => {
                                 <span className={styles['hero-runtime']}>{item.runtime}</span>
                                 : null
                         }
-                        {
-                            imdbLink && imdbLink.name ?
-                                <span className={styles['hero-imdb']}>★ {imdbLink.name}</span>
-                                : null
-                        }
                     </div>
                     {
                         typeof item.description === 'string' && item.description.length > 0 ?
                             <p className={styles['hero-description']}>{item.description}</p>
                             : null
                     }
-                    <div className={styles['hero-meter-stack']}>
-                        <SatisfactionMeterDial
-                            score={avgScore}
-                            imdbRaw={imdbLink?.name ?? null}
-                            rtScore={rtScore}
-                            mcScore={mcScore}
-                        />
-                        <CanonTakeBox
-                            title={item.name}
-                            year={year}
-                            takeOverride={heroCanonTake}
-                        />
-                    </div>
+                    <SatisfactionMeterDial
+                        score={avgScore}
+                        imdbRaw={imdbLink?.name ?? null}
+                        rtScore={rtScore}
+                        mcScore={mcScore}
+                        canonTake={heroCanonTake}
+                    />
                     <div className={styles['hero-actions']}>
                         {
                             watchHref ?
@@ -213,36 +201,16 @@ const HeroShelf = ({ items }) => {
             </div>
             {
                 validItems.length > 1 ?
-                    <React.Fragment>
-                        <button
-                            className={classnames(styles['hero-nav'], styles['hero-nav-prev'])}
-                            onClick={goToPrev}
-                            aria-label={'Previous'}
-                        >
-                            <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8.5 1.5L2 8.5L8.5 15.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                        </button>
-                        <button
-                            className={classnames(styles['hero-nav'], styles['hero-nav-next'])}
-                            onClick={goToNext}
-                            aria-label={'Next'}
-                        >
-                            <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.5 1.5L8 8.5L1.5 15.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                        </button>
-                        <div className={styles['hero-dots']}>
-                            {validItems.map((_, i) => (
-                                <button
-                                    key={i}
-                                    className={classnames(styles['hero-dot'], { [styles['hero-dot-active']]: i === currentIndex })}
-                                    onClick={() => setCurrentIndex(i)}
-                                    aria-label={`Go to slide ${i + 1}`}
-                                />
-                            ))}
-                        </div>
-                    </React.Fragment>
+                    <div className={styles['hero-dots']}>
+                        {validItems.map((_, i) => (
+                            <button
+                                key={i}
+                                className={classnames(styles['hero-dot'], { [styles['hero-dot-active']]: i === currentIndex })}
+                                onClick={() => setCurrentIndex(i)}
+                                aria-label={`Go to slide ${i + 1}`}
+                            />
+                        ))}
+                    </div>
                     : null
             }
         </div>

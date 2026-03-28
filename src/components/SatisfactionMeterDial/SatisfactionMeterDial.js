@@ -16,26 +16,28 @@ function getTier(score) {
     return TIERS.find((t) => score >= t.min && score <= t.max) || TIERS[0];
 }
 
-const ARC_LENGTH = Math.PI * 80; // π × r = ~251.3
+const ARC_LENGTH = Math.PI * 80; // π × r ≈ 251.3
 
-const SatisfactionMeterDial = ({ score, imdbRaw, rtScore, mcScore }) => {
+const SatisfactionMeterDial = ({ score, imdbRaw, rtScore, mcScore, canonTake }) => {
+    // Hide entirely if no score data (require at least 2 sources — enforced by parent)
     if (score === null || score === undefined || isNaN(score)) return null;
 
     const tier = getTier(score);
     const dashOffset = ARC_LENGTH - (score / 100) * ARC_LENGTH;
 
-    // Needle endpoint: angle 180° at score 0, 0° at score 100
+    // Needle endpoint: 180° at score 0, 0° at score 100
     const angleRad = (Math.PI * (100 - score)) / 100;
     const needleX = 100 + 70 * Math.cos(angleRad);
     const needleY = 100 - 70 * Math.sin(angleRad);
 
     return (
         <div className={styles['dialContainer']}>
+            {/* SVG dial — hidden on mobile via CSS, shown on desktop */}
             <svg
                 key={score}
+                className={styles['dialSvg']}
                 viewBox="0 0 200 110"
                 width="100%"
-                style={{ maxWidth: '280px' }}
                 aria-label={`Satisfaction meter: ${score} — ${tier.name}`}
             >
                 {/* Track arc */}
@@ -81,23 +83,43 @@ const SatisfactionMeterDial = ({ score, imdbRaw, rtScore, mcScore }) => {
                 >
                     {score}
                 </text>
-                {/* Tier name */}
-                <text
-                    x="100"
-                    y="104"
-                    fontSize="10"
-                    fontWeight="700"
-                    textAnchor="middle"
-                    fill={tier.color}
-                    className={styles['tierLabel']}
-                >
-                    {tier.name.toUpperCase()}
-                </text>
             </svg>
-            <div className={styles['badges']}>
-                <span className={styles['badge']}>⭐ {imdbRaw ?? '–'} IMDb</span>
-                <span className={styles['badge']}>🍅 {rtScore !== null && rtScore !== undefined ? `${rtScore}%` : '–'} RT</span>
-                <span className={styles['badge']}>Ⓜ {mcScore !== null && mcScore !== undefined ? mcScore : '–'} MC</span>
+
+            {/* Verdict label — shown on both desktop and mobile */}
+            <div className={styles['verdict']} style={{ color: tier.color }}>
+                {tier.name.toUpperCase()}
+            </div>
+
+            {/* Canon one-liner — single line, no label */}
+            {canonTake ? (
+                <div className={styles['canonLine']}>
+                    {canonTake}
+                </div>
+            ) : null}
+
+            {/* 3 rating pills — only shown if data available */}
+            <div className={styles['ratingPills']}>
+                {imdbRaw != null ? (
+                    <span className={styles['ratingPill']} data-service="imdb">
+                        <span className={styles['ratingIcon']}>{'★'}</span>
+                        <span className={styles['ratingValue']}>{imdbRaw}</span>
+                        <span className={styles['ratingLabel']}>{'IMDb'}</span>
+                    </span>
+                ) : null}
+                {rtScore != null && !isNaN(rtScore) ? (
+                    <span className={styles['ratingPill']} data-service="rt">
+                        <span className={styles['ratingIcon']}>{'🍅'}</span>
+                        <span className={styles['ratingValue']}>{`${rtScore}%`}</span>
+                        <span className={styles['ratingLabel']}>{'RT'}</span>
+                    </span>
+                ) : null}
+                {mcScore != null && !isNaN(mcScore) ? (
+                    <span className={styles['ratingPill']} data-service="mc">
+                        <span className={styles['ratingIcon']}>{'Ⓜ'}</span>
+                        <span className={styles['ratingValue']}>{mcScore}</span>
+                        <span className={styles['ratingLabel']}>{'MC'}</span>
+                    </span>
+                ) : null}
             </div>
         </div>
     );
@@ -108,6 +130,7 @@ SatisfactionMeterDial.propTypes = {
     imdbRaw: PropTypes.string,
     rtScore: PropTypes.number,
     mcScore: PropTypes.number,
+    canonTake: PropTypes.string,
 };
 
 module.exports = SatisfactionMeterDial;

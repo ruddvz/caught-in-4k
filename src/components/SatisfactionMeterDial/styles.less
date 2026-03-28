@@ -1,7 +1,7 @@
 @import (reference) '~stremio/common/screen-sizes.less';
 
 .dialContainer {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.25rem;
     border-radius: 24px;
     background: rgba(255, 255, 255, 0.08);
     -webkit-backdrop-filter: blur(36px) saturate(180%);
@@ -14,7 +14,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
+    max-width: 360px;
+    width: 100%;
+}
+
+// SVG dial — desktop only
+.dialSvg {
+    display: block;
+    max-width: 260px;
+    width: 100%;
 }
 
 .fillArc {
@@ -25,29 +34,119 @@
     transition: all 0.8s ease-out;
 }
 
-.tierLabel {
+// Verdict label below dial
+.verdict {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    text-align: center;
 }
 
-.badges {
+// Canon one-liner — single line, truncate if too long
+.canonLine {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.4;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    padding: 0 0.25rem;
+}
+
+// Rating pills row
+.ratingPills {
     display: flex;
     gap: 0.5rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
 }
 
-.badge {
+.ratingPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     font-size: 0.78rem;
     font-weight: 700;
-    padding: 0.25rem 0.65rem;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.9);
+
+    // IMDb pill — gold accent
+    &[data-service="imdb"] {
+        background: rgba(245, 197, 24, 0.18);
+        border-color: rgba(245, 197, 24, 0.35);
+        .ratingValue { color: #f5c518; }
+    }
+
+    // RT pill — tomato red accent
+    &[data-service="rt"] {
+        background: rgba(250, 60, 50, 0.15);
+        border-color: rgba(250, 60, 50, 0.3);
+        .ratingValue { color: #ff6b60; }
+    }
+
+    // Metacritic pill — green accent
+    &[data-service="mc"] {
+        background: rgba(102, 204, 51, 0.15);
+        border-color: rgba(102, 204, 51, 0.3);
+        .ratingValue { color: #6c3; }
+    }
 }
 
+.ratingIcon {
+    font-size: 0.72rem;
+    line-height: 1;
+}
+
+.ratingValue {
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.ratingLabel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.04em;
+}
+
+// Mobile — hide SVG dial arc, keep verdict + one-liner + pills
 @media only screen and (max-width: 768px) {
     .dialContainer {
+        padding: 0.75rem 1rem;
+        gap: 0.45rem;
+        border-radius: 18px;
+    }
+
+    .dialSvg {
         display: none;
+    }
+
+    .verdict {
+        font-size: 0.78rem;
+        letter-spacing: 0.1em;
+    }
+
+    .canonLine {
+        font-size: 0.82rem;
+    }
+
+    .ratingPills {
+        gap: 0.35rem;
+    }
+
+    .ratingPill {
+        padding: 0.25rem 0.55rem;
+        font-size: 0.72rem;
+    }
+
+    .ratingValue {
+        font-size: 0.76rem;
     }
 }
