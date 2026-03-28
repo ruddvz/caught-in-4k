@@ -7,40 +7,63 @@ Last updated: 2026-03-27
 
 All confirmed, not yet fixed. Structured by session.
 
-### [F5] Hero UX Polish
-**Severity:** Medium | **Status:** Fixed
+### [F5] Hero Arrow Removal
+**Severity:** Medium | **Status:** Open
 **Files:** `src/routes/Board/HeroShelf/HeroShelf.js`, `src/routes/Board/HeroShelf/styles.less`
 **Fix:**
-- Remove green progress bar (supersedes commit b2bdb29 — intentional per user request)
-- Move nav arrows from vertical center to bottom corners (`bottom: 1.5rem`, flanking dots)
-- Arrow base: `transform: none`; hover: `transform: scale(1.1)` only
+- Remove left/right navigation arrows entirely from hero carousel (remove DOM elements and all associated CSS)
+- Remove "Previous" / "Next" title labels if present
+- Dots-only carousel navigation — no arrows
 **Agent:** Structure
-**Spec:** `docs/superpowers/specs/2026-03-27-hero-redesign-satisfactory-meter-design.md`
 
 ---
 
-### [F6] Canon Take Redesign
-**Severity:** Medium | **Status:** Fixed
-**Files:** `src/common/pollinationsApi.js`, `src/components/CanonTakeBox/styles.less`
+### [F6] Canon Take Redesign — One-Line Compact
+**Severity:** Medium | **Status:** Open
+**Files:** `src/common/pollinationsApi.js`, `src/components/CanonTakeBox/CanonTakeBox.js`, `src/components/CanonTakeBox/styles.less`
 **Fix:**
-- Rewrite `CANON_TAKE_SYSTEM` prompt: 2-sentence max, humor/tone-matched to genre with examples
-- Visual: font-size `1.2rem`, font-weight `600`, padding `1.25rem 1.5rem`
-**Agent:** Soul (prompt), Structure (styles)
-**Spec:** `docs/superpowers/specs/2026-03-27-hero-redesign-satisfactory-meter-design.md`
+- Canon Take must NOT be labeled "Canon Take" — remove that label entirely
+- Display as a single line of text (truncate with ellipsis if too long; no wrapping)
+- Prompt: must produce a single punchy sentence (≤15 words) — no intro, no "Canon Take:" prefix
+- Font: `1rem`, `font-weight: 500`; padding tightened to `0.75rem 1rem`
+- Integrate the one-liner into the Satisfaction Meter card (see F7) instead of as a separate box
+**Agent:** Soul (prompt), Structure (styles/layout)
 
 ---
 
-### [F7] Satisfactory Meter Dial
-**Severity:** Medium | **Status:** Fixed
-**Files:** `src/components/SatisfactionMeterDial/` (new), `src/routes/Board/HeroShelf/HeroShelf.js`, `src/routes/Board/HeroShelf/styles.less`, `src/components/index.ts`
+### [F7] Satisfaction Meter — Dial + Verdict + Canon One-Liner + 3 Ratings
+**Severity:** Medium | **Status:** Open
+**Files:** `src/components/SatisfactionMeterDial/` (new or existing), `src/routes/Board/HeroShelf/HeroShelf.js`, `src/routes/Board/HeroShelf/styles.less`, `src/components/index.ts`
 **Fix:**
-- New SVG 180° dial: averages IMDB + RT + Metacritic (requires ≥2 sources, else hidden)
-- 5 tiers: Certified Flop (0–39) → Mid at Best (40–59) → Worth a Watch (60–74) → Slaps Hard (75–89) → Absolute Cinema (90–100)
-- Needle animates on mount and on carousel rotation
-- Stacked above Canon Take in hero; hidden on mobile (≤768px)
-- Glass card matches CanonTakeBox style exactly
+- Ensure the component actually mounts and renders — investigate why it wasn't showing up (check imports, conditional guards, data availability)
+- SVG 180° dial: averages IMDB + RT + Metacritic (requires ≥2 sources; else hide entire card)
+- 5-tier verdict label shown prominently below dial needle:
+  - 0–39: "Certified Flop"
+  - 40–59: "Mid at Best"
+  - 60–74: "Worth a Watch"
+  - 75–89: "Slaps Hard"
+  - 90–100: "Absolute Cinema"
+- Below the verdict label: Canon one-liner (single line, from F6) — this replaces the separate CanonTakeBox
+- Below the dial section: display 3 individual rating pills in one row — IMDB (score/10), Rotten Tomatoes (%), Metacritic (score/100)
+  - Use correct logos/icons for each service
+  - If a rating is unavailable, hide that pill — don't show "N/A"
+- Needle animates on mount and carousel rotation
+- Visible on desktop; on mobile (≤768px) show compact version: verdict label + one-liner + 3 rating pills (hide the SVG dial arc itself to save space)
+- Glass card style matching existing elevation system
 **Agent:** Structure
-**Spec:** `docs/superpowers/specs/2026-03-27-hero-redesign-satisfactory-meter-design.md`
+**Blocking:** F6 (Canon one-liner prompt)
+
+---
+
+### [F8] Hero Mobile Gap — Show Trailer Button to Hero Bottom
+**Severity:** Medium | **Status:** Open
+**Files:** `src/routes/Board/HeroShelf/HeroShelf.js`, `src/routes/Board/HeroShelf/styles.less`
+**Fix:**
+- On mobile (≤768px) there is a large negative/empty space below the "Show Trailer" / action buttons and the bottom edge of the hero section
+- Remove excess `padding-bottom`, `margin-bottom`, or `min-height` on hero container that causes this gap
+- Hero bottom should be flush with or very close to the buttons — no large empty zone
+- Verify against S2.4 fix (which addressed a similar gap) — this may be a regression or a different element
+**Agent:** Structure
 
 ---
 
@@ -61,7 +84,7 @@ All confirmed, not yet fixed. Structured by session.
 - S2.1a Mobile bottom nav not rendering — **VERIFIED FIXED** (always mounted in MainNavBars.tsx)
 - S2.1b Breakpoint gap at 768px — **VERIFIED FIXED** (breakpoints aligned)
 - S2.2 Bottom nav active tab circle → pill — **VERIFIED FIXED** (border-radius: 9999px already in place)
-- S2.4 Hero empty space below buttons — **FIXED** (margin-bottom: 16px on .hero-actions)
+- S2.4 Hero empty space below buttons — **FIXED** (margin-bottom: 16px on .hero-actions) — possible mobile regression tracked as F8
 - S2.5a TRAILER button plays wrong movie — **VERIFIED FIXED** (trailerHref reactive from item)
 - S2.5b No swipe gesture on hero — **VERIFIED FIXED** (touch handlers already implemented)
 - S3.1a Board page ends abruptly — **VERIFIED FIXED** (overflow-y: auto + proper padding)
@@ -132,9 +155,10 @@ All confirmed, not yet fixed. Structured by session.
 ### MEDIUM — Features In Progress
 
 - [x] **[F1]** Per-profile accent color (Canvas API)
-- [x] **[F5]** Hero UX Polish (progress bar removed, arrows at bottom corners)
-- [x] **[F6]** Canon Take Redesign (new prompt, bigger text)
-- [x] **[F7]** Satisfactory Meter Dial (SVG dial above Canon Take)
+- [ ] **[F5]** Hero Arrow Removal (remove left/right arrows + labels entirely, dots only)
+- [ ] **[F6]** Canon Take Redesign — One-Line (no label, single punchy sentence, integrated into F7)
+- [ ] **[F7]** Satisfaction Meter — Dial + Verdict + Canon one-liner + 3 rating pills (IMDB, RT, Metacritic); fix visibility bug; mobile compact mode
+- [ ] **[F8]** Hero Mobile Gap — close space between action buttons and hero bottom
 - [ ] **[F2]** Profile PIN lock — Depends on: F1
 - [ ] **[F3]** PWA icon with black background — PARALLEL
 - [ ] **[F4]** Hero swipe gesture — same as S2.5b

@@ -22,3 +22,7 @@ lint_result.json
 docs/organization-log.json
 # Claude Code local settings
 .claude/settings.local.json
+
+# Git worktrees
+.claude/worktrees/
+.worktrees/
