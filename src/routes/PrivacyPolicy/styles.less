@@ -82,6 +82,17 @@
         color: rgba(255, 255, 255, 0.85);
     }
 
+    a.inline-link {
+        color: var(--primary-accent-color, rgb(0, 240, 255));
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        opacity: 0.85;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
     .legal-footer {
         margin-top: 3rem;
         padding-top: 1.5rem;
@@ -91,6 +102,17 @@
         p {
             font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.5);
+        }
+
+        a.footer-legal-link {
+            color: var(--primary-accent-color, rgb(0, 240, 255));
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            opacity: 0.75;
+
+            &:hover {
+                opacity: 1;
+            }
         }
     }
 }

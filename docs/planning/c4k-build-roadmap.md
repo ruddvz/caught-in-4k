@@ -176,7 +176,67 @@ app.use(helmet());
 
 ---
 
-## PHASE 5 — UI Upgrades
+## PHASE 5 — HIG Compliance
+> Apple Human Interface Guidelines mapped to C4K. These turn a good-looking app into a well-designed one.
+> Reference: `docs/planning/hig-reference.md` (full HIG doc)
+
+---
+
+### 5.A — Accessibility: contrast + touch targets + focus rings
+**What:** Audit every screen against WCAG AA minimums. Fix contrast failures, ensure every interactive element is ≥44×44px, add visible focus rings for keyboard navigation.
+**Why:** HIG §1.1. The Forest Night elevation (#2e3c28 at L≈20%) vs white text passes AAA (11.4:1) — but accent-colored text on dark backgrounds may not. Tab/keyboard navigation currently has no visible ring on many controls.
+**Files affected:** `src/App/caught-in-4k-theme.less`, `src/components/NavBar/`, button components
+**Effort:** Low–Medium
+**Priority:** HIGH
+
+---
+
+### 5.B — prefers-reduced-motion support
+**What:** Wrap all Animate.css entrance animations and MetaItem keyframes behind a `@media (prefers-reduced-motion: no-preference)` guard.
+**Why:** HIG §1.8. Users who set "Reduce Motion" in OS settings currently still get all animations. Required for accessibility compliance.
+**Files affected:** `src/components/MetaItem/styles.less`, `src/App/styles.less` (animate.css import guard)
+**Effort:** Low
+**Priority:** HIGH
+
+---
+
+### 5.C — Empty states (Library, Discover, Search)
+**What:** Add illustrated empty states to Library, Discover, and Search routes. Each needs: icon/illustration + title + body text + CTA button.
+**Why:** HIG §2.5. Currently these routes render blank white/dark space when empty, which looks broken.
+**Files affected:** `src/routes/Library/`, `src/routes/Discover/`, `src/routes/Search/`
+**Effort:** Medium
+**Priority:** MEDIUM
+
+---
+
+### 5.D — Icon accessibility (aria-labels)
+**What:** Add `aria-label` to every icon-only button across NavBar, MetaPreview, Player controls, and Settings. Also add `alt` text to all decorative and meaningful images.
+**Why:** HIG §1.5. Screen readers cannot interpret unlabelled icon buttons. Required once Tabler Icons (1.1) is installed.
+**Files affected:** `src/components/NavBar/`, `src/components/MetaPreview/`, `src/routes/Player/`
+**Effort:** Low (do alongside 1.1 Tabler Icons)
+**Priority:** HIGH — block on 1.1
+
+---
+
+### 5.E — Human-readable error messages
+**What:** Canon Takes failures, network errors, and addon errors currently show raw error strings or nothing. Replace with friendly messages: what happened + what to do.
+**Why:** HIG §2.4. "TypeError: fetch failed" is not a user-facing message.
+**Files affected:** `src/components/CanonTakeBox/CanonTakeBox.js`, `src/services/BackgroundAgents/`
+**Effort:** Low
+**Priority:** MEDIUM
+
+---
+
+### 5.F — Skeleton screens audit
+**What:** Ensure every data-loading view has a skeleton — not a spinner. MetaItem already has one; audit HeroShelf, MetaPreview details panel, and Canon Takes to confirm they all use skeletons correctly.
+**Why:** HIG §2.3. Skeleton screens are the correct loading pattern for content with known shape. Spinners should only appear for small inline areas.
+**Files affected:** `src/routes/Board/HeroShelf/`, `src/components/MetaPreview/`
+**Effort:** Low
+**Priority:** MEDIUM
+
+---
+
+## PHASE 6 — UI Upgrades
 > Visual improvements that make the app feel more premium.
 
 ---
@@ -202,22 +262,43 @@ app.use(helmet());
 
 ## Build Order Summary
 
+### ✅ Done
+| Phase | What | Status |
+|-------|------|--------|
+| 1.2 | Animate.css micro-interactions | DONE |
+| 3.1 | Rate limiting on proxy | DONE |
+| 3.2 | Security headers (helmet.js) | DONE |
+| 4.1 | OG meta tags | DONE |
+| — | Forest Night elevation palette | DONE |
+| — | Dynamic avatar accent colors (Canvas API) | DONE |
+| — | Selected profile persistence | DONE |
+| 5.B | prefers-reduced-motion animation guard | DONE |
+| 1.1 | Tabler Icons install + aria-labels (5.D) | DONE |
+
+### 🔴 HIGH — Do Next
 | Phase | What | Priority |
 |-------|------|----------|
-| 1.1 | Tabler Icons | HIGH |
-| 1.2 | Animate.css micro-interactions | HIGH |
 | 1.3 | Performance audit + image compression | HIGH |
-| 3.1 | Rate limiting on proxy | HIGH |
-| 3.2 | Security headers (helmet.js) | HIGH |
-| 4.1 | OG meta tags | HIGH |
+| 5.A | Accessibility: contrast + touch targets + focus rings | HIGH |
 | 4.2 | Analytics (Plausible/Umami) | HIGH |
 | 2.1 | More free LLM fallbacks | HIGH |
+
+### 🟡 MEDIUM
+| Phase | What | Priority |
+|-------|------|----------|
 | 2.2 | AI poster fallbacks | MEDIUM |
 | 2.3 | Satisfaction Meter one-liners | MEDIUM |
 | 3.3 | API input validation | MEDIUM |
 | 4.3 | PWA improvements | MEDIUM |
-| 5.1 | Modern JS refactor | LOW |
-| 5.2 | Heavy component audit | LOW |
+| 5.C | Empty states (Library, Discover, Search) | MEDIUM |
+| 5.E | Human-readable error messages | MEDIUM |
+| 5.F | Skeleton screens audit | MEDIUM |
+
+### 🟢 LOW
+| Phase | What | Priority |
+|-------|------|----------|
+| 6.1 | Modern JS refactor | LOW |
+| 6.2 | Heavy component audit | LOW |
 
 ---
 

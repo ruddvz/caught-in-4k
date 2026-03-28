@@ -107,7 +107,12 @@ const HeroShelf = ({ items }) => {
             ? (item.deepLinks.player || item.deepLinks.metaDetailsStreams || item.deepLinks.metaDetailsVideos) || null
             : null;
 
-    const trailerHref = item.trailerStreams?.[0]?.deepLinks?.player ?? null;
+    const trailerHref =
+        Array.isArray(item.trailerStreams) &&
+        item.trailerStreams.length > 0 &&
+        item.trailerStreams[0].deepLinks
+            ? item.trailerStreams[0].deepLinks.player || null
+            : null;
 
     return (
         <div className={styles['hero-shelf-container']} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>

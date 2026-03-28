@@ -284,7 +284,7 @@ const Intro = ({ queryParams }) => {
                             ref={termsRef}
                             label={t('READ_AND_AGREE')}
                             link={t('TOS')}
-                            href={'https://www.stremio.com/tos'}
+                            href={'#/tos'}
                             checked={state.termsAccepted}
                             onChange={toggleTermsAccepted}
                             className={styles['legal-checkbox']}
@@ -293,7 +293,7 @@ const Intro = ({ queryParams }) => {
                             ref={privacyPolicyRef}
                             label={t('READ_AND_AGREE')}
                             link={t('PRIVACY_POLICY')}
-                            href={'https://www.stremio.com/privacy'}
+                            href={'#/privacy'}
                             checked={state.privacyPolicyAccepted}
                             onChange={togglePrivacyPolicyAccepted}
                             className={styles['legal-checkbox']}

@@ -85,7 +85,7 @@ const Settings = () => {
                 <div className={styles['settings-footer']}>
                     <a href="#/tos" className={styles['footer-link']}>Terms of Service</a>
                     <span className={styles['footer-separator']}>|</span>
-                    <a href="#/privacy-policy" className={styles['footer-link']}>Privacy Policy</a>
+                    <a href="#/privacy" className={styles['footer-link']}>Privacy Policy</a>
                 </div>
 
                 {/* PARKED LOGIC */}
