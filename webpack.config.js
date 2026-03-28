@@ -229,6 +229,7 @@ module.exports = (env, argv) => ({
                 { from: 'assets/screenshots/*.webp', to: 'screenshots/[name][ext]' },
                 { from: '.well-known', to: '.well-known' },
                 { from: 'manifest.json', to: 'manifest.json' },
+                { from: 'CNAME', to: 'CNAME' },
             ]
         }),
         new MiniCssExtractPlugin({
