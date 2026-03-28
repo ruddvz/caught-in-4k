@@ -46,7 +46,9 @@
         border-radius: var(--radius-card);
         box-shadow: var(--shadow-soft);
         border: 1px solid rgba(255, 255, 255, 0.06);
-        overflow: hidden;
+        // overflow: clip respects border-radius for the glass card shape but does NOT
+        // clip children's box-shadows or translateY hover transforms (unlike overflow: hidden)
+        overflow: clip;
         display: flex;
         flex-direction: column;
 

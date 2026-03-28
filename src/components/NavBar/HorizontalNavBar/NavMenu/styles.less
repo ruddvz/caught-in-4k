@@ -17,13 +17,15 @@
     width: 26rem;
     max-height: 85vh;
     overflow-y: auto;
+    // overflow: clip on x-axis only — prevents horizontal bleed while allowing
+    // vertical scroll and not clipping profile card translateY(-4px) hover lifts
+    overflow-x: clip;
     border-radius: 2rem;
     background: rgba(16, 20, 30, 0.92);
     -webkit-backdrop-filter: blur(40px) saturate(200%);
     backdrop-filter: blur(40px) saturate(200%);
     border: 1px solid rgba(255, 255, 255, 0.09);
     box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255,255,255,0.05);
-    overflow: hidden;
     scrollbar-width: none;
 
     &::-webkit-scrollbar { display: none; }

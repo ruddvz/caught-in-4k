@@ -44,7 +44,8 @@
 
         .nav-pill-wrapper {
             max-width: 100%;
-            overflow: hidden;
+            // overflow: clip so nav tab translateY(-1px) hover lift and box-shadows are not clipped
+            overflow: clip;
             display: flex;
             justify-content: center;
         }
