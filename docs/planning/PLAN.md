@@ -8,7 +8,7 @@ Last updated: 2026-03-27
 All confirmed, not yet fixed. Structured by session.
 
 ### [F5] Hero UX Polish
-**Severity:** Medium | **Status:** Open
+**Severity:** Medium | **Status:** Fixed
 **Files:** `src/routes/Board/HeroShelf/HeroShelf.js`, `src/routes/Board/HeroShelf/styles.less`
 **Fix:**
 - Remove green progress bar (supersedes commit b2bdb29 — intentional per user request)
@@ -20,7 +20,7 @@ All confirmed, not yet fixed. Structured by session.
 ---
 
 ### [F6] Canon Take Redesign
-**Severity:** Medium | **Status:** Open
+**Severity:** Medium | **Status:** Fixed
 **Files:** `src/common/pollinationsApi.js`, `src/components/CanonTakeBox/styles.less`
 **Fix:**
 - Rewrite `CANON_TAKE_SYSTEM` prompt: 2-sentence max, humor/tone-matched to genre with examples
@@ -31,7 +31,7 @@ All confirmed, not yet fixed. Structured by session.
 ---
 
 ### [F7] Satisfactory Meter Dial
-**Severity:** Medium | **Status:** Open
+**Severity:** Medium | **Status:** Fixed
 **Files:** `src/components/SatisfactionMeterDial/` (new), `src/routes/Board/HeroShelf/HeroShelf.js`, `src/routes/Board/HeroShelf/styles.less`, `src/components/index.ts`
 **Fix:**
 - New SVG 180° dial: averages IMDB + RT + Metacritic (requires ≥2 sources, else hidden)
@@ -104,10 +104,7 @@ All confirmed, not yet fixed. Structured by session.
 - [x] **[S2.1a]** Mobile bottom nav not rendering
 - [x] **[S2.1b]** Breakpoint gap at 768px
 - [x] **[S2.2]** Bottom nav active tab circle → pill
-- [ ] **[S2.3]** Top bar missing on detail page mobile
-  > `position: sticky; top: 0; z-index: 100`
-  > Files: `src/routes/MetaDetails/MetaDetails.js`, `src/components/MainNavBars/MainNavBars.tsx`
-  > Agent: Structure
+- [x] **[S2.3]** Top bar missing on detail page mobile
 - [x] **[S2.4]** Hero empty space below buttons
 - [x] **[S2.5a]** TRAILER button plays wrong movie
 - [x] **[S2.5b]** No swipe gesture on hero (mobile)
@@ -135,6 +132,9 @@ All confirmed, not yet fixed. Structured by session.
 ### MEDIUM — Features In Progress
 
 - [x] **[F1]** Per-profile accent color (Canvas API)
+- [x] **[F5]** Hero UX Polish (progress bar removed, arrows at bottom corners)
+- [x] **[F6]** Canon Take Redesign (new prompt, bigger text)
+- [x] **[F7]** Satisfactory Meter Dial (SVG dial above Canon Take)
 - [ ] **[F2]** Profile PIN lock — Depends on: F1
 - [ ] **[F3]** PWA icon with black background — PARALLEL
 - [ ] **[F4]** Hero swipe gesture — same as S2.5b

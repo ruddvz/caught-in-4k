@@ -21,6 +21,7 @@ import MultiselectMenu from './MultiselectMenu';
 import AppLogo from './AppLogo/AppLogo';
 import CanonTakeBox from './CanonTakeBox/CanonTakeBox';
 import SatisfactionMeterBar from './SatisfactionMeterBar/SatisfactionMeterBar';
+import SatisfactionMeterDial from './SatisfactionMeterDial/SatisfactionMeterDial';
 import SatisfactionMeterLegend from './SatisfactionMeterLegend/SatisfactionMeterLegend';
 import BoardStatsSection from './BoardStatsSection/BoardStatsSection';
 import { HorizontalNavBar, VerticalNavBar } from './NavBar';
@@ -71,6 +72,7 @@ export {
     Transition,
     Video,
     SatisfactionMeterBar,
+    SatisfactionMeterDial,
     SatisfactionMeterLegend,
     BoardStatsSection,
     AppLogo,

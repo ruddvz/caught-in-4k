@@ -8,6 +8,7 @@ const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const CanonTakeBox = require('stremio/components/CanonTakeBox/CanonTakeBox');
+const SatisfactionMeterDial = require('stremio/components/SatisfactionMeterDial/SatisfactionMeterDial');
 const { generateCanonTake } = require('stremio/common/pollinationsApi');
 const styles = require('./styles');
 
@@ -95,6 +96,27 @@ const HeroShelf = ({ items }) => {
         ? item.links.find((l) => l.category === CONSTANTS.IMDB_LINK_CATEGORY)
         : null;
 
+    // IMDB: name is e.g. "7.8" — normalize to 0–100
+    const imdbScore = imdbLink?.name ? Math.round(parseFloat(imdbLink.name) * 10) : null;
+
+    // Rotten Tomatoes: require category contains 'tomatoes' (case-insensitive)
+    const rtLink = Array.isArray(item.links)
+        ? item.links.find((l) => l.category?.toLowerCase().includes('tomatoes'))
+        : null;
+    const rtScore = rtLink?.name ? parseInt(rtLink.name, 10) : null;
+
+    // Metacritic: require category contains 'metacritic' (case-insensitive)
+    const mcLink = Array.isArray(item.links)
+        ? item.links.find((l) => l.category?.toLowerCase().includes('metacritic'))
+        : null;
+    const mcScore = mcLink?.name ? parseInt(mcLink.name, 10) : null;
+
+    // Average — require at least 2 sources, otherwise null (dial hides itself)
+    const availableScores = [imdbScore, rtScore, mcScore].filter((s) => s !== null && !isNaN(s));
+    const avgScore = availableScores.length >= 2
+        ? Math.round(availableScores.reduce((a, b) => a + b, 0) / availableScores.length)
+        : null;
+
     const year =
         item.released instanceof Date && !isNaN(item.released.getTime())
             ? item.released.getFullYear()
@@ -152,7 +174,13 @@ const HeroShelf = ({ items }) => {
                             <p className={styles['hero-description']}>{item.description}</p>
                             : null
                     }
-                    <div className={styles['hero-canon-take']}>
+                    <div className={styles['hero-meter-stack']}>
+                        <SatisfactionMeterDial
+                            score={avgScore}
+                            imdbRaw={imdbLink?.name ?? null}
+                            rtScore={rtScore}
+                            mcScore={mcScore}
+                        />
                         <CanonTakeBox
                             title={item.name}
                             year={year}
@@ -215,13 +243,6 @@ const HeroShelf = ({ items }) => {
                             ))}
                         </div>
                     </React.Fragment>
-                    : null
-            }
-            {
-                validItems.length > 1 ?
-                    <div className={styles['hero-progress-bar']}>
-                        <div key={currentIndex} className={styles['hero-progress-fill']} />
-                    </div>
                     : null
             }
         </div>
