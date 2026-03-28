@@ -13,17 +13,11 @@
     padding: 0;
     box-sizing: border-box;
 
-    &:hover {
-        .hero-nav {
-            opacity: 1;
-        }
-    }
-
     .hero-slide {
         position: relative;
         width: 100%;
         height: 100%;
-        border-radius: 2rem; // Restore strictly rounded card aesthetic
+        border-radius: 2rem;
         overflow: hidden;
         box-shadow: var(--shadow-soft);
         background: var(--bg-surface-1);
@@ -51,7 +45,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 linear-gradient(to top, rgba(13, 17, 23, 0.95) 0%, rgba(13, 17, 23, 0.4) 30%, transparent 70%),
                 linear-gradient(to right, rgba(13, 17, 23, 0.8) 0%, transparent 60%);
             pointer-events: none;
@@ -63,7 +57,7 @@
             left: 0;
             width: 100%;
             max-width: 800px;
-            padding: 3.5rem 3.5rem 40px 3.5rem;
+            padding: 3.5rem 3.5rem 2rem 3.5rem;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -98,14 +92,6 @@
                 color: var(--text-secondary);
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-
-                .hero-imdb {
-                    background: #f5c518;
-                    color: #000;
-                    padding: 0.25rem 0.6rem;
-                    border-radius: 6px;
-                    font-weight: 900;
-                }
             }
 
             .hero-description {
@@ -120,19 +106,10 @@
                 -webkit-box-orient: vertical;
             }
 
-            .hero-meter-stack {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                max-width: 420px;
-                width: 100%;
-            }
-
             .hero-actions {
                 display: flex;
                 gap: 1.25rem;
-                margin-top: 1rem;
-                margin-bottom: 16px;
+                margin-top: 0.5rem;
 
                 .hero-btn {
                     padding: 1rem 3rem;
@@ -167,7 +144,7 @@
                         -webkit-backdrop-filter: blur(20px);
                         backdrop-filter: blur(20px);
                         border: 1px solid rgba(255, 255, 255, 0.12);
-                        
+
                         &:hover {
                             background: rgba(255, 255, 255, 0.15);
                             transform: translateY(-4px);
@@ -179,40 +156,12 @@
         }
     }
 
-    .hero-nav {
-        position: absolute;
-        bottom: 1.5rem;
-        width: 2.75rem;
-        height: 2.75rem;
-        border-radius: 50%;
-        background: rgba(13, 17, 23, 0.6);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        opacity: 0;
-        transition: all 0.3s ease;
-        z-index: 10;
-        -webkit-backdrop-filter: blur(12px);
-        backdrop-filter: blur(12px);
-        transform: none;
-
-        &:hover {
-            background: rgba(13, 17, 23, 0.9);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
-        }
-
-        &.hero-nav-prev { left: 3rem; }
-        &.hero-nav-next { right: 3rem; }
-    }
-
+    // Dots — centered at bottom, no arrows
     .hero-dots {
         position: absolute;
-        bottom: 1.5rem;
-        right: 3.5rem;
+        bottom: 1.25rem;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
         gap: 0.75rem;
         z-index: 5;
@@ -236,28 +185,31 @@
     }
 }
 
+// Tablet/large breakpoint
 @media only screen and (max-width: @small) {
     .hero-shelf-container {
         height: calc(100vh - 100px);
         max-height: calc(100vh - 100px);
         padding: 0;
         margin: 0;
-        
+
         .hero-slide {
-            border-radius: 1.5rem; // Still rounded on mobile
+            border-radius: 1.5rem;
 
             .hero-content {
                 width: 100%;
-                padding: 2rem 1.5rem calc(80px + env(safe-area-inset-bottom, 0px)) 1.5rem;
-                
+                // Compact bottom padding — just enough for the dots (1.25rem dot bottom + 0.5rem hero-dot height + gap)
+                padding: 2rem 1.5rem 3rem 1.5rem;
+                gap: 0.9rem;
+
                 .hero-logo {
                     max-height: 4rem;
                     max-width: 14rem;
                     margin-bottom: 0.25rem;
                 }
 
-                .hero-title { 
-                    font-size: 1.8rem; 
+                .hero-title {
+                    font-size: 1.8rem;
                 }
 
                 .hero-meta {
@@ -265,13 +217,14 @@
                     gap: 0.75rem;
                 }
 
-                .hero-description { 
-                    display: none; // Hide on mobile for cleaner card
+                .hero-description {
+                    display: none;
                 }
 
                 .hero-actions {
                     gap: 0.75rem;
                     width: 100%;
+                    margin-top: 0.25rem;
                     .hero-btn {
                         flex: 1;
                         padding: 0.8rem 0;
@@ -282,13 +235,9 @@
             }
         }
 
-        .hero-dots { 
-            right: 50%;
-            transform: translateX(50%);
-            bottom: 1rem;
+        .hero-dots {
+            bottom: 0.75rem;
         }
-
-        .hero-nav { display: none; }
     }
 }
 
@@ -300,19 +249,18 @@
 
         .hero-slide {
             .hero-content {
-                .hero-meter-stack {
-                    gap: 0.75rem;
-                }
+                // Tight bottom — just enough clearance for the dots row
+                padding: 1.5rem 1.25rem 2.75rem 1.25rem;
+                gap: 0.75rem;
 
                 .hero-actions {
-                    margin-bottom: 0;
-                    padding-bottom: 0;
+                    margin-top: 0;
                 }
             }
         }
 
         .hero-dots {
-            bottom: 0.75rem;
+            bottom: 0.65rem;
         }
     }
 }
