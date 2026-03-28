@@ -8,13 +8,13 @@
     width: 100%;
     height: calc(100vh - 100px);
     max-height: calc(100vh - 100px);
-    // overflow: clip so box-shadows and hover transforms on buttons are not clipped,
-    // while still preventing paint bleed outside the container bounds.
-    // (overflow: hidden would create a stacking context that clips child shadows)
-    overflow: clip;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    // overflow: visible + padding/margin offset so button hover transforms and focus
+    // rings are never clipped. The 50px padding expands the paint area on all sides;
+    // the negative margin keeps the layout footprint unchanged.
+    overflow: visible;
+    padding: 50px;
+    margin: -50px;
+    box-sizing: content-box;
 
     .hero-slide {
         position: relative;
