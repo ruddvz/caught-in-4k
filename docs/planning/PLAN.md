@@ -155,10 +155,10 @@ All confirmed, not yet fixed. Structured by session.
 ### MEDIUM — Features In Progress
 
 - [x] **[F1]** Per-profile accent color (Canvas API)
-- [ ] **[F5]** Hero Arrow Removal (remove left/right arrows + labels entirely, dots only)
-- [ ] **[F6]** Canon Take Redesign — One-Line (no label, single punchy sentence, integrated into F7)
-- [ ] **[F7]** Satisfaction Meter — Dial + Verdict + Canon one-liner + 3 rating pills (IMDB, RT, Metacritic); fix visibility bug; mobile compact mode
-- [ ] **[F8]** Hero Mobile Gap — close space between action buttons and hero bottom
+- [x] **[F5]** Hero Arrow Removal (remove left/right arrows + labels entirely, dots only)
+- [x] **[F6]** Canon Take Redesign — One-Line (no label, single punchy sentence, integrated into F7)
+- [x] **[F7]** Satisfaction Meter — Dial + Verdict + Canon one-liner + 3 rating pills (IMDB, RT, Metacritic); fix visibility bug; mobile compact mode
+- [x] **[F8]** Hero Mobile Gap — close space between action buttons and hero bottom
 - [ ] **[F2]** Profile PIN lock — Depends on: F1
 - [ ] **[F3]** PWA icon with black background — PARALLEL
 - [ ] **[F4]** Hero swipe gesture — same as S2.5b
