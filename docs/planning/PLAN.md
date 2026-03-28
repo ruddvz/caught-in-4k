@@ -7,6 +7,43 @@ Last updated: 2026-03-27
 
 All confirmed, not yet fixed. Structured by session.
 
+### [F5] Hero UX Polish
+**Severity:** Medium | **Status:** Open
+**Files:** `src/routes/Board/HeroShelf/HeroShelf.js`, `src/routes/Board/HeroShelf/styles.less`
+**Fix:**
+- Remove green progress bar (supersedes commit b2bdb29 — intentional per user request)
+- Move nav arrows from vertical center to bottom corners (`bottom: 1.5rem`, flanking dots)
+- Arrow base: `transform: none`; hover: `transform: scale(1.1)` only
+**Agent:** Structure
+**Spec:** `docs/superpowers/specs/2026-03-27-hero-redesign-satisfactory-meter-design.md`
+
+---
+
+### [F6] Canon Take Redesign
+**Severity:** Medium | **Status:** Open
+**Files:** `src/common/pollinationsApi.js`, `src/components/CanonTakeBox/styles.less`
+**Fix:**
+- Rewrite `CANON_TAKE_SYSTEM` prompt: 2-sentence max, humor/tone-matched to genre with examples
+- Visual: font-size `1.2rem`, font-weight `600`, padding `1.25rem 1.5rem`
+**Agent:** Soul (prompt), Structure (styles)
+**Spec:** `docs/superpowers/specs/2026-03-27-hero-redesign-satisfactory-meter-design.md`
+
+---
+
+### [F7] Satisfactory Meter Dial
+**Severity:** Medium | **Status:** Open
+**Files:** `src/components/SatisfactionMeterDial/` (new), `src/routes/Board/HeroShelf/HeroShelf.js`, `src/routes/Board/HeroShelf/styles.less`, `src/components/index.ts`
+**Fix:**
+- New SVG 180° dial: averages IMDB + RT + Metacritic (requires ≥2 sources, else hidden)
+- 5 tiers: Certified Flop (0–39) → Mid at Best (40–59) → Worth a Watch (60–74) → Slaps Hard (75–89) → Absolute Cinema (90–100)
+- Needle animates on mount and on carousel rotation
+- Stacked above Canon Take in hero; hidden on mobile (≤768px)
+- Glass card matches CanonTakeBox style exactly
+**Agent:** Structure
+**Spec:** `docs/superpowers/specs/2026-03-27-hero-redesign-satisfactory-meter-design.md`
+
+---
+
 ### [BUG-S2.3] Top Bar Missing on Detail Page Mobile
 **Severity:** Major | **Status:** Open
 **Files:** `src/routes/MetaDetails/MetaDetails.js`, `src/components/MainNavBars/MainNavBars.tsx`
