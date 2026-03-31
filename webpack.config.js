@@ -9,6 +9,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const { GenerateSW } = require('workbox-webpack-plugin');
 const packageJson = require('./package.json');
 
 const COMMIT_HASH = execSync('git rev-parse HEAD').toString().trim();
@@ -221,7 +222,29 @@ module.exports = (env, argv) => ({
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer']
         }),
-        // Service worker disabled — remove stale SWs in src/index.js instead
+        argv.mode === 'production' && new GenerateSW({
+            clientsClaim: true,
+            skipWaiting: true,
+            navigateFallback: '/index.html',
+            navigateFallbackDenylist: [/^\/__/, /\/[^/?]+\.[^/]+$/],
+            runtimeCaching: [
+                {
+                    urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/,
+                    handler: 'CacheFirst',
+                    options: {
+                        cacheName: 'images',
+                        expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
+                    },
+                },
+                {
+                    urlPattern: /\.(?:js|css)$/,
+                    handler: 'StaleWhileRevalidate',
+                    options: {
+                        cacheName: 'static-resources',
+                    },
+                },
+            ],
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: 'assets/favicons', to: 'favicons' },
@@ -229,7 +252,7 @@ module.exports = (env, argv) => ({
                 { from: 'assets/screenshots/*.webp', to: 'screenshots/[name][ext]' },
                 { from: '.well-known', to: '.well-known' },
                 { from: 'manifest.json', to: 'manifest.json' },
-                { from: 'CNAME', to: 'CNAME' },
+                { from: 'CNAME', to: 'CNAME', toType: 'file' },
             ]
         }),
         new MiniCssExtractPlugin({

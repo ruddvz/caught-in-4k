@@ -80,12 +80,11 @@ root.render(
     )
 );
 
-// Unregister any existing service workers and clear caches to ensure fresh content
+// Register service worker for PWA install support
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => registration.unregister());
-    });
-    caches.keys().then((names) => {
-        names.forEach((name) => caches.delete(name));
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').catch(() => {
+            // SW registration failed — app still works without it
+        });
     });
 }
