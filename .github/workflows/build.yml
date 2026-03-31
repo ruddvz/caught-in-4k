@@ -14,7 +14,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -49,21 +55,25 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          PUBLIC_PATH: /caught-in-4k/
+          PUBLIC_PATH: /
 
       - name: Disable Jekyll processing in published output
         run: touch ./build/.nojekyll
 
-      - name: Deploy to GitHub Pages
+      - name: Upload Pages artifact
         if: github.actor != 'dependabot[bot]' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-          force_orphan: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy Caught in 4K - Genesis build'
-          publish_branch: gh-pages
-          allow_empty_commit: true
-          cname: c4k.live
+          path: ./build
+
+  deploy:
+    if: github.actor != 'dependabot[bot]' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
