@@ -3,6 +3,7 @@
 const React = require('react');
 const classnames = require('classnames');
 const { Button } = require('stremio/components');
+const { navigateToAppHref } = require('stremio/common/navigation');
 const { withCoreSuspender } = require('stremio/common');
 const { extractAccentFromAvatar } = require('../../common/useAvatarAccentColor');
 const PinModal = require('./PinModal/PinModal');
@@ -145,15 +146,6 @@ const Profiles = () => {
         setView('select');
     };
 
-    const handleDeleteProfile = (e, profileId) => {
-        e.stopPropagation();
-        const updated = profiles.filter((p) => p.id !== profileId);
-        if (focusedIndex >= updated.length) {
-            setFocusedIndex(Math.max(0, updated.length - 1));
-        }
-        saveProfiles(updated);
-    };
-
     const getAvatarUrl = (p) =>
         p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar;
 
@@ -226,7 +218,7 @@ const Profiles = () => {
         setTimeout(() => {
             localStorage.setItem('c4k_current_profile', JSON.stringify(profile));
             window.dispatchEvent(new Event('c4k-profile-changed'));
-            window.location.hash = '#/';
+            navigateToAppHref('/');
         }, 400);
     }, [extractedAccents]);
 

@@ -1,6 +1,7 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 const path = require('path');
+const fs = require('fs');
 const os = require('os');
 const { execSync } = require('child_process');
 const webpack = require('webpack');
@@ -13,6 +14,11 @@ const { GenerateSW } = require('workbox-webpack-plugin');
 const packageJson = require('./package.json');
 
 const COMMIT_HASH = execSync('git rev-parse HEAD').toString().trim();
+const BUILD_CNAME_PATH = path.join(__dirname, 'build', 'CNAME');
+
+if (fs.existsSync(BUILD_CNAME_PATH) && fs.lstatSync(BUILD_CNAME_PATH).isDirectory()) {
+    fs.rmSync(BUILD_CNAME_PATH, { recursive: true, force: true });
+}
 
 const THREAD_LOADER = {
     loader: 'thread-loader',
@@ -185,6 +191,9 @@ module.exports = (env, argv) => ({
     devServer: {
         host: '0.0.0.0',
         static: false,
+        historyApiFallback: {
+            index: '/index.html'
+        },
         hot: false,
         server: 'https',
         liveReload: false
@@ -212,6 +221,7 @@ module.exports = (env, argv) => ({
         new webpack.ProgressPlugin(),
         new webpack.EnvironmentPlugin({
             SENTRY_DSN: null,
+            APP_PUBLIC_PATH: process.env.PUBLIC_PATH || '/',
             REACT_APP_CANON_PROXY_URL: null,
             ...env,
             SERVICE_WORKER_DISABLED: false,
@@ -262,6 +272,7 @@ module.exports = (env, argv) => ({
             template: './src/index.html',
             filename: 'index.html',
             inject: false,
+            is404Page: false,
             scriptLoading: 'blocking',
             faviconsPath: 'favicons',
             imagesPath: 'images',
@@ -271,6 +282,7 @@ module.exports = (env, argv) => ({
             template: './src/index.html',
             filename: '404.html',
             inject: false,
+            is404Page: true,
             scriptLoading: 'blocking',
             faviconsPath: 'favicons',
             imagesPath: 'images',

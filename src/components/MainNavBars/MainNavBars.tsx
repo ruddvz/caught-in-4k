@@ -2,20 +2,20 @@
 
 import React, { memo } from 'react';
 import classnames from 'classnames';
-import { HorizontalNavBar, VerticalNavBar, TopNavigationBar } from '../NavBar';
-// @ts-ignore
+import { TopNavigationBar } from '../NavBar';
+// @ts-expect-error stremio-icons package lacks TS declarations
 import Icon from '@stremio/stremio-icons/react';
-// @ts-ignore
+// @ts-expect-error button module is resolved through the stremio alias
 import Button from 'stremio/components/Button';
 import styles from './MainNavBars.less';
 
 const TABS = [
-    { id: 'board', label: 'Board', icon: 'home', href: '#/' },
-    { id: 'search', label: 'Search', icon: 'search', href: '#/search' },
-    { id: 'discover', label: 'Discover', icon: 'discover', href: '#/discover' },
-    { id: 'library', label: 'Library', icon: 'library', href: '#/library' },
-    { id: 'addons', label: 'Addons', icon: 'addons', href: '#/addons' },
-    { id: 'settings', label: 'Settings', icon: 'settings', href: '#/settings' },
+    { id: 'board', label: 'Board', icon: 'home', href: '/' },
+    { id: 'search', label: 'Search', icon: 'search', href: '/search' },
+    { id: 'discover', label: 'Discover', icon: 'discover', href: '/discover' },
+    { id: 'library', label: 'Library', icon: 'library', href: '/library' },
+    { id: 'addons', label: 'Addons', icon: 'addons', href: '/addons' },
+    { id: 'settings', label: 'Settings', icon: 'settings', href: '/settings' },
 ];
 
 type Props = {
@@ -31,6 +31,7 @@ const MainNavBars = memo(({ className, route, query, children }: Props) => {
             <TopNavigationBar
                 className={styles['top-nav-bar']}
                 route={route}
+                query={query}
                 tabs={TABS}
             />
             <div className={styles['nav-content-container']}>{children}</div>

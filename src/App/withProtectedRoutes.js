@@ -2,6 +2,7 @@
 
 const React = require('react');
 const { Intro } = require('stremio/routes');
+const { navigateToAppHref } = require('stremio/common/navigation');
 const { useProfile } = require('stremio/common');
 
 const withProtectedRoutes = (Component) => {
@@ -10,13 +11,13 @@ const withProtectedRoutes = (Component) => {
         const previousAuthRef = React.useRef(profile.auth);
         React.useEffect(() => {
             if (previousAuthRef.current !== null && profile.auth === null) {
-                window.location = '#/intro';
+                navigateToAppHref('/intro');
             }
             previousAuthRef.current = profile.auth;
         }, [profile]);
         const onRouteChange = React.useCallback((routeConfig) => {
             if (profile.auth !== null && routeConfig.component === Intro) {
-                window.location.replace('#/');
+                navigateToAppHref('/', { replace: true });
                 return true;
             }
         }, [profile]);

@@ -1,6 +1,7 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 const EventEmitter = require('eventemitter3');
+const { navigateToAppHref } = require('stremio/common/navigation');
 
 function KeyboardShortcuts() {
     let active = false;
@@ -15,32 +16,32 @@ function KeyboardShortcuts() {
         switch (event.code) {
             case 'Digit0': {
                 event.preventDefault();
-                window.location = '#/search';
+                navigateToAppHref('/search');
                 break;
             }
             case 'Digit1': {
                 event.preventDefault();
-                window.location = '#/';
+                navigateToAppHref('/');
                 break;
             }
             case 'Digit2': {
                 event.preventDefault();
-                window.location = '#/discover';
+                navigateToAppHref('/discover');
                 break;
             }
             case 'Digit3': {
                 event.preventDefault();
-                window.location = '#/library';
+                navigateToAppHref('/library');
                 break;
             }
             case 'Digit4': {
                 event.preventDefault();
-                window.location = '#/addons';
+                navigateToAppHref('/addons');
                 break;
             }
             case 'Digit5': {
                 event.preventDefault();
-                window.location = '#/settings';
+                navigateToAppHref('/settings');
                 break;
             }
             case 'Backspace': {

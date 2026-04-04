@@ -1,6 +1,7 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 const React = require('react');
+const { navigateToAppHref } = require('stremio/common/navigation');
 const { withCoreSuspender, useStreamingServer } = require('stremio/common');
 
 const DeepLinkHandler = () => {
@@ -11,7 +12,7 @@ const DeepLinkHandler = () => {
             if (type === 'Ready') {
                 const [, deepLinks] = content;
                 if (typeof deepLinks.metaDetailsVideos === 'string') {
-                    window.location = deepLinks.metaDetailsVideos;
+                    navigateToAppHref(deepLinks.metaDetailsVideos);
                 }
             }
         }

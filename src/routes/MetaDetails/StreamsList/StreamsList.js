@@ -7,6 +7,7 @@ const { useTranslation } = require('react-i18next');
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const { Button, Image, MultiselectMenu } = require('stremio/components');
 const { useServices } = require('stremio/services');
+const { navigateToAppHref } = require('stremio/common/navigation');
 const Stream = require('./Stream');
 const styles = require('./styles');
 const { usePlatform, useProfile } = require('stremio/common');
@@ -30,12 +31,12 @@ const StreamsList = ({ className, video, type, onEpisodeSearch, ...props }) => {
     }, [profile, video]);
     const backButtonOnClick = React.useCallback(() => {
         if (video.deepLinks && typeof video.deepLinks.metaDetailsVideos === 'string') {
-            window.location.replace(video.deepLinks.metaDetailsVideos + (
+            navigateToAppHref(video.deepLinks.metaDetailsVideos + (
                 typeof video.season === 'number' ?
                     `?${new URLSearchParams({ 'season': video.season })}`
                     :
                     null
-            ));
+            ), { replace: true });
         } else {
             window.history.back();
         }

@@ -7,9 +7,32 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Caught in 4K">
-    <link rel="icon" type="image/x-icon" href="<%= htmlWebpackPlugin.options.faviconsPath %>/favicon.ico">
-    <link rel="apple-touch-icon" href="images/pwa-icon-192.png">
-    <link rel="manifest" href="manifest.json" />
+    <% if (htmlWebpackPlugin.options.is404Page) { %>
+    <script>
+        (function(location) {
+            var publicPath = '<%= htmlWebpackPlugin.files.publicPath %>';
+            var basePath = publicPath === '/' ? '' : publicPath.replace(/\/$/, '');
+            var routePath = location.pathname;
+
+            if (basePath && routePath === basePath) {
+                routePath = '/';
+            } else if (basePath && routePath.indexOf(basePath + '/') === 0) {
+                routePath = routePath.slice(basePath.length);
+            }
+
+            var redirectPath = routePath + location.search + location.hash;
+
+            if (!redirectPath || redirectPath === '/' || redirectPath === '/404.html') {
+                return;
+            }
+
+            location.replace(basePath + '/?p=' + encodeURIComponent(redirectPath));
+        })(window.location);
+    </script>
+    <% } %>
+    <link rel="icon" type="image/x-icon" href="<%= htmlWebpackPlugin.files.publicPath %>favicons/favicon.ico">
+    <link rel="apple-touch-icon" href="<%= htmlWebpackPlugin.files.publicPath %>images/pwa-icon-192.png">
+    <link rel="manifest" href="<%= htmlWebpackPlugin.files.publicPath %>manifest.json" />
     <title>Caught in 4K</title>
     <meta name="description" content="Caught in 4K — Raw. Real. Rated. Watch movies and shows with real AI-powered takes.">
     <meta name="theme-color" content="#080610">

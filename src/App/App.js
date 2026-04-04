@@ -7,6 +7,7 @@ const { useTranslation } = require('react-i18next');
 const { Router } = require('stremio-router');
 const { Core, Shell, Chromecast, DragAndDrop, KeyboardShortcuts, ServicesProvider } = require('stremio/services');
 const { NotFound } = require('stremio/routes');
+const { addLocationChangeListener, getCurrentAppLocation, getNavigationTargetForEvent, navigateToAppHref } = require('stremio/common/navigation');
 const { FileDropProvider, PlatformProvider, ToastProvider, TooltipProvider, ShortcutsProvider, CONSTANTS, withCoreSuspender, useShell, useBinaryState } = require('stremio/common');
 const ServicesToaster = require('./ServicesToaster');
 const DeepLinkHandler = require('./DeepLinkHandler');
@@ -76,19 +77,35 @@ const App = () => {
     }, [toggleShortcutModal]);
 
     React.useEffect(() => {
-        let prevPath = window.location.hash.slice(1);
-        const onLocationHashChange = () => {
+        let prevPath = getCurrentAppLocation().href;
+        const onLocationChange = ({ href }) => {
             if (services.core.active) {
                 services.core.transport.analytics({
                     event: 'LocationPathChanged',
                     args: { prevPath }
                 });
             }
-            prevPath = window.location.hash.slice(1);
+            prevPath = href;
         };
-        window.addEventListener('hashchange', onLocationHashChange);
+
+        return addLocationChangeListener(onLocationChange);
+    }, [services.core]);
+    React.useEffect(() => {
+        const onDocumentClick = (event) => {
+            const navigationTarget = getNavigationTargetForEvent(event);
+
+            if (navigationTarget === null) {
+                return;
+            }
+
+            event.preventDefault();
+            navigateToAppHref(navigationTarget.href);
+        };
+
+        document.addEventListener('click', onDocumentClick);
+
         return () => {
-            window.removeEventListener('hashchange', onLocationHashChange);
+            document.removeEventListener('click', onDocumentClick);
         };
     }, []);
     React.useEffect(() => {
@@ -144,9 +161,9 @@ const App = () => {
                 if (protocol === CONSTANTS.PROTOCOL) {
                     if (hostname.length) {
                         const transportUrl = `https://${hostname}${pathname}`;
-                        window.location.href = `#/addons?addon=${encodeURIComponent(transportUrl)}`;
+                        navigateToAppHref(`/addons?addon=${encodeURIComponent(transportUrl)}`);
                     } else {
-                        window.location.href = `#${pathname}?${searchParams.toString()}`;
+                        navigateToAppHref(`${pathname}${searchParams.toString().length > 0 ? `?${searchParams.toString()}` : ''}`);
                     }
                 }
             } catch (e) {

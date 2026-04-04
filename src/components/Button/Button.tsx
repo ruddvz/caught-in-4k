@@ -1,8 +1,10 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
-import { createElement, forwardRef, useCallback } from 'react';
+import { createElement, forwardRef, useCallback, useMemo } from 'react';
 import classNames from 'classnames';
 import { LongPressEventType, useLongPress } from 'use-long-press';
+// @ts-expect-error navigation helpers are implemented in plain JS
+import { isAppHref, normalizeAppHref } from 'stremio/common/navigation';
 import styles from './Button.less';
 
 type Props = {
@@ -25,6 +27,13 @@ type Props = {
 
 const Button = forwardRef(({ className, href, disabled, children, onLongPress, onDoubleClick, ...props }: Props, ref) => {
     const longPress = useLongPress(onLongPress!, { detect: LongPressEventType.Pointer });
+    const normalizedHref = useMemo(() => {
+        if (typeof href !== 'string' || href.length === 0) {
+            return href;
+        }
+
+        return isAppHref(href, window.location.origin) ? normalizeAppHref(href, window.location.origin) : href;
+    }, [href]);
 
     const onKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
         if (typeof props.onKeyDown === 'function') {
@@ -55,13 +64,13 @@ const Button = forwardRef(({ className, href, disabled, children, onLongPress, o
     }, [props.onMouseDown]);
 
     return createElement(
-        typeof href === 'string' && href.length > 0 ? 'a' : 'div',
+        typeof normalizedHref === 'string' && normalizedHref.length > 0 ? 'a' : 'div',
         {
             tabIndex: 0,
             ...props,
             ref,
             className: classNames(className, styles['button-container'], 'specular-highlight', { 'disabled': disabled }),
-            href,
+            href: normalizedHref,
             onKeyDown,
             onMouseDown,
             onDoubleClick,

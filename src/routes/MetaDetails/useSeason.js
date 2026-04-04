@@ -1,6 +1,7 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 const React = require('react');
+const { buildAppHref, navigateToAppHref } = require('stremio/common/navigation');
 
 const useSeason = (urlParams, queryParams) => {
     const season = React.useMemo(() => {
@@ -16,7 +17,7 @@ const useSeason = (urlParams, queryParams) => {
             urlParams.path.slice(0, -1):
             urlParams.path;
 
-        window.location.replace(`#${path}?${nextQueryParams}`);
+        navigateToAppHref(buildAppHref(path, nextQueryParams), { replace: true });
     }, [urlParams, queryParams]);
     return [season, setSeason];
 };

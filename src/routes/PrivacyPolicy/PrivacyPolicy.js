@@ -1,6 +1,7 @@
 // Copyright (C) Caught in 4K
 
 const React = require('react');
+const { buildAppHref } = require('stremio/common/navigation');
 const { HorizontalNavBar } = require('stremio/components');
 const styles = require('./styles');
 
@@ -28,7 +29,7 @@ const PrivacyPolicy = () => {
                 <p>
                     Personal data terms used in this Policy carry the meanings defined under the General Data Protection Regulation
                     (EU) 2016/679 ("GDPR"). All other terms follow the definitions in our{' '}
-                    <a href="#/tos" className={styles['inline-link']}>Terms of Service</a>.
+                    <a href={buildAppHref('/tos')} className={styles['inline-link']}>Terms of Service</a>.
                     We did not invent this terminology — it is EU law, and it applies here.
                 </p>
 
@@ -177,7 +178,7 @@ const PrivacyPolicy = () => {
 
                 <div className={styles['legal-footer']}>
                     <p>Caught in 4K — your data is handled with the same care we give to a good film recommendation.</p>
-                    <p>Also see our <a href="#/tos" className={styles['footer-legal-link']}>Terms of Service</a>.</p>
+                    <p>Also see our <a href={buildAppHref('/tos')} className={styles['footer-legal-link']}>Terms of Service</a>.</p>
                 </div>
             </div>
         </div>

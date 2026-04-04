@@ -6,7 +6,7 @@ import { useServices } from 'stremio/services';
 import { usePlatform } from 'stremio/common';
 import useDataExport from './useDataExport';
 import styles from './General.less';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { navigateToAppHref } = require('stremio/common/navigation');
 const PinModal = require('../../Profiles/PinModal/PinModal');
 
 type Props = {
@@ -17,7 +17,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const { t } = useTranslation();
     const { core } = useServices();
     const platform = usePlatform();
-    const [dataExport, loadDataExport] = useDataExport();
+    const [dataExport] = useDataExport();
     const [traktAuthStarted, setTraktAuthStarted] = useState(false);
     const [deleteAccountPinOpen, setDeleteAccountPinOpen] = useState(false);
 
@@ -26,8 +26,8 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         return trakt && (Date.now() / 1000) < (trakt.created_at + trakt.expires_in);
     }, [profile.auth]);
 
-    const avatar = useMemo(() => (
-        `url('${require('/assets/images/anonymous.png')}')`
+    const avatarSrc = useMemo(() => (
+        require('/assets/images/anonymous.png')
     ), []);
 
     const onLogout = useCallback(() => {
@@ -95,7 +95,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                 />
             )}
             <div className={styles['account-header']}>
-                <div className={styles['master-avatar']} style={{ backgroundImage: avatar }} />
+                <img className={styles['master-avatar']} src={avatarSrc} alt="" />
                 <div className={styles['user-details']}>
                     <div className={styles['display-name']}>
                         Stranger.
@@ -123,7 +123,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                         </Button>
                     </>
                 ) : (
-                    <Button className={styles['login-button']} onClick={() => { window.location.hash = '#/intro'; }}>
+                    <Button className={styles['login-button']} onClick={() => { navigateToAppHref('/intro'); }}>
                         {t('LOG_IN')} / {t('SIGN_UP')}
                     </Button>
                 )}

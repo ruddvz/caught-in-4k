@@ -1,6 +1,7 @@
 // Copyright (C) Caught in 4K
 
 const React = require('react');
+const { buildAppHref } = require('stremio/common/navigation');
 const { HorizontalNavBar } = require('stremio/components');
 const styles = require('./styles');
 
@@ -114,7 +115,7 @@ const Tos = () => {
 
                 <div className={styles['legal-footer']}>
                     <p>Questions about these Terms? Contact us through the Settings page.</p>
-                    <p>Also see our <a href="#/privacy" className={styles['footer-legal-link']}>Privacy Policy</a>.</p>
+                    <p>Also see our <a href={buildAppHref('/privacy')} className={styles['footer-legal-link']}>Privacy Policy</a>.</p>
                 </div>
             </div>
         </div>

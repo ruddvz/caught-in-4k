@@ -2,6 +2,8 @@
 
 import React, { useCallback, useMemo, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+// @ts-expect-error navigation helpers are implemented in plain JS
+import { getCurrentAppLocation } from 'stremio/common/navigation';
 import { Button, NumberInput } from 'stremio/components';
 import styles from './EpisodePicker.less';
 
@@ -15,7 +17,7 @@ const EpisodePicker = ({ className, onSubmit }: Props) => {
     const { t } = useTranslation();
 
     const { initialSeason, initialEpisode } = useMemo(() => {
-        const splitPath = window.location.hash.split('/');
+        const splitPath = getCurrentAppLocation().pathname.split('/');
         if (splitPath[splitPath.length - 1] === '') {
             splitPath.pop();
         }

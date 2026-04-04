@@ -1,13 +1,15 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import classnames from 'classnames';
-// @ts-ignore
+// @ts-expect-error stremio-icons package lacks TS declarations
 import Icon from '@stremio/stremio-icons/react';
-// @ts-ignore
+// @ts-expect-error button module is resolved through the stremio alias
 import Button from 'stremio/components/Button';
-// @ts-ignore
+// @ts-expect-error app logo module is resolved through the stremio alias
 import AppLogo from 'stremio/components/AppLogo/AppLogo';
 import { useTranslation } from 'react-i18next';
-// @ts-ignore
+// @ts-expect-error navigation helpers are implemented in plain JS
+import { buildAppHref, navigateToAppHref } from 'stremio/common/navigation';
+// @ts-expect-error less modules are resolved by webpack
 import styles from './styles.less';
 import useFullscreen from '../../../common/useFullscreen';
 // Inline Tabler SVG icons — zero bundle cost (see NavIcons.tsx)
@@ -29,14 +31,8 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
     }, [toggleFullscreen]);
 
     const onSearchChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        const query = event.target.value;
-        const currentUrl = new URL(window.location.href);
-        if (query.length > 0) {
-            currentUrl.hash = `#/search?search=${encodeURIComponent(query)}`;
-        } else {
-            currentUrl.hash = '#/search';
-        }
-        window.location.hash = currentUrl.hash;
+        const nextQuery = event.target.value;
+        navigateToAppHref(nextQuery.length > 0 ? buildAppHref('/search', { search: nextQuery }) : '/search', { replace: true });
     }, []);
 
     const [currentProfile, setCurrentProfile] = React.useState<any>(null);
@@ -46,8 +42,8 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
         if (stored) {
             try {
                 setCurrentProfile(JSON.parse(stored));
-            } catch (e) {
-                console.error(e);
+            } catch (_error) {
+                setCurrentProfile(null);
             }
         } else {
             setCurrentProfile(null);
@@ -89,10 +85,14 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
         require('../../../../assets/images/avatars/c4k-avatar-20.png'),
     ];
 
+    const currentProfileAvatar = currentProfile && typeof currentProfile.avatarIndex === 'number'
+        ? (avatars[currentProfile.avatarIndex] || avatars[0])
+        : null;
+
     return (
         <nav className={classnames(className, styles['top-nav-bar-container'])}>
             <div className={styles['left-section']}>
-                <a href="#/" className={styles['logo-wrapper']} aria-label="Caught in 4K — Home">
+                <a href={buildAppHref('/')} className={styles['logo-wrapper']} aria-label="Caught in 4K — Home">
                     <AppLogo variant="compact" className={styles['logo']} />
                 </a>
             </div>
@@ -105,7 +105,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                             autoFocus
                             className={styles['search-input']}
                             placeholder={t('SEARCH')}
-                            defaultValue={query}
+                            value={query || ''}
                             onChange={onSearchChange}
                         />
                     </div>
@@ -142,14 +142,11 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
 
                 <Button
                     className={classnames(styles['action-btn'], styles['profile-btn'])}
-                    href="#/profiles"
+                    href="/profiles"
                     aria-label={currentProfile ? `Switch profile — ${currentProfile.name}` : 'Select profile'}
                 >
-                    {currentProfile ? (
-                        <div
-                            className={styles['profile-avatar']}
-                            style={{ backgroundImage: `url(${avatars[currentProfile.avatarIndex]})` }}
-                        />
+                    {currentProfileAvatar ? (
+                        <img className={styles['profile-avatar']} src={currentProfileAvatar} alt="" />
                     ) : (
                         <IconUser className={styles['icon']} strokeWidth={1.5} aria-hidden="true" />
                     )}

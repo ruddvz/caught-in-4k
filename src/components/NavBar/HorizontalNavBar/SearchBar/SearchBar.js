@@ -7,6 +7,7 @@ const debounce = require('lodash.debounce');
 const { useTranslation } = require('react-i18next');
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const { useRouteFocused } = require('stremio-router');
+const { buildAppHref, navigateToAppHref } = require('stremio/common/navigation');
 const Button = require('stremio/components/Button').default;
 const TextInput = require('stremio/components/TextInput').default;
 const useTorrent = require('stremio/common/useTorrent');
@@ -31,7 +32,7 @@ const SearchBar = React.memo(({ className, query, active }) => {
 
     const searchBarOnClick = React.useCallback(() => {
         if (!active) {
-            window.location = '#/search';
+            navigateToAppHref('/search');
         }
     }, [active]);
 
@@ -61,10 +62,10 @@ const SearchBar = React.memo(({ className, query, active }) => {
 
     const queryInputOnSubmit = React.useCallback((event) => {
         event.preventDefault();
-        const searchValue = `/search?search=${encodeURIComponent(event.target.value)}`;
+        const searchValue = event.target.value;
         setCurrentQuery(searchValue);
         if (searchInputRef.current && searchValue) {
-            window.location.hash = searchValue;
+            navigateToAppHref(buildAppHref('/search', { search: searchValue }));
             closeHistory();
         }
     }, []);
@@ -72,7 +73,7 @@ const SearchBar = React.memo(({ className, query, active }) => {
     const queryInputClear = React.useCallback(() => {
         searchInputRef.current.value = '';
         setCurrentQuery('');
-        window.location.hash = '/search';
+        navigateToAppHref('/search', { replace: true });
     }, []);
 
     const updateLocalSearchDebounced = React.useCallback(debounce((query) => {

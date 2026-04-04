@@ -5,6 +5,7 @@ const { useTranslation } = require('react-i18next');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const { useServices } = require('stremio/services');
+const { getCurrentAppLocation, navigateToAppHref } = require('stremio/common/navigation');
 const { withCoreSuspender } = require('stremio/common');
 const { VerticalNavBar, HorizontalNavBar, DelayedRenderer, Image, MetaPreview, ModalDialog } = require('stremio/components');
 const StreamsList = require('./StreamsList');
@@ -80,14 +81,14 @@ const MetaDetails = ({ urlParams, queryParams }) => {
     }, [setSeason]);
     const handleEpisodeSearch = React.useCallback((season, episode) => {
         const searchVideoHash = encodeURIComponent(`${urlParams.id}:${season}:${episode}`);
-        const url = window.location.hash;
+        const { href } = getCurrentAppLocation();
 
         const searchVideoPath = (urlParams.videoId === undefined || urlParams.videoId === null || urlParams.videoId === '') ?
-            url + (!url.endsWith('/') ? '/' : '') + searchVideoHash
-            : url.replace(encodeURIComponent(urlParams.videoId), searchVideoHash);
+            href + (!href.endsWith('/') ? '/' : '') + searchVideoHash
+            : href.replace(encodeURIComponent(urlParams.videoId), searchVideoHash);
 
-        window.location = searchVideoPath;
-    }, [urlParams, window.location]);
+        navigateToAppHref(searchVideoPath);
+    }, [urlParams]);
 
     const renderBackgroundImageFallback = React.useCallback(() => null, []);
     const renderBackground = React.useMemo(() => !!(

@@ -8,6 +8,7 @@ const { default: Icon } = require('@stremio/stremio-icons/react');
 const { Modal, useRouteFocused } = require('stremio-router');
 const { useServices } = require('stremio/services');
 const { useBinaryState } = require('stremio/common');
+const { navigateToAppHref } = require('stremio/common/navigation');
 const { Button, Checkbox } = require('stremio/components');
 const CredentialsTextInput = require('./CredentialsTextInput');
 const PasswordResetModal = require('./PasswordResetModal');
@@ -107,7 +108,7 @@ const Intro = ({ queryParams }) => {
     }, [state.email, state.password, core, t, openLoaderModal]);
 
     const loginAsGuest = React.useCallback(() => {
-        window.location = '#/';
+        navigateToAppHref('/');
     }, []);
 
     const signup = React.useCallback(() => {
@@ -153,7 +154,6 @@ const Intro = ({ queryParams }) => {
 
     const handleGoogleLogin = React.useCallback(() => {
         console.warn('Google auth not yet configured');
-        // eslint-disable-next-line no-alert
         alert('Google sign-in coming soon.');
     }, []);
 
@@ -213,7 +213,7 @@ const Intro = ({ queryParams }) => {
             switch (event) {
                 case 'UserAuthenticated': {
                     closeLoaderModal();
-                    if (routeFocused) { window.location = '#/'; }
+                    if (routeFocused) { navigateToAppHref('/'); }
                     break;
                 }
                 case 'Error': {

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useCallback, useRef } from 'react';
 import classNames from 'classnames';
+const { buildAppHref } = require('stremio/common/navigation');
 import { useProfile, withCoreSuspender } from 'stremio/common';
 import { MainNavBars } from 'stremio/components';
 import General from './General';
@@ -24,7 +25,7 @@ const Settings = () => {
     const profile = useProfile();
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // KEYBOARD NAVIGATION: Full support for ArrowUp / ArrowDown navigation 
+    // KEYBOARD NAVIGATION: Full support for ArrowUp / ArrowDown navigation
     // Through all list items and setting elements in the dashboard.
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
@@ -58,8 +59,8 @@ const Settings = () => {
     return (
         <MainNavBars className={styles['settings-container']} route={'settings'}>
             <div ref={containerRef} className={classNames(styles['settings-content'], 'animation-fade-in')}>
-                {/* 
-                     DASHBOARD GRID: Unified 35% / 65% Dual-column 
+                {/*
+                     DASHBOARD GRID: Unified 35% / 65% Dual-column
                      Vertical Rhythm Alignment per Board Hero actions offset
                 */}
                 <div className={styles['dashboard-grid']}>
@@ -83,13 +84,13 @@ const Settings = () => {
 
                 {/* GLOBAL FOOTER: Centered Soft Gray Legal Links */}
                 <div className={styles['settings-footer']}>
-                    <a href="#/tos" className={styles['footer-link']}>Terms of Service</a>
+                    <a href={buildAppHref('/tos')} className={styles['footer-link']}>Terms of Service</a>
                     <span className={styles['footer-separator']}>|</span>
-                    <a href="#/privacy" className={styles['footer-link']}>Privacy Policy</a>
+                    <a href={buildAppHref('/privacy')} className={styles['footer-link']}>Privacy Policy</a>
                 </div>
 
                 {/* PARKED LOGIC */}
-                <div style={{ display: 'none' }}>
+                <div className={styles['parked-content']}>
                     <Shortcuts />
                 </div>
             </div>

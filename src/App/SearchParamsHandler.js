@@ -2,6 +2,7 @@
 
 const React = require('react');
 const { deepEqual } = require('fast-equals');
+const { addLocationChangeListener, getCurrentAppLocation } = require('stremio/common/navigation');
 const { withCoreSuspender, useProfile, useToast } = require('stremio/common');
 const { useServices } = require('stremio/services');
 
@@ -12,15 +13,14 @@ const SearchParamsHandler = () => {
 
     const [searchParams, setSearchParams] = React.useState({});
 
-    const onLocationChange = () => {
-        const { origin, hash, search } = window.location;
-        const { searchParams } = new URL(`${origin}${hash.replace('#', '')}${search}`);
+    const onLocationChange = React.useCallback(() => {
+        const { queryString } = getCurrentAppLocation();
+        const currentSearchParams = Object.fromEntries(new URLSearchParams(queryString).entries());
 
         setSearchParams((previousSearchParams) => {
-            const currentSearchParams = Object.fromEntries(searchParams.entries());
             return deepEqual(previousSearchParams, currentSearchParams) ? previousSearchParams : currentSearchParams;
         });
-    };
+    }, []);
 
     React.useEffect(() => {
         const { streamingServerUrl } = searchParams;
@@ -53,9 +53,8 @@ const SearchParamsHandler = () => {
 
     React.useEffect(() => {
         onLocationChange();
-        window.addEventListener('hashchange', onLocationChange);
-        return () => window.removeEventListener('hashchange', onLocationChange);
-    }, []);
+        return addLocationChangeListener(onLocationChange);
+    }, [onLocationChange]);
 
     return null;
 };

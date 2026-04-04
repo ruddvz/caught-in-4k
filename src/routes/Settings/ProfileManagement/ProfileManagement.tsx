@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
+const { buildAppHref } = require('stremio/common/navigation');
 import styles from './ProfileManagement.less';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const PinModal = require('../../Profiles/PinModal/PinModal');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { hashPin } = require('../../Profiles/PinModal/PinModal');
 
 const LOCAL_STORAGE_KEY = 'c4k_profiles';
 const CURRENT_PROFILE_KEY = 'c4k_current_profile';
@@ -88,8 +86,8 @@ const ProfileManagement = () => {
 
     // Phase 6: delete requires master code 0000 only
     const handleDeleteConfirmed = useCallback((profileId: string) => {
-        setProfiles(prev => {
-            const updated = prev.filter(p => p.id !== profileId);
+        setProfiles((prev) => {
+            const updated = prev.filter((profile) => profile.id !== profileId);
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
             window.dispatchEvent(new Event('c4k-profile-changed'));
             return updated;
@@ -102,14 +100,14 @@ const ProfileManagement = () => {
         localStorage.setItem(`c4k_profile_pin_${profileId}`, pinHash);
         setPinState(null);
         // Force re-render by updating profiles state (triggers locked state recalc)
-        setProfiles(prev => [...prev]);
+        setProfiles((prev) => [...prev]);
     }, []);
 
     // Phase 1 Step 4: remove PIN from a profile
     const handlePinRemoved = useCallback((profileId: string) => {
         localStorage.removeItem(`c4k_profile_pin_${profileId}`);
         setPinState(null);
-        setProfiles(prev => [...prev]);
+        setProfiles((prev) => [...prev]);
     }, []);
 
     const getAvatarUrl = (p: SubProfile): string =>
@@ -133,10 +131,7 @@ const ProfileManagement = () => {
                     const locked = isProfileLocked(p.id);
                     return (
                         <div key={p.id} className={styles['profile-row']} onClick={() => handleSelect(p)}>
-                            <div
-                                className={styles['tiny-avatar']}
-                                style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
-                            />
+                            <img className={styles['tiny-avatar']} src={getAvatarUrl(p)} alt="" />
                             <span className={styles['profile-name']}>{p.name}</span>
 
                             {/* Lock / unlock icon button */}
@@ -185,7 +180,7 @@ const ProfileManagement = () => {
 
             {/* CONSTRAINT: Hide [+] Add Profile when exactly MAX_PROFILES */}
             {profiles.length < MAX_PROFILES && (
-                <a href="#/profiles" className={styles['add-profile-btn']}>
+                <a href={buildAppHref('/profiles')} className={styles['add-profile-btn']}>
                     <span className={styles['plus-icon']}>[+]</span> Add Profile
                 </a>
             )}

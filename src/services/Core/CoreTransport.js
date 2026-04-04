@@ -2,6 +2,7 @@
 
 const EventEmitter = require('eventemitter3');
 const Bridge = require('@stremio/stremio-core-web/bridge');
+const { getCurrentAppLocation } = require('stremio/common/navigation');
 
 function CoreTransport(args) {
     const events = new EventEmitter();
@@ -48,10 +49,10 @@ function CoreTransport(args) {
         return bridge.call(['getDebugState'], []);
     };
     this.dispatch = async function(action, field) {
-        return bridge.call(['dispatch'], [action, field, location.hash]);
+        return bridge.call(['dispatch'], [action, field, getCurrentAppLocation().href]);
     };
     this.analytics = async function(event) {
-        return bridge.call(['analytics'], [event, location.hash]);
+        return bridge.call(['analytics'], [event, getCurrentAppLocation().href]);
     };
     this.decodeStream = async function(stream) {
         return bridge.call(['decodeStream'], [stream]);

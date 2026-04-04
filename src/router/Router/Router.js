@@ -4,8 +4,8 @@ const React = require('react');
 const ReactIs = require('react-is');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-const UrlUtils = require('url');
 const { deepEqual } = require('fast-equals');
+const { addLocationChangeListener, getCurrentAppLocation, syncWindowLocation } = require('stremio/common/navigation');
 const { RouteFocusedProvider } = require('../RouteFocusedContext');
 const Route = require('../Route');
 const routeConfigForPath = require('./routeConfigForPath');
@@ -17,10 +17,10 @@ const Router = ({ className, onPathNotMatch, onRouteChange, ...props }) => {
         return Array(viewsConfig.length).fill(null);
     });
     React.useLayoutEffect(() => {
-        const onLocationHashChange = () => {
-            const { pathname, query } = UrlUtils.parse(window.location.hash.slice(1));
-            const queryParams = new URLSearchParams(typeof query === 'string' ? query : '');
-            const routeConfig = routeConfigForPath(viewsConfig, typeof pathname === 'string' ? pathname : '');
+        const onLocationChange = () => {
+            const { pathname, queryString } = getCurrentAppLocation();
+            const queryParams = new URLSearchParams(queryString);
+            const routeConfig = routeConfigForPath(viewsConfig, pathname);
             if (routeConfig === null) {
                 if (typeof onPathNotMatch === 'function') {
                     const component = onPathNotMatch();
@@ -39,7 +39,7 @@ const Router = ({ className, onPathNotMatch, onRouteChange, ...props }) => {
                 return;
             }
 
-            const urlParams = urlParamsForPath(routeConfig, typeof pathname === 'string' ? pathname : '');
+            const urlParams = urlParamsForPath(routeConfig, pathname);
             const routeViewIndex = viewsConfig.findIndex((vc) => vc.includes(routeConfig));
             const routeIndex = viewsConfig[routeViewIndex].findIndex((rc) => rc === routeConfig);
             const handled = typeof onRouteChange === 'function' && onRouteChange(routeConfig, urlParams, queryParams);
@@ -70,11 +70,13 @@ const Router = ({ className, onPathNotMatch, onRouteChange, ...props }) => {
                 });
             }
         };
-        window.addEventListener('hashchange', onLocationHashChange);
-        onLocationHashChange();
-        return () => {
-            window.removeEventListener('hashchange', onLocationHashChange);
-        };
+
+        const removeLocationChangeListener = addLocationChangeListener(onLocationChange);
+        if (!syncWindowLocation()) {
+            onLocationChange();
+        }
+
+        return removeLocationChangeListener;
     }, [onPathNotMatch, onRouteChange]);
     return (
         <div className={classnames(className, 'routes-container')}>

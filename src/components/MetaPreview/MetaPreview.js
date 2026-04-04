@@ -11,6 +11,7 @@ const { default: Image } = require('stremio/components/Image');
 const ModalDialog = require('stremio/components/ModalDialog');
 const SharePrompt = require('stremio/components/SharePrompt');
 const CONSTANTS = require('stremio/common/CONSTANTS');
+const { navigateToAppHref } = require('stremio/common/navigation');
 const routesRegexp = require('stremio/common/routesRegexp');
 const useBinaryState = require('stremio/common/useBinaryState');
 const useProfile = require('stremio/common/useProfile');
@@ -36,7 +37,7 @@ const MetaPreview = React.forwardRef(({ className, compact, name, logo, backgrou
     const profile = useProfile();
     const handleToggleInLibrary = React.useCallback(() => {
         if (!profile?.auth) {
-            window.location.hash = '#/intro';
+            navigateToAppHref('/intro');
             return;
         }
         if (typeof toggleInLibrary === 'function') {
