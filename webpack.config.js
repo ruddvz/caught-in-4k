@@ -28,7 +28,7 @@ const THREAD_LOADER = {
     },
 };
 
-const createPostcssLoader = () => ({
+const createTailwindPostcssLoader = () => ({
     loader: 'postcss-loader',
     options: {
         postcssOptions: {
@@ -58,6 +58,47 @@ const createPostcssLoader = () => ({
                             reduceIdents: false,
                             reduceInitial: false,
                             zindex: false,
+                        }
+                    ]
+                })
+            ]
+        }
+    }
+});
+
+const createLessPostcssLoader = () => ({
+    loader: 'postcss-loader',
+    options: {
+        postcssOptions: {
+            plugins: [
+                require('cssnano')({
+                    preset: [
+                        'advanced',
+                        {
+                            autoprefixer: {
+                                add: true,
+                                remove: true,
+                                flexbox: false,
+                                grid: false
+                            },
+                            cssDeclarationSorter: true,
+                            calc: false,
+                            colormin: false,
+                            convertValues: false,
+                            discardComments: {
+                                removeAll: true,
+                            },
+                            discardOverridden: false,
+                            discardUnused: false,
+                            mergeIdents: false,
+                            normalizeDisplayValues: false,
+                            normalizePositions: false,
+                            normalizeRepeatStyle: false,
+                            normalizeUnicode: false,
+                            normalizeUrl: false,
+                            reduceIdents: false,
+                            reduceInitial: false,
+                            zindex: false
                         }
                     ]
                 })
@@ -137,7 +178,7 @@ module.exports = (env, argv) => ({
                             importLoaders: 1,
                         }
                     },
-                    createPostcssLoader(),
+                    createTailwindPostcssLoader(),
                 ]
             },
             {
@@ -162,7 +203,7 @@ module.exports = (env, argv) => ({
                             }
                         }
                     },
-                    createPostcssLoader(),
+                    createLessPostcssLoader(),
                     {
                         loader: 'less-loader',
                         options: {
