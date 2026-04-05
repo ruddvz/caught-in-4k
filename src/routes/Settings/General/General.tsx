@@ -5,8 +5,11 @@ import { Button } from 'stremio/components';
 import { useServices } from 'stremio/services';
 import { usePlatform } from 'stremio/common';
 import useDataExport from './useDataExport';
+import DevicesWidget from './DevicesWidget';
 import styles from './General.less';
 const { navigateToAppHref } = require('stremio/common/navigation');
+const { useAuth } = require('stremio/common/AuthProvider');
+const { resolveSubscriptionPlanId } = require('stremio/common/subscriptionPlans');
 const PinModal = require('../../Profiles/PinModal/PinModal');
 
 type Props = {
@@ -17,6 +20,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const { t } = useTranslation();
     const { core } = useServices();
     const platform = usePlatform();
+    const auth = useAuth();
     const [dataExport] = useDataExport();
     const [traktAuthStarted, setTraktAuthStarted] = useState(false);
     const [deleteAccountPinOpen, setDeleteAccountPinOpen] = useState(false);
@@ -29,13 +33,20 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const avatarSrc = useMemo(() => (
         require('/assets/images/anonymous.png')
     ), []);
+    const devicePlanId = useMemo(
+        () => resolveSubscriptionPlanId(auth.subscription?.plan ?? null),
+        [auth.subscription]
+    );
+    const deviceUserId = auth.user?.id ?? auth.profile?.id ?? null;
+    const showDevicesWidget = Boolean(profile.auth && deviceUserId && devicePlanId);
 
-    const onLogout = useCallback(() => {
+    const onLogout = useCallback(async () => {
         core.transport.dispatch({
             action: 'Ctx',
             args: { action: 'Logout' }
         });
-    }, []);
+        await auth.signOut();
+    }, [auth, core]);
 
     const onChangePassword = useCallback(() => {
         platform.openExternal('https://www.strem.io/acc-management');
@@ -102,6 +113,13 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     </div>
                 </div>
             </div>
+
+            {showDevicesWidget ? (
+                <DevicesWidget
+                    planId={devicePlanId}
+                    userId={deviceUserId}
+                />
+            ) : null}
 
             <div className={styles['account-actions']}>
                 {profile.auth ? (

@@ -16,6 +16,7 @@ const ManagedAddonSync = require('./ManagedAddonSync');
 const { default: UpdaterBanner } = require('./UpdaterBanner');
 const { default: ShortcutsModal } = require('./ShortcutsModal');
 const { c4kAgents } = require('../services/BackgroundAgents/C4KBackgroundAgents');
+const { registerCurrentDevice } = require('../common/useDeviceSession');
 const ErrorDialog = require('./ErrorDialog');
 const withProtectedRoutes = require('./withProtectedRoutes');
 const routerViewsConfig = require('./routerViewsConfig');
@@ -62,6 +63,9 @@ const App = () => {
         } catch (_e) {
             // Keep default cyan accent on any error
         }
+
+        // Register this device for session tracking
+        registerCurrentDevice();
 
         // Start Background Agents
         c4kAgents.start();
@@ -258,27 +262,27 @@ const App = () => {
                             :
                             <PlatformProvider>
                                 <AuthProvider>
-                                <ToastProvider className={styles['toasts-container']}>
-                                    <TooltipProvider className={styles['tooltip-container']}>
-                                        <FileDropProvider className={styles['file-drop-container']}>
-                                            <ShortcutsProvider onShortcut={onShortcut}>
-                                                {
-                                                    shortcutModalOpen && <ShortcutsModal onClose={closeShortcutsModal}/>
-                                                }
-                                                <ServicesToaster />
-                                                <DeepLinkHandler />
-                                                <SearchParamsHandler />
-                                                <ManagedAddonSync />
-                                                <UpdaterBanner className={styles['updater-banner-container']} />
-                                                <RouterWithProtectedRoutes
-                                                    className={classnames(styles['router'], 'animation-fade-in')}
-                                                    viewsConfig={routerViewsConfig}
-                                                    onPathNotMatch={onPathNotMatch}
-                                                />
-                                            </ShortcutsProvider>
-                                        </FileDropProvider>
-                                    </TooltipProvider>
-                                </ToastProvider>
+                                    <ToastProvider className={styles['toasts-container']}>
+                                        <TooltipProvider className={styles['tooltip-container']}>
+                                            <FileDropProvider className={styles['file-drop-container']}>
+                                                <ShortcutsProvider onShortcut={onShortcut}>
+                                                    {
+                                                        shortcutModalOpen && <ShortcutsModal onClose={closeShortcutsModal}/>
+                                                    }
+                                                    <ServicesToaster />
+                                                    <DeepLinkHandler />
+                                                    <SearchParamsHandler />
+                                                    <ManagedAddonSync />
+                                                    <UpdaterBanner className={styles['updater-banner-container']} />
+                                                    <RouterWithProtectedRoutes
+                                                        className={classnames(styles['router'], 'animation-fade-in')}
+                                                        viewsConfig={routerViewsConfig}
+                                                        onPathNotMatch={onPathNotMatch}
+                                                    />
+                                                </ShortcutsProvider>
+                                            </FileDropProvider>
+                                        </TooltipProvider>
+                                    </ToastProvider>
                                 </AuthProvider>
                             </PlatformProvider>
                         :

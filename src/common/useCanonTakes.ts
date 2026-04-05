@@ -5,10 +5,9 @@
 
 import { useCallback } from 'react';
 
-const { generateCanonTake } = require('./pollinationsApi');
+const { generateCanonTake, fetchCanonTakeFromProxy } = require('./pollinationsApi');
 
 const CACHE_PREFIX = 'c4k_canon_take_';
-const PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || '';
 
 export const useCanonTakes = () => {
     const getCacheKey = (title, year) => `${CACHE_PREFIX}${title}_${year}`;
@@ -47,45 +46,30 @@ export const useCanonTakes = () => {
                 return cached.canonTake;
             }
 
-            // Primary: Pollinations.AI (free, no key needed)
+            const genresStr = Array.isArray(genres) ? genres.join(', ') : (genres || 'unknown');
+            let take = '';
+
+            // Pollinations.AI (free, no key needed)
             try {
-                const genresStr = Array.isArray(genres) ? genres.join(', ') : (genres || 'unknown');
-                const take = await generateCanonTake(title, year, genresStr, imdbRating);
-                if (take) {
-                    setCached(title, year, take);
-                    return take;
-                }
-            } catch (err) {
-                console.warn('Pollinations Canon Take failed, trying proxy:', err.message);
+                take = await generateCanonTake(title, year, genresStr, imdbRating);
+            } catch (_err) {
+                // Fall through to the configured proxy when Pollinations is unavailable
             }
 
-            // Fallback: Gemini proxy (if configured)
-            if (!PROXY_URL) return '';
-
-            try {
-                const response = await fetch(PROXY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title,
-                        year,
-                        genres: Array.isArray(genres) ? genres.join(', ') : genres,
-                        imdbRating,
-                    }),
-                });
-
-                if (!response.ok) throw new Error(`Proxy error: ${response.statusText}`);
-
-                const data = await response.json();
-                if (data.canonTake) {
-                    setCached(title, year, data.canonTake);
-                    return data.canonTake;
+            if (!take) {
+                try {
+                    take = await fetchCanonTakeFromProxy(title, year, genresStr, imdbRating);
+                } catch (_proxyErr) {
+                    // Both providers unavailable — CanonTakeBox will hide itself
                 }
-                return '';
-            } catch (error) {
-                console.error('Canon Take fetch error:', error);
-                return '';
             }
+
+            if (take) {
+                setCached(title, year, take);
+                return take;
+            }
+
+            return '';
         },
         [getCached, setCached]
     );

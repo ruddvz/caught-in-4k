@@ -52,6 +52,9 @@ const CanonTakeBox = ({ title, year, takeOverride }) => {
         </div>
     );
 
+    // Hide completely when timed out with no result — don't show broken/empty state
+    if (isTimedOut && !canonTake) return null;
+
     return (
         <div className={styles.canonTakeBox}>
             <div className={styles.header}>
@@ -73,8 +76,6 @@ const CanonTakeBox = ({ title, year, takeOverride }) => {
                         {canonTake}
                         <span className={styles.quoteMark}>{'"'}</span>
                     </React.Fragment>
-                ) : isTimedOut ? (
-                    <span className={styles.fallback}>{'No take yet — check back soon.'}</span>
                 ) : (
                     renderSkeleton()
                 )}

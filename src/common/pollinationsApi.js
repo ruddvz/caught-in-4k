@@ -8,6 +8,8 @@
  */
 
 const POLLINATIONS_TEXT_URL = 'https://text.pollinations.ai';
+const CANON_TAKE_PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || '';
+const hasCanonTakeProxy = Boolean(CANON_TAKE_PROXY_URL);
 
 const CANON_TAKE_SYSTEM = 'Write ONE sentence (max 15 words) that nails this movie\'s vibe for a Gen Z film platform. Be punchy, specific, honest — no generic filler. Tone must match genre: horror = dread, comedy = roast, action = hype, drama = dry wit, romance = knowing smirk, thriller = nervous energy. Low score = deserved shade, high score = earned hype. Never start with "This film" or "The movie". No em dashes. No AI tells. Write in lowercase where it fits. Reply ONLY with the sentence, nothing else.';
 
@@ -46,6 +48,39 @@ async function pollinationsText(systemPrompt, userPrompt, { seed, model } = {}) 
     }
 }
 
+async function fetchCanonTakeFromProxy(title, year, genres, imdbRating) {
+    if (!CANON_TAKE_PROXY_URL) {
+        return '';
+    }
+
+    const normalizedGenres = Array.isArray(genres) ? genres.join(', ') : (genres || 'unknown');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    try {
+        const response = await fetch(CANON_TAKE_PROXY_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title,
+                year,
+                genres: normalizedGenres,
+                imdbRating,
+            }),
+            signal: controller.signal,
+        });
+
+        if (!response.ok) {
+            throw new Error(`Canon Take proxy ${response.status}`);
+        }
+
+        const data = await response.json();
+        return typeof data?.canonTake === 'string' ? data.canonTake.trim() : '';
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
 /**
  * Generate a Canon Take for a movie
  */
@@ -73,4 +108,4 @@ function hashCode(str) {
     return Math.abs(hash);
 }
 
-module.exports = { generateCanonTake, generateSatisfactionOneLiner, pollinationsText };
+module.exports = { generateCanonTake, generateSatisfactionOneLiner, pollinationsText, fetchCanonTakeFromProxy, hasCanonTakeProxy };

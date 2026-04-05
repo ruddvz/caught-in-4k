@@ -6,9 +6,10 @@
  */
 
 const { SATISFACTION_TIERS } = require('../../common/useSatisfactionMeter');
-const { generateCanonTake } = require('../../common/pollinationsApi');
+const { generateCanonTake, fetchCanonTakeFromProxy, hasCanonTakeProxy } = require('../../common/pollinationsApi');
 
 const CACHE_PREFIX = 'c4k_canon_take_';
+const MAX_PROXY_RETRIES = 2;
 
 const getCached = (title, year) => {
     try {
@@ -32,36 +33,15 @@ const setCached = (title, year, canonTake) => {
 class C4KBackgroundAgents {
     constructor() {
         this.canonTakesQueue = new Map();
+        this.canonTakeRetryCounts = new Map();
         this.satisfactionData = new Map();
         this.isProcessing = false;
         this.interval = null;
-        this.proxyAvailable = false;
-        this.proxyChecked = false;
-        this.PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || '';
     }
 
     start() {
         if (this.interval) return;
-        // Start immediately — Pollinations doesn't need a proxy
         this.interval = setInterval(() => this._processQueues(), 5000);
-    }
-
-    async _checkProxy() {
-        // Legacy — only used if Pollinations fails and PROXY_URL is set
-        if (!this.PROXY_URL) {
-            this.proxyChecked = true;
-            return;
-        }
-        try {
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 3000);
-            const resp = await fetch(this.PROXY_URL, { method: 'OPTIONS', signal: controller.signal }).catch(() => null);
-            clearTimeout(timeout);
-            this.proxyAvailable = resp !== null;
-        } catch (_e) {
-            this.proxyAvailable = false;
-        }
-        this.proxyChecked = true;
     }
 
     stop() {
@@ -76,6 +56,7 @@ class C4KBackgroundAgents {
             const id = `${item.name}_${item.releaseInfo || 'unknown'}`;
             if (!this.canonTakesQueue.has(id)) {
                 this.canonTakesQueue.set(id, item);
+                this.canonTakeRetryCounts.set(id, 0);
             }
         });
     }
@@ -89,6 +70,7 @@ class C4KBackgroundAgents {
         const rest = new Map(this.canonTakesQueue);
         rest.delete(id);
         this.canonTakesQueue = new Map([[id, item], ...rest]);
+        this.canonTakeRetryCounts.set(id, this.canonTakeRetryCounts.get(id) || 0);
     }
 
     processSatisfactionMetrics(items = []) {
@@ -124,51 +106,56 @@ class C4KBackgroundAgents {
 
             const cached = getCached(item.name, item.releaseInfo);
             if (cached) {
+                this.canonTakeRetryCounts.delete(id);
                 continue;
             }
 
-            // Primary: Pollinations.AI (free, no key)
+            const genres = Array.isArray(item.genre) ? item.genre.join(', ') : (item.genre || 'unknown');
+            let take = '';
+            let shouldRetry = false;
+
+            // Pollinations.AI (free, no key)
             try {
-                const take = await generateCanonTake(
+                take = await generateCanonTake(
                     item.name,
                     item.releaseInfo,
-                    item.genre || 'unknown',
+                    genres,
                     item.vote_average || 0
                 );
-                if (take) {
-                    setCached(item.name, item.releaseInfo, take);
+            } catch (_e) {
+                shouldRetry = true;
+            }
+
+            if (!take) {
+                try {
+                    take = await fetchCanonTakeFromProxy(
+                        item.name,
+                        item.releaseInfo,
+                        genres,
+                        item.vote_average || 0
+                    );
+                    shouldRetry = false;
+                } catch (_e) {
+                    shouldRetry = true;
+                }
+            }
+
+            if (take) {
+                setCached(item.name, item.releaseInfo, take);
+                this.canonTakeRetryCounts.delete(id);
+                continue;
+            }
+
+            if (shouldRetry && hasCanonTakeProxy) {
+                const retries = this.canonTakeRetryCounts.get(id) || 0;
+                if (retries < MAX_PROXY_RETRIES) {
+                    this.canonTakeRetryCounts.set(id, retries + 1);
+                    this.canonTakesQueue.set(id, item);
                     continue;
                 }
-            } catch (_pollErr) {
-                // Pollinations failed — try proxy fallback
             }
 
-            // Fallback: Gemini proxy (if configured)
-            if (!this.PROXY_URL) continue;
-            if (!this.proxyChecked) await this._checkProxy();
-            if (!this.proxyAvailable) continue;
-
-            try {
-                const response = await fetch(this.PROXY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title: item.name,
-                        year: item.releaseInfo,
-                        genres: item.genre || 'unknown',
-                        imdbRating: item.vote_average || 0
-                    })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.canonTake) {
-                        setCached(item.name, item.releaseInfo, data.canonTake);
-                    }
-                }
-            } catch (_err) {
-                this.proxyAvailable = false;
-            }
+            this.canonTakeRetryCounts.delete(id);
         }
 
         this.isProcessing = false;

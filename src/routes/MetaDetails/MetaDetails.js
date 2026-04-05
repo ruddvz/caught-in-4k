@@ -160,6 +160,7 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                                             className={classnames(styles['meta-preview'], 'animation-fade-in')}
                                             name={metaDetails.metaItem.content.content.name}
                                             logo={metaDetails.metaItem.content.content.logo}
+                                            background={metaDetails.metaItem.content.content.background}
                                             runtime={metaDetails.metaItem.content.content.runtime}
                                             releaseInfo={metaDetails.metaItem.content.content.releaseInfo}
                                             released={metaDetails.metaItem.content.content.released}
@@ -173,7 +174,6 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                                             trailerStreams={metaDetails.metaItem.content.content.trailerStreams}
                                             inLibrary={metaDetails.metaItem.content.content.inLibrary}
                                             toggleInLibrary={metaDetails.metaItem.content.content.inLibrary ? removeFromLibrary : addToLibrary}
-                                            metaId={metaDetails.metaItem.content.content.id}
                                             ratingInfo={metaDetails.ratingInfo}
                                             voteAverage={(metaDetails.metaItem.content.content.voteAverage ?? metaDetails.metaItem.content.content.vote_average) || (metaDetails.metaItem.content.content.imdbRating ? parseFloat(metaDetails.metaItem.content.content.imdbRating) : null)}
                                         />

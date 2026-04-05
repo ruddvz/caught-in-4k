@@ -111,13 +111,18 @@
         .videos-list,
         .streams-list {
             grid-column: 2;
-            align-self: start;        // Size to content — no empty green void
-            max-height: calc(100vh - 5rem); // Cap at viewport; streams scroll inside
+            align-self: stretch;      // Fill full grid-row height so inner flex scroll works
             border-radius: var(--radius-card);
             background: var(--bg-surface-1);
             box-shadow: var(--shadow-soft);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            overflow: hidden;
+            // overflow: clip clips border-radius visually but does NOT create a block
+            // formatting context, so inner overflow-y: auto scroll areas work correctly
+            overflow: clip;
+            // Become a flex container so inner .videos-list-container/.streams-list-container
+            // can use flex: 1 to fill height and then their own overflow-y: auto to scroll
+            display: flex;
+            flex-direction: column;
         }
     }
 }
@@ -153,8 +158,7 @@
             .videos-list,
             .streams-list {
                 grid-column: 1;
-                align-self: stretch; // Full width in landscape single-column
-                max-height: none;
+                align-self: stretch;
                 min-height: 20rem;
             }
         }
@@ -200,11 +204,10 @@
 
             .videos-list,
             .streams-list {
-                align-self: stretch; // Full width on mobile
-                max-height: none;    // No viewport cap on mobile
+                align-self: stretch;
                 min-height: 18rem;
                 border-radius: var(--radius-card);
-                transition: none; // No animated height change
+                transition: none;
             }
         }
     }
