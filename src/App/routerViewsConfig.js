@@ -16,6 +16,10 @@ const routerViewsConfig = [
             component: routes.Intro
         },
         {
+            ...routesRegexp.shadersHeroPreview,
+            component: routes.ShadersHeroPreview
+        },
+        {
             ...routesRegexp.discover,
             component: routes.Discover
         },

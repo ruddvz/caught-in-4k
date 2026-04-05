@@ -28,6 +28,44 @@ const THREAD_LOADER = {
     },
 };
 
+const createPostcssLoader = () => ({
+    loader: 'postcss-loader',
+    options: {
+        postcssOptions: {
+            plugins: [
+                require('tailwindcss')({ config: path.join(__dirname, 'tailwind.config.js') }),
+                require('autoprefixer'),
+                require('cssnano')({
+                    preset: [
+                        'advanced',
+                        {
+                            autoprefixer: false,
+                            cssDeclarationSorter: true,
+                            calc: false,
+                            colormin: false,
+                            convertValues: false,
+                            discardComments: {
+                                removeAll: true,
+                            },
+                            discardOverridden: false,
+                            discardUnused: false,
+                            mergeIdents: false,
+                            normalizeDisplayValues: false,
+                            normalizePositions: false,
+                            normalizeRepeatStyle: false,
+                            normalizeUnicode: false,
+                            normalizeUrl: false,
+                            reduceIdents: false,
+                            reduceInitial: false,
+                            zindex: false,
+                        }
+                    ]
+                })
+            ]
+        }
+    }
+});
+
 threadLoader.warmup(
     THREAD_LOADER.options,
     [
@@ -84,6 +122,25 @@ module.exports = (env, argv) => ({
                 ]
             },
             {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            esModule: false
+                        }
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            esModule: false,
+                            importLoaders: 1,
+                        }
+                    },
+                    createPostcssLoader(),
+                ]
+            },
+            {
                 test: /\.less$/,
                 exclude: /node_modules/,
                 use: [
@@ -105,46 +162,7 @@ module.exports = (env, argv) => ({
                             }
                         }
                     },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            postcssOptions: {
-                                plugins: [
-                                    require('cssnano')({
-                                        preset: [
-                                            'advanced',
-                                            {
-                                                autoprefixer: {
-                                                    add: true,
-                                                    remove: true,
-                                                    flexbox: false,
-                                                    grid: false
-                                                },
-                                                cssDeclarationSorter: true,
-                                                calc: false,
-                                                colormin: false,
-                                                convertValues: false,
-                                                discardComments: {
-                                                    removeAll: true,
-                                                },
-                                                discardOverridden: false,
-                                                discardUnused: false,
-                                                mergeIdents: false,
-                                                normalizeDisplayValues: false,
-                                                normalizePositions: false,
-                                                normalizeRepeatStyle: false,
-                                                normalizeUnicode: false,
-                                                normalizeUrl: false,
-                                                reduceIdents: false,
-                                                reduceInitial: false,
-                                                zindex: false
-                                            }
-                                        ]
-                                    })
-                                ]
-                            }
-                        }
-                    },
+                    createPostcssLoader(),
                     {
                         loader: 'less-loader',
                         options: {
@@ -182,7 +200,7 @@ module.exports = (env, argv) => ({
         ]
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.json', '.less', '.wasm'],
+        extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.less', '.wasm'],
         alias: {
             'stremio': path.resolve(__dirname, 'src'),
             'stremio-router': path.resolve(__dirname, 'src', 'router')

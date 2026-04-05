@@ -17,6 +17,7 @@ const i18n = require('i18next');
 const { initReactI18next, I18nextProvider } = require('react-i18next');
 const stremioTranslations = require('stremio-translations');
 const caughtIn4KTranslations = require('./common/caught-in-4k-translations');
+require('./styles/tailwind.css');
 const App = require('./App');
 
 const allTranslations = stremioTranslations();

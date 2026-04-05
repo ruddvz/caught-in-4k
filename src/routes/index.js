@@ -9,6 +9,7 @@ const NotFound = require('./NotFound');
 const Search = require('./Search');
 const { default: Settings } = require('./Settings');
 const { default: SettingsShortcuts } = require('./SettingsShortcuts');
+const { default: ShadersHeroPreview } = require('./ShadersHeroPreview');
 const Player = require('./Player');
 const Intro = require('./Intro');
 const Tos = require('./Tos');
@@ -25,6 +26,7 @@ module.exports = {
     Search,
     Settings,
     SettingsShortcuts,
+    ShadersHeroPreview,
     Player,
     Intro,
     Tos,

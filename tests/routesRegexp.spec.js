@@ -15,6 +15,18 @@ describe('routesRegexp', () => {
         });
     });
 
+    describe('shaders hero preview route regexp', () => {
+        it('match /shaders-hero-preview', async () => {
+            expect(Array.from('/shaders-hero-preview'.match(routesRegexp.shadersHeroPreview.regexp)))
+                .toEqual(['/shaders-hero-preview']);
+        });
+
+        it('not match /shaders-hero-preview/', async () => {
+            expect('/shaders-hero-preview/'.match(routesRegexp.shadersHeroPreview.regexp))
+                .toBe(null);
+        });
+    });
+
     describe('board route regexp', () => {
         it('match empty path', async () => {
             expect(Array.from(''.match(routesRegexp.board.regexp)))

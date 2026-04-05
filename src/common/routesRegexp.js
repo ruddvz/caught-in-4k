@@ -5,6 +5,10 @@ const routesRegexp = {
         regexp: /^\/intro$/,
         urlParamsNames: []
     },
+    shadersHeroPreview: {
+        regexp: /^\/shaders-hero-preview$/,
+        urlParamsNames: []
+    },
     board: {
         regexp: /^\/?(?:board)?$/,
         urlParamsNames: []
