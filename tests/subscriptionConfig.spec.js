@@ -14,7 +14,7 @@ describe('subscription plans', () => {
     });
 
     it('keeps ids aligned with the supported fixed-term plans', () => {
-        expect(SUBSCRIPTION_PLANS.map((plan) => plan.id)).toEqual(['1mo', '3mo', '6mo']);
+        expect(SUBSCRIPTION_PLANS.map((plan) => plan.id)).toEqual(['1mo', '3mo', '6mo', '1mo-max', '3mo-max', '6mo-max']);
     });
 
     it('keeps display pricing aligned with the supported fixed-term plans', () => {
@@ -22,6 +22,9 @@ describe('subscription plans', () => {
             { id: '1mo', days: 30, price: '$4.99', priceCents: 499 },
             { id: '3mo', days: 90, price: '$13.49', priceCents: 1349 },
             { id: '6mo', days: 180, price: '$24.99', priceCents: 2499 },
+            { id: '1mo-max', days: 30, price: '$8.99', priceCents: 899 },
+            { id: '3mo-max', days: 90, price: '$24.99', priceCents: 2499 },
+            { id: '6mo-max', days: 180, price: '$44.99', priceCents: 4499 },
         ]);
     });
 
@@ -29,6 +32,7 @@ describe('subscription plans', () => {
         expect(resolveSubscriptionPlanId('basic')).toBe('1mo');
         expect(resolveSubscriptionPlanId('standard')).toBe('3mo');
         expect(resolveSubscriptionPlanId('pro')).toBe('6mo');
+        expect(resolveSubscriptionPlanId('max')).toBe('6mo-max');
         expect(resolveSubscriptionPlanId('3mo')).toBe('3mo');
     });
 

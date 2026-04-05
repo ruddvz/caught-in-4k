@@ -18,7 +18,7 @@ const {
     getSubscriptionPlan,
     resolveSubscriptionPlanId,
 } = require('stremio/common/subscriptionPlans');
-const { PricingCards } = require('@/components/ui/pricing-section');
+const { PricingInteraction } = require('@/components/ui/pricing-interaction');
 const styles = require('./styles.less');
 
 const APP_LOGO = require('/assets/images/logo1.png');
@@ -197,7 +197,7 @@ const Subscribe = () => {
                         Fixed-term access. Pick a plan, complete checkout, and your remaining days stay visible from the profile selector.
                     </p>
 
-                    <PricingCards
+                    <PricingInteraction
                         selectedPlanId={selectedPlan}
                         onSelectPlan={setSelectedPlan}
                     />
