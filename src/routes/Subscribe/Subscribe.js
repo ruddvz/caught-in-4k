@@ -15,10 +15,10 @@ const {
 const { isSupabaseConfigured } = require('stremio/common/supabaseClient');
 const {
     DEFAULT_SUBSCRIPTION_PLAN_ID,
-    SUBSCRIPTION_PLANS,
     getSubscriptionPlan,
     resolveSubscriptionPlanId,
 } = require('stremio/common/subscriptionPlans');
+const { PricingCards } = require('@/components/ui/pricing-section');
 const styles = require('./styles.less');
 
 const APP_LOGO = require('/assets/images/logo1.png');
@@ -194,39 +194,13 @@ const Subscribe = () => {
                     <span className={styles['eyebrow']}>Premium Access</span>
                     <h1 className={styles['hero-title']}>Keep C4K unlocked.</h1>
                     <p className={styles['hero-copy']}>
-                        Fixed-term access, a visible countdown on your profile, and a cleaner handoff between approval and billing.
+                        Fixed-term access. Pick a plan, complete checkout, and your remaining days stay visible from the profile selector.
                     </p>
 
-                    <div className={styles['hero-metrics']}>
-                        <div className={styles['metric-card']}>
-                            <span className={styles['metric-label']}>Current pick</span>
-                            <strong className={styles['metric-value']}>{selectedPlanConfig.label}</strong>
-                        </div>
-                        <div className={styles['metric-card']}>
-                            <span className={styles['metric-label']}>Duration</span>
-                            <strong className={styles['metric-value']}>{selectedPlanConfig.durationLabel}</strong>
-                        </div>
-                        <div className={styles['metric-card']}>
-                            <span className={styles['metric-label']}>Approval</span>
-                            <strong className={styles['metric-value']}>Admin reviewed</strong>
-                        </div>
-                    </div>
-
-                    <div className={styles['plan-spotlight']}>
-                        <div className={styles['spotlight-head']}>
-                            <span className={styles['spotlight-kicker']}>{selectedPlanConfig.badge || 'Flexible pick'}</span>
-                            <strong className={styles['spotlight-price']}>{selectedPlanConfig.price}</strong>
-                        </div>
-                        <p className={styles['spotlight-copy']}>
-                            Pick a fixed term, let approval clear, and the remaining days stay visible from the profile selector.
-                        </p>
-                    </div>
-
-                    <ul className={styles['feature-list']}>
-                        <li>Fixed-term access with no hidden pricing changes.</li>
-                        <li>Profile countdown stays visible after payment clears.</li>
-                        <li>Curated source access stays under admin control.</li>
-                    </ul>
+                    <PricingCards
+                        selectedPlanId={selectedPlan}
+                        onSelectPlan={setSelectedPlan}
+                    />
                 </section>
 
                 <section className={styles['action-panel']}>
@@ -245,32 +219,10 @@ const Subscribe = () => {
                         <div className={styles['config-section']}>
                             <h2 className={styles['heading']}>Live Preview Mode</h2>
                             <p className={styles['sub-text']}>
-                                This build can show the pricing and layout, but auth is not connected yet.
+                                Auth is not connected yet. Add the Supabase and billing env values to activate checkout.
                             </p>
-
-                            <div className={styles['plans-grid']}>
-                                {SUBSCRIPTION_PLANS.map((plan) => (
-                                    <div
-                                        key={plan.id}
-                                        className={classnames(styles['plan-card'], {
-                                            [styles['selected']]: selectedPlan === plan.id,
-                                            [styles['popular']]: plan.badge === 'Popular',
-                                        })}
-                                        onClick={() => setSelectedPlan(plan.id)}
-                                    >
-                                        {plan.badge && <span className={styles['plan-badge']}>{plan.badge}</span>}
-                                        <h3 className={styles['plan-label']}>{plan.label}</h3>
-                                        <div className={styles['plan-price']}>
-                                            <span className={styles['price-amount']}>{plan.price}</span>
-                                            <span className={styles['price-period']}>{plan.period}</span>
-                                        </div>
-                                        {plan.savings && <span className={styles['plan-savings']}>{plan.savings}</span>}
-                                    </div>
-                                ))}
-                            </div>
-
                             <div className={styles['config-note']}>
-                                Add the Supabase and billing env values to the Pages build when you are ready to activate it.
+                                Select a plan on the left to preview the design. Checkout stays disabled until the host is configured.
                             </div>
                         </div>
                     ) : isSubscribed ? (
@@ -379,33 +331,15 @@ const Subscribe = () => {
                         </div>
                     ) : (
                         <div className={styles['plans-section']}>
-                            <h2 className={styles['heading']}>Choose Your Term</h2>
-                            <p className={styles['sub-text']}>All plans are fixed-term and start counting down after payment clears.</p>
-
-                            <div className={styles['plans-grid']}>
-                                {SUBSCRIPTION_PLANS.map((plan) => (
-                                    <div
-                                        key={plan.id}
-                                        className={classnames(styles['plan-card'], {
-                                            [styles['selected']]: selectedPlan === plan.id,
-                                            [styles['popular']]: plan.badge === 'Popular',
-                                        })}
-                                        onClick={() => setSelectedPlan(plan.id)}
-                                    >
-                                        {plan.badge && <span className={styles['plan-badge']}>{plan.badge}</span>}
-                                        <h3 className={styles['plan-label']}>{plan.label}</h3>
-                                        <div className={styles['plan-price']}>
-                                            <span className={styles['price-amount']}>{plan.price}</span>
-                                            <span className={styles['price-period']}>{plan.period}</span>
-                                        </div>
-                                        {plan.savings && <span className={styles['plan-savings']}>{plan.savings}</span>}
-                                    </div>
-                                ))}
-                            </div>
+                            <h2 className={styles['heading']}>Ready to Checkout</h2>
+                            <p className={styles['sub-text']}>
+                                {selectedPlanConfig.label} &mdash; {selectedPlanConfig.price}{selectedPlanConfig.period}.
+                                Access starts counting down after payment clears.
+                            </p>
 
                             {!billingConfigured ? (
                                 <div className={styles['config-note']}>
-                                    Billing needs an external API host on this build. The static Pages site can show the UI, but checkout stays disabled until that host is configured.
+                                    Billing needs an external API host. Checkout stays disabled until that host is configured.
                                 </div>
                             ) : null}
                             {authError ? <p className={styles['error-text']}>{authError}</p> : null}
@@ -415,7 +349,7 @@ const Subscribe = () => {
                                 onClick={handleCheckout}
                                 disabled={loading || !billingConfigured}
                             >
-                                {loading ? 'Redirecting to checkout...' : billingConfigured ? 'Continue to Checkout' : 'Billing Unavailable'}
+                                {loading ? 'Redirecting to checkout...' : billingConfigured ? `Continue with ${selectedPlanConfig.label}` : 'Billing Unavailable'}
                             </Button>
                         </div>
                     )}
