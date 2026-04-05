@@ -17,11 +17,11 @@ const SUBSCRIPTION_PLANS = [
         label: '3 Months',
         days: 90,
         durationLabel: '90 days',
-        price: '$13.99',
-        priceCents: 1399,
+        price: '$13.49',
+        priceCents: 1349,
         period: '/quarter',
         badge: 'Popular',
-        savings: 'Save 7%',
+        savings: 'Save 10%',
     },
     {
         id: '6mo',
@@ -38,21 +38,41 @@ const SUBSCRIPTION_PLANS = [
 
 const DEFAULT_SUBSCRIPTION_PLAN_ID = '3mo';
 
+const SUBSCRIPTION_PLAN_ALIASES = {
+    basic: '1mo',
+    standard: '3mo',
+    pro: '6mo',
+};
+
 const SUBSCRIPTION_PLAN_MAP = SUBSCRIPTION_PLANS.reduce((accumulator, plan) => {
     accumulator[plan.id] = plan;
     return accumulator;
 }, {});
 
-const getSubscriptionPlan = (planId) => {
+const resolveSubscriptionPlanId = (planId) => {
     if (typeof planId !== 'string') {
         return null;
     }
 
-    return SUBSCRIPTION_PLAN_MAP[planId] || null;
+    const normalizedPlanId = planId.trim().toLowerCase();
+    if (!normalizedPlanId) {
+        return null;
+    }
+
+    return SUBSCRIPTION_PLAN_MAP[normalizedPlanId]
+        ? normalizedPlanId
+        : (SUBSCRIPTION_PLAN_ALIASES[normalizedPlanId] || null);
+};
+
+const getSubscriptionPlan = (planId) => {
+    const resolvedPlanId = resolveSubscriptionPlanId(planId);
+
+    return resolvedPlanId ? SUBSCRIPTION_PLAN_MAP[resolvedPlanId] : null;
 };
 
 module.exports = {
     DEFAULT_SUBSCRIPTION_PLAN_ID,
     SUBSCRIPTION_PLANS,
     getSubscriptionPlan,
+    resolveSubscriptionPlanId,
 };

@@ -18,6 +18,7 @@ const PrivacyPolicy = require('./PrivacyPolicy');
 const Profiles = require('./Profiles');
 const Subscribe = require('./Subscribe');
 const Admin = require('./Admin');
+const { default: PricingDemo } = require('./PricingDemo');
 
 module.exports = {
     Addons,
@@ -37,5 +38,6 @@ module.exports = {
     PrivacyPolicy,
     Profiles,
     Subscribe,
-    Admin
+    Admin,
+    PricingDemo
 };

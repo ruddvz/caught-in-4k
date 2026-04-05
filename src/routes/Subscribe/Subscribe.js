@@ -17,6 +17,7 @@ const {
     DEFAULT_SUBSCRIPTION_PLAN_ID,
     SUBSCRIPTION_PLANS,
     getSubscriptionPlan,
+    resolveSubscriptionPlanId,
 } = require('stremio/common/subscriptionPlans');
 const styles = require('./styles.less');
 
@@ -34,9 +35,18 @@ const readCheckoutState = () => {
     };
 };
 
+const readSelectedPlan = () => {
+    if (typeof window === 'undefined') {
+        return DEFAULT_SUBSCRIPTION_PLAN_ID;
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    return resolveSubscriptionPlanId(searchParams.get('plan')) || DEFAULT_SUBSCRIPTION_PLAN_ID;
+};
+
 const Subscribe = () => {
     const auth = useAuth();
-    const [selectedPlan, setSelectedPlan] = React.useState(DEFAULT_SUBSCRIPTION_PLAN_ID);
+    const [selectedPlan, setSelectedPlan] = React.useState(readSelectedPlan);
     const [loading, setLoading] = React.useState(false);
     const [authMode, setAuthMode] = React.useState('login');
     const [email, setEmail] = React.useState('');

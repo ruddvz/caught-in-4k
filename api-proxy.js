@@ -526,12 +526,12 @@ app.post('/api/stripe/create-checkout-session', async (req, res) => {
                 },
                 quantity: 1,
             }],
-      metadata: { userId, plan, subscriptionEmail: email },
-        success_url: buildAppUrl(appBaseUrl, '/subscribe', { success: '1' }),
-        cancel_url: buildAppUrl(appBaseUrl, '/subscribe', { cancelled: '1' }),
+      metadata: { userId, plan: planConfig.id, subscriptionEmail: email },
+        success_url: buildAppUrl(appBaseUrl, '/subscribe', { success: '1', plan: planConfig.id }),
+        cancel_url: buildAppUrl(appBaseUrl, '/subscribe', { cancelled: '1', plan: planConfig.id }),
         });
 
-        console.log(`[Stripe] Checkout session created for user=${userId} — plan: ${plan}`);
+        console.log(`[Stripe] Checkout session created for user=${userId} — plan: ${planConfig.id}`);
         return res.json({ url: session.url });
     } catch (err) {
         console.error('[Stripe] Checkout error:', err.message);
@@ -640,7 +640,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
 
             const { error } = await sb.from('subscriptions').insert({
                 user_id: userId,
-                plan,
+              plan: planConfig.id,
           price_cents: planConfig.priceCents,
                     stripe_payment_intent_id: paymentIntentId,
                 stripe_session_id: session.id,
@@ -652,7 +652,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
           throw error;
             }
 
-        console.log(`[Stripe Webhook] Subscription activated: user=${userId}, plan=${plan}, expires=${expiresAt.toISOString()}`);
+        console.log(`[Stripe Webhook] Subscription activated: user=${userId}, plan=${planConfig.id}, expires=${expiresAt.toISOString()}`);
       } catch (error) {
         console.error('[Stripe Webhook] Persistence error:', error);
         return res.status(500).json({ error: 'Failed to persist subscription update' });

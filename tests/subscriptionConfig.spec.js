@@ -5,6 +5,7 @@ const {
     DEFAULT_SUBSCRIPTION_PLAN_ID,
     SUBSCRIPTION_PLANS,
     getSubscriptionPlan,
+    resolveSubscriptionPlanId,
 } = require('../src/common/subscriptionPlans');
 
 describe('subscription plans', () => {
@@ -14,6 +15,21 @@ describe('subscription plans', () => {
 
     it('keeps ids aligned with the supported fixed-term plans', () => {
         expect(SUBSCRIPTION_PLANS.map((plan) => plan.id)).toEqual(['1mo', '3mo', '6mo']);
+    });
+
+    it('keeps display pricing aligned with the supported fixed-term plans', () => {
+        expect(SUBSCRIPTION_PLANS.map(({ id, days, price, priceCents }) => ({ id, days, price, priceCents }))).toEqual([
+            { id: '1mo', days: 30, price: '$4.99', priceCents: 499 },
+            { id: '3mo', days: 90, price: '$13.49', priceCents: 1349 },
+            { id: '6mo', days: 180, price: '$24.99', priceCents: 2499 },
+        ]);
+    });
+
+    it('resolves pricing CTA aliases to the supported plan ids', () => {
+        expect(resolveSubscriptionPlanId('basic')).toBe('1mo');
+        expect(resolveSubscriptionPlanId('standard')).toBe('3mo');
+        expect(resolveSubscriptionPlanId('pro')).toBe('6mo');
+        expect(resolveSubscriptionPlanId('3mo')).toBe('3mo');
     });
 
     it('returns null for unknown plans', () => {

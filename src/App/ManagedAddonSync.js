@@ -1,5 +1,5 @@
 const React = require('react');
-const { useModelState } = require('stremio/common');
+const { useModelState, withCoreSuspender } = require('stremio/common');
 const { useAuth } = require('stremio/common/AuthProvider');
 const { sanitizeManagedAddonUrl } = require('stremio/common/managedAddonSecurity');
 const { supabase, isSupabaseConfigured } = require('stremio/common/supabaseClient');
@@ -257,4 +257,4 @@ const ManagedAddonSync = () => {
     return null;
 };
 
-module.exports = ManagedAddonSync;
+module.exports = withCoreSuspender(ManagedAddonSync);

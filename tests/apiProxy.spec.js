@@ -37,6 +37,8 @@ describe('api proxy helpers', () => {
         expect(resolveCheckoutBaseUrl('https://preview.c4k.live', config)).toBe('https://preview.c4k.live/app');
         expect(buildAppUrl(resolveCheckoutBaseUrl('https://preview.c4k.live', config), '/subscribe', { success: '1' }))
             .toBe('https://preview.c4k.live/app/subscribe?success=1');
+        expect(buildAppUrl(resolveCheckoutBaseUrl('https://preview.c4k.live', config), '/subscribe', { cancelled: '1', plan: '6mo' }))
+            .toBe('https://preview.c4k.live/app/subscribe?cancelled=1&plan=6mo');
     });
 
     it('extracts bearer tokens from request headers', () => {
@@ -46,7 +48,7 @@ describe('api proxy helpers', () => {
 
     it('validates paid checkout sessions against plan price and verified email', () => {
         const paidSession = {
-            amount_subtotal: 1399,
+            amount_subtotal: 1349,
             currency: 'usd',
             customer_email: 'user@example.com',
             mode: 'payment',
@@ -55,19 +57,19 @@ describe('api proxy helpers', () => {
 
         expect(validateCheckoutSessionForProvisioning({
             expectedEmail: 'user@example.com',
-            planConfig: { priceCents: 1399 },
+            planConfig: { priceCents: 1349 },
             session: paidSession,
         })).toEqual({ reason: null, valid: true });
 
         expect(validateCheckoutSessionForProvisioning({
             expectedEmail: 'user@example.com',
-            planConfig: { priceCents: 1399 },
+            planConfig: { priceCents: 1349 },
             session: { ...paidSession, payment_status: 'unpaid' },
         }).valid).toBe(false);
 
         expect(validateCheckoutSessionForProvisioning({
             expectedEmail: 'user@example.com',
-            planConfig: { priceCents: 1399 },
+            planConfig: { priceCents: 1349 },
             session: { ...paidSession, amount_subtotal: 499 },
         }).valid).toBe(false);
     });
@@ -118,11 +120,11 @@ describe('api proxy helpers', () => {
         expect(shouldCancelSubscriptionForStripeEvent('checkout.session.completed')).toBe(false);
         expect(shouldRevokeAccessForStripeEvent({
             type: 'charge.refunded',
-            data: { object: { amount: 1399, amount_refunded: 500, refunded: false } },
+            data: { object: { amount: 1349, amount_refunded: 500, refunded: false } },
         })).toBe(false);
         expect(shouldRevokeAccessForStripeEvent({
             type: 'charge.refunded',
-            data: { object: { amount: 1399, amount_refunded: 1399, refunded: true } },
+            data: { object: { amount: 1349, amount_refunded: 1349, refunded: true } },
         })).toBe(true);
     });
 });

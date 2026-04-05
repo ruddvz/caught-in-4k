@@ -82,6 +82,10 @@ const routerViewsConfig = [
         {
             ...routesRegexp.admin,
             component: routes.Admin
+        },
+        {
+            ...routesRegexp.pricingDemo,
+            component: routes.PricingDemo
         }
     ]
 ];

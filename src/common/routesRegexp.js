@@ -76,6 +76,10 @@ const routesRegexp = {
     admin: {
         regexp: /^\/admin$/,
         urlParamsNames: []
+    },
+    pricingDemo: {
+        regexp: /^\/pricing-demo$/,
+        urlParamsNames: []
     }
 };
 
