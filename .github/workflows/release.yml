@@ -27,12 +27,12 @@ jobs:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: pnpm build
       - name: Zip build artifact
-        run: zip -r stremio-web.zip ./build
+        run: zip -r c4k-live.zip ./build
       - name: Upload build artifact to GitHub release assets
         uses: svenstaro/upload-release-action@2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: stremio-web.zip
-          asset_name: stremio-web.zip
+          file: c4k-live.zip
+          asset_name: c4k-live.zip
           tag: ${{ github.ref }}
           overwrite: true

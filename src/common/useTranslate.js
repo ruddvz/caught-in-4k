@@ -34,7 +34,7 @@ const useTranslate = () => {
         const defaultValue = fallback ?? value.charAt(0).toUpperCase() + value.slice(1);
         try {
             return t(key, { defaultValue });
-        } catch (e) {
+        } catch (_error) {
             return defaultValue;
         }
     }, [t]);

@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Caught in 4K (C4K)** — Gen Z-themed, AI-powered Stremio Web fork. Streams movies/shows via Stremio add-ons, enriched with AI-generated "Canon Takes" (Gemini-powered commentary).
+**Caught in 4K (C4K)** — Gen Z-themed, AI-powered streaming platform. Streams movies and shows with AI-generated "Canon Takes" (Pollinations primary, Gemini fallback).
 
 ## Token Efficiency — MANDATORY
 
@@ -48,7 +48,7 @@ This project uses the **C4K Agent Ecosystem** — 4 specialized agents that comm
 - **Backend proxy**: `api-proxy.js` — Express, proxies Gemini API
 - **Build**: Webpack → `build/`
 - **Deploy**: GitHub Pages (`gh-pages` branch)
-- **WASM core**: Stremio core via `useModelState` + `withCoreSuspender`
+- **WASM core**: C4K runtime backed by `@stremio/stremio-core-web` via `useModelState` + `withCoreSuspender`
 
 ## Commands (always use RTK prefix)
 
@@ -76,7 +76,7 @@ src/
 ## Key Rules
 
 - **API keys**: Never in frontend code — only in `api-proxy.js` via `process.env`
-- **Proxy URL**: `REACT_APP_CANON_PROXY_URL` in `.env`
+- **Proxy URL**: export `REACT_APP_CANON_PROXY_URL` in the shell or CI environment when the Gemini proxy path is needed
 - **i18n**: Wrap user-facing strings with `useTranslate()` hook
 - **Immutability**: Create new objects, never mutate
 - **No inline styles**: Always use LESS modules

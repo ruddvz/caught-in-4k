@@ -35,7 +35,7 @@ Before touching any code, do the following in order:
 Name: Caught in 4K (C4K)
 Tagline: Raw. Real. Rated. (always with periods, always this exact casing)
 What it is: A movie/show streaming catalog with AI-powered Canon Takes.
-It is NOT described as a "Stremio fork" in any user-facing text. It is its own product.
+It is NOT described as a fork of another product in any user-facing text. It is its own product.
 Stack: React 18 + TypeScript + LESS (CSS Modules) + Webpack 5
 Deploy: GitHub Pages via GitHub Actions (gh-pages branch)
 Run locally: pnpm start → http://localhost:3000
@@ -49,7 +49,7 @@ PRIMARY: Pollinations.AI — free, no API key required, called directly from fro
   Flow: C4KBackgroundAgents → pollinationsApi.js → https://text.pollinations.ai → localStorage cache → CanonTakeBox
 
 FALLBACK ONLY: api-proxy.js (Express, port 3001) → Gemini API.
-  Only activates if Pollinations fails AND REACT_APP_CANON_PROXY_URL is set in .env.
+  Only activates if Pollinations fails AND REACT_APP_CANON_PROXY_URL is exported in the shell or CI environment.
   If that env variable is not set, Gemini is never called at all.
 
 Do NOT treat Gemini as the main API.
@@ -142,7 +142,7 @@ Examples:
     <meta property="og:title" content="Caught in 4K">
     <meta property="og:description" content="Raw. Real. Rated.">
     <meta property="og:image" content="/assets/images/[og-image].png">
-- Do not reference "Stremio" in any user-facing text, meta tag, or page title.
+- Do not reference the legacy product name (`Stremio`) in any user-facing text, meta tag, or page title.
 - Page title format: "Caught in 4K" or "Caught in 4K — [Page Name]"
 
 ---
@@ -156,7 +156,7 @@ Examples:
 - Do not change any route URL paths — only component internals.
 - Do not touch the navbar (TopNavigationBar) unless it is the explicit subject of this task.
 - Do not add new npm packages without flagging them and explaining why they are needed.
-- Do not reference "Stremio", "fork", "add-ons", or "Gemini API key" in any user-facing text.
+- Do not reference the legacy product name (`Stremio`), "fork", "add-ons", or "Gemini API key" in any user-facing text.
 - Do not leave placeholder comments like "// add logic here" — implement fully or flag it explicitly.
 - Do not rewrite working code while fixing something else — minimum footprint changes only.
 
@@ -225,14 +225,14 @@ Examples:
 | All route regex patterns | `src/common/routesRegexp.js` |
 | C4K translation strings | `src/common/caught-in-4k-translations.js` |
 | Webpack config | `webpack.config.js` |
-| Environment variables | `.env.local` (never commit) / `.env.example` |
+| Environment variables | shell / CI exports + `.env.example` |
 
 ### AI & Backend
 | What | File | Notes |
 |------|------|-------|
 | Canon Takes — PRIMARY | `src/common/pollinationsApi.js` | Pollinations.AI, free, no key |
 | Canon Takes — background queue | `src/services/BackgroundAgents/C4KBackgroundAgents.js` | Fetch + cache logic |
-| Canon Takes — fallback | `api-proxy.js` | Gemini, only if env var is set |
+| Canon Takes — fallback path | `api-proxy.js` | Gemini proxy, only if env var is exported |
 | Canon Takes — hook | `src/common/useCanonTakes.ts` | State management |
 | Satisfaction meter | `src/common/useSatisfactionMeter.ts` | Score + tier logic |
 | AI image generation | `src/common/pollinationsApi.js` | `generateImage()` for poster fallbacks |

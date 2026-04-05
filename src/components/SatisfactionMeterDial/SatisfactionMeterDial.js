@@ -5,10 +5,10 @@ const PropTypes = require('prop-types');
 const styles = require('./styles');
 
 const TIERS = [
-    { min: 0,  max: 39,  name: 'Certified Flop', color: '#ff3b30' },
-    { min: 40, max: 59,  name: 'Mid at Best',     color: '#ff9f0a' },
-    { min: 60, max: 74,  name: 'Worth a Watch',   color: '#ffd60a' },
-    { min: 75, max: 89,  name: 'Slaps Hard',      color: '#30d158' },
+    { min: 0, max: 39, name: 'Certified Flop', color: '#ff3b30' },
+    { min: 40, max: 59, name: 'Mid at Best', color: '#ff9f0a' },
+    { min: 60, max: 74, name: 'Worth a Watch', color: '#ffd60a' },
+    { min: 75, max: 89, name: 'Slaps Hard', color: '#30d158' },
     { min: 90, max: 100, name: 'Absolute Cinema', color: '#00f0ff' },
 ];
 
@@ -99,21 +99,21 @@ const SatisfactionMeterDial = ({ score, imdbRaw, rtScore, mcScore, canonTake }) 
 
             {/* 3 rating pills — only shown if data available */}
             <div className={styles['ratingPills']}>
-                {imdbRaw != null ? (
+                {imdbRaw !== null && imdbRaw !== undefined ? (
                     <span className={styles['ratingPill']} data-service="imdb">
                         <span className={styles['ratingIcon']}>{'★'}</span>
                         <span className={styles['ratingValue']}>{imdbRaw}</span>
                         <span className={styles['ratingLabel']}>{'IMDb'}</span>
                     </span>
                 ) : null}
-                {rtScore != null && !isNaN(rtScore) ? (
+                {rtScore !== null && rtScore !== undefined && !isNaN(rtScore) ? (
                     <span className={styles['ratingPill']} data-service="rt">
                         <span className={styles['ratingIcon']}>{'🍅'}</span>
                         <span className={styles['ratingValue']}>{`${rtScore}%`}</span>
                         <span className={styles['ratingLabel']}>{'RT'}</span>
                     </span>
                 ) : null}
-                {mcScore != null && !isNaN(mcScore) ? (
+                {mcScore !== null && mcScore !== undefined && !isNaN(mcScore) ? (
                     <span className={styles['ratingPill']} data-service="mc">
                         <span className={styles['ratingIcon']}>{'Ⓜ'}</span>
                         <span className={styles['ratingValue']}>{mcScore}</span>

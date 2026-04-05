@@ -3,6 +3,7 @@
 const React = require('react');
 const { useModelState } = require('stremio/common');
 const { useServices } = require('stremio/services');
+const { getSearchQuery } = require('./searchQuery');
 
 const useSearch = (queryParams) => {
     const { core } = useServices();
@@ -32,8 +33,8 @@ const useSearch = (queryParams) => {
     //     };
     // }, [queryParams.get('search')]);
     const action = React.useMemo(() => {
-        const query = queryParams.get('search') ?? queryParams.get('query');
-        if (query?.length > 0) {
+        const query = getSearchQuery(queryParams);
+        if (query !== null) {
             return {
                 action: 'Load',
                 args: {

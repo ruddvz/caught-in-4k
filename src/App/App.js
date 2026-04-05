@@ -12,12 +12,14 @@ const { FileDropProvider, PlatformProvider, ToastProvider, TooltipProvider, Shor
 const ServicesToaster = require('./ServicesToaster');
 const DeepLinkHandler = require('./DeepLinkHandler');
 const SearchParamsHandler = require('./SearchParamsHandler');
+const ManagedAddonSync = require('./ManagedAddonSync');
 const { default: UpdaterBanner } = require('./UpdaterBanner');
 const { default: ShortcutsModal } = require('./ShortcutsModal');
 const { c4kAgents } = require('../services/BackgroundAgents/C4KBackgroundAgents');
 const ErrorDialog = require('./ErrorDialog');
 const withProtectedRoutes = require('./withProtectedRoutes');
 const routerViewsConfig = require('./routerViewsConfig');
+const { AuthProvider } = require('stremio/common/AuthProvider');
 const styles = require('./styles');
 
 const RouterWithProtectedRoutes = withCoreSuspender(withProtectedRoutes(Router));
@@ -255,6 +257,7 @@ const App = () => {
                             <ErrorDialog className={styles['error-container']} />
                             :
                             <PlatformProvider>
+                                <AuthProvider>
                                 <ToastProvider className={styles['toasts-container']}>
                                     <TooltipProvider className={styles['tooltip-container']}>
                                         <FileDropProvider className={styles['file-drop-container']}>
@@ -265,6 +268,7 @@ const App = () => {
                                                 <ServicesToaster />
                                                 <DeepLinkHandler />
                                                 <SearchParamsHandler />
+                                                <ManagedAddonSync />
                                                 <UpdaterBanner className={styles['updater-banner-container']} />
                                                 <RouterWithProtectedRoutes
                                                     className={classnames(styles['router'], 'animation-fade-in')}
@@ -275,6 +279,7 @@ const App = () => {
                                         </FileDropProvider>
                                     </TooltipProvider>
                                 </ToastProvider>
+                                </AuthProvider>
                             </PlatformProvider>
                         :
                         <div className={styles['loader-container']} />

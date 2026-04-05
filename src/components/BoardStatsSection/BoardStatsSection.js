@@ -7,12 +7,15 @@
 const React = require('react');
 const { useMemo } = React;
 const PropTypes = require('prop-types');
+const { useTranslation } = require('react-i18next');
 const SatisfactionMeterBar = require('../SatisfactionMeterBar/SatisfactionMeterBar');
 const SatisfactionMeterLegend = require('../SatisfactionMeterLegend/SatisfactionMeterLegend');
 const { useSatisfactionMeter } = require('../../common/useSatisfactionMeter');
 const styles = require('./styles.less');
 
 const BoardStatsSection = ({ metaRows = [] }) => {
+    const { t } = useTranslation();
+
     const averageRating = useMemo(() => {
         if (!metaRows || metaRows.length === 0) {
             return null;
@@ -53,7 +56,7 @@ const BoardStatsSection = ({ metaRows = [] }) => {
         <div className={styles.statsSection}>
             <div className={styles.content}>
                 <div className={styles.meterContainer}>
-                    <h2 className={styles.heading}>{'How\'s the vibe?'}</h2>
+                    <h2 className={styles.heading}>{t('C4K_BOARD_VIBE_HEADING', { defaultValue: 'How\'s the vibe?' })}</h2>
                     <SatisfactionMeterBar tier={tier} size="global" animated={true} />
                 </div>
                 <SatisfactionMeterLegend />

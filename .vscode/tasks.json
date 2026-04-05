@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start C4K Dev Server",
+			"type": "shell",
+			"command": "rtk npm run start",
+			"isBackground": true,
+			"group": "build"
+		}
+	]
+}

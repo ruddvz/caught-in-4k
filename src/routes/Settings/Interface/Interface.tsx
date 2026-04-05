@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { useServices } from 'stremio/services';
 import { Toggle } from 'stremio/components';
-import { Section, Option } from '../components';
+import { Option } from '../components';
 import useInterfaceOptions from './useInterfaceOptions';
 import styles from './Interface.less';
 

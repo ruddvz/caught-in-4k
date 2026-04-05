@@ -15,6 +15,18 @@ describe('routesRegexp', () => {
         });
     });
 
+    describe('auth preview route regexp', () => {
+        it('match /auth-preview', async () => {
+            expect(Array.from('/auth-preview'.match(routesRegexp.authPreview.regexp)))
+                .toEqual(['/auth-preview']);
+        });
+
+        it('not match /auth-preview/', async () => {
+            expect('/auth-preview/'.match(routesRegexp.authPreview.regexp))
+                .toBe(null);
+        });
+    });
+
     describe('shaders hero preview route regexp', () => {
         it('match /shaders-hero-preview', async () => {
             expect(Array.from('/shaders-hero-preview'.match(routesRegexp.shadersHeroPreview.regexp)))
@@ -337,6 +349,33 @@ describe('routesRegexp', () => {
 
         it('not match /settings/', async () => {
             expect('/settings/'.match(routesRegexp.settings.regexp))
+                .toBe(null);
+        });
+    });
+
+    describe('profiles and subscription route regexp', () => {
+        it('match /profiles', async () => {
+            expect(Array.from('/profiles'.match(routesRegexp.profiles.regexp)))
+                .toEqual(['/profiles']);
+        });
+
+        it('match /subscribe', async () => {
+            expect(Array.from('/subscribe'.match(routesRegexp.subscribe.regexp)))
+                .toEqual(['/subscribe']);
+        });
+
+        it('match /admin', async () => {
+            expect(Array.from('/admin'.match(routesRegexp.admin.regexp)))
+                .toEqual(['/admin']);
+        });
+
+        it('not match /subscribe/', async () => {
+            expect('/subscribe/'.match(routesRegexp.subscribe.regexp))
+                .toBe(null);
+        });
+
+        it('not match /admin/', async () => {
+            expect('/admin/'.match(routesRegexp.admin.regexp))
                 .toBe(null);
         });
     });

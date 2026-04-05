@@ -14,7 +14,6 @@ const TABS = [
     { id: 'search', label: 'Search', icon: 'search', href: '/search' },
     { id: 'discover', label: 'Discover', icon: 'discover', href: '/discover' },
     { id: 'library', label: 'Library', icon: 'library', href: '/library' },
-    { id: 'addons', label: 'Addons', icon: 'addons', href: '/addons' },
     { id: 'settings', label: 'Settings', icon: 'settings', href: '/settings' },
 ];
 

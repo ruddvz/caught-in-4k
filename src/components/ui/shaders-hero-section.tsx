@@ -3,7 +3,7 @@ import { ArrowUpRight, Clapperboard, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { MeshGradient, PulsingBorder } from '@paper-design/shaders-react';
 
-import useTranslate from 'stremio/common/useTranslate';
+import useTranslate from '@/common/useTranslate';
 
 interface ShaderBackgroundProps {
     children: React.ReactNode;
@@ -36,13 +36,13 @@ export function ShaderBackground({ children }: ShaderBackgroundProps) {
         <div ref={containerRef} className='relative min-h-[100dvh] w-full overflow-hidden bg-black'>
             <MeshGradient
                 className='absolute inset-0 h-full w-full'
-                colors={['#000000', '#8b4513', '#ffffff', '#3e2723', '#5d4037']}
+                colors={['#000000', '#8B4513', '#ffffff', '#3E2723', '#5D4037']}
                 speed={isActive ? 0.4 : 0.3}
                 backgroundColor='#000000'
             />
             <MeshGradient
                 className={`absolute inset-0 h-full w-full transition-opacity duration-500 ${isActive ? 'opacity-80' : 'opacity-60'}`}
-                colors={['#000000', '#ffffff', '#8b4513', '#000000']}
+                colors={['#000000', '#ffffff', '#8B4513', '#000000']}
                 speed={isActive ? 0.25 : 0.2}
                 wireframe={true}
                 backgroundColor='transparent'
@@ -65,7 +65,7 @@ export function PulsingCircle() {
         <div className='absolute bottom-[max(1.5rem,_env(safe-area-inset-bottom))] right-[max(1.5rem,_env(safe-area-inset-right))] z-30 hidden sm:block md:right-8'>
             <div className='relative flex h-20 w-20 items-center justify-center'>
                 <PulsingBorder
-                    colors={['#beecff', '#e77edc', '#ff4c3e', '#00ff88', '#ffd700', '#ff6b35', '#8a2be2']}
+                    colors={['#BEECFF', '#E77EDC', '#FF4C3E', '#00FF88', '#FFD700', '#FF6B35', '#8A2BE2']}
                     colorBack='#00000000'
                     speed={1.5}
                     roundness={1}
@@ -88,7 +88,7 @@ export function PulsingCircle() {
                 />
 
                 <motion.svg
-                    className='absolute inset-0 h-full w-full scale-[1.6]'
+                    className='absolute inset-0 h-full w-full'
                     viewBox='0 0 100 100'
                     animate={{ rotate: 360 }}
                     transition={{
@@ -96,6 +96,7 @@ export function PulsingCircle() {
                         repeat: Number.POSITIVE_INFINITY,
                         ease: 'linear',
                     }}
+                    style={{ transform: 'scale(1.6)' }}
                 >
                     <defs>
                         <path id={circlePathId} d='M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0' />

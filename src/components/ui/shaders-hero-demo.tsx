@@ -5,7 +5,7 @@ import {
     HeroContent,
     PulsingCircle,
     ShaderBackground,
-} from './shaders-hero-section';
+} from '@/components/ui/shaders-hero-section';
 
 export default function ShaderHeroDemo() {
     return (

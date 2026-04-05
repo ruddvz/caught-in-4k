@@ -316,11 +316,46 @@
     }
 }
 
-// Bottom bar — settings
+// Bottom bar — settings + subscribe
 .bottom-bar {
     position: absolute;
     bottom: 2.2rem;
     right: 2.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    .subscribe-btn {
+        display: flex;
+        align-items: center;
+        background: var(--primary-accent-color, #7ecec4);
+        color: #0f0f0f;
+        border: none;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 0.55rem 1.1rem;
+        border-radius: 999px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: opacity 0.2s, transform 0.15s;
+
+        &:hover {
+            opacity: 0.85;
+            transform: scale(1.04);
+        }
+    }
+
+    .sub-pill {
+        display: flex;
+        align-items: center;
+        background: rgba(126, 206, 196, 0.15);
+        color: var(--primary-accent-color, #7ecec4);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        letter-spacing: 0.03em;
+    }
 
     .settings-btn {
         display: flex;

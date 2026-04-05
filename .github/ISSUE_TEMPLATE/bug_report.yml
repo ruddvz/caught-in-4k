@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a bug in Stremio-Web
+description: Report a bug in C4K Live
 title: "[Bug]: "
 labels:
   - bug
@@ -7,12 +7,12 @@ body:
   - type: dropdown
     id: stremio_web_version
     attributes:
-      label: "Stremio-Web Version"
-      description: "Select the version of the Stremio-Web app you are using"
+      label: "C4K Live Version"
+      description: "Select the version of the C4K Live app you are using"
       options:
         - /development branch
-        - web.stremio.com
-        - web.strem.io
+        - c4k.live
+        - local or self-hosted build
     validations:
       required: true
 

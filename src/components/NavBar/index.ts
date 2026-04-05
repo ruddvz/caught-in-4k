@@ -1,8 +1,8 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
-// @ts-ignore
+// @ts-expect-error modules are resolved through the stremio alias
 import HorizontalNavBar from './HorizontalNavBar';
-// @ts-ignore
+// @ts-expect-error modules are resolved through the stremio alias
 import VerticalNavBar from './VerticalNavBar';
 import TopNavigationBar from './TopNavigationBar';
 

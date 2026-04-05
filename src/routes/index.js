@@ -9,12 +9,15 @@ const NotFound = require('./NotFound');
 const Search = require('./Search');
 const { default: Settings } = require('./Settings');
 const { default: SettingsShortcuts } = require('./SettingsShortcuts');
-const { default: ShadersHeroPreview } = require('./ShadersHeroPreview');
 const Player = require('./Player');
 const Intro = require('./Intro');
+const { default: AuthPreview } = require('./AuthPreview');
+const { default: ShadersHeroPreview } = require('./ShadersHeroPreview');
 const Tos = require('./Tos');
 const PrivacyPolicy = require('./PrivacyPolicy');
 const Profiles = require('./Profiles');
+const Subscribe = require('./Subscribe');
+const Admin = require('./Admin');
 
 module.exports = {
     Addons,
@@ -26,10 +29,13 @@ module.exports = {
     Search,
     Settings,
     SettingsShortcuts,
-    ShadersHeroPreview,
     Player,
     Intro,
+    AuthPreview,
+    ShadersHeroPreview,
     Tos,
     PrivacyPolicy,
-    Profiles
+    Profiles,
+    Subscribe,
+    Admin
 };

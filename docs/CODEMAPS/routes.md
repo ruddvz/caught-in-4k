@@ -17,6 +17,8 @@ Every route is wrapped with `withCoreSuspender` HOC (waits for WASM core init).
 | Addons | `#/addons/:type?/:catalogId?/:extra?` | `Addons/Addons.js` |
 | Calendar | `#/calendar/:year?/:month?/:day?` | `Calendar/Calendar.tsx` |
 | Intro | `#/intro` | `Intro/Intro.js` |
+| AuthPreview | `#/auth-preview` | `AuthPreview/AuthPreview.tsx` |
+| ShadersHeroPreview | `#/shaders-hero-preview` | `ShadersHeroPreview/ShadersHeroPreview.tsx` |
 | Profiles | `#/profiles` | `Profiles/Profiles.js` |
 
 ---
@@ -177,6 +179,8 @@ Every route is wrapped with `withCoreSuspender` HOC (waits for WASM core init).
 | Route | File | Lines | Purpose |
 |-------|------|-------|---------|
 | Intro | `Intro/Intro.js` | 427 | Login/signup: email, Facebook, Apple, guest, password reset |
+| AuthPreview | `AuthPreview/AuthPreview.tsx` | 7 | Isolated route that renders the shadcn auth showcase from `src/components/ui/demo.tsx` |
+| ShadersHeroPreview | `ShadersHeroPreview/ShadersHeroPreview.tsx` | 7 | Isolated route that renders the shader hero showcase from `src/components/ui/shaders-hero-demo.tsx` |
 | Profiles | `Profiles/Profiles.js` | 295 | C4K "Who's watching?" Netflix-like profile selector |
 | NotFound | `NotFound/NotFound.js` | 31 | 404 page |
 | Tos | `Tos/Tos.js` | 126 | Terms of Service (Gen Z tone) |

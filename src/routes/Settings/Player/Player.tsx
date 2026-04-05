@@ -24,6 +24,8 @@ type Props = {
 
 const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const { shell } = useServices();
+    const onSubtitlesEdgeStyleSelect = React.useCallback(() => undefined, []);
+
     const {
         subtitlesLanguageSelect,
         subtitlesSizeSelect,
@@ -96,13 +98,13 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                                     { value: 'none', label: 'None' }
                                 ]}
                                 value={subtitlesOutlineColorInput.value ? 'outline' : 'none'}
-                                onSelect={() => {}}
+                                onSelect={onSubtitlesEdgeStyleSelect}
                             />
                         </Option>
                     </div>
 
                     {/* Visual Logic: Blur toggle at the bottom */}
-                    <div className={styles['options-group']} style={{ marginTop: 'auto' }}>
+                    <div className={`${styles['options-group']} ${styles['options-group-spaced']}`}>
                         <Option label={'Blur unwatched episodes image'}>
                             <Toggle tabIndex={-1} {...hideSpoilersToggle} />
                         </Option>
@@ -137,7 +139,7 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                         </Option>
                     </div>
 
-                    <div className={styles['section-header']} style={{ marginTop: '2.5rem' }}>
+                    <div className={`${styles['section-header']} ${styles['section-header-spaced']}`}>
                         <div className={styles['header-top']}>
                             <svg className={styles['header-icon']} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                             <span className={styles['header-text']}>ADVANCED ENGINE</span>

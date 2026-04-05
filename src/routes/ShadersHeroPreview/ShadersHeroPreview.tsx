@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const ShaderHeroDemo = React.lazy(() => import('stremio/components/ui/shaders-hero-demo'));
+const ShaderHeroDemo = React.lazy(() => import('@/components/ui/shaders-hero-demo'));
 
 function ShadersHeroPreview() {
     return (

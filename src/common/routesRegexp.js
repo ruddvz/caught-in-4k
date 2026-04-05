@@ -5,6 +5,10 @@ const routesRegexp = {
         regexp: /^\/intro$/,
         urlParamsNames: []
     },
+    authPreview: {
+        regexp: /^\/auth-preview$/,
+        urlParamsNames: []
+    },
     shadersHeroPreview: {
         regexp: /^\/shaders-hero-preview$/,
         urlParamsNames: []
@@ -63,6 +67,14 @@ const routesRegexp = {
     },
     profiles: {
         regexp: /^\/profiles$/,
+        urlParamsNames: []
+    },
+    subscribe: {
+        regexp: /^\/subscribe$/,
+        urlParamsNames: []
+    },
+    admin: {
+        regexp: /^\/admin$/,
         urlParamsNames: []
     }
 };

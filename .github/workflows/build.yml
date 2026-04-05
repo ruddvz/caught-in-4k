@@ -56,6 +56,11 @@ jobs:
         run: pnpm build
         env:
           PUBLIC_PATH: /
+          REACT_APP_CANON_PROXY_URL: ${{ vars.REACT_APP_CANON_PROXY_URL }}
+          REACT_APP_API_BASE_URL: ${{ vars.REACT_APP_API_BASE_URL }}
+          REACT_APP_SUPABASE_URL: ${{ vars.REACT_APP_SUPABASE_URL }}
+          REACT_APP_SUPABASE_ANON_KEY: ${{ vars.REACT_APP_SUPABASE_ANON_KEY }}
+          REACT_APP_STRIPE_PUBLISHABLE_KEY: ${{ vars.REACT_APP_STRIPE_PUBLISHABLE_KEY }}
 
       - name: Disable Jekyll processing in published output
         run: touch ./build/.nojekyll

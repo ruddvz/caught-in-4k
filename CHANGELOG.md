@@ -63,7 +63,7 @@ All notable changes to this project are documented in this file.
 - Liquid-glass Canon Take box, remove API-dependent meters
 - Fix corrupted MetaItem styles encoding (UTF-16 → UTF-8)
 - Implement Apple Liquid Glass UI, suppress CanonTakes/SatisfactionMeter API to prevent crashes
-- Phthalo Green background, Liquid Glass Apple TV/Omni nav bars, inject GenZ Summary into Hero, remove Stremio branding from Auth
+- Phthalo Green background, Liquid Glass Apple TV/Omni nav bars, inject GenZ Summary into Hero, remove legacy branding from Auth
 - Design overhaul: Apple TV / Omni Content Hub UI style
 - Design overhaul: Windows 11 navbar center, dark monochrome theme, fix Satisfaction Meter on hero/board
 - Wire ratings and unify C4K branding

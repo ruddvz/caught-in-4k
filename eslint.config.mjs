@@ -97,6 +97,13 @@ export default [
     {
         rules: {
             'react/display-name': 'off',
+            'react/prop-types': 'off',
+        }
+    },
+    {
+        files: ['src/routes/Tos/Tos.js', 'src/routes/PrivacyPolicy/PrivacyPolicy.js'],
+        rules: {
+            'react/no-unescaped-entities': 'off',
         }
     }
 ];

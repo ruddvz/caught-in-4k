@@ -1,7 +1,7 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 import React, { useCallback, useLayoutEffect, useState } from 'react';
-// @ts-ignore
+// @ts-expect-error less modules are resolved by webpack
 import styles from './styles.less';
 
 type Props = {
@@ -51,7 +51,7 @@ const Image = ({ className, src, alt, fallbackSrc, renderFallback, ...props }: P
     if (broken || typeof src !== 'string' || src.length === 0) {
         if (typeof renderFallback === 'function') return renderFallback();
         if (typeof fallbackSrc === 'string') return <img {...props} className={className} src={fallbackSrc} alt={alt} loading='lazy' />;
-        return <DefaultImageFallback className={className} />;  // merges with image-fallback class
+        return <DefaultImageFallback className={className} />; // merges with image-fallback class
     }
 
     return <img {...props} className={className} src={src} alt={alt} loading='lazy' onError={onError} />;

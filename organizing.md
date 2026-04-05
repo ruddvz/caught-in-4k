@@ -1,7 +1,7 @@
 # 🗂️ Organizing Plan: Integrating claude-organizer into Caught in 4K
 
 > **Source repo**: [ramakay/claude-organizer](https://github.com/ramakay/claude-organizer)
-> **Target project**: `caught-in-4k` (Stremio Web fork)
+> **Target project**: `caught-in-4k` (C4K platform)
 > **Created**: 2026-03-22
 
 ---
@@ -229,7 +229,7 @@ This file provides guidance to Claude Code when working with this repository.
 
 ## Project Overview
 
-This is **Caught in 4K**, a Gen Z-themed Stremio Web fork with AI-powered features.
+This is **Caught in 4K**, a Gen Z-themed streaming platform with AI-powered features.
 
 ## File Organization
 

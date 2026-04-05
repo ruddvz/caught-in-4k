@@ -1,7 +1,7 @@
 # C4K Agent Ecosystem — Design Spec
 **Date:** 2026-03-27 (v2)
 **Status:** Active
-**Project:** Caught in 4K (C4K) — Gen Z AI-powered Stremio Web fork
+**Project:** Caught in 4K (C4K) — Gen Z AI-powered streaming platform
 
 ---
 

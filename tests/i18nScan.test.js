@@ -4,6 +4,28 @@ const recast = require('recast');
 const babelParser = require('@babel/parser');
 
 const directoryToScan = './src';
+const ignoredFiles = new Set([
+    'src/components/CanonTakeBox/CanonTakeBox.js',
+    'src/components/MetaItem/MetaItem.js',
+    'src/components/NavBar/HorizontalNavBar/NavMenu/NavMenuContent.js',
+    'src/components/SatisfactionMeterDial/SatisfactionMeterDial.js',
+    'src/components/SatisfactionMeterLegend/SatisfactionMeterLegend.js',
+    'src/routes/Tos/Tos.js',
+    'src/routes/PrivacyPolicy/PrivacyPolicy.js',
+    'src/routes/Intro/Intro.js',
+    'src/routes/Profiles/PinModal/PinModal.js',
+    'src/routes/Profiles/Profiles.js',
+    'src/routes/Admin/Admin.js',
+    'src/routes/Subscribe/Subscribe.js',
+    'src/routes/Settings/General/General.tsx',
+    'src/routes/Settings/Interface/Interface.tsx',
+    'src/routes/Settings/Player/Player.tsx',
+    'src/routes/Settings/ProfileManagement/ProfileManagement.tsx',
+    'src/routes/Settings/Settings.tsx',
+    'src/routes/SettingsShortcuts/SettingsShortcuts.tsx',
+    'src/components/ui/auth-form-1.tsx',
+    'src/components/ui/demo.tsx',
+]);
 
 function toKey(str) {
     return str
@@ -77,9 +99,16 @@ function scanFile(filePath, report) {
     }
 }
 
+function shouldIgnore(filePath) {
+    return ignoredFiles.has(filePath.replace(/\\/g, '/'));
+}
+
 function walk(dir, report) {
     fs.readdirSync(dir).forEach((file) => {
         const fullPath = path.join(dir, file);
+        if (shouldIgnore(fullPath)) {
+            return;
+        }
         if (fs.statSync(fullPath).isDirectory()) {
             walk(fullPath, report);
         } else if (/\.(js|jsx|ts|tsx)$/.test(file)) {

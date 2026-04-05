@@ -5,6 +5,7 @@ const classnames = require('classnames');
 const { Button } = require('stremio/components');
 const { navigateToAppHref } = require('stremio/common/navigation');
 const { withCoreSuspender } = require('stremio/common');
+const { useAuth } = require('stremio/common/AuthProvider');
 const { extractAccentFromAvatar } = require('../../common/useAvatarAccentColor');
 const PinModal = require('./PinModal/PinModal');
 const styles = require('./styles.less');
@@ -65,6 +66,7 @@ const isProfileLocked = (profileId) =>
     !!localStorage.getItem(`c4k_profile_pin_${profileId}`);
 
 const Profiles = () => {
+    const auth = useAuth();
     const [profiles, setProfiles] = React.useState([]);
     const [view, setView] = React.useState('select'); // 'select' | 'add'
     const [newName, setNewName] = React.useState('');
@@ -309,6 +311,21 @@ const Profiles = () => {
                     </div>
 
                     <div className={styles['bottom-bar']}>
+                        {auth && auth.isEntitled ? (
+                            <span className={styles['sub-pill']}>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '0.3rem' }}>
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                {auth.hasActiveSubscription ? `${auth.daysRemaining}d left` : 'Admin access'}
+                            </span>
+                        ) : (
+                            <Button className={styles['subscribe-btn']} onClick={() => navigateToAppHref('/subscribe')}>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '0.4rem' }}>
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                                </svg>
+                                Subscribe
+                            </Button>
+                        )}
                         <Button className={styles['settings-btn']} href="#/settings">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '0.5rem' }}>
                                 <circle cx="12" cy="12" r="3" />

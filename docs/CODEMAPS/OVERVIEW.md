@@ -6,10 +6,10 @@
 
 ## Project Identity
 
-- **Name**: Caught in 4K (C4K) — Gen Z-themed AI-powered Stremio Web fork
+- **Name**: Caught in 4K (C4K) — Gen Z-themed AI-powered streaming platform
 - **Stack**: React 18 + TypeScript + LESS (CSS Modules) + Webpack 5
 - **WASM Core**: `@stremio/stremio-core-web` (Rust-compiled) handles all catalog/library/player state
-- **AI Feature**: Gemini 2.0 Flash "Canon Takes" via `api-proxy.js` (Express, port 3001)
+- **AI Feature**: Pollinations-first "Canon Takes" with optional Gemini fallback via `api-proxy.js` (Express, port 3001)
 - **Deploy**: GitHub Pages (`gh-pages` branch) via GitHub Actions
 
 ## Codebase Stats
@@ -70,7 +70,7 @@ src/App/App.js
 
 ## C4K-Specific Additions (Fork Divergence)
 
-These files/features do NOT exist in upstream Stremio Web:
+These files/features do NOT exist in the upstream web base:
 - `src/routes/Profiles/` — Netflix-like "Who's watching?" profile selector
 - `src/components/CanonTakeBox/` — AI-generated "Canon Take" commentary
 - `src/components/TopNavigationBar/` — Custom top nav with pill-shaped tabs

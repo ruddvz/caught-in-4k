@@ -156,7 +156,7 @@ class C4KBackgroundAgents {
                         title: item.name,
                         year: item.releaseInfo,
                         genres: item.genre || 'unknown',
-                        voteAverage: item.vote_average || 0
+                        imdbRating: item.vote_average || 0
                     })
                 });
 

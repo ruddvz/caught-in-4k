@@ -71,10 +71,7 @@ const NavMenuContent = ({ onClick }) => {
                     <Icon className={styles['qa-icon']} name={'settings'} />
                     <span>{t('SETTINGS')}</span>
                 </Button>
-                <Button className={styles['quick-action-btn']} href={'#/addons'}>
-                    <Icon className={styles['qa-icon']} name={'addons-outline'} />
-                    <span>Add-ons</span>
-                </Button>
+
                 <Button className={styles['quick-action-btn']} href={'https://stremio.zendesk.com/'} target={'_blank'}>
                     <Icon className={styles['qa-icon']} name={'help'} />
                     <span>Help</span>

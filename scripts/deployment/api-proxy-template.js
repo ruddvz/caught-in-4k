@@ -1,30 +1,41 @@
 /**
  * Gemini API Proxy Service Template
- * Deploy to Vercel, Netlify, or run locally as Node.js server
+ * Deploy to Vercel or adapt for another serverless platform.
+ * For local development, use the checked-in api-proxy.js instead.
+ * The handler itself needs a runtime with built-in fetch. This repo standardizes on Node 20.
  * 
  * This proxy safely handles the Gemini API key on the backend
- * Frontend calls this endpoint instead of calling Gemini directly
+ * Frontend calls this endpoint only for the Gemini fallback path
  */
 
 // ============================================
 // DEPLOYMENT OPTIONS:
 // ============================================
 // 1. VERCEL: Create api/canon-take.js with this code
-// 2. NETLIFY: Create netlify/functions/canon-take.js with this code
-// 3. LOCAL: npm install express cors, then run this as Node.js server
+// 2. OTHER SERVERLESS: Wrap this handler for your platform's request/response API
+// 3. NETLIFY: Requires a Netlify-specific wrapper, not this file by itself
 // ============================================
 
 // For LOCAL DEVELOPMENT (Node.js + Express):
-// Save this as api-proxy.js, then:
-// npm install express cors dotenv
-// Add to .env: GEMINI_API_KEY=your_key_here
-// Run: node api-proxy.js
+// Use the checked-in api-proxy.js at the repo root instead of copying this file.
 
 // ============================================
-// LOCALHOST/VERCEL/NETLIFY HANDLER
+// VERCEL/EXPRESS-STYLE HANDLER
 // ============================================
+
+const setCorsHeaders = (res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+};
 
 const handler = async (req, res) => {
+  setCorsHeaders(res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
   // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

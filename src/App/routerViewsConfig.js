@@ -16,6 +16,10 @@ const routerViewsConfig = [
             component: routes.Intro
         },
         {
+            ...routesRegexp.authPreview,
+            component: routes.AuthPreview
+        },
+        {
             ...routesRegexp.shadersHeroPreview,
             component: routes.ShadersHeroPreview
         },
@@ -44,10 +48,6 @@ const routerViewsConfig = [
     ],
     [
         {
-            ...routesRegexp.addons,
-            component: routes.Addons
-        },
-        {
             ...routesRegexp.settings,
             component: routes.Settings
         },
@@ -74,6 +74,14 @@ const routerViewsConfig = [
         {
             ...routesRegexp.profiles,
             component: routes.Profiles
+        },
+        {
+            ...routesRegexp.subscribe,
+            component: routes.Subscribe
+        },
+        {
+            ...routesRegexp.admin,
+            component: routes.Admin
         }
     ]
 ];

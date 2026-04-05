@@ -5,9 +5,9 @@
 
 export interface AvatarAccentColor {
     hsl: { h: number; s: number; l: number };
-    accent: string;      // e.g. "hsl(187, 72%, 62%)"
-    glow: string;        // e.g. "hsla(187, 72%, 62%, 0.35)"
-    accentDark: string;  // darkened for backgrounds: lightness capped at 30%
+    accent: string; // e.g. "hsl(187, 72%, 62%)"
+    glow: string; // e.g. "hsla(187, 72%, 62%, 0.35)"
+    accentDark: string; // darkened for backgrounds: lightness capped at 30%
 }
 
 /**
@@ -32,7 +32,7 @@ export async function extractAccentFromAvatar(imageSrc: string): Promise<AvatarA
                 const { data } = ctx.getImageData(0, 0, SIZE, SIZE);
 
                 // 36 hue buckets of 10° each
-                const buckets: Array<{ count: number; maxSat: number }> =
+                const buckets: { count: number; maxSat: number }[] =
                     Array.from({ length: 36 }, () => ({ count: 0, maxSat: 0 }));
 
                 for (let i = 0; i < data.length; i += 4) {

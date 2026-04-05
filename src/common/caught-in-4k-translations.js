@@ -30,11 +30,11 @@ const caughtIn4KTranslations = {
     SHADER_HERO_TITLE_END: 'Experiences',
     SHADER_HERO_DESCRIPTION: 'Create stunning visual experiences with advanced shader motion, interactive lighting, and layered depth that feels at home inside the C4K universe.',
     SHADER_HERO_PRICING: 'Pricing',
-    SHADER_HERO_FEATURES: 'Features',
-    SHADER_HERO_SETTINGS: 'Settings',
     SHADER_HERO_GET_STARTED: 'Get Started',
     SHADER_HERO_BRAND: 'C4K',
     SHADER_HERO_PREVIEW: 'Shader Preview',
+    SHADER_HERO_FEATURES: 'Features',
+    SHADER_HERO_SETTINGS: 'Settings',
     SHADER_HERO_LOGIN: 'Login',
     SHADER_HERO_DISCOVER_ARIA: 'Open discover page',
 };

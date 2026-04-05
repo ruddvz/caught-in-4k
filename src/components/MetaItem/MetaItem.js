@@ -11,14 +11,11 @@ const { default: Image } = require('stremio/components/Image');
 const Multiselect = require('stremio/components/Multiselect');
 const useBinaryState = require('stremio/common/useBinaryState');
 const { ICON_FOR_TYPE } = require('stremio/common/CONSTANTS');
-const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
-const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
 const styles = require('./styles');
 
-const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, newVideos, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, releaseInfo, carouselLayout, ...props }) => {
+const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, releaseInfo, carouselLayout, ...props }) => {
     const t = useTranslate();
     const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
-    const tier = useSatisfactionMeter(voteAverage);
     const href = React.useMemo(() => {
         return deepLinks ?
             typeof deepLinks.metaDetailsStreams === 'string' ?

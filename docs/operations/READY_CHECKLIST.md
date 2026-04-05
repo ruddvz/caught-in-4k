@@ -14,16 +14,19 @@
 - ✅ Canon Take component with skeleton loader
 - ✅ Background queue for batch processing
 - ✅ Integrated into MetaPreview (Board, Discover, MetaDetails)
+- ✅ Pollinations primary path works without a proxy
 
 ---
 
 ## 📦 Configuration Files Ready
 
 - ✅ `.env` - API key configured
-- ✅ `.env.local` - Proxy URL configured
+- ✅ `REACT_APP_CANON_PROXY_URL` can be exported in shell/CI when Gemini fallback is needed
 - ✅ `api-proxy.js` - Backend server ready
+- ✅ `scripts/deployment/api-proxy-template.js` - Serverless proxy template ready
 - ✅ `setup.bat` / `setup.sh` - Installation script
-- ✅ `QUICK_START.md` - Easy instructions
+- ✅ `docs/general/QUICK_START.md` - Easy instructions
+- ✅ `docs/operations/CANON_TAKES_SETUP.md` - Fallback proxy guide
 
 ---
 
@@ -50,7 +53,7 @@
 
 ### Just Run These Commands:
 
-**Terminal 1:**
+**Terminal 1 (optional Gemini fallback):**
 ```bash
 npm install express cors dotenv
 node api-proxy.js
@@ -70,7 +73,7 @@ Then go to: `http://localhost:3000`
 1. **npm start** - React app launches
 2. **Board page loads** → Global satisfaction meter shows immediately
 3. **Open any movie detail** → Canon Take box appears loading
-4. **2-3 seconds later** → AI summary generated and cached
+4. **2-3 seconds later** → AI summary generated via Pollinations and cached
 5. **Refresh page** → Canon Take loads instantly from cache
 6. **Open different movie** → New Canon Take generates
 
@@ -80,7 +83,7 @@ Then go to: `http://localhost:3000`
 
 - **Frontend**: React + React-i18next + LESS
 - **Backend**: Node.js + Express + CORS
-- **AI**: Google Gemini 2.0 Flash
+- **AI**: Pollinations primary, Google Gemini 2.0 Flash fallback
 - **Cache**: localStorage (max ~5-10MB)
 - **Colors**: CSS variables (emerald green #16A34A, gold #D4A017)
 
@@ -90,13 +93,13 @@ Then go to: `http://localhost:3000`
 
 **New Files Created:**
 - api-proxy.js
-- api-proxy-template.js
+- scripts/deployment/api-proxy-template.js
 - .env (with API key)
-- .env.local (with proxy URL)
+- exported REACT_APP_CANON_PROXY_URL (when Gemini fallback is wanted)
 - .env.example
 - setup.sh / setup.bat
-- QUICK_START.md
-- CANON_TAKES_SETUP.md
+- docs/general/QUICK_START.md
+- docs/operations/CANON_TAKES_SETUP.md
 
 **New Components:**
 - SatisfactionMeterBar

@@ -28,7 +28,7 @@ const THREAD_LOADER = {
     },
 };
 
-const createTailwindPostcssLoader = () => ({
+const createPostcssLoader = () => ({
     loader: 'postcss-loader',
     options: {
         postcssOptions: {
@@ -66,55 +66,11 @@ const createTailwindPostcssLoader = () => ({
     }
 });
 
-const createLessPostcssLoader = () => ({
-    loader: 'postcss-loader',
-    options: {
-        postcssOptions: {
-            plugins: [
-                require('cssnano')({
-                    preset: [
-                        'advanced',
-                        {
-                            autoprefixer: {
-                                add: true,
-                                remove: true,
-                                flexbox: false,
-                                grid: false
-                            },
-                            cssDeclarationSorter: true,
-                            calc: false,
-                            colormin: false,
-                            convertValues: false,
-                            discardComments: {
-                                removeAll: true,
-                            },
-                            discardOverridden: false,
-                            discardUnused: false,
-                            mergeIdents: false,
-                            normalizeDisplayValues: false,
-                            normalizePositions: false,
-                            normalizeRepeatStyle: false,
-                            normalizeUnicode: false,
-                            normalizeUrl: false,
-                            reduceIdents: false,
-                            reduceInitial: false,
-                            zindex: false
-                        }
-                    ]
-                })
-            ]
-        }
-    }
-});
-
 threadLoader.warmup(
     THREAD_LOADER.options,
     [
         'babel-loader',
         'ts-loader',
-        'css-loader',
-        'postcss-loader',
-        'less-loader',
     ],
 );
 
@@ -178,7 +134,7 @@ module.exports = (env, argv) => ({
                             importLoaders: 1,
                         }
                     },
-                    createTailwindPostcssLoader(),
+                    createPostcssLoader(),
                 ]
             },
             {
@@ -191,7 +147,6 @@ module.exports = (env, argv) => ({
                             esModule: false
                         }
                     },
-                    THREAD_LOADER,
                     {
                         loader: 'css-loader',
                         options: {
@@ -203,7 +158,9 @@ module.exports = (env, argv) => ({
                             }
                         }
                     },
-                    createLessPostcssLoader(),
+                    {
+                        ...createPostcssLoader(),
+                    },
                     {
                         loader: 'less-loader',
                         options: {
@@ -243,6 +200,7 @@ module.exports = (env, argv) => ({
     resolve: {
         extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.less', '.wasm'],
         alias: {
+            '@': path.resolve(__dirname, 'src'),
             'stremio': path.resolve(__dirname, 'src'),
             'stremio-router': path.resolve(__dirname, 'src', 'router')
         }
@@ -254,7 +212,7 @@ module.exports = (env, argv) => ({
             index: '/index.html'
         },
         hot: false,
-        server: 'https',
+        server: 'http',
         liveReload: false
     },
     optimization: {
@@ -282,6 +240,10 @@ module.exports = (env, argv) => ({
             SENTRY_DSN: null,
             APP_PUBLIC_PATH: process.env.PUBLIC_PATH || '/',
             REACT_APP_CANON_PROXY_URL: null,
+            REACT_APP_API_BASE_URL: null,
+            REACT_APP_SUPABASE_URL: null,
+            REACT_APP_SUPABASE_ANON_KEY: null,
+            REACT_APP_STRIPE_PUBLISHABLE_KEY: null,
             ...env,
             SERVICE_WORKER_DISABLED: false,
             DEBUG: argv.mode !== 'production',

@@ -70,6 +70,15 @@ All exports available via `stremio/components` alias. Barrel file: `src/componen
 | `SearchBar/SearchBar.js` | 35 | Simple standalone search bar |
 | `ShortcutsGroup/ShortcutsGroup.tsx` | 38 | Keyboard shortcuts display group |
 
+## Shadcn / Tailwind Showcase Components
+
+| Component | Lines | Purpose | Depends On (src/) |
+|-----------|-------|---------|-------------------|
+| `ui/auth-form-1.tsx` | 477 | Auth form showcase using shadcn primitives | `ui/button, ui/checkbox, ui/input, ui/label, ui/separator, lib/utils` |
+| `ui/demo.tsx` | 10 | Auth preview wrapper used by `AuthPreview` route | `ui/auth-form-1` |
+| `ui/shaders-hero-section.tsx` | 225 | Shader-based hero building blocks: background, header, CTA content, pulsing circle | `common/useTranslate, lucide-react, framer-motion, @paper-design/shaders-react` |
+| `ui/shaders-hero-demo.tsx` | 14 | Standalone shader hero showcase wrapper | `ui/shaders-hero-section` |
+
 ## C4K-Specific Components
 
 | Component | Lines | Purpose |
