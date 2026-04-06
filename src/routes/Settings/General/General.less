@@ -1,60 +1,96 @@
+@import (reference) '~stremio/common/screen-sizes.less';
+
 @c4k-green: #f4d38c;
 
 .account-widget {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     height: 100%;
 
-    .account-header {
+    .account-intro {
         display: flex;
-        align-items: center;
-        gap: 1.5rem;
+        flex-direction: column;
+        gap: 0.9rem;
+        padding: 1.3rem 1.35rem;
+        border-radius: 1.35rem;
+        background:
+            linear-gradient(135deg, rgba(244, 211, 140, 0.1), rgba(255, 255, 255, 0.02)),
+            linear-gradient(180deg, rgba(18, 21, 30, 0.9), rgba(10, 12, 18, 0.7));
+        border: 1px solid rgba(255, 255, 255, 0.07);
 
-        .master-avatar {
-            width: 5rem;
-            height: 5rem;
-            border-radius: 999px;
-            object-fit: cover;
-            display: block;
-            border: 2px solid rgba(244, 211, 140, 0.22);
-            flex-shrink: 0;
-            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
+        .account-kicker {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            color: rgba(244, 211, 140, 0.84);
+            text-transform: uppercase;
         }
 
         .user-details {
-            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 0.2rem;
-            min-width: 0;
+            gap: 0.45rem;
 
             .display-name {
-                font-size: 1.8rem;
+                font-size: clamp(1.45rem, 2.4vw, 2.1rem);
                 font-weight: 800;
                 color: #fff;
-                white-space: nowrap;
                 letter-spacing: -0.02em;
+                line-height: 1.05;
+                word-break: break-word;
             }
+
+            .display-caption {
+                font-size: 0.95rem;
+                line-height: 1.6;
+                color: rgba(255, 255, 255, 0.64);
+            }
+        }
+
+        .status-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.42rem 0.72rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.74);
         }
     }
 
     .account-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
 
-        .action-btn {
+        .action-btn,
+        .login-button {
             width: 100%;
-            padding: 0.7rem 1.25rem;
-            border-radius: 10px;
-            font-size: 1.05rem;
-            font-weight: 600;
+            min-height: 3.2rem;
+            padding: 0.9rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            font-weight: 700;
             cursor: pointer;
             border: 1px solid transparent;
             text-align: left;
-            white-space: nowrap;
-            transition: all 0.2s;
+            white-space: normal;
+            line-height: 1.35;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 
             &:active {
                 transform: scale(0.98);
@@ -62,64 +98,76 @@
 
             &.btn-logout {
                 background: rgba(255, 255, 255, 0.05);
-                color: rgba(255, 255, 255, 0.6);
-                &:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+                border-color: rgba(255, 255, 255, 0.08);
+                color: rgba(255, 255, 255, 0.78);
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.08);
+                    color: #fff;
+                }
             }
 
             &.btn-secondary {
                 background: rgba(255, 255, 255, 0.03);
-                border-color: rgba(255, 255, 255, 0.05);
-                color: rgba(255, 255, 255, 0.5);
-                &:hover { background: rgba(255, 255, 255, 0.07); color: @c4k-green; }
+                border-color: rgba(255, 255, 255, 0.06);
+                color: rgba(255, 255, 255, 0.66);
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.07);
+                    color: @c4k-green;
+                }
             }
 
             &.btn-danger {
-                background: rgba(255, 60, 60, 0.04);
-                color: rgba(255, 60, 60, 0.4);
-                &:hover { background: rgba(255, 60, 60, 0.08); color: #ff5050; }
+                grid-column: 1 / -1;
+                background: rgba(255, 60, 60, 0.05);
+                border-color: rgba(255, 60, 60, 0.14);
+                color: rgba(255, 120, 120, 0.86);
+
+                &:hover {
+                    background: rgba(255, 60, 60, 0.1);
+                    color: #ff7c7c;
+                }
             }
         }
 
         .login-button {
-            display: inline-flex;
-            align-items: center;
             justify-content: center;
-            width: 100%;
-            padding: 12px 24px;
-            margin-top: 16px;
+            grid-column: 1 / -1;
             background: linear-gradient(135deg, #1e1e1e 0%, #141414 100%);
             border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 9999px;
+            border-radius: 1rem;
             color: #ffffff;
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.07);
-            cursor: pointer;
-            transition: all 0.2s ease;
 
             &:hover {
                 border-color: rgba(244, 211, 140, 0.28);
                 background: linear-gradient(135deg, #26221b 0%, #17130f 100%);
             }
         }
+    }
+}
 
-        .action-link {
-            font-size: 1.05rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.35);
-            padding: 0.4rem 0;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: color 0.2s;
+@media only screen and (max-width: @small) {
+    .account-widget {
+        .account-intro {
+            padding: 1.05rem;
+        }
 
-            &:hover {
-                color: rgba(255, 255, 255, 0.7);
+        .account-actions {
+            grid-template-columns: 1fr;
+
+            .action-btn,
+            .login-button {
+                min-height: 2.95rem;
+                padding: 0.8rem 0.9rem;
             }
 
-            &.danger-link {
-                color: rgba(255, 60, 60, 0.35);
-                &:hover { color: #ff5050; }
+            .action-btn.btn-danger,
+            .login-button {
+                grid-column: auto;
             }
         }
     }

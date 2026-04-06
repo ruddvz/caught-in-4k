@@ -57,9 +57,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
 
     React.useEffect(() => {
         readProfile();
-        // storage fires when another tab changes localStorage
         window.addEventListener('storage', readProfile);
-        // c4k-profile-changed fires within the same tab (dispatched by Profiles.js)
         window.addEventListener('c4k-profile-changed', readProfile);
         return () => {
             window.removeEventListener('storage', readProfile);
@@ -67,35 +65,8 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
         };
     }, [readProfile]);
 
-    const avatars = [
-        require('../../../../assets/images/avatars/c4k-avatar-1.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-2.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-3.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-4.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-5.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-6.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-7.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-8.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-9.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-10.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-11.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-12.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-13.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-14.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-15.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-16.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-17.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-18.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-19.png'),
-        require('../../../../assets/images/avatars/c4k-avatar-20.png'),
-    ];
-
-    const currentProfileAvatar = currentProfile && typeof currentProfile.avatarIndex === 'number'
-        ? (avatars[currentProfile.avatarIndex] || avatars[0])
-        : null;
-
     return (
-        <nav className={classnames(className, styles['top-nav-bar-container'])}>
+        <nav className={classnames(className, styles['top-nav-bar-container'], { [styles['route-board']]: route === 'board' })}>
             <div className={styles['left-section']}>
                 <a href={buildAppHref('/')} className={styles['logo-wrapper']} aria-label="Caught in 4K — Home">
                     <AppLogo variant="compact" className={styles['logo']} />
@@ -148,13 +119,10 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
                 <Button
                     className={classnames(styles['action-btn'], styles['profile-btn'])}
                     href="/profiles"
-                    aria-label={currentProfile ? `Switch profile — ${currentProfile.name}` : 'Select profile'}
+                    title={currentProfile?.name ? `${t('Profiles')}: ${currentProfile.name}` : t('Profiles')}
+                    aria-label={currentProfile?.name ? `${t('Profiles')}: ${currentProfile.name}` : t('Profiles')}
                 >
-                    {currentProfileAvatar ? (
-                        <img className={styles['profile-avatar']} src={currentProfileAvatar} alt="" />
-                    ) : (
-                        <IconUser className={styles['icon']} strokeWidth={1.5} aria-hidden="true" />
-                    )}
+                    <IconUser className={styles['icon']} strokeWidth={1.5} aria-hidden="true" />
                 </Button>
             </div>
         </nav>

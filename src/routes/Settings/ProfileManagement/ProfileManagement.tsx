@@ -6,30 +6,6 @@ const { useAuth } = require('stremio/common/AuthProvider');
 const { MAX_PROFILES, PROFILE_CHANGE_EVENT, createProfileStore } = require('stremio/common/profileStore');
 const PinModal = require('../../Profiles/PinModal/PinModal');
 
-/* Mirror of the AVAILABLE_AVATARS array from Profiles.js — DATA PARITY */
-const AVAILABLE_AVATARS: string[] = [
-    require('/assets/images/avatars/c4k-avatar-1.png'),
-    require('/assets/images/avatars/c4k-avatar-2.png'),
-    require('/assets/images/avatars/c4k-avatar-3.png'),
-    require('/assets/images/avatars/c4k-avatar-4.png'),
-    require('/assets/images/avatars/c4k-avatar-5.png'),
-    require('/assets/images/avatars/c4k-avatar-6.png'),
-    require('/assets/images/avatars/c4k-avatar-7.png'),
-    require('/assets/images/avatars/c4k-avatar-8.png'),
-    require('/assets/images/avatars/c4k-avatar-9.png'),
-    require('/assets/images/avatars/c4k-avatar-10.png'),
-    require('/assets/images/avatars/c4k-avatar-11.png'),
-    require('/assets/images/avatars/c4k-avatar-12.png'),
-    require('/assets/images/avatars/c4k-avatar-13.png'),
-    require('/assets/images/avatars/c4k-avatar-14.png'),
-    require('/assets/images/avatars/c4k-avatar-15.png'),
-    require('/assets/images/avatars/c4k-avatar-16.png'),
-    require('/assets/images/avatars/c4k-avatar-17.png'),
-    require('/assets/images/avatars/c4k-avatar-18.png'),
-    require('/assets/images/avatars/c4k-avatar-19.png'),
-    require('/assets/images/avatars/c4k-avatar-20.png'),
-];
-
 type SubProfile = {
     id: string;
     name: string;
@@ -168,10 +144,18 @@ const ProfileManagement = () => {
         setPinState({ type: 'delete', profileId, profileName });
     }, [hasMasterCode]);
 
-    const getAvatarUrl = (p: SubProfile): string =>
-        p.avatarIndex !== undefined && p.avatarIndex < AVAILABLE_AVATARS.length
-            ? AVAILABLE_AVATARS[p.avatarIndex]
-            : AVAILABLE_AVATARS[0];
+    const getProfileBadgeLabel = useCallback((profile: SubProfile, index: number): string => {
+        const parts = profile.name.trim().split(/\s+/).filter(Boolean);
+        if (parts.length === 0) {
+            return String(index + 1).padStart(2, '0');
+        }
+
+        if (parts.length === 1) {
+            return parts[0].slice(0, 2).toUpperCase();
+        }
+
+        return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }, []);
 
     return (
         <div className={styles['profile-management']}>
@@ -185,7 +169,7 @@ const ProfileManagement = () => {
 
             {/* Profile List — SYNCED with Profile Selection page */}
             <div className={styles['profile-list']}>
-                {profiles.map((p) => {
+                {profiles.map((p, index) => {
                     const locked = p.hasPin;
                     return (
                         <div
@@ -200,7 +184,9 @@ const ProfileManagement = () => {
                                 handleSelect(p);
                             }}
                         >
-                            <img className={styles['tiny-avatar']} src={getAvatarUrl(p)} alt="" />
+                            <span className={styles['profile-badge']} aria-hidden="true">
+                                {getProfileBadgeLabel(p, index)}
+                            </span>
                             <span className={styles['profile-name']}>{p.name}</span>
 
                             {/* Lock / unlock icon button */}

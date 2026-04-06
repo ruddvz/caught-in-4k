@@ -27,15 +27,16 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const [traktAuthStarted, setTraktAuthStarted] = useState(false);
     const [deleteAccountPinMode, setDeleteAccountPinMode] = useState<null | 'verify' | 'set'>(null);
     const [hasMasterCode, setHasMasterCode] = useState<boolean | null>(null);
+    const accountTitle = profile.auth?.user?.email ?? t('Guest session');
+    const accountCopy = profile.auth
+        ? t('Your account is connected. Security, Trakt, and device activity live here.')
+        : t('You are browsing locally. Sign in to sync watch history, preferences, and account controls.');
 
     const isTraktAuthenticated = useMemo(() => {
         const trakt = profile?.auth?.user?.trakt;
         return trakt && (Date.now() / 1000) < (trakt.created_at + trakt.expires_in);
     }, [profile.auth]);
 
-    const avatarSrc = useMemo(() => (
-        require('/assets/images/anonymous.png')
-    ), []);
     const devicePlanId = useMemo(
         () => resolveSubscriptionPlanId(auth.subscription?.plan ?? null),
         [auth.subscription]
@@ -117,6 +118,12 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         }
     }, [isTraktAuthenticated, traktAuthStarted, core]);
 
+    const accountFlags = [
+        profile.auth ? t('Signed in') : t('Guest mode'),
+        isTraktAuthenticated ? t('Trakt connected') : t('Trakt disconnected'),
+        hasMasterCode === null ? t('Security loading') : hasMasterCode ? t('Master code active') : t('Master code not set'),
+    ];
+
     return (
         <div ref={ref} className={styles['account-widget']}>
             {deleteAccountPinMode === 'verify' && (
@@ -160,12 +167,22 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     onCancel={() => setDeleteAccountPinMode(null)}
                 />
             )}
-            <div className={styles['account-header']}>
-                <img className={styles['master-avatar']} src={avatarSrc} alt="" />
+            <div className={styles['account-intro']}>
+                <div className={styles['account-kicker']}>{t('ACCOUNT')}</div>
                 <div className={styles['user-details']}>
                     <div className={styles['display-name']}>
-                        Stranger.
+                        {accountTitle}
                     </div>
+                    <div className={styles['display-caption']}>
+                        {accountCopy}
+                    </div>
+                </div>
+                <div className={styles['status-row']}>
+                    {accountFlags.map((flag) => (
+                        <span key={flag} className={styles['status-pill']}>
+                            {flag}
+                        </span>
+                    ))}
                 </div>
             </div>
 
