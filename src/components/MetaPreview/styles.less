@@ -254,9 +254,16 @@
                 }
             }
 
+            .ratings-stack {
+                display: grid;
+                gap: 0.9rem;
+                width: min(100%, 43rem);
+                margin-top: 0.45rem;
+            }
+
             .full-ratings,
             .compact-ratings {
-                margin-top: 0.25rem;
+                margin-top: 0;
             }
         }
     }
@@ -297,11 +304,37 @@
 
     // === SATISFACTION / RATINGS WIDGET ===
     .satisfaction-meter-container {
-        background: var(--bg-surface-1);
-        border-radius: var(--radius-card);
-        padding: 1.5rem 2rem;
-        box-shadow: var(--shadow-soft);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        display: grid;
+        gap: 0.85rem;
+        background: linear-gradient(180deg, rgba(13, 16, 22, 0.94), rgba(9, 11, 16, 0.9));
+        border-radius: 1.35rem;
+        padding: 1rem 1.15rem 1.1rem;
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.26);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(18px);
+    }
+
+    .satisfaction-meter-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .satisfaction-meter-label {
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: rgba(255, 255, 255, 0.52);
+    }
+
+    .satisfaction-meter-copy {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.58);
+        line-height: 1.5;
+        text-align: right;
     }
 
     // Legacy container fallbacks (compact mode)
@@ -480,6 +513,15 @@
 
         .satisfaction-meter-container {
             padding: 1rem;
+        }
+
+        .satisfaction-meter-header {
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .satisfaction-meter-copy {
+            text-align: left;
         }
 
         .meta-links-widget {

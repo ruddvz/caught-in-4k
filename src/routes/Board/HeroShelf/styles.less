@@ -6,24 +6,18 @@
 .hero-shelf-container {
     position: relative;
     width: 100%;
-    height: calc(100vh - 86px);
-    max-height: calc(100vh - 86px);
-    // overflow: visible + padding/margin offset so button hover transforms and focus
-    // rings are never clipped. The 50px padding expands the paint area on all sides;
-    // the negative margin keeps the layout footprint unchanged.
+    height: calc(100vh - 86px - 1.5rem);
+    max-height: calc(100vh - 86px - 1.5rem);
     overflow: visible;
-    padding: 50px;
-    margin: -50px;
-    box-sizing: content-box;
+    padding: 0 2.5rem 1.5rem;
+    box-sizing: border-box;
 
     .hero-slide {
         position: relative;
         width: 100%;
         height: 100%;
         border-radius: 2.4rem;
-        // No overflow on the slide itself — clipping is handled by .hero-background directly.
-        // This lets buttons, focus rings, and hover transforms paint outside the slide bounds
-        // without being clipped on any browser including Safari.
+        overflow: hidden;
         box-shadow: var(--shadow-soft);
         background: linear-gradient(180deg, rgba(13, 16, 24, 0.96), rgba(7, 9, 14, 0.88));
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -38,9 +32,7 @@
             object-position: top center;
             filter: brightness(0.68) saturate(1.14);
             transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-            // Clip the image to the card's rounded corners without clipping siblings
             border-radius: inherit;
-            clip-path: inset(0 round 2rem);
         }
 
         &:hover .hero-background {
@@ -53,6 +45,7 @@
             left: 0;
             width: 100%;
             height: 100%;
+            border-radius: inherit;
             background:
                 linear-gradient(to top, rgba(8, 10, 14, 0.98) 0%, rgba(8, 10, 14, 0.54) 34%, transparent 72%),
                 linear-gradient(to right, rgba(8, 10, 14, 0.94) 0%, rgba(8, 10, 14, 0.18) 60%, transparent 84%);
@@ -122,9 +115,7 @@
             .hero-actions {
                 display: flex;
                 gap: 1.25rem;
-                margin-top: 0.5rem;
-                padding-top: 50px;
-                margin-top: calc(0.5rem - 50px);
+                margin-top: 0.85rem;
 
                 .hero-btn {
                     padding: 1rem 2.4rem;
@@ -179,7 +170,7 @@
     // Dots — centered at bottom, no arrows
     .hero-dots {
         position: absolute;
-        bottom: 1.25rem;
+        bottom: 2.5rem;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
@@ -214,10 +205,9 @@
 // Tablet/large breakpoint
 @media only screen and (max-width: @small) {
     .hero-shelf-container {
-        height: calc(100vh - 100px);
-        max-height: calc(100vh - 100px);
-        padding: 0;
-        margin: 0;
+        height: calc(100vh - 100px - 1.1rem);
+        max-height: calc(100vh - 100px - 1.1rem);
+        padding: 0 1.2rem 1.1rem;
 
         .hero-slide {
             border-radius: 1.5rem;
@@ -250,7 +240,7 @@
                 .hero-actions {
                     gap: 0.75rem;
                     width: 100%;
-                    margin-top: 0.25rem;
+                    margin-top: 0.45rem;
                     .hero-btn {
                         flex: 1;
                         padding: 0.8rem 0;
@@ -262,7 +252,7 @@
         }
 
         .hero-dots {
-            bottom: 0.75rem;
+            bottom: 1.7rem;
         }
     }
 }
@@ -270,8 +260,9 @@
 // Mobile override — must come AFTER @small (1300px) so it wins the cascade
 @media only screen and (max-width: 768px) {
     .hero-shelf-container {
-        height: calc(100dvh - 70px);
-        max-height: calc(100dvh - 70px);
+        height: calc(100dvh - 70px - 0.9rem);
+        max-height: calc(100dvh - 70px - 0.9rem);
+        padding: 0 0.9rem 0.9rem;
 
         .hero-slide {
             .hero-content {
@@ -286,7 +277,7 @@
         }
 
         .hero-dots {
-            bottom: 0.65rem;
+            bottom: 1.4rem;
         }
     }
 }

@@ -9,11 +9,13 @@ const { default: Image } = require('stremio/components/Image');
 const ModalDialog = require('stremio/components/ModalDialog');
 const SharePrompt = require('stremio/components/SharePrompt');
 const ExternalRatings = require('stremio/components/ExternalRatings/ExternalRatings');
+const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const { buildExternalRatingsModel } = require('stremio/common/externalRatings');
 const { navigateToAppHref } = require('stremio/common/navigation');
 const routesRegexp = require('stremio/common/routesRegexp');
 const useBinaryState = require('stremio/common/useBinaryState');
+const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
 const useProfile = require('stremio/common/useProfile');
 const ActionButton = require('./ActionButton');
 const MetaLinks = require('./MetaLinks');
@@ -99,6 +101,43 @@ const MetaPreview = React.forwardRef(({
     const effectiveVariant = variant || (compact ? 'drawer' : 'details');
     const showCompactRatings = compact && effectiveVariant === 'browse';
     const showFullRatings = effectiveVariant === 'details';
+    const ratingsSummaryCopy = React.useMemo(() => {
+        const sourceCount = Array.isArray(ratingsModel?.cards) ? ratingsModel.cards.length : 0;
+
+        if (sourceCount >= 3) {
+            return t('C4K_OVERALL_SIGNAL_COPY_THREE', { defaultValue: 'Three sources, one clean verdict.' });
+        }
+
+        if (sourceCount === 2) {
+            return t('C4K_OVERALL_SIGNAL_COPY_TWO', { defaultValue: 'Two sources, one combined read.' });
+        }
+
+        if (sourceCount === 1) {
+            return t('C4K_OVERALL_SIGNAL_COPY_ONE', { defaultValue: 'Built from the rating data available.' });
+        }
+
+        return t('C4K_OVERALL_SIGNAL_COPY_NONE', { defaultValue: 'Built from the catalog signal available.' });
+    }, [ratingsModel, t]);
+
+    const satisfactionTier = React.useMemo(() => {
+        if (ratingsModel?.consensus?.score !== null && ratingsModel?.consensus?.score !== undefined) {
+            return useSatisfactionMeter(ratingsModel.consensus.score, { scale: 'percent' });
+        }
+
+        if (Array.isArray(ratingsModel?.cards) && ratingsModel.cards.length > 0) {
+            return useSatisfactionMeter(ratingsModel.cards[0].value, { scale: 'percent' });
+        }
+
+        if (typeof voteAverageProp === 'number' && !Number.isNaN(voteAverageProp)) {
+            return useSatisfactionMeter(voteAverageProp);
+        }
+
+        if (typeof imdbRating === 'number' && !Number.isNaN(imdbRating)) {
+            return useSatisfactionMeter(imdbRating);
+        }
+
+        return null;
+    }, [imdbRating, ratingsModel, voteAverageProp]);
 
     const linksGroups = React.useMemo(() => {
         return Array.isArray(links)
@@ -264,7 +303,24 @@ const MetaPreview = React.forwardRef(({
                             ) : null}
                         </div>
 
-                        {showFullRatings ? <ExternalRatings className={styles['full-ratings']} model={ratingsModel} /> : null}
+                        {showFullRatings ? (
+                            <div className={styles['ratings-stack']}>
+                                <ExternalRatings className={styles['full-ratings']} model={ratingsModel} />
+                                {satisfactionTier ? (
+                                    <div className={styles['satisfaction-meter-container']}>
+                                        <div className={styles['satisfaction-meter-header']}>
+                                            <div className={styles['satisfaction-meter-label']}>
+                                                {t('C4K_OVERALL_SIGNAL', { defaultValue: 'Overall Signal' })}
+                                            </div>
+                                            <div className={styles['satisfaction-meter-copy']}>
+                                                {ratingsSummaryCopy}
+                                            </div>
+                                        </div>
+                                        <SatisfactionMeterBar tier={satisfactionTier} size={'detail'} />
+                                    </div>
+                                ) : null}
+                            </div>
+                        ) : null}
                     </div>
                 </div>
 

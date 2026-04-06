@@ -78,9 +78,9 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 40px;
+    gap: 2.6rem;
     flex-wrap: wrap;
-    padding: 50px;
+    padding: 2rem 0;
     margin-bottom: 1rem;
     overflow: visible;
 }
@@ -93,13 +93,13 @@
     gap: 1.2rem;
     cursor: pointer;
     position: relative;
-    padding: 1.4rem 1.4rem 1.6rem;
+    padding: 0.25rem 0.35rem 0.9rem;
     overflow: visible;
-    border-radius: 2rem;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    -webkit-backdrop-filter: blur(18px);
-    backdrop-filter: blur(18px);
+    border-radius: 999px;
+    background: transparent;
+    border: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
 
     .profile-avatar {
         width: 12rem;
@@ -132,7 +132,7 @@
     &::before {
         content: '';
         position: absolute;
-        top: 1.5rem;
+        top: 0.2rem;
         left: 50%;
         transform: translateX(-50%);
         width: 12rem;
@@ -149,8 +149,8 @@
     // Lock overlay — bottom-right of avatar, shown when profile has a PIN
     .lock-overlay {
         position: absolute;
-        top: calc(1.5rem + 12rem - 2.4rem); // bottom-right of the 12rem avatar circle
-        right: calc(50% - 6rem - 0.2rem);   // align with avatar edge
+        top: calc(12rem - 2rem);
+        right: calc(50% - 6rem + 0.1rem);
         width: 2rem;
         height: 2rem;
         border-radius: 50%;
@@ -268,9 +268,9 @@
         font-weight: 700;
         letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: var(--accent, #fff);
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid var(--accent-rgba, rgba(255, 255, 255, 0.18));
+        color: #f4d38c;
+        background: rgba(244, 211, 140, 0.12);
+        border: 1px solid rgba(244, 211, 140, 0.18);
         border-radius: 999px;
         padding: 0.2rem 0.7rem;
         margin-top: -0.4rem;
@@ -617,11 +617,11 @@
 
     .profiles-row {
         gap: 24px;
-        padding: 30px 20px;
+        padding: 1.25rem 0;
     }
 
     .profile-card {
-        padding: 1rem;
+        padding: 0.2rem 0 0.7rem;
 
         .profile-avatar {
             width: 7.5rem;
@@ -636,6 +636,13 @@
         &::before {
             width: 7.5rem;
             height: 7.5rem;
+        }
+
+        .lock-overlay {
+            top: calc(7.5rem - 1.6rem);
+            right: calc(50% - 3.75rem + 0.05rem);
+            width: 1.6rem;
+            height: 1.6rem;
         }
     }
 

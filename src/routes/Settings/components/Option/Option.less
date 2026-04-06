@@ -69,18 +69,18 @@
 
             &:hover {
                 background: rgba(255, 255, 255, 0.08);
-                border-color: #00e676;
+                border-color: rgba(244, 211, 140, 0.38);
             }
 
             &:focus-within {
-                border-color: #00e676;
-                box-shadow: 0 0 0 2px rgba(0, 230, 118, 0.2);
+                border-color: #f4d38c;
+                box-shadow: 0 0 0 2px rgba(244, 211, 140, 0.18);
             }
         }
 
         :global(.button) {
-            background: #00e676;
-            color: #000;
+            background: linear-gradient(135deg, #f4d38c, #fff1cb);
+            color: #111319;
             border-radius: 999px;
             padding: 0.75rem 1.5rem;
             height: auto;
@@ -90,11 +90,11 @@
             letter-spacing: 0.08em;
             border: none;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 16px rgba(0, 230, 118, 0.2);
+            box-shadow: 0 8px 20px rgba(244, 211, 140, 0.18);
 
             &:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 8px 24px rgba(0, 230, 118, 0.3);
+                box-shadow: 0 12px 28px rgba(244, 211, 140, 0.24);
                 filter: brightness(1.1);
             }
 

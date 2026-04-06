@@ -127,7 +127,7 @@
             min-width: unset;
             border-radius: 2.25rem 2.25rem 0 0; // Highly rounded top corners
             padding: 0.75rem 0.75rem calc(env(safe-area-inset-bottom, 0px) + 1.25rem); // Extra bottom padding for safe area
-            background: rgba(10, 12, 18, 0.94) !important;
+            background: linear-gradient(180deg, rgba(12, 15, 21, 0.96), rgba(7, 9, 13, 0.94)) !important;
             -webkit-backdrop-filter: blur(50px) saturate(210%) !important;
             backdrop-filter: blur(50px) saturate(210%) !important;
             border: none !important;
@@ -150,11 +150,11 @@
                 transition: background 0.2s ease, color 0.2s ease;
 
                 &.active {
-                    background: var(--primary-accent-color);
-                    color: #000000;
+                    background: linear-gradient(135deg, #f4d38c, #fff1cb);
+                    color: #111318;
                     padding: 0.4rem 0.8rem;
                     border-radius: 9999px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                    box-shadow: 0 10px 22px rgba(244, 211, 140, 0.22);
                 }
 
                 .bottom-tab-icon {

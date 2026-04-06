@@ -1,30 +1,40 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 /**
  * Caught in 4K — Satisfaction Meter
- * Converts a voteAverage (0–10 IMDB-style) into a Gen Z
- * satisfaction tier with emoji, gradient, and one-liner.
+ * Maps either a 0-10 score or a 0-100 percentage to the premium
+ * five-tier verdict system used across the browse and details surfaces.
  */
 
+export type SatisfactionScale = 'ten' | 'percent';
+
+type SatisfactionOptions = {
+    scale?: SatisfactionScale,
+};
+
 export const SATISFACTION_TIERS = [
-    { id: 'absolute-cinema', emoji: '🏆', name: 'Absolute Cinema', minScore: 85, maxScore: 100, oneLiner: 'a certified masterpiece. no debates.', gradientStart: '#F5C842', gradientEnd: '#FF5C00' },
-    { id: 'certified-fresh', emoji: '🔥', name: 'Certified Fresh', minScore: 70, maxScore: 84, oneLiner: 'worth the hype fr fr.', gradientStart: '#22B365', gradientEnd: '#00D68F' },
-    { id: 'mid', emoji: '😐', name: 'Mid', minScore: 50, maxScore: 69, oneLiner: 'it had its moments.', gradientStart: '#E6B422', gradientEnd: '#FFD700' },
-    { id: 'flop-era', emoji: '💀', name: 'Flop Era', minScore: 25, maxScore: 49, oneLiner: 'should have stayed in the group chat.', gradientStart: '#DC2626', gradientEnd: '#7F1D1D' },
-    { id: 'dead-on-arrival', emoji: '🪦', name: 'Dead on Arrival', minScore: 0, maxScore: 24, oneLiner: 'no one asked for this.', gradientStart: '#6B7280', gradientEnd: '#374151' },
+    { id: 'absolute-cinema', emoji: '🏆', name: 'Absolute Cinema', minScore: 90, maxScore: 100, oneLiner: 'Event viewing with zero compromise.', gradientStart: '#F6D89A', gradientEnd: '#FFB05F' },
+    { id: 'must-watch', emoji: '✦', name: 'Must Watch', minScore: 75, maxScore: 89, oneLiner: 'Big-screen energy and an easy recommendation.', gradientStart: '#F3C766', gradientEnd: '#F69F52' },
+    { id: 'worth-your-time', emoji: '✓', name: 'Worth Your Time', minScore: 60, maxScore: 74, oneLiner: 'Solid craft, steady payoff, low regret.', gradientStart: '#78C8A4', gradientEnd: '#4596B8' },
+    { id: 'for-fans-first', emoji: '•', name: 'For Fans First', minScore: 40, maxScore: 59, oneLiner: 'Works best if the premise already has you.', gradientStart: '#7C89C9', gradientEnd: '#58619A' },
+    { id: 'skip-this-one', emoji: '–', name: 'Skip This One', minScore: 0, maxScore: 39, oneLiner: 'Styled well enough for the carousel. Not much else.', gradientStart: '#666E84', gradientEnd: '#343B4D' },
 ];
 
-export const useSatisfactionMeter = (voteAverage: number | null | undefined) => {
-    if (voteAverage === null || voteAverage === undefined || isNaN(voteAverage)) {
+export const useSatisfactionMeter = (
+    scoreInput: number | null | undefined,
+    options: SatisfactionOptions = {}
+) => {
+    if (scoreInput === null || scoreInput === undefined || Number.isNaN(scoreInput)) {
         return null;
     }
 
-    const percentage = Math.round(Math.min(100, Math.max(0, (voteAverage / 10) * 100)));
+    const scale = options.scale || 'ten';
+    const percentage = Math.round(Math.min(100, Math.max(0, scale === 'percent' ? scoreInput : (scoreInput / 10) * 100)));
 
     const tier = SATISFACTION_TIERS.find(
-        (t) => percentage >= t.minScore && percentage <= t.maxScore
+        (candidate) => percentage >= candidate.minScore && percentage <= candidate.maxScore
     ) || SATISFACTION_TIERS[SATISFACTION_TIERS.length - 1];
 
-    return { ...tier, percentage, voteAverage };
+    return { ...tier, percentage, voteAverage: scale === 'ten' ? scoreInput : percentage / 10 };
 };
 
 export default useSatisfactionMeter;

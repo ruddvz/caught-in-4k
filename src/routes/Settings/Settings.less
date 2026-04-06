@@ -1,8 +1,8 @@
 @import (reference) '~stremio/common/screen-sizes.less';
 
 // SETTINGS VARIABLES
-@c4k-green: #a1ff00;
-@bg-charcoal: #1a2418; // Forest Night — dark green elevated surface (was #161616 neutral)
+@c4k-green: #f4d38c;
+@bg-charcoal: #11151d;
 @border-grey: #333;
 
 .settings-container {
@@ -27,7 +27,7 @@
         .dashboard-grid {
             display: grid;
             grid-template-columns: 32% 1fr;
-            gap: 2.5rem;
+            gap: 2rem;
             width: 100%;
             align-items: start;
             overflow: visible;
@@ -55,15 +55,17 @@
 
         // UNIFORM BOX CONSTRAINT
         .widget-card, .player-widget {
-            background: linear-gradient(180deg, rgba(18, 22, 30, 0.86), rgba(11, 14, 19, 0.74));
+            background: linear-gradient(180deg, rgba(17, 21, 30, 0.9), rgba(9, 11, 16, 0.82));
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 22px;
+            border-radius: 26px;
             padding: 2.5rem;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: visible;
-            box-shadow: 0 26px 60px rgba(0, 0, 0, 0.28);
+            box-shadow: 0 28px 60px rgba(0, 0, 0, 0.3);
+            -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(18px);
         }
 
         .widget-card {
@@ -92,7 +94,7 @@
             .footer-link {
                 font-size: 1rem;
                 font-weight: 500;
-                color: #b0b0b0; // SOFT CLEAR GRAY
+                color: rgba(255, 255, 255, 0.58);
                 text-decoration: none;
                 transition: color 0.2s;
 
@@ -127,7 +129,7 @@
 
         // Focus Glow
         .button:focus, .input:focus {
-             box-shadow: 0 0 20px rgba(161, 255, 0, 0.2);
+               box-shadow: 0 0 20px rgba(244, 211, 140, 0.2);
         }
     }
 }
