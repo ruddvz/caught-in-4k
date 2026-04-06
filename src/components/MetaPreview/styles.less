@@ -302,6 +302,64 @@
         overflow: visible;
     }
 
+    // === SOURCE RATINGS ROW (IMDB / RT / MC above bar) ===
+    .source-ratings-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+    }
+
+    .source-rating-item {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0;
+        border: none;
+        background: transparent;
+
+        &[data-clickable='true'] {
+            cursor: pointer;
+        }
+
+        &[data-clickable='true']:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+            border-radius: 0.3rem;
+        }
+
+        .source-logo-badge {
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            padding: 0.18rem 0.5rem;
+            border-radius: 0.3rem;
+            line-height: 1.4;
+        }
+
+        .source-pct {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+    }
+
+    .source-imdb .source-logo-badge {
+        background: #f5c518;
+        color: #000;
+    }
+
+    .source-rottenTomatoes .source-logo-badge {
+        background: #fa320a;
+        color: #fff;
+    }
+
+    .source-metacritic .source-logo-badge {
+        background: #66cc33;
+        color: #000;
+    }
+
     // === SATISFACTION / RATINGS WIDGET ===
     .satisfaction-meter-container {
         display: grid;

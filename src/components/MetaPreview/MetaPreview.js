@@ -8,8 +8,8 @@ const { useTranslation } = require('react-i18next');
 const { default: Image } = require('stremio/components/Image');
 const ModalDialog = require('stremio/components/ModalDialog');
 const SharePrompt = require('stremio/components/SharePrompt');
-const ExternalRatings = require('stremio/components/ExternalRatings/ExternalRatings');
 const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
+const { usePlatform } = require('stremio/common/Platform');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const { buildExternalRatingsModel } = require('stremio/common/externalRatings');
 const { navigateToAppHref } = require('stremio/common/navigation');
@@ -59,6 +59,7 @@ const MetaPreview = React.forwardRef(({
     voteAverage: voteAverageProp,
 }, ref) => {
     const { t } = useTranslation();
+    const platform = usePlatform();
     const [shareModalOpen, openShareModal, closeShareModal] = useBinaryState(false);
     const profile = useProfile();
 
@@ -204,6 +205,40 @@ const MetaPreview = React.forwardRef(({
         <div className={styles['logo-placeholder']}>{name}</div>
     ), [name]);
 
+    const renderSourceRating = React.useCallback((card) => {
+        if (!card) {
+            return null;
+        }
+
+        const sourceLabel = card.id === 'imdb' ? 'IMDb' : card.id === 'rottenTomatoes' ? 'RT' : 'MC';
+        const content = (
+            <React.Fragment>
+                <span className={styles['source-logo-badge']}>{sourceLabel}</span>
+                <span className={styles['source-pct']}>{card.display}</span>
+            </React.Fragment>
+        );
+
+        if (!card.href) {
+            return (
+                <div key={card.id} className={`${styles['source-rating-item']} ${styles[`source-${card.id}`]}`} data-clickable={'false'}>
+                    {content}
+                </div>
+            );
+        }
+
+        return (
+            <button
+                key={card.id}
+                type={'button'}
+                className={`${styles['source-rating-item']} ${styles[`source-${card.id}`]}`}
+                data-clickable={'true'}
+                onClick={() => platform.openExternal(card.href)}
+            >
+                {content}
+            </button>
+        );
+    }, [platform]);
+
     return (
         <div
             className={classnames(className, styles['meta-preview-container'], {
@@ -243,7 +278,7 @@ const MetaPreview = React.forwardRef(({
                             </div>
                         ) : null}
 
-                        {showCompactRatings ? <ExternalRatings className={styles['compact-ratings']} model={ratingsModel} mode={'compact'} /> : null}
+                        {null /* IMDB compact ratings removed */}
 
                         <div className={styles['action-buttons-container']}>
                             {typeof showHref === 'string' ? (
@@ -305,7 +340,6 @@ const MetaPreview = React.forwardRef(({
 
                         {showFullRatings ? (
                             <div className={styles['ratings-stack']}>
-                                <ExternalRatings className={styles['full-ratings']} model={ratingsModel} />
                                 {satisfactionTier ? (
                                     <div className={styles['satisfaction-meter-container']}>
                                         <div className={styles['satisfaction-meter-header']}>
@@ -316,6 +350,11 @@ const MetaPreview = React.forwardRef(({
                                                 {ratingsSummaryCopy}
                                             </div>
                                         </div>
+                                        {Array.isArray(ratingsModel?.cards) && ratingsModel.cards.length > 0 ? (
+                                            <div className={styles['source-ratings-row']}>
+                                                {ratingsModel.cards.map(renderSourceRating)}
+                                            </div>
+                                        ) : null}
                                         <SatisfactionMeterBar tier={satisfactionTier} size={'detail'} />
                                     </div>
                                 ) : null}

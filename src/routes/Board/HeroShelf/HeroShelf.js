@@ -6,8 +6,6 @@ const classnames = require('classnames');
 const useTranslate = require('stremio/common/useTranslate');
 const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
-const ExternalRatings = require('stremio/components/ExternalRatings/ExternalRatings');
-const { buildExternalRatingsModel } = require('stremio/common/externalRatings');
 const styles = require('./styles');
 
 const HeroShelf = ({ items }) => {
@@ -117,12 +115,6 @@ const HeroShelf = ({ items }) => {
         return null;
     }
 
-    const ratingModel = React.useMemo(() => buildExternalRatingsModel({
-        links: item.links,
-        voteAverage: item.voteAverage ?? item.vote_average,
-        imdbRating: item.imdbRating,
-    }), [item]);
-
     const year =
         item.released instanceof Date && !isNaN(item.released.getTime())
             ? item.released.getFullYear()
@@ -183,7 +175,6 @@ const HeroShelf = ({ items }) => {
                             <p className={styles['hero-description']}>{item.description}</p>
                             : null
                     }
-                    <ExternalRatings className={styles['hero-ratings']} model={ratingModel} />
                     <div className={styles['hero-actions']}>
                         {
                             watchHref ?

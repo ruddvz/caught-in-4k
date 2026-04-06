@@ -28,25 +28,23 @@ export const IconSearch = ({ className, strokeWidth = 1.5, ...rest }: IconProps)
     </svg>
 );
 
+// Enter fullscreen — outward arrows (Feather Maximize2)
 export const IconMaximize = ({ className, strokeWidth = 1.5, ...rest }: IconProps) => (
     <svg {...defaults} strokeWidth={strokeWidth} className={className} {...rest}>
-        <path d="M4 8V6a2 2 0 0 1 2 -2h2" />
-        <path d="M4 16v2a2 2 0 0 0 2 2h2" />
-        <path d="M16 4h2a2 2 0 0 1 2 2v2" />
-        <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+        <polyline points="15 3 21 3 21 9" />
+        <polyline points="9 21 3 21 3 15" />
+        <line x1="21" y1="3" x2="14" y2="10" />
+        <line x1="3" y1="21" x2="10" y2="14" />
     </svg>
 );
 
+// Exit fullscreen — inward arrows (Feather Minimize2)
 export const IconMinimize = ({ className, strokeWidth = 1.5, ...rest }: IconProps) => (
     <svg {...defaults} strokeWidth={strokeWidth} className={className} {...rest}>
-        <path d="M5 9l4 0l0 -4" />
-        <path d="M3 7l6 6" />
-        <path d="M19 9l-4 0l0 -4" />
-        <path d="M21 7l-6 6" />
-        <path d="M5 15l4 0l0 4" />
-        <path d="M3 17l6 -6" />
-        <path d="M19 15l-4 0l0 4" />
-        <path d="M21 17l-6 -6" />
+        <polyline points="4 14 10 14 10 20" />
+        <polyline points="20 10 14 10 14 4" />
+        <line x1="3" y1="21" x2="10" y2="14" />
+        <line x1="21" y1="3" x2="14" y2="10" />
     </svg>
 );
 
