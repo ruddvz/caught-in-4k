@@ -24,7 +24,6 @@ type Props = {
 
 const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const { shell } = useServices();
-    const onSubtitlesEdgeStyleSelect = React.useCallback(() => undefined, []);
 
     const {
         subtitlesLanguageSelect,
@@ -98,7 +97,9 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                                     { value: 'none', label: 'None' }
                                 ]}
                                 value={subtitlesOutlineColorInput.value ? 'outline' : 'none'}
-                                onSelect={onSubtitlesEdgeStyleSelect}
+                                onSelect={(value: string) => {
+                                    subtitlesOutlineColorInput.onChange(value === 'none' ? '' : '#000000');
+                                }}
                             />
                         </Option>
                     </div>

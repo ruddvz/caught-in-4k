@@ -1,144 +1,133 @@
-// Caught in 4K Theme - Liquid Glass Cinematic Interface
-// Premium 4K streaming UI with frosted glass panels and vibrant gradients
+// Caught in 4K — Premium Cinema Theme
+// Unified dark palette. Single gold accent. No conflicting greens/purples/cyans.
 
 :root {
-    // New Dashboard Tokens
-    --bg-body: #1e2029;
+    // ─── Base background ──────────────────────────────────────────────────────
+    --bg-body: #07080c;           // near-black cold undertone (Apple TV+ style)
+    --bg-base: #07080c;           // alias used by MetaDetails
 
-    // ─── Elevation palette — Forest Night ────────────────────────────────────
-    // Replaces purple-tinted surfaces (#2a2c38, #3b3e4f) with desaturated dark
-    // green (H≈126°, S≈13–14%). Keeps identical lightness so text contrast is
-    // unchanged. Feels cinematic, not nature-app.
-    --elevation-1: #2e3c28;                     // card backgrounds   (L≈20%)
-    --elevation-2: #374630;                     // modal/sheet        (L≈24%)
-    --elevation-3: #43553b;                     // popover/tooltip    (L≈29%)
-    --elevation-border: rgba(80, 200, 90, 0.09);// subtle green border
-    // ─────────────────────────────────────────────────────────────────────────
+    // ─── Glass surface system ─────────────────────────────────────────────────
+    // Translucent overlays — not opaque fills.
+    --bg-surface-1: rgba(255, 255, 255, 0.05);    // card/panel glass
+    --bg-surface-2: rgba(255, 255, 255, 0.08);    // elevated glass (modal/sheet)
+    --bg-surface-border: rgba(255, 255, 255, 0.09); // subtle glass border
 
-    --bg-surface-1: var(--elevation-1);         // was #2a2c38 (purple-tinted)
-    --bg-surface-2: var(--elevation-2);         // was #3b3e4f (purple-tinted)
+    // Legacy elevation tokens (backward compat)
+    --elevation-1: rgba(255, 255, 255, 0.05);
+    --elevation-2: rgba(255, 255, 255, 0.08);
+    --elevation-3: rgba(255, 255, 255, 0.12);
+    --elevation-border: rgba(255, 255, 255, 0.09);
 
-    // Accent — default cyan; overridden dynamically when a profile is selected
-    --accent-primary: rgb(0, 240, 255);
-    --outer-glow: 0 0 20px rgba(0, 240, 255, 0.35);
-    --accent-dark: rgb(0, 120, 160);
+    // ─── Accent — Gold (C4K brand, one accent only) ───────────────────────────
+    --accent-primary: #f4d38c;
+    --accent-primary-light: #fff2cc;
+    --accent-primary-glow: rgba(244, 211, 140, 0.28);
+    --accent-primary-dim: rgba(244, 211, 140, 0.12);
+    --outer-glow: 0 0 20px rgba(244, 211, 140, 0.22);
+    --accent-dark: rgba(175, 135, 55, 1);
 
     --accent-secondary: #ff4d4f;
-    --accent-tertiary: #ffd043;
-    --text-primary: #f8f9fa;
-    --text-secondary: #9ca3af;
-    --radius-card: 32px;
+    --accent-tertiary: #f4d38c;
+
+    // ─── Text ─────────────────────────────────────────────────────────────────
+    --text-primary: #f5f5f7;                     // Apple-style off-white
+    --text-secondary: rgba(255, 255, 255, 0.5);
+    --text-tertiary: rgba(255, 255, 255, 0.3);
+
+    // ─── Radius & shadow ──────────────────────────────────────────────────────
+    --radius-card: 20px;
+    --radius-card-lg: 26px;
     --radius-pill: 999px;
     --radius-avatar: 16px;
-    --shadow-soft: 0 16px 32px rgba(0,0,0,0.2);
+    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.3);
 
-    // Legacy overrides to ensure compatibility while transitioning
+    // ─── Legacy overrides (backward compat) ───────────────────────────────────
     --primary-accent-color: var(--accent-primary);
     --secondary-accent-color: var(--text-secondary);
     --primary-background-color: var(--bg-body);
     --secondary-background-color: var(--bg-surface-1);
-    --modal-background-color: var(--bg-surface-2);
+    --modal-background-color: rgba(9, 10, 15, 0.94);
+
+    // ─── Gradient ambient accents (fixed — were undefined, caused broken renders)
+    --gradient-gold: radial-gradient(circle at 78% 8%, rgba(244, 211, 140, 0.11) 0%, transparent 40%);
+    --gradient-blue: radial-gradient(circle at 14% 6%, rgba(80, 110, 255, 0.09) 0%, transparent 38%);
+    --gradient-violet: radial-gradient(circle at 52% 92%, rgba(110, 75, 255, 0.05) 0%, transparent 38%);
+    --gradient-pink: radial-gradient(circle at 88% 68%, rgba(255, 75, 130, 0.04) 0%, transparent 32%);
 }
 
-// Frosted Glass Panel Effect
+// ─── Frosted Glass ────────────────────────────────────────────────────────────
 .frosted-glass {
-    background: rgba(255, 255, 255, 0.05);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
+    background: var(--bg-surface-1);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--bg-surface-border);
+    border-radius: var(--radius-card);
 }
 
-// Cinematic Gradient Burst Edges
+// ─── Gradient Burst (ambient light) ──────────────────────────────────────────
 .gradient-burst {
     position: relative;
-    overflow: hidden;
-    
+
     &::before {
         content: '';
         position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
-        height: 200%;
-        background: var(--gradient-violet), var(--gradient-orange), var(--gradient-blue), var(--gradient-pink);
-        animation: gradientShift 8s ease infinite;
+        inset: 0;
+        background:
+            var(--gradient-gold),
+            var(--gradient-blue),
+            var(--gradient-violet),
+            var(--gradient-pink);
         pointer-events: none;
+        z-index: 0;
     }
 }
 
-// Specular Highlight Effect
+// ─── Specular highlight ───────────────────────────────────────────────────────
 .specular-highlight {
     position: relative;
-    
+    overflow: hidden;
+
     &::after {
         content: '';
         position: absolute;
         top: 0;
-        left: -100%;
+        left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        animation: shimmer 3s infinite;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.07) 50%, transparent 100%);
+        animation: shimmer 4s infinite;
+        pointer-events: none;
     }
 }
 
-// Gradient shift animation for vibrant bursts
-@keyframes gradientShift {
-    0%, 100% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-}
-
-// Shimmer animation for specular highlights
 @keyframes shimmer {
-    0% {
-        left: -100%;
-    }
-    100% {
-        left: 100%;
-    }
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
 }
 
-// Body-level styles when .caught-in-4k is applied to <body>
+// ─── Body-level class ─────────────────────────────────────────────────────────
 .caught-in-4k {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     position: relative;
     z-index: 1;
-
-    &::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: -1;
-        background: black;
-    }
+    background-color: var(--bg-body);
 
     .button-container {
-        --button-background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
-        background: var(--button-background);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: var(--bg-surface-1);
+        border: 1px solid var(--bg-surface-border);
         border-radius: 12px;
-        box-shadow: inset 0 0 2px 0 rgba(255, 255, 255, 0.2), 0 0 10px 0 rgba(0, 0, 0, 0.5);
-        color: white;
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-        transition: all 0.2s ease-in-out;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        transition: all 0.2s ease;
         position: relative;
         overflow: hidden;
 
         &:hover {
-            --button-background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-            box-shadow: inset 0 0 3px 0 rgba(255, 255, 255, 0.3), 0 0 15px 0 rgba(0, 0, 0, 0.6);
-        }
-
-        &.specular-highlight::after {
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            background: var(--bg-surface-2);
+            border-color: rgba(255, 255, 255, 0.14);
         }
     }
 }

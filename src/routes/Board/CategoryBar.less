@@ -4,9 +4,9 @@
 .category-bar-container {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-    padding: 0 1.5rem;
-    margin-bottom: 3.5rem;
+    gap: 0.75rem;
+    padding: 0 1.75rem;
+    margin-bottom: 2.75rem;
     overflow-x: auto;
     scrollbar-width: none;
     &::-webkit-scrollbar { display: none; }
@@ -18,41 +18,41 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 0.75rem;
-        padding: 0.9rem 2.25rem;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        border-radius: 999px;
+        gap: 0.6rem;
+        padding: 0.65rem 1.5rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: var(--radius-pill);
         color: var(--text-secondary);
-        font-size: 1.05rem;
-        font-weight: 800;
+        font-size: 0.88rem;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
         white-space: nowrap;
         outline: none;
         flex: none;
+        letter-spacing: 0.01em;
 
         .icon {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
         }
 
         &.active {
             background: var(--text-primary);
-            color: var(--bg-body);
-            border-color: #fff;
-            transform: scale(1.04);
-            box-shadow: 0 16px 40px rgba(255, 255, 255, 0.12);
+            color: #07080c;
+            border-color: transparent;
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
         }
 
         &:hover:not(.active) {
             background: rgba(255, 255, 255, 0.08);
             color: var(--text-primary);
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
-        &:active {
-            transform: scale(0.96);
+        &:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
         }
     }
 }
@@ -60,16 +60,14 @@
 @media only screen and (max-width: @small) {
     .category-bar-container {
         padding: 0 1rem;
-        margin-bottom: 2rem;
-        gap: 0.75rem;
+        margin-bottom: 1.75rem;
+        gap: 0.5rem;
 
         .category-pill {
-            padding: 0.6rem 1.4rem;
-            font-size: 0.85rem;
-            
-            .icon {
-                font-size: 1.1rem;
-            }
+            padding: 0.5rem 1.1rem;
+            font-size: 0.8rem;
+
+            .icon { font-size: 1rem; }
         }
     }
 }

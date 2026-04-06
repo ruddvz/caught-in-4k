@@ -1,82 +1,71 @@
 @import (reference) '~stremio/common/screen-sizes.less';
 
-// SETTINGS VARIABLES
-@c4k-green: #f4d38c;
-@bg-charcoal: #11151d;
-@border-grey: #333;
+@c4k-gold: #f4d38c;
+@bg-dark: rgba(10, 11, 17, 0.92);
+@border-subtle: rgba(255, 255, 255, 0.08);
 
 .settings-container {
     width: 100%;
+    // Consistent with the rest of the app — no duplicate gradient definition
     background:
-        radial-gradient(circle at top left, rgba(84, 120, 255, 0.12), transparent 24%),
-        radial-gradient(circle at 86% 8%, rgba(244, 211, 140, 0.12), transparent 18%),
-        linear-gradient(180deg, #0d1017 0%, #08090d 54%, #050608 100%);
+        var(--gradient-blue),
+        var(--gradient-gold),
+        linear-gradient(180deg, #0a0b10 0%, #06070b 55%, #040508 100%);
 
     .settings-content {
         display: flex;
         flex-direction: column;
         min-height: 100%;
         width: 100%;
-        // MEASURED OFFSET: Matching Board hero rhythm
-        // Nav Pill center is ~2.5rem. Content gap to Hero Actions top is ~8rem offset.
-        padding: 4.5rem 4rem 1.5rem;
+        padding: 4rem 3.5rem 1.5rem;
         box-sizing: border-box;
         background: transparent;
 
-        // THE DASHBOARD GRID
         .dashboard-grid {
             display: grid;
             grid-template-columns: 32% 1fr;
-            gap: 2rem;
+            gap: 1.75rem;
             width: 100%;
             align-items: start;
             overflow: visible;
         }
 
-        // LEFT COLUMN: Managed Identity & Profiles (32%)
         .column-left {
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1.75rem;
             overflow: visible;
 
             > *:last-child {
-                flex: 1; // Last card (profiles) grows to fill remaining space
+                flex: 1;
                 min-height: 0;
             }
         }
 
-        // RIGHT COLUMN: The Engine Room (68%)
         .column-right {
             display: flex;
             flex-direction: column;
             overflow: visible;
         }
 
-        // UNIFORM BOX CONSTRAINT
-        .widget-card, .player-widget {
-            background: linear-gradient(180deg, rgba(17, 21, 30, 0.9), rgba(9, 11, 16, 0.82));
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 26px;
-            padding: 2.5rem;
+        .widget-card,
+        .player-widget {
+            background: rgba(255, 255, 255, 0.04);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid @border-subtle;
+            border-radius: var(--radius-card-lg);
+            padding: 2.25rem;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: visible;
-            box-shadow: 0 28px 60px rgba(0, 0, 0, 0.3);
-            -webkit-backdrop-filter: blur(18px);
-            backdrop-filter: blur(18px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
 
-        .widget-card {
-            width: 100%;
-        }
+        .widget-card { width: 100%; }
+        .player-widget { flex: none; }
 
-        .player-widget {
-            flex: none;
-        }
-
-        // GLOBAL FOOTER - Center Gray Legal Text
         .settings-footer {
             flex: 0 0 auto;
             display: flex;
@@ -88,80 +77,69 @@
             width: 100%;
 
             .footer-separator {
-                color: rgba(176, 176, 176, 0.4);
+                color: rgba(255, 255, 255, 0.2);
             }
 
             .footer-link {
-                font-size: 1rem;
+                font-size: 0.9rem;
                 font-weight: 500;
-                color: rgba(255, 255, 255, 0.58);
+                color: var(--text-secondary);
                 text-decoration: none;
                 transition: color 0.2s;
 
-                &:hover {
-                    color: #fff;
-                }
+                &:hover { color: var(--text-primary); }
             }
         }
 
-        .parked-content {
-            display: none;
-        }
+        .parked-content { display: none; }
     }
 }
 
-// GLOBAL FIXES
 :global {
     .settings-container {
-        // Dropdown clipping prevention
         .multiselect-menu-dropdown {
             z-index: 9999 !important;
-            border-radius: 12px;
-            border: 1px solid @border-grey;
-            background: @bg-charcoal;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border-radius: 1rem;
+            border: 1px solid @border-subtle;
+            background: rgba(10, 11, 17, 0.96);
+            -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(30px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
         }
 
-        // Label No-Truncate Fix
         .label {
             white-space: nowrap !important;
         }
 
-        // Focus Glow
-        .button:focus, .input:focus {
-               box-shadow: 0 0 20px rgba(244, 211, 140, 0.2);
+        .button:focus,
+        .input:focus {
+            box-shadow: 0 0 0 3px var(--accent-primary-dim);
         }
     }
 }
 
 @media only screen and (max-width: 768px) {
     .settings-container {
-        // Do NOT set height: auto here — main-nav-bars-container must stay 100vh
-        // so nav-content-container's overflow-y: auto creates a proper scroll region.
-        // Only override the inner content height.
         .settings-content {
-            height: auto; // Allow content to grow beyond viewport so nav-content-container can scroll
-            padding-top: 6px; // 16px default - 10px = 6px per spec
+            height: auto;
+            padding-top: 0.5rem;
             padding-left: 1rem;
             padding-right: 1rem;
-            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 7rem); // Clear bottom nav bar
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 7rem);
 
             .dashboard-grid {
-                grid-template-columns: 1fr; // Single column on mobile
+                grid-template-columns: 1fr;
                 gap: 1rem;
             }
 
             .column-left {
-                order: 1; // Left column cards appear first
+                order: 1;
                 width: 100%;
-
-                > *:last-child {
-                    flex: unset; // Remove flex-grow on mobile (no second column to align with)
-                }
+                > *:last-child { flex: unset; }
             }
 
             .column-right {
-                order: 2; // Right column below
+                order: 2;
                 width: 100%;
             }
         }

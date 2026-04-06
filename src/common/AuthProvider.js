@@ -24,10 +24,10 @@ const AuthContext = React.createContext({
     hasActiveSubscription: false,
     daysRemaining: 0,
     loading: true,
-    signUp: async () => {},
-    signIn: async () => {},
-    signOut: async () => {},
-    refreshProfile: async () => {},
+    signUp: async () => undefined,
+    signIn: async () => undefined,
+    signOut: async () => undefined,
+    refreshProfile: async () => undefined,
 });
 
 const fetchProfile = async (userId) => {

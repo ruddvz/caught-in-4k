@@ -24,7 +24,7 @@ const PricingDemo = () => {
                         <PricingSliderDemo />
                     </div>
                 </section>
-                
+
                 <footer className="text-center py-12 text-sm text-muted-foreground border-t border-border">
                     <p>© 2024 Caught In 4K - Premium AI Streaming</p>
                 </footer>

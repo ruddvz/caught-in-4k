@@ -10,10 +10,12 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+
+    // Cinematic background — near-black with two subtle ambient light pools
     background:
-        radial-gradient(circle at top left, rgba(82, 117, 255, 0.12), transparent 22%),
-        radial-gradient(circle at 82% 8%, rgba(244, 206, 128, 0.12), transparent 20%),
-        linear-gradient(180deg, #0d1017 0%, #07080c 48%, #050608 100%);
+        var(--gradient-blue),
+        var(--gradient-gold),
+        linear-gradient(180deg, #0a0b10 0%, #06070b 55%, #040508 100%);
 
     .top-nav-bar {
         flex: none;
@@ -22,11 +24,25 @@
     .nav-content-container {
         flex: 1;
         overflow-y: auto;
+        overflow-x: clip;
         position: relative;
         padding-left: var(--safe-area-inset-left);
         padding-right: var(--safe-area-inset-right);
         padding-bottom: var(--safe-area-inset-bottom);
         isolation: isolate;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+
+        &::-webkit-scrollbar {
+            width: 5px;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
     }
 
     // Desktop: hide bottom nav above 768px
@@ -36,7 +52,7 @@
         }
     }
 
-    // Mobile: show top nav bar (logo + profile), pill is hidden inside TopNavigationBar styles
+    // Mobile: top bar fixed
     @media only screen and (max-width: 768px) {
         .top-nav-bar {
             display: flex !important;
@@ -48,40 +64,42 @@
         }
     }
 
+    // Mobile bottom nav pill base
     .mobile-bottom-nav {
         display: none;
         flex: none;
-        background: rgba(20, 24, 33, 0.75);
-        -webkit-backdrop-filter: blur(25px) saturate(180%);
-        backdrop-filter: blur(25px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 0.5rem;
+        background: rgba(13, 14, 20, 0.88);
+        -webkit-backdrop-filter: blur(30px) saturate(200%);
+        backdrop-filter: blur(30px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: var(--radius-pill);
+        padding: 0.45rem;
         margin: 0 auto;
-        border-radius: 999px;
         justify-content: space-around;
         align-items: center;
         z-index: 1002;
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 
         .bottom-nav-tab {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0.75rem 1rem;
-            border-radius: 999px;
+            padding: 0.7rem 1.1rem;
+            border-radius: var(--radius-pill);
             color: var(--text-secondary);
-            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             background: transparent;
 
             .bottom-tab-icon {
-                width: 1.6rem;
-                height: 1.6rem;
+                width: 1.5rem;
+                height: 1.5rem;
+                flex-shrink: 0;
             }
 
             &.active {
-                background: var(--primary-accent-color);
-                color: #000;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-light));
+                color: #0d0e12;
+                box-shadow: 0 4px 16px var(--accent-primary-glow);
             }
         }
     }
@@ -92,7 +110,6 @@
         height: 100vh;
         overflow: clip;
 
-        // DEFAULT: hero route (board) — top bar is fixed/transparent, hero fills full height
         .nav-content-container {
             padding-top: 0;
             padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6rem);
@@ -101,7 +118,7 @@
             overflow-x: hidden;
         }
 
-        // NON-HERO pages: clear the fixed top bar (~4rem) + safe area
+        // Non-hero pages pad for fixed top bar
         &.route-library,
         &.route-discover,
         &.route-settings,
@@ -114,27 +131,25 @@
             }
         }
 
-        // BOTTOM PILL — bigger, wider, flush with screen edges
+        // Full-width floating bottom bar
         .mobile-bottom-nav {
             display: flex !important;
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            transform: none;
             width: 100%;
             max-width: 100%;
-            min-width: unset;
-            border-radius: 2.25rem 2.25rem 0 0; // Highly rounded top corners
-            padding: 0.75rem 0.75rem calc(env(safe-area-inset-bottom, 0px) + 1.25rem); // Extra bottom padding for safe area
-            background: linear-gradient(180deg, rgba(12, 15, 21, 0.96), rgba(7, 9, 13, 0.94)) !important;
-            -webkit-backdrop-filter: blur(50px) saturate(210%) !important;
-            backdrop-filter: blur(50px) saturate(210%) !important;
+            border-radius: 2rem 2rem 0 0;
+            padding: 0.6rem 0.5rem calc(env(safe-area-inset-bottom, 0px) + 1rem);
+            background: linear-gradient(180deg, rgba(11, 13, 19, 0.97), rgba(7, 8, 12, 0.99)) !important;
+            -webkit-backdrop-filter: blur(50px) saturate(220%) !important;
+            backdrop-filter: blur(50px) saturate(220%) !important;
             border: none !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 0 -12px 60px rgba(0, 0, 0, 0.7) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.6) !important;
             z-index: 1011;
-            justify-content: space-evenly; // Better distribution
+            justify-content: space-evenly;
 
             .bottom-nav-tab {
                 flex: 1;
@@ -142,34 +157,33 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                gap: 0.2rem;
-                padding: 0.4rem 0.5rem;
-                border-radius: 9999px;
-                color: rgba(255, 255, 255, 0.5);
+                gap: 0.25rem;
+                padding: 0.35rem 0.4rem;
+                border-radius: var(--radius-pill);
+                color: rgba(255, 255, 255, 0.4);
                 background: transparent;
                 transition: background 0.2s ease, color 0.2s ease;
 
-                &.active {
-                    background: linear-gradient(135deg, #f4d38c, #fff1cb);
-                    color: #111318;
-                    padding: 0.4rem 0.8rem;
-                    border-radius: 9999px;
-                    box-shadow: 0 10px 22px rgba(244, 211, 140, 0.22);
-                }
-
                 .bottom-tab-icon {
-                    width: 1.4rem;
-                    height: 1.4rem;
+                    width: 1.35rem;
+                    height: 1.35rem;
                 }
 
                 .bottom-tab-label {
                     font-size: 0.6rem;
-                    font-weight: 700;
-                    letter-spacing: 0.03em;
+                    font-weight: 600;
+                    letter-spacing: 0.02em;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     max-width: 100%;
+                }
+
+                &.active {
+                    background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-light));
+                    color: #0d0e12;
+                    padding: 0.35rem 0.7rem;
+                    box-shadow: 0 6px 18px var(--accent-primary-glow);
                 }
             }
         }

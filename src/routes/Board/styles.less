@@ -17,32 +17,29 @@
         .board-content {
             min-height: 100%;
             width: 100%;
-            padding: 0;
-            padding-top: 0;
-            padding-bottom: 40px;
+            padding: 0 0 48px;
             overflow-y: auto;
             overflow-x: clip;
-            overflow-clip-margin: calc(var(--vertical-nav-bar-size) + 2.5rem);
+            overflow-clip-margin: calc(var(--vertical-nav-bar-size) + 2rem);
 
             .board-row {
-                padding: 0 0.5rem;
+                padding: 0 0.25rem;
                 margin-top: 0;
-                margin-bottom: 2.5rem; // Consistent spacing everywhere
+                margin-bottom: 2.25rem;
 
                 &.hero-shelf-row {
-                    padding: 0 1.5rem; // Support floating card
+                    padding: 0;
                     margin: 0;
-                    margin-bottom: 2.5rem; // spacing before the next carousel
-                    box-sizing: border-box;
+                    margin-bottom: 2.5rem;
                 }
             }
 
             .board-section-title {
-                margin: 0 2rem 1.5rem 2rem;
-                font-size: 2.2rem;
-                font-weight: 800;
+                margin: 0 1.75rem 1.25rem;
+                font-size: 2rem;
+                font-weight: 700;
                 color: var(--text-primary);
-                letter-spacing: -0.01em;
+                letter-spacing: -0.02em;
             }
         }
     }
@@ -76,17 +73,16 @@
 
                 .board-row {
                     padding: 0;
-                    margin-top: 0;
-                    margin-bottom: 1.5rem; // Tighter but consistent mobile spacing
+                    margin-bottom: 1.25rem;
 
                     &.hero-shelf-row {
-                        padding: 0 1rem;
+                        padding: 0;
                         margin-bottom: 1.5rem;
                     }
                 }
             }
         }
-        
+
         .board-warning-container {
             bottom: calc(var(--vertical-nav-bar-size) + 0.5rem);
             height: 7rem;

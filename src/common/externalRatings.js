@@ -131,7 +131,7 @@ function findSupportedLinks(links = []) {
     return supported;
 }
 
-function buildExternalRatingsModel({ links = [], voteAverage = null, imdbRating = null } = {}) {
+function buildExternalRatingsModel({ links = [], imdbRating = null } = {}) {
     const extracted = findSupportedLinks(Array.isArray(links) ? links : []);
 
     if (!extracted.imdb) {

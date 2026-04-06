@@ -1,7 +1,7 @@
 @import (reference) '~stremio/common/screen-sizes.less';
 
 // ============================================================
-// INTRO / LOGIN PAGE
+// INTRO / LOGIN PAGE — Cinematic dark, matches app aesthetic
 // ============================================================
 
 .intro-container {
@@ -9,70 +9,91 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;      // Change 2: vertically center on screen
+    justify-content: center;
     min-height: 100vh;
     width: 100vw;
-    background-color: #000000;
-    // overflow: visible so input focus rings and glow effects are not clipped
+    // Cinematic background matching the main app
+    background:
+        var(--gradient-gold),
+        var(--gradient-blue),
+        linear-gradient(180deg, #0a0b10 0%, #06070b 55%, #040508 100%);
     overflow: visible;
     color: #fff;
-    font-family: 'Inter', 'Arial', sans-serif;
+    font-family: 'Inter', -apple-system, 'Arial', sans-serif;
     box-sizing: border-box;
-    padding: 40px 20px;           // Change 2: uniform padding, no 10vh top offset
+    padding: 40px 20px;
+
+    // Subtle vignette overlay
+    &::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    > * { position: relative; z-index: 1; }
 
     .background-container {
         display: none;
     }
 
-    // BRANDING — Logo + tagline (Change 1)
+    // BRANDING — Logo + tagline
     .branding-header {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-bottom: 100px;     // Change 1: 100px breathing room to form area
+        margin-bottom: 3.5rem;
 
         .logo-image {
-            height: 160px;        // Change 1: 160px, scale proportionally
+            height: 140px;
             width: auto;
             object-fit: contain;
             display: block;
+            filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.6));
         }
 
         .tagline {
-            margin: 10px 0 0 0;  // Change 1: tight 10px gap from logo
+            margin: 12px 0 0;
             padding: 0;
-            font-size: 1.1rem;   // Change 1: slightly larger
+            font-size: 1rem;
             font-weight: 500;
-            letter-spacing: 0.2em;
-            color: rgba(255, 255, 255, 0.55);
+            letter-spacing: 0.18em;
+            color: var(--text-secondary);
             text-align: center;
-            text-transform: none; // Change 1: sentence case, not uppercase
         }
     }
 
-    // TWO-COLUMN FORM AREA (Change 2 + 6)
+    // TWO-COLUMN FORM AREA
     .main-dashboard-wrap {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
         justify-content: center;
-        gap: 32px;               // Change 2: tighter gap
+        gap: 28px;
         width: 100%;
-        max-width: 780px;        // Change 2: slightly tighter max-width
+        max-width: 760px;
+        // Glass card wrap
+        background: rgba(255, 255, 255, 0.03);
+        -webkit-backdrop-filter: blur(24px) saturate(160%);
+        backdrop-filter: blur(24px) saturate(160%);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: var(--radius-card-lg);
+        padding: 2.5rem 2rem;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
     }
 
-    // LEFT COLUMN — Form inputs + legal + sign up (Change 6)
+    // LEFT COLUMN — Form inputs + legal + sign-up
     .form-side {
-        flex: 1.2;               // Change 6: slightly wider — has more content
+        flex: 1.2;
         overflow: visible;
 
-        // 50px buffer prevents glow clip on all sides.
-        // overflow: visible !important overrides the global * { overflow: clip } reset.
         .glow-buffer-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;           // Change 3: 10px gap between inputs
+            gap: 10px;
             padding: 50px;
             margin: -50px;
             overflow: visible !important;
@@ -81,39 +102,40 @@
         .credentials-text-input {
             display: block;
             width: 100%;
-            height: 50px;                          // Change 3
-            padding: 0 18px;                       // Change 3
-            background: rgba(255, 255, 255, 0.05); // Change 3
-            border: 1px solid rgba(255, 255, 255, 0.1); // Change 3
+            height: 50px;
+            padding: 0 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            color: #ffffff;
-            font-size: 0.95rem;                    // Change 3
+            color: var(--text-primary);
+            font-size: 0.95rem;
             font-family: inherit;
             outline: none;
-            // Override global * { overflow: clip } so focus glow paints outside bounds
             overflow: visible;
             transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 
             &::placeholder {
-                color: rgba(255, 255, 255, 0.3);
+                color: var(--text-tertiary);
             }
 
             &:focus {
-                border-color: var(--primary-accent-color); // Change 3
-                background: rgba(255, 255, 255, 0.08);     // Change 3
-                box-shadow: 0 0 0 3px rgba(var(--primary-accent-color-rgb, 0, 240, 255), 0.25),
-                            0 0 16px rgba(var(--primary-accent-color-rgb, 0, 240, 255), 0.15);
+                border-color: var(--accent-primary);
+                background: rgba(255, 255, 255, 0.08);
+                // Gold glow — matches the unified accent
+                box-shadow:
+                    0 0 0 3px var(--accent-primary-dim),
+                    0 0 16px var(--accent-primary-dim);
             }
         }
 
         .legal-checkboxes {
             display: flex;
             flex-direction: column;
-            gap: 8px;            // Change 5: 8px between checkboxes
-            margin-top: 16px;    // Change 3: 16px gap after last input
+            gap: 8px;
+            margin-top: 16px;
 
             .legal-checkbox {
-                height: 28px;    // Change 5: fixed row height
+                height: 28px;
                 display: flex;
                 align-items: center;
 
@@ -122,22 +144,22 @@
                     height: 18px;
                     min-width: 18px;
                     border-radius: 5px;
-                    border: 1.5px solid rgba(255, 255, 255, 0.25);
+                    border: 1.5px solid rgba(255, 255, 255, 0.22);
                     flex-shrink: 0;
 
                     &:global(.checked) {
-                        background: var(--primary-accent-color);
-                        border-color: var(--primary-accent-color);
+                        background: var(--accent-primary);
+                        border-color: var(--accent-primary);
                     }
                 }
 
                 :global(.label) {
-                    color: rgba(255, 255, 255, 0.55) !important; // Change 5
-                    font-size: 0.82rem;                           // Change 5
+                    color: var(--text-secondary) !important;
+                    font-size: 0.82rem;
                 }
 
                 :global(.link) {
-                    color: var(--primary-accent-color) !important; // Change 5
+                    color: var(--accent-primary) !important;
                     text-decoration: none;
 
                     &:hover {
@@ -154,27 +176,25 @@
             text-align: center;
         }
 
-        // Sign up — bottom of left column, full width
         .btn-signup {
-            margin-top: 20px;    // Change 3: 20px gap after checkboxes
+            margin-top: 20px;
             width: 100%;
         }
     }
 
-    // RIGHT COLUMN — Action buttons stack (Change 6)
+    // RIGHT COLUMN — Action buttons
     .actions-side {
-        flex: 1;                 // Change 6: equal flex with left
+        flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 10px;               // Change 4: 10px between right column buttons
-        padding-top: 0;          // Change 6: top of first button aligns with first input
+        gap: 10px;
     }
 
-    // ---- BASE BUTTON ----
+    // BASE BUTTON
     .intro-btn {
         width: 100%;
-        height: 50px;            // Change 4: 50px height
-        border-radius: 9999px;
+        height: 50px;
+        border-radius: var(--radius-pill);
         font-size: 0.95rem;
         font-weight: 600;
         letter-spacing: 0.03em;
@@ -185,7 +205,7 @@
         cursor: pointer;
         transition: all 0.2s ease;
         box-sizing: border-box;
-        padding: 0 24px;         // Change 4: uniform padding
+        padding: 0 24px;
         border: none;
 
         .label {
@@ -196,50 +216,52 @@
         }
     }
 
-    // ---- DARK GRADIENT — Sign up, Log in, Guest login (Change 4) ----
+    // DARK — Sign up, Log in, Guest
     .btn-signup,
     .btn-login,
     .btn-guest {
-        background: linear-gradient(160deg, #1c1c1c 0%, #111111 100%);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        color: #ffffff;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 
         &:hover {
-            background: linear-gradient(160deg, #242424 0%, #171717 100%);
-            border-color: rgba(255, 255, 255, 0.28);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.24);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
         }
 
-        &:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-        }
+        &:active { transform: scale(0.98); }
     }
 
-    // ---- GOOGLE SIGN IN — White pill (unchanged) ----
+    // GOOGLE — White pill
     .btn-google {
-        background: #ffffff;
+        background: #fff;
         color: #1f1f1f;
-        border: 1px solid rgba(0, 0, 0, 0.12);
+        border: 1px solid rgba(0, 0, 0, 0.1);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
         .label { color: #1f1f1f; }
 
-        &:hover {
-            background: #f8f8f8;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        &:hover:not(.btn-disabled) {
+            background: #f5f5f5;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
         }
+    }
+
+    // Disabled state for unavailable buttons
+    .btn-disabled {
+        opacity: 0.42;
+        cursor: not-allowed;
+        pointer-events: none;
     }
 }
 
-// Loading Modal
+// Loading modal
 .loading-modal-container {
-    background-color: rgba(0, 0, 0, 0.9);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    background: rgba(5, 6, 10, 0.9);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -250,18 +272,18 @@
         align-items: center;
         gap: 1.5rem;
         padding: 3rem;
-        background: #111;
-        border: 1px solid #333;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 1.5rem;
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
 
-        .icon { width: 4rem; height: 4rem; color: #fff; }
-        .label { font-size: 1.4rem; color: #fff; }
+        .icon  { width: 4rem; height: 4rem; color: #fff; }
+        .label { font-size: 1.3rem; color: var(--text-primary); }
     }
 }
 
-// ============================================================
-// MOBILE — Stack vertically at <= 600px
-// ============================================================
+// Mobile — single column
 @media only screen and (max-width: 600px) {
     .intro-container {
         padding: 2rem 1rem;
@@ -269,25 +291,21 @@
         overflow-y: auto;
 
         .branding-header {
-            margin-bottom: 60px;             // Mobile: reduced gap
-            .logo-image { height: 120px; }   // Mobile: smaller logo
+            margin-bottom: 2rem;
+            .logo-image { height: 100px; }
         }
 
         .main-dashboard-wrap {
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1.25rem;
+            padding: 1.5rem 1.25rem;
         }
 
-        .form-side {
-            width: 100%;
-            flex: none;
-        }
-
+        .form-side,
         .actions-side {
             width: 100%;
             flex: none;
-            padding-top: 0;
         }
     }
 }

@@ -111,7 +111,6 @@ const HeroShelf = ({ items }) => {
         }
     }, []);
 
-    const currentItem = validItems[currentIndex] || validItems[0] || {};
     const item = validItems[currentIndex] || validItems[0] || {};
 
     if (validItems.length === 0) {

@@ -152,10 +152,8 @@ const Intro = ({ queryParams }) => {
         });
     }, [state.email, state.password, state.confirmPassword, state.termsAccepted, state.privacyPolicyAccepted, state.marketingAccepted, core, t, openLoaderModal]);
 
-    const handleGoogleLogin = React.useCallback(() => {
-        console.warn('Google auth not yet configured');
-        alert('Google sign-in coming soon.');
-    }, []);
+    // Google OAuth is not yet configured on this build — button is rendered disabled
+    const handleGoogleLogin = React.useCallback(() => undefined, []);
 
     // Form field handlers
     const emailOnChange = React.useCallback((event) => {
@@ -315,8 +313,10 @@ const Intro = ({ queryParams }) => {
                 {/* RIGHT COLUMN — Google Sign In, Log in, Guest login */}
                 <div className={styles['actions-side']}>
                     <Button
-                        className={classnames(styles['intro-btn'], styles['btn-google'])}
+                        className={classnames(styles['intro-btn'], styles['btn-google'], styles['btn-disabled'])}
                         onClick={handleGoogleLogin}
+                        disabled={true}
+                        title="Google sign-in coming soon"
                     >
                         <GoogleIcon />
                         <div className={styles['label']}>Continue with Google</div>

@@ -199,7 +199,7 @@ function AuthSignIn({ onForgotPassword, onSignUp }: AuthSignInProps) {
         defaultValues: { email: '', password: '' },
     });
 
-    const onSubmit = async (_data: SignInFormValues) => {
+    const onSubmit = async () => {
         setFormState((previousState) => ({
             ...previousState,
             isLoading: true,
@@ -360,7 +360,7 @@ function AuthSignUp({ onSignIn }: AuthSignUpProps) {
 
     const terms = watch('terms');
 
-    const onSubmit = async (_data: SignUpFormValues) => {
+    const onSubmit = async () => {
         setFormState((previousState) => ({
             ...previousState,
             isLoading: true,
@@ -551,7 +551,7 @@ function AuthForgotPassword({ onSignIn, onSuccess }: AuthForgotPasswordProps) {
         defaultValues: { email: '' },
     });
 
-    const onSubmit = async (_data: ForgotPasswordFormValues) => {
+    const onSubmit = async () => {
         setFormState((previousState) => ({
             ...previousState,
             isLoading: true,

@@ -77,10 +77,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
 
     const finalizeAccountDeletion = useCallback(() => {
         setDeleteAccountPinMode(null);
-        const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
-        if (confirmed) {
-            platform.openExternal('https://www.strem.io/acc-management');
-        }
+        platform.openExternal('https://www.strem.io/acc-management');
         return true;
     }, [platform]);
 

@@ -264,7 +264,7 @@ const Subscribe = () => {
                             <p className={styles['sub-text']}>
                                 {authMode === 'signup'
                                     ? 'Create your account first, then choose the fixed term that fits.'
-                                        : 'Sign in to continue with approval and billing.'}
+                                    : 'Sign in to continue with approval and billing.'}
                             </p>
 
                             <form className={styles['auth-form']} onSubmit={handleAuth}>

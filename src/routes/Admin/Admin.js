@@ -451,16 +451,16 @@ const Admin = () => {
 
                                             return (
                                                 <>
-                                        <td>{sub.user_display_name || sub.user_email || sub.user_id}</td>
-                                        <td>{sub.plan}</td>
-                                        <td>${(sub.price_cents / 100).toFixed(2)}</td>
-                                        <td>
-                                            <span className={classnames(styles['status-pill'], styles[`status-${displayStatus}`])}>
-                                                {displayStatus}
-                                            </span>
-                                        </td>
-                                        <td>{sub.expires_at ? new Date(sub.expires_at).toLocaleDateString() : '—'}</td>
-                                        <td>{new Date(sub.created_at).toLocaleDateString()}</td>
+                                                    <td>{sub.user_display_name || sub.user_email || sub.user_id}</td>
+                                                    <td>{sub.plan}</td>
+                                                    <td>${(sub.price_cents / 100).toFixed(2)}</td>
+                                                    <td>
+                                                        <span className={classnames(styles['status-pill'], styles[`status-${displayStatus}`])}>
+                                                            {displayStatus}
+                                                        </span>
+                                                    </td>
+                                                    <td>{sub.expires_at ? new Date(sub.expires_at).toLocaleDateString() : '—'}</td>
+                                                    <td>{new Date(sub.created_at).toLocaleDateString()}</td>
                                                 </>
                                             );
                                         })()}
