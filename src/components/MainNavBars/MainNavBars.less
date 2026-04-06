@@ -10,7 +10,10 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--bg-body);
+    background:
+        radial-gradient(circle at top left, rgba(82, 117, 255, 0.12), transparent 22%),
+        radial-gradient(circle at 82% 8%, rgba(244, 206, 128, 0.12), transparent 20%),
+        linear-gradient(180deg, #0d1017 0%, #07080c 48%, #050608 100%);
 
     .top-nav-bar {
         flex: none;
@@ -23,6 +26,7 @@
         padding-left: var(--safe-area-inset-left);
         padding-right: var(--safe-area-inset-right);
         padding-bottom: var(--safe-area-inset-bottom);
+        isolation: isolate;
     }
 
     // Desktop: hide bottom nav above 768px
@@ -123,7 +127,7 @@
             min-width: unset;
             border-radius: 2.25rem 2.25rem 0 0; // Highly rounded top corners
             padding: 0.75rem 0.75rem calc(env(safe-area-inset-bottom, 0px) + 1.25rem); // Extra bottom padding for safe area
-            background: rgba(13, 17, 23, 0.95) !important;
+            background: rgba(10, 12, 18, 0.94) !important;
             -webkit-backdrop-filter: blur(50px) saturate(210%) !important;
             backdrop-filter: blur(50px) saturate(210%) !important;
             border: none !important;

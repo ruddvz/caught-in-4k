@@ -167,6 +167,11 @@ const Discover = ({ urlParams, queryParams }) => {
                                                 posterShape={'poster'}
                                                 playname={selectedMetaItemIndex === index}
                                                 deepLinks={metaItem.deepLinks}
+                                                links={metaItem.links}
+                                                imdbRating={metaItem.imdbRating}
+                                                releaseInfo={metaItem.releaseInfo}
+                                                voteAverage={(metaItem.voteAverage ?? metaItem.vote_average) || (metaItem.imdbRating ? parseFloat(metaItem.imdbRating) : null)}
+                                                showCompactRating={true}
                                                 watched={metaItem.watched}
                                                 data-index={index}
                                                 onClick={metaItemOnClick}
@@ -180,12 +185,14 @@ const Discover = ({ urlParams, queryParams }) => {
                         <MetaPreview
                             className={styles['meta-preview-container']}
                             compact={true}
+                            variant={'browse'}
                             ref={metaPreviewRef}
                             name={selectedMetaItem.name}
                             logo={selectedMetaItem.logo}
                             background={selectedMetaItem.poster}
                             runtime={selectedMetaItem.runtime}
                             releaseInfo={selectedMetaItem.releaseInfo}
+                            imdbRating={selectedMetaItem.imdbRating}
                             released={selectedMetaItem.released}
                             description={selectedMetaItem.description}
                             links={selectedMetaItem.links}

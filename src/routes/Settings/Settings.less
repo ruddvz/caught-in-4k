@@ -7,7 +7,10 @@
 
 .settings-container {
     width: 100%;
-    background-color: #0c0c0c;
+    background:
+        radial-gradient(circle at top left, rgba(84, 120, 255, 0.12), transparent 24%),
+        radial-gradient(circle at 86% 8%, rgba(244, 211, 140, 0.12), transparent 18%),
+        linear-gradient(180deg, #0d1017 0%, #08090d 54%, #050608 100%);
 
     .settings-content {
         display: flex;
@@ -16,7 +19,7 @@
         width: 100%;
         // MEASURED OFFSET: Matching Board hero rhythm
         // Nav Pill center is ~2.5rem. Content gap to Hero Actions top is ~8rem offset.
-        padding: 5rem 4rem 1rem;
+        padding: 4.5rem 4rem 1.5rem;
         box-sizing: border-box;
         background: transparent;
 
@@ -52,14 +55,15 @@
 
         // UNIFORM BOX CONSTRAINT
         .widget-card, .player-widget {
-            background-color: @bg-charcoal; 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 12px; // 12px Corners Per Prompt
+            background: linear-gradient(180deg, rgba(18, 22, 30, 0.86), rgba(11, 14, 19, 0.74));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 22px;
             padding: 2.5rem;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: visible;
+            box-shadow: 0 26px 60px rgba(0, 0, 0, 0.28);
         }
 
         .widget-card {
@@ -78,7 +82,7 @@
             justify-content: center;
             align-items: center;
             gap: 2rem;
-            padding: 1.5rem 0;
+            padding: 1.75rem 0 0.5rem;
             width: 100%;
 
             .footer-separator {

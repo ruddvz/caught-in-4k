@@ -1,0 +1,183 @@
+.external-ratings {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+    max-width: 42rem;
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+    }
+
+    .card {
+        display: block;
+        min-width: 0;
+        width: 100%;
+        padding: 0.95rem 1rem 1.05rem;
+        border-radius: 1.2rem;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        text-decoration: none;
+
+        &[data-clickable='true'] {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+            &:hover {
+                transform: translateY(-2px);
+                border-color: rgba(255, 255, 255, 0.22);
+                box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+            }
+
+            &:focus-visible {
+                outline: var(--focus-outline-size) solid var(--primary-accent-color);
+                outline-offset: 3px;
+                border-color: rgba(244, 211, 140, 0.42);
+                box-shadow: 0 0 0 4px rgba(244, 211, 140, 0.16);
+            }
+        }
+
+        &[data-source='imdb'] {
+            box-shadow: 0 14px 30px rgba(245, 197, 24, 0.12);
+        }
+
+        &[data-source='rottenTomatoes'] {
+            box-shadow: 0 14px 30px rgba(245, 83, 60, 0.12);
+        }
+
+        &[data-source='metacritic'] {
+            box-shadow: 0 14px 30px rgba(111, 226, 158, 0.12);
+        }
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.65rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .card-label {
+        color: rgba(255, 255, 255, 0.88);
+        font-weight: 700;
+    }
+
+    .card-meta {
+        color: rgba(255, 255, 255, 0.48);
+        font-weight: 600;
+    }
+
+    .card-value {
+        font-size: clamp(1.55rem, 2vw, 2rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: var(--text-primary, #fff);
+    }
+
+    .consensus {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.15rem;
+        border-radius: 1.35rem;
+        background: rgba(8, 10, 15, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(18px);
+    }
+
+    .consensus-score {
+        flex: none;
+        font-size: clamp(2rem, 4vw, 2.9rem);
+        font-weight: 900;
+        line-height: 0.95;
+        letter-spacing: -0.05em;
+        color: var(--text-primary, #fff);
+    }
+
+    .consensus-copy {
+        min-width: 0;
+        display: grid;
+        gap: 0.22rem;
+    }
+
+    .consensus-label {
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 700;
+    }
+
+    .consensus-verdict {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: #f4d38c;
+        letter-spacing: 0.02em;
+    }
+
+    .consensus-subline {
+        font-size: 0.88rem;
+        color: rgba(255, 255, 255, 0.62);
+        line-height: 1.45;
+    }
+}
+
+.compact-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.38rem 0.68rem;
+    border-radius: 999px;
+    background: rgba(8, 10, 15, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.24);
+    max-width: 100%;
+
+    &[data-kind='consensus'] {
+        border-color: rgba(244, 211, 140, 0.28);
+        box-shadow: 0 10px 18px rgba(244, 211, 140, 0.12);
+    }
+
+    .compact-value {
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: var(--text-primary, #fff);
+        white-space: nowrap;
+    }
+
+    .compact-secondary {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.62);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media only screen and (max-width: 960px) {
+    .external-ratings {
+        .cards {
+            grid-template-columns: 1fr;
+        }
+
+        .consensus {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+}

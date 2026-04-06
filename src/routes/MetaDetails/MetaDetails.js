@@ -39,6 +39,11 @@ const MetaDetails = ({ urlParams, queryParams }) => {
             :
             null;
     }, [metaDetails.metaItem, streamPath]);
+    const metaContent = React.useMemo(() => {
+        return metaDetails.metaItem !== null && metaDetails.metaItem.content.type === 'Ready'
+            ? metaDetails.metaItem.content.content
+            : null;
+    }, [metaDetails.metaItem]);
     const addToLibrary = React.useCallback(() => {
         if (metaDetails.metaItem === null || metaDetails.metaItem.content.type !== 'Ready') {
             return;
@@ -158,11 +163,13 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                                     <React.Fragment>
                                         <MetaPreview
                                             className={classnames(styles['meta-preview'], 'animation-fade-in')}
+                                            variant={'details'}
                                             name={metaDetails.metaItem.content.content.name}
                                             logo={metaDetails.metaItem.content.content.logo}
                                             background={metaDetails.metaItem.content.content.background}
                                             runtime={metaDetails.metaItem.content.content.runtime}
                                             releaseInfo={metaDetails.metaItem.content.content.releaseInfo}
+                                            imdbRating={metaDetails.metaItem.content.content.imdbRating}
                                             released={metaDetails.metaItem.content.content.released}
                                             description={
                                                 video !== null && typeof video.overview === 'string' && video.overview.length > 0 ?
@@ -187,6 +194,12 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                             streams={metaDetails.streams}
                             video={video}
                             type={streamPath.type}
+                            metaId={metaContent?.id ?? null}
+                            metaName={metaContent?.name ?? null}
+                            poster={metaContent?.poster ?? null}
+                            posterShape={metaContent?.posterShape ?? null}
+                            releaseInfo={metaContent?.releaseInfo ?? null}
+                            libraryItemId={metaDetails.libraryItem?._id ?? null}
                             onEpisodeSearch={handleEpisodeSearch}
                         />
                         :

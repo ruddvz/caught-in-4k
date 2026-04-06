@@ -9,7 +9,10 @@ const { useTranslation } = require('react-i18next');
 const { useRouteFocused } = require('stremio-router');
 const { useServices } = require('stremio/services');
 const { onFileDrop, useSettings, useProfile, useFullscreen, useBinaryState, useToast, useStreamingServer, withCoreSuspender, CONSTANTS, useShell, usePlatform, onShortcut } = require('stremio/common');
+const { useAuth } = require('stremio/common/AuthProvider');
+const { PROFILE_CHANGE_EVENT, getSelectedProfileId } = require('stremio/common/profileStore');
 const { HorizontalNavBar, Transition, ContextMenu } = require('stremio/components');
+const { createProfileContinueWatchingStore } = require('../../common/profileContinueWatching');
 const BufferingLoader = require('./BufferingLoader');
 const VolumeChangeIndicator = require('./VolumeChangeIndicator');
 const Error = require('./Error');
@@ -39,6 +42,7 @@ const Player = ({ urlParams, queryParams }) => {
     const forceTranscoding = React.useMemo(() => {
         return queryParams.has('forceTranscoding');
     }, [queryParams]);
+    const auth = useAuth();
     const profile = useProfile();
     const [player, videoParamsChanged, streamStateChanged, timeChanged, seek, pausedChanged, ended, nextVideo] = usePlayer(urlParams);
     const [settings] = useSettings();
@@ -48,6 +52,10 @@ const Player = ({ urlParams, queryParams }) => {
     const routeFocused = useRouteFocused();
     const platform = usePlatform();
     const toast = useToast();
+    const historyStore = React.useMemo(() => createProfileContinueWatchingStore(), []);
+    const [selectedProfileId, setSelectedProfileId] = React.useState(() => (
+        typeof localStorage !== 'undefined' ? getSelectedProfileId(localStorage, auth) : null
+    ));
 
     const [seeking, setSeeking] = React.useState(false);
 
@@ -98,8 +106,124 @@ const Player = ({ urlParams, queryParams }) => {
 
     const pressTimer = React.useRef(null);
     const longPress = React.useRef(false);
+    const lastSavedPlaybackTimeRef = React.useRef(0);
 
     const HOLD_DELAY = 200;
+
+    React.useEffect(() => {
+        const refreshSelectedProfile = () => {
+            setSelectedProfileId(typeof localStorage !== 'undefined' ? getSelectedProfileId(localStorage, auth) : null);
+        };
+
+        refreshSelectedProfile();
+        if (typeof window !== 'undefined') {
+            window.addEventListener(PROFILE_CHANGE_EVENT, refreshSelectedProfile);
+            return () => {
+                window.removeEventListener(PROFILE_CHANGE_EVENT, refreshSelectedProfile);
+            };
+        }
+
+        return undefined;
+    }, [auth]);
+
+    const persistProfileContinueWatching = React.useCallback((timeOffset = video.state.time, duration = video.state.duration) => {
+        if (!selectedProfileId || player.metaItem?.type !== 'Ready' || !player.selected?.streamRequest?.path?.id) {
+            return false;
+        }
+
+        if (typeof timeOffset !== 'number' || typeof duration !== 'number' || duration <= 0 || timeOffset <= 0) {
+            return false;
+        }
+
+        const currentVideo = player.metaItem.content.videos.find((item) => item.id === player.selected.streamRequest.path.id);
+        if (!currentVideo) {
+            return false;
+        }
+
+        historyStore.upsertEntry({
+            auth,
+            profileId: selectedProfileId,
+            entry: {
+                metaId: player.metaItem.content.id,
+                type: player.metaItem.content.type,
+                libraryItemId: player.libraryItem?._id ?? null,
+                videoId: currentVideo.id,
+                videoReleased: currentVideo.released instanceof Date && !Number.isNaN(currentVideo.released.getTime())
+                    ? currentVideo.released.toISOString()
+                    : null,
+                name: player.metaItem.content.name,
+                poster: player.metaItem.content.poster,
+                posterShape: player.metaItem.content.posterShape,
+                releaseInfo: player.metaItem.content.releaseInfo,
+                deepLinks: {
+                    metaDetailsStreams: currentVideo.deepLinks?.metaDetailsStreams ?? null,
+                    metaDetailsVideos: null,
+                    player: currentVideo.deepLinks?.player ?? null,
+                },
+                timeOffset,
+                duration,
+            },
+        });
+        return true;
+    }, [auth, historyStore, player.libraryItem, player.metaItem, player.selected, selectedProfileId, video.state.duration, video.state.time]);
+
+    const completeProfileContinueWatching = React.useCallback(() => {
+        if (!selectedProfileId || player.metaItem?.type !== 'Ready') {
+            return;
+        }
+
+        historyStore.markCompleted({
+            auth,
+            profileId: selectedProfileId,
+            metaId: player.metaItem.content.id,
+            type: player.metaItem.content.type,
+        });
+    }, [auth, historyStore, player.metaItem, selectedProfileId]);
+
+    const clearProfileContinueWatching = React.useCallback(() => {
+        if (!selectedProfileId || player.metaItem?.type !== 'Ready') {
+            return;
+        }
+
+        historyStore.dismissEntry({
+            auth,
+            profileId: selectedProfileId,
+            metaId: player.metaItem.content.id,
+            type: player.metaItem.content.type,
+        });
+    }, [auth, historyStore, player.metaItem, selectedProfileId]);
+
+    const queueNextProfileContinueWatching = React.useCallback((nextVideoItem) => {
+        if (!selectedProfileId || player.metaItem?.type !== 'Ready' || !nextVideoItem) {
+            return;
+        }
+
+        historyStore.upsertEntry({
+            auth,
+            profileId: selectedProfileId,
+            entry: {
+                metaId: player.metaItem.content.id,
+                type: player.metaItem.content.type,
+                libraryItemId: player.libraryItem?._id ?? null,
+                videoId: nextVideoItem.id,
+                videoReleased: nextVideoItem.released instanceof Date && !Number.isNaN(nextVideoItem.released.getTime())
+                    ? nextVideoItem.released.toISOString()
+                    : null,
+                name: player.metaItem.content.name,
+                poster: player.metaItem.content.poster,
+                posterShape: player.metaItem.content.posterShape,
+                releaseInfo: player.metaItem.content.releaseInfo,
+                deepLinks: {
+                    metaDetailsStreams: nextVideoItem.deepLinks?.metaDetailsStreams ?? null,
+                    metaDetailsVideos: nextVideoItem.deepLinks?.metaDetailsVideos ?? null,
+                    player: nextVideoItem.deepLinks?.player ?? null,
+                },
+                timeOffset: 0,
+                duration: 0,
+                resumeFromStart: true,
+            },
+        });
+    }, [auth, historyStore, player.libraryItem, player.metaItem, selectedProfileId]);
 
     const onImplementationChanged = React.useCallback(() => {
         video.setSubtitlesSize(settings.subtitlesSize);
@@ -140,17 +264,24 @@ const Player = ({ urlParams, queryParams }) => {
             return;
         }
 
+        const nextVideoItem = window.playerNextVideo;
+        if (nextVideoItem !== null) {
+            queueNextProfileContinueWatching(nextVideoItem);
+        } else {
+            completeProfileContinueWatching();
+        }
+
         ended();
-        if (window.playerNextVideo !== null) {
+        if (nextVideoItem !== null) {
             nextVideo();
 
-            const deepLinks = window.playerNextVideo.deepLinks;
+            const deepLinks = nextVideoItem.deepLinks;
             handleNextVideoNavigation(deepLinks, profile.settings.bingeWatching, true);
 
         } else {
             window.history.back();
         }
-    }, []);
+    }, [completeProfileContinueWatching, ended, handleNextVideoNavigation, nextVideo, profile.settings.bingeWatching, queueNextProfileContinueWatching]);
 
     const onError = React.useCallback((error) => {
         console.error('Player', error);
@@ -291,14 +422,21 @@ const Player = ({ urlParams, queryParams }) => {
         nextVideoPopupDismissed.current = true;
     }, []);
 
+    const navigateToNextVideo = React.useCallback((nextVideoItem, bingeWatching, ended) => {
+        if (nextVideoItem === null) {
+            return;
+        }
+
+        queueNextProfileContinueWatching(nextVideoItem);
+        nextVideo();
+        handleNextVideoNavigation(nextVideoItem.deepLinks, bingeWatching, ended);
+    }, [handleNextVideoNavigation, nextVideo, queueNextProfileContinueWatching]);
+
     const onNextVideoRequested = React.useCallback(() => {
         if (player.nextVideo !== null) {
-            nextVideo();
-
-            const deepLinks = player.nextVideo.deepLinks;
-            handleNextVideoNavigation(deepLinks, profile.settings.bingeWatching, false);
+            navigateToNextVideo(player.nextVideo, profile.settings.bingeWatching, false);
         }
-    }, [player.nextVideo, handleNextVideoNavigation, profile.settings]);
+    }, [navigateToNextVideo, player.nextVideo, profile.settings.bingeWatching]);
 
     const onVideoClick = React.useCallback(() => {
         if (video.state.paused !== null && !longPress.current) {
@@ -361,8 +499,17 @@ const Player = ({ urlParams, queryParams }) => {
     React.useEffect(() => {
         setError(null);
         video.unload();
+        lastSavedPlaybackTimeRef.current = 0;
 
         if (player.selected && player.stream?.type === 'Ready' && streamingServer.settings?.type !== 'Loading') {
+            const fallbackTime = player.libraryItem !== null &&
+                player.selected.streamRequest !== null &&
+                player.selected.streamRequest.path !== null &&
+                player.libraryItem.state.video_id === player.selected.streamRequest.path.id ?
+                player.libraryItem.state.timeOffset
+                :
+                0;
+
             video.load({
                 stream: {
                     ...player.stream.content,
@@ -375,13 +522,15 @@ const Player = ({ urlParams, queryParams }) => {
                         []
                 },
                 autoplay: true,
-                time: player.libraryItem !== null &&
-                    player.selected.streamRequest !== null &&
-                    player.selected.streamRequest.path !== null &&
-                    player.libraryItem.state.video_id === player.selected.streamRequest.path.id ?
-                    player.libraryItem.state.timeOffset
-                    :
-                    0,
+                time: historyStore.resolveResumeTime({
+                    auth,
+                    profileId: selectedProfileId,
+                    libraryItemId: player.libraryItem?._id ?? null,
+                    metaId: player.metaItem?.type === 'Ready' ? player.metaItem.content.id : (typeof urlParams.id === 'string' ? urlParams.id : null),
+                    type: player.metaItem?.type === 'Ready' ? player.metaItem.content.type : (typeof urlParams.type === 'string' ? urlParams.type : null),
+                    videoId: player.selected?.streamRequest?.path?.id ?? null,
+                    fallbackTime,
+                }),
                 forceTranscoding: forceTranscoding || casting,
                 maxAudioChannels: settings.surroundSound ? 32 : 2,
                 hardwareDecoding: settings.hardwareDecoding,
@@ -401,7 +550,7 @@ const Player = ({ urlParams, queryParams }) => {
                 shellTransport: services.shell.active ? services.shell.transport : null,
             });
         }
-    }, [streamingServer.baseUrl, player.selected, player.stream, forceTranscoding, casting]);
+    }, [auth, casting, forceTranscoding, historyStore, player.libraryItem, player.metaItem, player.selected, player.seriesInfo, player.stream, player.selected?.stream, selectedProfileId, services.chromecast.active, services.shell.active, settings.assSubtitlesStyling, settings.hardwareDecoding, settings.surroundSound, settings.videoMode, streamingServer.baseUrl, streamingServer.selected.transportUrl, streamingServer.settings?.type, urlParams.id, urlParams.type]);
     React.useEffect(() => {
         if (video.state.stream !== null) {
             const tracks = player.subtitles.map((subtitles) => ({
@@ -417,10 +566,48 @@ const Player = ({ urlParams, queryParams }) => {
     }, [video.state.time, video.state.duration, video.state.manifest, seeking]);
 
     React.useEffect(() => {
+        if (seeking || video.state.time === null || video.state.duration === null) {
+            return;
+        }
+
+        const roundedTime = Math.max(0, Math.round(video.state.time));
+        if (roundedTime <= 0) {
+            if (lastSavedPlaybackTimeRef.current > 0) {
+                clearProfileContinueWatching();
+                lastSavedPlaybackTimeRef.current = 0;
+            }
+
+            return;
+        }
+
+        if (lastSavedPlaybackTimeRef.current !== 0) {
+            if (roundedTime < lastSavedPlaybackTimeRef.current) {
+                if (persistProfileContinueWatching(roundedTime, video.state.duration)) {
+                    lastSavedPlaybackTimeRef.current = roundedTime;
+                }
+
+                return;
+            }
+
+            if (roundedTime - lastSavedPlaybackTimeRef.current < 5) {
+                return;
+            }
+        }
+
+        if (persistProfileContinueWatching(roundedTime, video.state.duration)) {
+            lastSavedPlaybackTimeRef.current = roundedTime;
+        }
+    }, [clearProfileContinueWatching, persistProfileContinueWatching, seeking, video.state.duration, video.state.time]);
+
+    React.useEffect(() => {
         if (video.state.paused !== null) {
             pausedChanged(video.state.paused);
+
+            if (video.state.paused) {
+                persistProfileContinueWatching();
+            }
         }
-    }, [video.state.paused]);
+    }, [pausedChanged, persistProfileContinueWatching, video.state.paused]);
 
     React.useEffect(() => {
         videoParamsChanged(video.state.videoParams);
@@ -728,11 +915,9 @@ const Player = ({ urlParams, queryParams }) => {
     onShortcut('playNext', () => {
         closeMenus();
         if (window.playerNextVideo !== null) {
-            nextVideo();
-            const deepLinks = window.playerNextVideo.deepLinks;
-            handleNextVideoNavigation(deepLinks, false, false);
+            navigateToNextVideo(window.playerNextVideo, false, false);
         }
-    }, []);
+    }, [closeMenus, navigateToNextVideo]);
 
     onShortcut('exit', () => {
         closeMenus();

@@ -6,8 +6,6 @@ const debounce = require('lodash.debounce');
 const useTranslate = require('stremio/common/useTranslate');
 const { useStreamingServer, useNotifications, withCoreSuspender, getVisibleChildrenRange, useProfile } = require('stremio/common');
 const { ContinueWatchingItem, EventModal, MainNavBars, MetaItem, MetaRow } = require('stremio/components');
-
-const useCanonTakesQueue = require('stremio/services/CanonTakesQueue/CanonTakesQueue');
 const useBoard = require('./useBoard');
 const useContinueWatchingPreview = require('./useContinueWatchingPreview');
 const HeroShelf = require('./HeroShelf');
@@ -24,9 +22,6 @@ const Board = () => {
     const notifications = useNotifications();
     const profile = useProfile();
     const boardCatalogsOffset = continueWatchingPreview.items.length > 0 ? 1 : 0;
-
-    // Start Canon Takes background processing
-    useCanonTakesQueue(board.catalogs);
 
     const heroItems = React.useMemo(() => {
         const firstReady = board.catalogs.find((c) => c.content && c.content.type === 'Ready');
@@ -113,6 +108,7 @@ const Board = () => {
                                         catalog={catalog}
                                         itemComponent={MetaItem}
                                         index={index + boardCatalogsOffset}
+                                        showCompactRating={true}
                                     />
                                 );
                             }

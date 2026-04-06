@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C4K Redesign Directions</title>
+    <style>
+        :root {
+            --bg: #06070a;
+            --panel: rgba(255, 255, 255, 0.08);
+            --panel-strong: rgba(255, 255, 255, 0.12);
+            --border: rgba(255, 255, 255, 0.14);
+            --text: #f5f7fb;
+            --muted: #a6adbb;
+            --gold: #f6c65b;
+            --blue: #8ec5ff;
+            --green: #8be1b0;
+            --shadow: 0 40px 100px rgba(0, 0, 0, 0.42);
+            font-family: "SF Pro Display", "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(114, 84, 255, 0.14), transparent 28%),
+                radial-gradient(circle at 85% 10%, rgba(64, 152, 255, 0.14), transparent 30%),
+                linear-gradient(180deg, #0e1118 0%, var(--bg) 34%, #050608 100%);
+        }
+
+        .page {
+            width: min(1400px, calc(100vw - 48px));
+            margin: 0 auto;
+            padding: 40px 0 60px;
+        }
+
+        .eyebrow {
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: var(--gold);
+        }
+
+        h1 {
+            margin: 12px 0 14px;
+            font-size: clamp(38px, 5vw, 68px);
+            line-height: 0.96;
+            letter-spacing: -0.04em;
+        }
+
+        .intro {
+            max-width: 860px;
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 24px 0 34px;
+        }
+
+        .chip {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            border-radius: 999px;
+            padding: 10px 14px;
+            color: #d5d9e2;
+            font-size: 14px;
+            backdrop-filter: blur(18px);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            position: relative;
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.045));
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(22px);
+        }
+
+        .recommended {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(246, 198, 91, 0.14);
+            border: 1px solid rgba(246, 198, 91, 0.36);
+            color: #ffd98e;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .visual {
+            padding: 20px;
+            min-height: 400px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+        }
+
+        .body {
+            padding: 24px;
+        }
+
+        h2 {
+            margin: 0 0 10px;
+            font-size: 28px;
+            letter-spacing: -0.03em;
+        }
+
+        .summary {
+            margin: 0 0 18px;
+            color: var(--muted);
+            line-height: 1.6;
+            min-height: 78px;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 18px;
+            color: #d8dde8;
+            line-height: 1.7;
+        }
+
+        .mock-shell {
+            height: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(180deg, rgba(6,7,10,0.2), rgba(6,7,10,0.9));
+        }
+
+        .mock-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            background: rgba(6, 7, 10, 0.42);
+        }
+
+        .mock-tabs, .mock-actions, .mock-ratings, .mock-rows {
+            display: flex;
+            gap: 10px;
+        }
+
+        .pill {
+            height: 34px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .pill.small { width: 34px; }
+        .pill.medium { width: 74px; }
+        .pill.large { width: 112px; }
+
+        .hero-a,
+        .hero-b,
+        .hero-c {
+            position: relative;
+            padding: 24px;
+            min-height: 240px;
+        }
+
+        .hero-a {
+            background:
+                linear-gradient(90deg, rgba(7, 8, 12, 0.9) 18%, rgba(7, 8, 12, 0.16) 72%),
+                linear-gradient(135deg, rgba(129, 78, 255, 0.55), rgba(255, 204, 94, 0.18));
+        }
+
+        .hero-b {
+            background:
+                linear-gradient(180deg, rgba(9, 11, 16, 0.18), rgba(9, 11, 16, 0.96)),
+                linear-gradient(135deg, rgba(89, 164, 255, 0.38), rgba(255,255,255,0.06));
+        }
+
+        .hero-c {
+            background:
+                linear-gradient(120deg, rgba(15,16,20,0.96) 0%, rgba(15,16,20,0.42) 62%),
+                linear-gradient(135deg, rgba(237, 105, 70, 0.32), rgba(85, 117, 255, 0.24));
+        }
+
+        .logo-bar {
+            width: 52%;
+            height: 34px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.92);
+            margin-top: 36px;
+        }
+
+        .text-line {
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.18);
+            margin-top: 12px;
+        }
+
+        .text-line.wide { width: 78%; }
+        .text-line.mid { width: 64%; }
+        .text-line.short { width: 42%; }
+
+        .rating-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .rating-card {
+            padding: 14px 12px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+
+        .rating-top {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255,255,255,0.78);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .rating-score {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .meter-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .meter-number {
+            font-size: 42px;
+            font-weight: 800;
+        }
+
+        .meter-copy {
+            display: grid;
+            gap: 6px;
+        }
+
+        .meter-copy .headline {
+            font-size: 16px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+
+        .meter-copy .subline {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .row-stack {
+            padding: 18px 24px 24px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .row-card {
+            height: 102px;
+            border-radius: 22px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .editorial {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .editorial .left,
+        .editorial .right {
+            min-height: 140px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.09);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .profile-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .profile-card {
+            aspect-ratio: 1 / 1.2;
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .footer-note {
+            margin-top: 28px;
+            padding: 20px 24px;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: #d8dde8;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 1100px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <div class="eyebrow">C4K Redesign</div>
+        <h1>Three directions for the new browse experience</h1>
+        <p class="intro">
+            These all remove Canon Take, replace the current satisfaction bar with a three-source ratings strip plus a premium five-tier verdict system,
+            and push the UI toward Apple TV-level polish. Reply with <strong>A</strong>, <strong>B</strong>, or <strong>C</strong> in the terminal, or tell me to combine parts.
+        </p>
+
+        <div class="legend">
+            <div class="chip">Scope: Home, Discover, Library, Meta Details, Profiles, Settings</div>
+            <div class="chip">Rating trio: IMDb + Rotten Tomatoes + Metacritic</div>
+            <div class="chip">Priority: cinematic immersion</div>
+            <div class="chip">Tone: mostly premium, light C4K personality</div>
+        </div>
+
+        <section class="grid">
+            <article class="card">
+                <div class="recommended">Recommended</div>
+                <div class="visual">
+                    <div class="mock-shell">
+                        <div class="mock-nav">
+                            <div class="mock-tabs">
+                                <div class="pill medium"></div>
+                                <div class="pill large"></div>
+                                <div class="pill medium"></div>
+                            </div>
+                            <div class="mock-actions">
+                                <div class="pill small"></div>
+                                <div class="pill small"></div>
+                            </div>
+                        </div>
+                        <div class="hero-a">
+                            <div class="logo-bar"></div>
+                            <div class="text-line wide"></div>
+                            <div class="text-line mid"></div>
+                            <div class="rating-strip">
+                                <div class="rating-card">
+                                    <div class="rating-top"><span>IMDb</span><span>Audience</span></div>
+                                    <div class="rating-score">8.7</div>
+                                </div>
+                                <div class="rating-card">
+                                    <div class="rating-top"><span>Rotten</span><span>Critics</span></div>
+                                    <div class="rating-score">94%</div>
+                                </div>
+                                <div class="rating-card">
+                                    <div class="rating-top"><span>Meta</span><span>Consensus</span></div>
+                                    <div class="rating-score">81</div>
+                                </div>
+                            </div>
+                            <div class="meter-row">
+                                <div class="meter-number">91%</div>
+                                <div class="meter-copy">
+                                    <div class="headline">Absolute Cinema</div>
+                                    <div class="subline">Three sources aligned. Feels event-level.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-stack">
+                            <div class="row-card"></div>
+                            <div class="row-card"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="body">
+                    <h2>A. Cinema Stage</h2>
+                    <p class="summary">Full-bleed hero, floating navigation, richer detail panes, and oversized rating treatment. This is the closest to Apple TV while still feeling like C4K.</p>
+                    <ul>
+                        <li>Hero becomes a true cinematic stage with stronger artwork and cleaner actions</li>
+                        <li>Carousels shift to premium poster rails with more breathing room and better hover focus</li>
+                        <li>Meta Details becomes a layered showcase instead of stacked glass widgets</li>
+                        <li>Profiles and Settings inherit the same dark-luxe material system</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="visual">
+                    <div class="mock-shell">
+                        <div class="mock-nav">
+                            <div class="mock-tabs">
+                                <div class="pill medium"></div>
+                                <div class="pill medium"></div>
+                                <div class="pill medium"></div>
+                                <div class="pill medium"></div>
+                            </div>
+                            <div class="mock-actions">
+                                <div class="pill small"></div>
+                            </div>
+                        </div>
+                        <div class="hero-b">
+                            <div class="logo-bar" style="width: 44%;"></div>
+                            <div class="text-line short"></div>
+                            <div class="meter-row" style="margin-top: 28px;">
+                                <div class="meter-number">84%</div>
+                                <div class="meter-copy">
+                                    <div class="headline" style="color: var(--blue);">Crowd Favorite</div>
+                                    <div class="subline">Sharper, denser, more browse-friendly.</div>
+                                </div>
+                            </div>
+                            <div class="rating-strip" style="margin-top: 18px;">
+                                <div class="rating-card"></div>
+                                <div class="rating-card"></div>
+                                <div class="rating-card"></div>
+                            </div>
+                        </div>
+                        <div class="row-stack" style="grid-template-columns: 1fr 1fr; display: grid;">
+                            <div class="row-card"></div>
+                            <div class="row-card"></div>
+                            <div class="row-card"></div>
+                            <div class="row-card"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="body">
+                    <h2>B. Gallery Rail</h2>
+                    <p class="summary">Cleaner and more efficient. Still premium, but less theatrical. Best if you want to reduce scrolling and see more content per screen.</p>
+                    <ul>
+                        <li>Smaller hero footprint with denser content rails underneath</li>
+                        <li>Navigation and filters become sharper and quieter</li>
+                        <li>Details screens prioritize clarity over spectacle</li>
+                        <li>Safer redesign, but less distinctive than Direction A</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="visual">
+                    <div class="mock-shell">
+                        <div class="mock-nav">
+                            <div class="mock-tabs">
+                                <div class="pill large"></div>
+                                <div class="pill medium"></div>
+                            </div>
+                            <div class="mock-actions">
+                                <div class="pill small"></div>
+                                <div class="pill small"></div>
+                            </div>
+                        </div>
+                        <div class="hero-c">
+                            <div class="logo-bar" style="width: 60%;"></div>
+                            <div class="text-line wide"></div>
+                            <div class="editorial">
+                                <div class="left"></div>
+                                <div class="right"></div>
+                            </div>
+                        </div>
+                        <div class="row-stack">
+                            <div class="profile-row">
+                                <div class="profile-card"></div>
+                                <div class="profile-card"></div>
+                                <div class="profile-card"></div>
+                                <div class="profile-card"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="body">
+                    <h2>C. Editorial Spotlight</h2>
+                    <p class="summary">More like a prestige magazine layout. Bigger type, stronger narrative sections, and more text-forward detail pages.</p>
+                    <ul>
+                        <li>Meta Details becomes the star with editorial sections and cast/crew blocks</li>
+                        <li>Browse pages feel more curated than app-like</li>
+                        <li>Great for premium storytelling, weaker for quick scanning</li>
+                        <li>Higher design risk and a bigger implementation delta</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <div class="footer-note">
+            Recommendation: <strong>A. Cinema Stage</strong>. It matches your Apple TV reference best, gives the ratings area room to feel important,
+            and fixes the current mismatch between the strong hero and weaker downstream metadata/carousel presentation.
+        </div>
+    </main>
+</body>
+</html>

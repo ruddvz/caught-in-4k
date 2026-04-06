@@ -6,14 +6,16 @@ const classnames = require('classnames');
 const useTranslate = require('stremio/common/useTranslate');
 const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
-const CONSTANTS = require('stremio/common/CONSTANTS');
-const SatisfactionMeterDial = require('stremio/components/SatisfactionMeterDial/SatisfactionMeterDial');
-const { generateCanonTake } = require('stremio/common/pollinationsApi');
+const ExternalRatings = require('stremio/components/ExternalRatings/ExternalRatings');
+const { buildExternalRatingsModel } = require('stremio/common/externalRatings');
 const styles = require('./styles');
 
 const HeroShelf = ({ items }) => {
     const t = useTranslate();
     const [currentIndex, setCurrentIndex] = React.useState(0);
+    const [autoplayAllowed, setAutoplayAllowed] = React.useState(true);
+    const [isHovered, setIsHovered] = React.useState(false);
+    const [isFocusWithin, setIsFocusWithin] = React.useState(false);
 
     const validItems = React.useMemo(() =>
         Array.isArray(items)
@@ -28,12 +30,46 @@ const HeroShelf = ({ items }) => {
     }, [itemCount]);
 
     React.useEffect(() => {
-        if (itemCount <= 1) return;
+        if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+            return undefined;
+        }
+
+        const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const hoverQuery = window.matchMedia('(hover: hover)');
+        const updateAutoplayPreference = () => {
+            setAutoplayAllowed(!reducedMotionQuery.matches && hoverQuery.matches);
+        };
+
+        updateAutoplayPreference();
+
+        const addListener = (query, listener) => {
+            if (typeof query.addEventListener === 'function') {
+                query.addEventListener('change', listener);
+                return () => query.removeEventListener('change', listener);
+            }
+
+            query.addListener(listener);
+            return () => query.removeListener(listener);
+        };
+
+        const removeReducedMotionListener = addListener(reducedMotionQuery, updateAutoplayPreference);
+        const removeHoverListener = addListener(hoverQuery, updateAutoplayPreference);
+
+        return () => {
+            removeReducedMotionListener();
+            removeHoverListener();
+        };
+    }, []);
+
+    const isAutoplayPaused = !autoplayAllowed || isHovered || isFocusWithin;
+
+    React.useEffect(() => {
+        if (itemCount <= 1 || isAutoplayPaused) return;
         const id = setInterval(() => {
             setCurrentIndex((prev) => (prev + 1) % itemCount);
         }, 8000);
         return () => clearInterval(id);
-    }, [itemCount]);
+    }, [isAutoplayPaused, itemCount]);
 
     const goToPrev = React.useCallback(() => {
         setCurrentIndex((prev) => (prev - 1 + itemCount) % itemCount);
@@ -57,64 +93,36 @@ const HeroShelf = ({ items }) => {
         touchStartX.current = null;
     }, [goToNext, goToPrev]);
 
-    // Direct Canon Take fetch for the visible hero item — bypasses the 5s queue batch
-    const [heroCanonTake, setHeroCanonTake] = React.useState(null);
-    const currentItem = validItems[currentIndex] || validItems[0] || {};
-    const heroYear = React.useMemo(() => {
-        if (currentItem.released instanceof Date && !isNaN(currentItem.released.getTime())) {
-            return currentItem.released.getFullYear();
-        }
-        return typeof currentItem.releaseInfo === 'string' && currentItem.releaseInfo.length > 0
-            ? currentItem.releaseInfo.split(' ')[0].substring(0, 4)
-            : null;
-    }, [currentItem]);
-    const heroGenres = React.useMemo(() => {
-        if (!Array.isArray(currentItem.links)) return 'unknown';
-        return currentItem.links
-            .filter((l) => l && l.category === 'Genres')
-            .map((l) => l.name)
-            .join(', ') || 'unknown';
-    }, [currentItem]);
-    React.useEffect(() => {
-        if (!currentItem.name) return;
-        setHeroCanonTake(null);
-        let cancelled = false;
-        generateCanonTake(currentItem.name, heroYear, heroGenres, currentItem.vote_average || 0)
-            .then((result) => { if (!cancelled && result) setHeroCanonTake(result); })
-            .catch(() => { /* timeout fallback handled in SatisfactionMeterDial */ });
-        return () => { cancelled = true; };
-    }, [currentItem.name, heroYear]);
+    const onMouseEnter = React.useCallback(() => {
+        setIsHovered(true);
+    }, []);
 
+    const onMouseLeave = React.useCallback(() => {
+        setIsHovered(false);
+    }, []);
+
+    const onFocusCapture = React.useCallback(() => {
+        setIsFocusWithin(true);
+    }, []);
+
+    const onBlurCapture = React.useCallback((event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+            setIsFocusWithin(false);
+        }
+    }, []);
+
+    const currentItem = validItems[currentIndex] || validItems[0] || {};
     const item = validItems[currentIndex] || validItems[0] || {};
 
     if (validItems.length === 0) {
         return null;
     }
 
-    const imdbLink = Array.isArray(item.links)
-        ? item.links.find((l) => l.category === CONSTANTS.IMDB_LINK_CATEGORY)
-        : null;
-
-    // IMDB: name is e.g. "7.8" — normalize to 0–100
-    const imdbScore = imdbLink?.name ? Math.round(parseFloat(imdbLink.name) * 10) : null;
-
-    // Rotten Tomatoes: require category contains 'tomatoes' (case-insensitive)
-    const rtLink = Array.isArray(item.links)
-        ? item.links.find((l) => l.category?.toLowerCase().includes('tomatoes'))
-        : null;
-    const rtScore = rtLink?.name ? parseInt(rtLink.name, 10) : null;
-
-    // Metacritic: require category contains 'metacritic' (case-insensitive)
-    const mcLink = Array.isArray(item.links)
-        ? item.links.find((l) => l.category?.toLowerCase().includes('metacritic'))
-        : null;
-    const mcScore = mcLink?.name ? parseInt(mcLink.name, 10) : null;
-
-    // Average — require at least 2 sources, otherwise null (dial hides itself)
-    const availableScores = [imdbScore, rtScore, mcScore].filter((s) => s !== null && !isNaN(s));
-    const avgScore = availableScores.length >= 2
-        ? Math.round(availableScores.reduce((a, b) => a + b, 0) / availableScores.length)
-        : null;
+    const ratingModel = React.useMemo(() => buildExternalRatingsModel({
+        links: item.links,
+        voteAverage: item.voteAverage ?? item.vote_average,
+        imdbRating: item.imdbRating,
+    }), [item]);
 
     const year =
         item.released instanceof Date && !isNaN(item.released.getTime())
@@ -136,8 +144,16 @@ const HeroShelf = ({ items }) => {
             : null;
 
     return (
-        <div className={styles['hero-shelf-container']} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <div key={currentIndex} className={`${styles['hero-slide']} animate__animated animate__fadeIn`} style={{ '--animate-duration': '0.6s' }}>
+        <div
+            className={styles['hero-shelf-container']}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onFocusCapture={onFocusCapture}
+            onBlurCapture={onBlurCapture}
+        >
+            <div className={`${styles['hero-slide']} animate__animated animate__fadeIn`} style={{ '--animate-duration': '0.6s' }}>
                 <Image
                     className={styles['hero-background']}
                     src={item.background}
@@ -168,13 +184,7 @@ const HeroShelf = ({ items }) => {
                             <p className={styles['hero-description']}>{item.description}</p>
                             : null
                     }
-                    <SatisfactionMeterDial
-                        score={avgScore}
-                        imdbRaw={imdbLink?.name ?? null}
-                        rtScore={rtScore}
-                        mcScore={mcScore}
-                        canonTake={heroCanonTake}
-                    />
+                    <ExternalRatings className={styles['hero-ratings']} model={ratingModel} />
                     <div className={styles['hero-actions']}>
                         {
                             watchHref ?
@@ -205,6 +215,7 @@ const HeroShelf = ({ items }) => {
                         {validItems.map((_, i) => (
                             <button
                                 key={i}
+                                type={'button'}
                                 className={classnames(styles['hero-dot'], { [styles['hero-dot-active']]: i === currentIndex })}
                                 onClick={() => setCurrentIndex(i)}
                                 aria-label={`Go to slide ${i + 1}`}

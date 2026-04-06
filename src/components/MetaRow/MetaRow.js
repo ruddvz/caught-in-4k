@@ -12,7 +12,7 @@ const useInViewport = require('stremio/common/useInViewport');
 const MetaRowPlaceholder = require('./MetaRowPlaceholder');
 const styles = require('./styles');
 
-const MetaRow = ({ className, title, catalog, message, itemComponent, notifications, index = 0 }) => {
+const MetaRow = ({ className, title, catalog, message, itemComponent, notifications, index = 0, showCompactRating = false }) => {
     const t = useTranslate();
     const ref = React.useRef(null);
     const isVisible = useInViewport(ref);
@@ -68,6 +68,7 @@ const MetaRow = ({ className, title, catalog, message, itemComponent, notificati
                                         carouselLayout: true,
                                         notifications,
                                         voteAverage: (item.voteAverage ?? item.vote_average) || (item.imdbRating ? parseFloat(item.imdbRating) : null),
+                                        showCompactRating,
                                     });
                                 })
                                 :
@@ -113,6 +114,7 @@ MetaRow.propTypes = {
     }),
     itemComponent: PropTypes.elementType,
     notifications: PropTypes.object,
+    showCompactRating: PropTypes.bool,
 };
 
 module.exports = MetaRow;

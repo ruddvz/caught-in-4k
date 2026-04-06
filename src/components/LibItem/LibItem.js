@@ -30,9 +30,9 @@ const LibItem = ({ _id, removable, notifications, watched, ...props }) => {
                 case 'details':
                     return props.deepLinks && (typeof props.deepLinks.metaDetailsVideos === 'string' || typeof props.deepLinks.metaDetailsStreams === 'string');
                 case 'watched':
-                    return typeof watched !== 'undefined' && props.deepLinks && (typeof props.deepLinks.metaDetailsVideos === 'string' || typeof props.deepLinks.metaDetailsStreams === 'string');
+                    return typeof _id === 'string' && typeof watched !== 'undefined' && props.deepLinks && (typeof props.deepLinks.metaDetailsVideos === 'string' || typeof props.deepLinks.metaDetailsStreams === 'string');
                 case 'dismiss':
-                    return typeof _id === 'string' && props.progress !== null && !isNaN(props.progress) && props.progress > 0;
+                    return typeof props.onDismissClick === 'function' || (typeof _id === 'string' && props.progress !== null && !isNaN(props.progress) && props.progress > 0);
                 case 'remove':
                     return typeof _id === 'string' && removable;
             }
@@ -84,6 +84,11 @@ const LibItem = ({ _id, removable, notifications, watched, ...props }) => {
                     break;
                 }
                 case 'dismiss': {
+                    if (typeof props.onDismissClick === 'function') {
+                        props.onDismissClick(event);
+                        break;
+                    }
+
                     if (typeof _id === 'string') {
                         core.transport.dispatch({
                             action: 'Ctx',
@@ -138,6 +143,7 @@ const LibItem = ({ _id, removable, notifications, watched, ...props }) => {
             options={options}
             optionOnSelect={optionOnSelect}
             onPlayClick={onPlayClick}
+            showCompactRating={true}
         />
     );
 };
@@ -153,7 +159,8 @@ LibItem.propTypes = {
         metaDetailsStreams: PropTypes.string,
         player: PropTypes.string
     }),
-    optionOnSelect: PropTypes.func
+    optionOnSelect: PropTypes.func,
+    onDismissClick: PropTypes.func
 };
 
 module.exports = LibItem;

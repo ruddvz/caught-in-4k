@@ -6,21 +6,46 @@ const classnames = require('classnames');
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const _i18n = require('i18next');
 const t = (...args) => (_i18n.t || _i18n.default?.t || ((x) => x))(...args);
+const { useAuth } = require('stremio/common/AuthProvider');
+const { PROFILE_CHANGE_EVENT, getSelectedProfileId } = require('stremio/common/profileStore');
 const { useProfile, usePlatform, useToast, useBinaryState } = require('stremio/common');
 const { Button, Image, Popup } = require('stremio/components');
 const { useServices } = require('stremio/services');
 const { useRouteFocused } = require('stremio-router');
+const { createProfileContinueWatchingStore } = require('../../../../common/profileContinueWatching');
 const StreamPlaceholder = require('./StreamPlaceholder');
+const { resolveStreamLaunchTarget } = require('./resolveStreamLaunchTarget');
 const styles = require('./styles');
 
-const Stream = ({ className, videoId, videoReleased, addonName, name, description, thumbnail, progress, deepLinks, ...props }) => {
+const Stream = ({ className, videoId, videoReleased, metaId, metaType, metaName, poster, posterShape, releaseInfo, libraryItemId, addonName, name, description, thumbnail, progress, deepLinks, ...props }) => {
+    const auth = useAuth();
     const profile = useProfile();
     const toast = useToast();
     const platform = usePlatform();
     const { core } = useServices();
     const routeFocused = useRouteFocused();
+    const historyStore = React.useMemo(() => createProfileContinueWatchingStore(), []);
+    const [selectedProfileId, setSelectedProfileId] = React.useState(() => (
+        typeof localStorage !== 'undefined' ? getSelectedProfileId(localStorage, auth) : null
+    ));
 
     const [menuOpen, , closeMenu, toggleMenu] = useBinaryState(false);
+
+    React.useEffect(() => {
+        const refreshSelectedProfile = () => {
+            setSelectedProfileId(typeof localStorage !== 'undefined' ? getSelectedProfileId(localStorage, auth) : null);
+        };
+
+        refreshSelectedProfile();
+        if (typeof window !== 'undefined') {
+            window.addEventListener(PROFILE_CHANGE_EVENT, refreshSelectedProfile);
+            return () => {
+                window.removeEventListener(PROFILE_CHANGE_EVENT, refreshSelectedProfile);
+            };
+        }
+
+        return undefined;
+    }, [auth]);
 
     const popupLabelOnMouseUp = React.useCallback((event) => {
         if (!event.nativeEvent.togglePopupPrevented) {
@@ -53,38 +78,15 @@ const Stream = ({ className, videoId, videoReleased, addonName, name, descriptio
         event.nativeEvent.buttonClickPrevented = true;
     }, []);
 
-    const href = React.useMemo(() => {
-        return deepLinks ?
-            deepLinks.externalPlayer ?
-                deepLinks.externalPlayer.web ?
-                    deepLinks.externalPlayer.web
-                    :
-                    deepLinks.externalPlayer.openPlayer ?
-                        deepLinks.externalPlayer.openPlayer[platform.name] ?
-                            deepLinks.externalPlayer.openPlayer[platform.name]
-                            :
-                            deepLinks.externalPlayer.playlist
-                        :
-                        deepLinks.player
-                :
-                deepLinks.player
-            :
-            null;
-    }, [deepLinks]);
+    const launchTarget = React.useMemo(() => resolveStreamLaunchTarget({
+        deepLinks,
+        playerType: profile.settings.playerType,
+        platformName: platform.name,
+    }), [deepLinks, platform.name, profile.settings.playerType]);
 
-    const download = React.useMemo(() => {
-        return href === deepLinks?.externalPlayer?.playlist ?
-            deepLinks.externalPlayer.fileName
-            :
-            null;
-    }, [href, deepLinks]);
-
-    const target = React.useMemo(() => {
-        return href === deepLinks?.externalPlayer?.web ?
-            '_blank'
-            :
-            null;
-    }, [href, deepLinks]);
+    const href = launchTarget.href;
+    const download = launchTarget.download;
+    const target = launchTarget.target;
 
     const streamLink = React.useMemo(() => {
         return deepLinks?.externalPlayer?.streaming;
@@ -106,8 +108,49 @@ const Stream = ({ className, videoId, videoReleased, addonName, name, descriptio
         }
     }, [videoId, videoReleased]);
 
+    const primeProfileContinueWatching = React.useCallback(() => {
+        if (!launchTarget.isExternal || !selectedProfileId || typeof metaId !== 'string' || typeof metaType !== 'string' || typeof videoId !== 'string') {
+            return;
+        }
+
+        const existingEntry = historyStore.getEntries({ auth, profileId: selectedProfileId }).find((entry) => (
+            !entry.completed && entry.metaId === metaId && entry.type === metaType && entry.videoId === videoId
+        ));
+
+        if (existingEntry) {
+            return;
+        }
+
+        historyStore.upsertEntry({
+            auth,
+            profileId: selectedProfileId,
+            entry: {
+                metaId,
+                type: metaType,
+                libraryItemId: typeof libraryItemId === 'string' ? libraryItemId : null,
+                videoId,
+                videoReleased: videoReleased instanceof Date && !Number.isNaN(videoReleased.getTime())
+                    ? videoReleased.toISOString()
+                    : null,
+                name: metaName,
+                poster,
+                posterShape,
+                releaseInfo,
+                deepLinks: {
+                    metaDetailsStreams: deepLinks?.metaDetailsStreams ?? null,
+                    metaDetailsVideos: deepLinks?.metaDetailsVideos ?? null,
+                    player: deepLinks?.player ?? null,
+                },
+                timeOffset: 0,
+                duration: 0,
+                resumeFromStart: true,
+            },
+        });
+    }, [auth, deepLinks, historyStore, launchTarget.isExternal, libraryItemId, metaId, metaName, metaType, poster, posterShape, releaseInfo, selectedProfileId, videoId, videoReleased]);
+
     const onClick = React.useCallback((event) => {
-        if (profile.settings.playerType !== null) {
+        if (launchTarget.isExternal) {
+            primeProfileContinueWatching();
             markVideoAsWatched();
             toast.show({
                 type: 'success',
@@ -119,7 +162,7 @@ const Stream = ({ className, videoId, videoReleased, addonName, name, descriptio
         if (typeof props.onClick === 'function') {
             props.onClick(event);
         }
-    }, [props.onClick, profile.settings, markVideoAsWatched]);
+    }, [launchTarget.isExternal, markVideoAsWatched, primeProfileContinueWatching, props.onClick, toast]);
 
     const copyDownloadLink = React.useCallback((event) => {
         event.preventDefault();
@@ -259,6 +302,13 @@ Stream.propTypes = {
     className: PropTypes.string,
     videoId: PropTypes.string,
     videoReleased: PropTypes.instanceOf(Date),
+    metaId: PropTypes.string,
+    metaType: PropTypes.string,
+    metaName: PropTypes.string,
+    poster: PropTypes.string,
+    posterShape: PropTypes.string,
+    releaseInfo: PropTypes.string,
+    libraryItemId: PropTypes.string,
     addonName: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,

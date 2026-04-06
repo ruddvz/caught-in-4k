@@ -5,20 +5,16 @@ const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const UrlUtils = require('url');
 const { useTranslation } = require('react-i18next');
-const { default: Icon } = require('@stremio/stremio-icons/react');
-const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
 const ModalDialog = require('stremio/components/ModalDialog');
 const SharePrompt = require('stremio/components/SharePrompt');
+const ExternalRatings = require('stremio/components/ExternalRatings/ExternalRatings');
 const CONSTANTS = require('stremio/common/CONSTANTS');
+const { buildExternalRatingsModel } = require('stremio/common/externalRatings');
 const { navigateToAppHref } = require('stremio/common/navigation');
 const routesRegexp = require('stremio/common/routesRegexp');
 const useBinaryState = require('stremio/common/useBinaryState');
 const useProfile = require('stremio/common/useProfile');
-const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
-const SatisfactionMeterBar = require('stremio/components/SatisfactionMeterBar/SatisfactionMeterBar');
-const CanonTakeBox = require('stremio/components/CanonTakeBox/CanonTakeBox');
-const { generateSatisfactionOneLiner } = require('stremio/common/pollinationsApi');
 const ActionButton = require('./ActionButton');
 const MetaLinks = require('./MetaLinks');
 const MetaPreviewPlaceholder = require('./MetaPreviewPlaceholder');
@@ -28,305 +24,272 @@ const { Ratings } = require('./Ratings');
 const ALLOWED_LINK_REDIRECTS = [
     routesRegexp.search.regexp,
     routesRegexp.discover.regexp,
-    routesRegexp.metadetails.regexp
+    routesRegexp.metadetails.regexp,
 ];
 
-const MetaPreview = React.forwardRef(({ className, compact, name, logo, background, runtime, releaseInfo, released, description, deepLinks, links, trailerStreams, inLibrary, toggleInLibrary, ratingInfo, voteAverage: voteAverageProp }, ref) => {
+const isExternalRatingCategory = (category) => {
+    if (typeof category !== 'string') {
+        return false;
+    }
+
+    const normalizedCategory = category.toLowerCase();
+    return category === CONSTANTS.IMDB_LINK_CATEGORY || normalizedCategory.includes('tomatoes') || normalizedCategory.includes('metacritic');
+};
+
+const MetaPreview = React.forwardRef(({
+    className,
+    compact,
+    variant,
+    name,
+    logo,
+    background,
+    runtime,
+    releaseInfo,
+    released,
+    description,
+    deepLinks,
+    links,
+    trailerStreams,
+    inLibrary,
+    toggleInLibrary,
+    ratingInfo,
+    imdbRating: imdbRatingProp,
+    voteAverage: voteAverageProp,
+}, ref) => {
     const { t } = useTranslation();
     const [shareModalOpen, openShareModal, closeShareModal] = useBinaryState(false);
     const profile = useProfile();
+
     const handleToggleInLibrary = React.useCallback(() => {
         if (!profile?.auth) {
             navigateToAppHref('/intro');
             return;
         }
+
         if (typeof toggleInLibrary === 'function') {
             toggleInLibrary();
         }
     }, [profile, toggleInLibrary]);
-    // Derive voteAverage from IMDB link if prop is not provided
-    const voteAverage = React.useMemo(() => {
-        if (typeof voteAverageProp === 'number' && !isNaN(voteAverageProp)) return voteAverageProp;
-        if (!Array.isArray(links)) return null;
-        const imdbLink = links.find((l) => l && l.category === CONSTANTS.IMDB_LINK_CATEGORY);
-        if (imdbLink && imdbLink.name) {
-            const parsed = parseFloat(imdbLink.name);
-            if (!isNaN(parsed)) return parsed;
+
+    const imdbRating = React.useMemo(() => {
+        const parsedImdbRating = typeof imdbRatingProp === 'number' ? imdbRatingProp : parseFloat(imdbRatingProp);
+        if (!isNaN(parsedImdbRating)) {
+            return parsedImdbRating;
         }
-        return null;
-    }, [voteAverageProp, links]);
-    const tier = useSatisfactionMeter(voteAverage);
+
+        if (!Array.isArray(links)) {
+            return null;
+        }
+
+        const imdbLink = links.find((link) => link && link.category === CONSTANTS.IMDB_LINK_CATEGORY);
+        if (!imdbLink || !imdbLink.name) {
+            return null;
+        }
+
+        const parsed = parseFloat(imdbLink.name);
+        return isNaN(parsed) ? null : parsed;
+    }, [imdbRatingProp, links]);
+
+    const ratingsModel = React.useMemo(() => buildExternalRatingsModel({
+        links,
+        imdbRating,
+        voteAverage: voteAverageProp,
+    }), [imdbRating, links, voteAverageProp]);
+
+    const effectiveVariant = variant || (compact ? 'drawer' : 'details');
+    const showCompactRatings = compact && effectiveVariant === 'browse';
+    const showFullRatings = effectiveVariant === 'details';
+
     const linksGroups = React.useMemo(() => {
-        return Array.isArray(links) ?
-            links
+        return Array.isArray(links)
+            ? links
                 .filter((link) => link && typeof link.category === 'string' && typeof link.url === 'string')
-                .reduce((linksGroups, { category, name, url }) => {
-                    const { protocol, path, pathname, hostname } = UrlUtils.parse(url);
-                    if (category === CONSTANTS.IMDB_LINK_CATEGORY) {
-                        if (hostname === 'imdb.com') {
-                            linksGroups.set(category, {
-                                label: name,
-                                href: `https://www.stremio.com/warning#${encodeURIComponent(url)}`
-                            });
-                        }
-                    } else if (category === CONSTANTS.SHARE_LINK_CATEGORY) {
-                        linksGroups.set(category, {
-                            label: name,
-                            href: url
-                        });
-                    } else {
-                        if (protocol === 'stremio:') {
-                            if (pathname !== null && ALLOWED_LINK_REDIRECTS.some((regexp) => pathname.match(regexp))) {
-                                if (!linksGroups.has(category)) {
-                                    linksGroups.set(category, []);
-                                }
-                                linksGroups.get(category).push({
-                                    label: name,
-                                    href: `#${path}`
-                                });
-                            }
-                        } else if (typeof hostname === 'string' && hostname.length > 0) {
-                            if (!linksGroups.has(category)) {
-                                linksGroups.set(category, []);
-                            }
-                            linksGroups.get(category).push({
-                                label: name,
-                                href: `https://www.stremio.com/warning#${encodeURIComponent(url)}`
-                            });
-                        }
+                .reduce((groups, { category, name: linkName, url }) => {
+                    if (isExternalRatingCategory(category) && effectiveVariant !== 'drawer') {
+                        return groups;
                     }
 
-                    return linksGroups;
+                    const { protocol, path, pathname, hostname } = UrlUtils.parse(url);
+
+                    if (category === CONSTANTS.SHARE_LINK_CATEGORY) {
+                        groups.set(category, {
+                            label: linkName,
+                            href: url,
+                        });
+                        return groups;
+                    }
+
+                    if (typeof hostname === 'string' && hostname.length > 0) {
+                        if (!groups.has(category)) {
+                            groups.set(category, []);
+                        }
+                        groups.get(category).push({
+                            label: linkName,
+                            href: `https://www.stremio.com/warning#${encodeURIComponent(url)}`,
+                        });
+                        return groups;
+                    }
+
+                    if (protocol === 'stremio:' && pathname !== null && ALLOWED_LINK_REDIRECTS.some((regexp) => pathname.match(regexp))) {
+                        if (!groups.has(category)) {
+                            groups.set(category, []);
+                        }
+                        groups.get(category).push({
+                            label: linkName,
+                            href: `#${path}`,
+                        });
+                    }
+
+                    return groups;
                 }, new Map())
-            :
-            new Map();
-    }, [links]);
+            : new Map();
+    }, [effectiveVariant, links]);
+
     const showHref = React.useMemo(() => {
-        return deepLinks ?
-            typeof deepLinks.player === 'string' ?
-                deepLinks.player
-                :
-                typeof deepLinks.metaDetailsStreams === 'string' ?
-                    deepLinks.metaDetailsStreams
-                    :
-                    typeof deepLinks.metaDetailsVideos === 'string' ?
-                        deepLinks.metaDetailsVideos
-                        :
-                        null
-            :
-            null;
+        if (!deepLinks) {
+            return null;
+        }
+
+        return deepLinks.player || deepLinks.metaDetailsStreams || deepLinks.metaDetailsVideos || null;
     }, [deepLinks]);
+
     const trailerHref = React.useMemo(() => {
         if (!Array.isArray(trailerStreams) || trailerStreams.length === 0) {
             return null;
         }
 
-        return trailerStreams[0].deepLinks.player;
+        return trailerStreams[0]?.deepLinks?.player || null;
     }, [trailerStreams]);
+
     const renderLogoFallback = React.useCallback(() => (
         <div className={styles['logo-placeholder']}>{name}</div>
     ), [name]);
+
     return (
-        <div className={classnames(className, styles['meta-preview-container'], { [styles['compact']]: compact })} ref={ref}>
+        <div
+            className={classnames(className, styles['meta-preview-container'], {
+                [styles['compact']]: compact,
+                [styles['browse-compact']]: showCompactRatings,
+                [styles['drawer-compact']]: effectiveVariant === 'drawer',
+            })}
+            ref={ref}
+        >
             <div className={styles['main-details-glass']}>
-                {/* === HERO WIDGET: background + title + actions === */}
                 <div className={styles['hero-widget']}>
-                    {
-                        typeof background === 'string' && background.length > 0 ?
-                            <div className={styles['background-image-layer']}>
-                                <Image className={styles['background-image']} src={background} alt={' '} />
-                            </div>
-                            :
-                            null
-                    }
-                    <div className={styles['hero-widget-content']}>
-                        {
-                            typeof logo === 'string' && logo.length > 0 ?
-                                <Image
-                                    className={styles['logo']}
-                                    src={logo}
-                                    alt={' '}
-                                    title={name}
-                                    renderFallback={renderLogoFallback}
-                                />
-                                :
-                                renderLogoFallback()
-                        }
-                        {
-                            (typeof releaseInfo === 'string' && releaseInfo.length > 0) || (released instanceof Date && !isNaN(released.getTime())) || (typeof runtime === 'string' && runtime.length > 0) || linksGroups.has(CONSTANTS.IMDB_LINK_CATEGORY) ?
-                                <div className={styles['runtime-release-info-container']}>
-                                    {
-                                        typeof runtime === 'string' && runtime.length > 0 ?
-                                            <div className={styles['runtime-label']}>{runtime}</div>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        typeof releaseInfo === 'string' && releaseInfo.length > 0 ?
-                                            <div className={styles['release-info-label']}>{releaseInfo}</div>
-                                            :
-                                            released instanceof Date && !isNaN(released.getTime()) ?
-                                                <div className={styles['release-info-label']}>{released.getFullYear()}</div>
-                                                :
-                                                null
-                                    }
-                                    {
-                                        linksGroups.has(CONSTANTS.IMDB_LINK_CATEGORY) ?
-                                            <Button
-                                                className={styles['imdb-button-container']}
-                                                title={linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).label}
-                                                href={linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).href}
-                                                target={'_blank'}
-                                                {...(compact ? { tabIndex: -1 } : null)}
-                                            >
-                                                <div className={styles['label']}>{linksGroups.get(CONSTANTS.IMDB_LINK_CATEGORY).label}</div>
-                                                <Icon className={styles['icon']} name={'imdb'} />
-                                            </Button>
-                                            :
-                                            null
-                                    }
-                                </div>
-                                :
-                                null
-                        }
-                        {/* Action buttons rendered inside hero card */}
-                        <div className={styles['action-buttons-container']}>
-                            {
-                                typeof toggleInLibrary === 'function' ?
-                                    <ActionButton
-                                        className={styles['action-button']}
-                                        icon={inLibrary ? 'remove-from-library' : 'add-to-library'}
-                                        label={inLibrary ? t('REMOVE_FROM_LIB') : t('ADD_TO_LIB')}
-                                        tooltip={compact}
-                                        tabIndex={compact ? -1 : 0}
-                                        onClick={handleToggleInLibrary}
-                                    />
-                                    :
-                                    null
-                            }
-                            {
-                                typeof trailerHref === 'string' ?
-                                    <ActionButton
-                                        className={styles['action-button']}
-                                        icon={'trailer'}
-                                        label={t('TRAILER')}
-                                        tabIndex={compact ? -1 : 0}
-                                        href={trailerHref}
-                                        tooltip={compact}
-                                    />
-                                    :
-                                    null
-                            }
-                            {
-                                compact ?
-                                    <ActionButton
-                                        className={classnames(styles['action-button'], styles['show-button'])}
-                                        icon={'play'}
-                                        label={t('SHOW')}
-                                        tabIndex={-1}
-                                        href={showHref || undefined}
-                                    />
-                                    :
-                                    null
-                            }
-                            {
-                                !compact && ratingInfo !== null ?
-                                    <Ratings
-                                        ratingInfo={ratingInfo}
-                                        className={styles['ratings']}
-                                    />
-                                    :
-                                    null
-                            }
-                            {
-                                linksGroups.has(CONSTANTS.SHARE_LINK_CATEGORY) && !compact ?
-                                    <React.Fragment>
-                                        <ActionButton
-                                            className={styles['action-button']}
-                                            icon={'share'}
-                                            label={t('CTX_SHARE')}
-                                            tooltip={true}
-                                            tabIndex={compact ? -1 : 0}
-                                            onClick={openShareModal}
-                                        />
-                                        {
-                                            shareModalOpen ?
-                                                <ModalDialog title={t('CTX_SHARE')} onCloseRequest={closeShareModal}>
-                                                    <SharePrompt
-                                                        className={styles['share-prompt']}
-                                                        url={linksGroups.get(CONSTANTS.SHARE_LINK_CATEGORY).href}
-                                                    />
-                                                </ModalDialog>
-                                                :
-                                                null
-                                        }
-                                    </React.Fragment>
-                                    :
-                                    null
-                            }
+                    {typeof background === 'string' && background.length > 0 ? (
+                        <div className={styles['background-image-layer']}>
+                            <Image className={styles['background-image']} src={background} alt={' '} />
                         </div>
+                    ) : null}
+
+                    <div className={styles['hero-widget-content']}>
+                        {typeof logo === 'string' && logo.length > 0 ? (
+                            <Image
+                                className={styles['logo']}
+                                src={logo}
+                                alt={' '}
+                                title={name}
+                                renderFallback={renderLogoFallback}
+                            />
+                        ) : renderLogoFallback()}
+
+                        {(typeof runtime === 'string' && runtime.length > 0) || (typeof releaseInfo === 'string' && releaseInfo.length > 0) || (released instanceof Date && !isNaN(released.getTime())) ? (
+                            <div className={styles['runtime-release-info-container']}>
+                                {typeof runtime === 'string' && runtime.length > 0 ? <div className={styles['runtime-label']}>{runtime}</div> : null}
+                                {typeof releaseInfo === 'string' && releaseInfo.length > 0 ? (
+                                    <div className={styles['release-info-label']}>{releaseInfo}</div>
+                                ) : released instanceof Date && !isNaN(released.getTime()) ? (
+                                    <div className={styles['release-info-label']}>{released.getFullYear()}</div>
+                                ) : null}
+                            </div>
+                        ) : null}
+
+                        {showCompactRatings ? <ExternalRatings className={styles['compact-ratings']} model={ratingsModel} mode={'compact'} /> : null}
+
+                        <div className={styles['action-buttons-container']}>
+                            {typeof showHref === 'string' ? (
+                                <ActionButton
+                                    className={classnames(styles['action-button'], styles['show-button'])}
+                                    icon={'play'}
+                                    label={t('SHOW')}
+                                    tabIndex={compact ? -1 : 0}
+                                    href={showHref}
+                                    tooltip={compact}
+                                />
+                            ) : null}
+
+                            {typeof toggleInLibrary === 'function' ? (
+                                <ActionButton
+                                    className={styles['action-button']}
+                                    icon={inLibrary ? 'remove-from-library' : 'add-to-library'}
+                                    label={inLibrary ? t('REMOVE_FROM_LIB') : t('ADD_TO_LIB')}
+                                    tooltip={compact}
+                                    tabIndex={compact ? -1 : 0}
+                                    onClick={handleToggleInLibrary}
+                                />
+                            ) : null}
+
+                            {typeof trailerHref === 'string' ? (
+                                <ActionButton
+                                    className={styles['action-button']}
+                                    icon={'trailer'}
+                                    label={t('TRAILER')}
+                                    tabIndex={compact ? -1 : 0}
+                                    href={trailerHref}
+                                    tooltip={compact}
+                                />
+                            ) : null}
+
+                            {!compact && ratingInfo !== null ? <Ratings ratingInfo={ratingInfo} className={styles['ratings']} /> : null}
+
+                            {linksGroups.has(CONSTANTS.SHARE_LINK_CATEGORY) && !compact ? (
+                                <React.Fragment>
+                                    <ActionButton
+                                        className={styles['action-button']}
+                                        icon={'share'}
+                                        label={t('CTX_SHARE')}
+                                        tooltip={true}
+                                        tabIndex={0}
+                                        onClick={openShareModal}
+                                    />
+                                    {shareModalOpen ? (
+                                        <ModalDialog title={t('CTX_SHARE')} onCloseRequest={closeShareModal}>
+                                            <SharePrompt
+                                                className={styles['share-prompt']}
+                                                url={linksGroups.get(CONSTANTS.SHARE_LINK_CATEGORY).href}
+                                            />
+                                        </ModalDialog>
+                                    ) : null}
+                                </React.Fragment>
+                            ) : null}
+                        </div>
+
+                        {showFullRatings ? <ExternalRatings className={styles['full-ratings']} model={ratingsModel} /> : null}
                     </div>
                 </div>
 
-                {/* === DESCRIPTION WIDGET === */}
-                {
-                    typeof description === 'string' && description.length > 0 ?
-                        <div className={styles['description-widget']}>
-                            <div className={styles['label-container']}>{t('SUMMARY')}</div>
-                            <div className={styles['description-text']}>{description}</div>
-                        </div>
-                        :
-                        null
-                }
-
-                {/* === GENRE/LINKS WIDGET === */}
-                {
-                    Array.from(linksGroups.keys())
-                        .filter((category) => {
-                            return category !== CONSTANTS.IMDB_LINK_CATEGORY &&
-                                category !== CONSTANTS.SHARE_LINK_CATEGORY &&
-                                category !== CONSTANTS.WRITERS_LINK_CATEGORY;
-                        })
-                        .length > 0 ?
-                        <div className={styles['meta-links-widget']}>
-                            {
-                                Array.from(linksGroups.keys())
-                                    .filter((category) => {
-                                        return category !== CONSTANTS.IMDB_LINK_CATEGORY &&
-                                            category !== CONSTANTS.SHARE_LINK_CATEGORY &&
-                                            category !== CONSTANTS.WRITERS_LINK_CATEGORY;
-                                    })
-                                    .map((category, index) => (
-                                        <MetaLinks
-                                            key={index}
-                                            className={styles['meta-links']}
-                                            label={category}
-                                            links={linksGroups.get(category)}
-                                        />
-                                    ))
-                            }
-                        </div>
-                        :
-                        null
-                }
-            </div>
-
-            {/* === SATISFACTION METER WIDGET === */}
-            {
-                !compact && tier ?
-                    <div className={styles['satisfaction-meter-container']}>
-                        <SatisfactionMeterWithAI tier={tier} title={name} released={released} releaseInfo={releaseInfo} />
+                {typeof description === 'string' && description.length > 0 ? (
+                    <div className={styles['description-widget']}>
+                        <div className={styles['label-container']}>{t('SUMMARY')}</div>
+                        <div className={styles['description-text']}>{description}</div>
                     </div>
-                    :
-                    null
-            }
+                ) : null}
 
-            {/* === CANON TAKE WIDGET === */}
-            {
-                !compact ? (
-                    <CanonTakeWithLogic title={name} released={released} releaseInfo={releaseInfo} links={links} voteAverage={voteAverage} />
-                ) : null
-            }
+                {Array.from(linksGroups.keys()).filter((category) => category !== CONSTANTS.SHARE_LINK_CATEGORY && category !== CONSTANTS.WRITERS_LINK_CATEGORY).length > 0 ? (
+                    <div className={styles['meta-links-widget']}>
+                        {Array.from(linksGroups.keys())
+                            .filter((category) => category !== CONSTANTS.SHARE_LINK_CATEGORY && category !== CONSTANTS.WRITERS_LINK_CATEGORY)
+                            .map((category, index) => (
+                                <MetaLinks
+                                    key={index}
+                                    className={styles['meta-links']}
+                                    label={category}
+                                    links={linksGroups.get(category)}
+                                />
+                            ))}
+                    </div>
+                ) : null}
+            </div>
         </div>
     );
 });
@@ -336,6 +299,7 @@ MetaPreview.Placeholder = MetaPreviewPlaceholder;
 MetaPreview.propTypes = {
     className: PropTypes.string,
     compact: PropTypes.bool,
+    variant: PropTypes.oneOf(['browse', 'details', 'drawer']),
     name: PropTypes.string,
     logo: PropTypes.string,
     background: PropTypes.string,
@@ -346,77 +310,19 @@ MetaPreview.propTypes = {
     deepLinks: PropTypes.shape({
         metaDetailsVideos: PropTypes.string,
         metaDetailsStreams: PropTypes.string,
-        player: PropTypes.string
+        player: PropTypes.string,
     }),
     links: PropTypes.arrayOf(PropTypes.shape({
         category: PropTypes.string,
         name: PropTypes.string,
-        url: PropTypes.string
+        url: PropTypes.string,
     })),
     trailerStreams: PropTypes.array,
     inLibrary: PropTypes.bool,
     toggleInLibrary: PropTypes.func,
     ratingInfo: PropTypes.object,
+    imdbRating: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     voteAverage: PropTypes.number,
-};
-
-const CanonTakeWithLogic = ({ title, released, releaseInfo, links, voteAverage }) => {
-    const useCanonTakes = (require('stremio/common/useCanonTakes').default || require('stremio/common/useCanonTakes'));
-    const { fetchCanonTake } = useCanonTakes();
-    const [take, setTake] = React.useState(null);
-    const year = released instanceof Date && !isNaN(released.getTime()) ? released.getFullYear() : releaseInfo;
-    const genres = React.useMemo(() => {
-        if (!Array.isArray(links)) return 'unknown';
-        return links
-            .filter((l) => l && l.category === 'Genres')
-            .map((l) => l.name)
-            .join(', ') || 'unknown';
-    }, [links]);
-
-    React.useEffect(() => {
-        if (!title) return;
-        let cancelled = false;
-        fetchCanonTake(title, year, genres, voteAverage).then((result) => {
-            if (!cancelled) setTake(result);
-        });
-        return () => { cancelled = true; };
-    }, [title, year]);
-
-    return <CanonTakeBox title={title} year={year} takeOverride={take} />;
-};
-
-const SAT_CACHE_PREFIX = 'c4k_sat_liner_';
-
-const SatisfactionMeterWithAI = ({ tier, title, released, releaseInfo }) => {
-    const [aiOneLiner, setAiOneLiner] = React.useState(null);
-    const year = released instanceof Date && !isNaN(released.getTime()) ? released.getFullYear() : releaseInfo;
-
-    React.useEffect(() => {
-        if (!title || !tier) return;
-        let cancelled = false;
-        const cacheKey = `${SAT_CACHE_PREFIX}${title}_${year}`;
-        try {
-            const cached = localStorage.getItem(cacheKey);
-            if (cached) {
-                setAiOneLiner(cached);
-                return;
-            }
-        } catch (_e) { /* ignore */ }
-
-        generateSatisfactionOneLiner(title, year, tier.name, tier.percentage)
-            .then((liner) => {
-                if (cancelled) return;
-                if (liner) {
-                    setAiOneLiner(liner);
-                    try { localStorage.setItem(cacheKey, liner); } catch (_e) { /* ignore */ }
-                }
-            })
-            .catch(() => { /* graceful fallback to static one-liner */ });
-        return () => { cancelled = true; };
-    }, [title, year, tier]);
-
-    const enhancedTier = aiOneLiner ? { ...tier, oneLiner: aiOneLiner } : tier;
-    return <SatisfactionMeterBar tier={enhancedTier} size="detail" />;
 };
 
 module.exports = MetaPreview;

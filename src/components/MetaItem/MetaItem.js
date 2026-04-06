@@ -8,14 +8,17 @@ const filterInvalidDOMProps = require('filter-invalid-dom-props').default;
 const { default: Icon } = require('@stremio/stremio-icons/react');
 const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
+const ExternalRatings = require('stremio/components/ExternalRatings/ExternalRatings');
 const Multiselect = require('stremio/components/Multiselect');
+const { buildExternalRatingsModel } = require('stremio/common/externalRatings');
 const useBinaryState = require('stremio/common/useBinaryState');
 const { ICON_FOR_TYPE } = require('stremio/common/CONSTANTS');
 const styles = require('./styles');
 
-const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, releaseInfo, carouselLayout, ...props }) => {
+const MetaItem = React.memo(({ className, type, name, poster, posterShape, posterChangeCursor, progress, options, deepLinks, dataset, optionOnSelect, onDismissClick, onPlayClick, watched, voteAverage, links, imdbRating, releaseInfo, carouselLayout, showCompactRating, ...props }) => {
     const t = useTranslate();
     const [menuOpen, onMenuOpen, onMenuClose] = useBinaryState(false);
+    const ratingsModel = React.useMemo(() => buildExternalRatingsModel({ links, voteAverage, imdbRating }), [imdbRating, links, voteAverage]);
     const href = React.useMemo(() => {
         return deepLinks ?
             typeof deepLinks.metaDetailsStreams === 'string' ?
@@ -109,12 +112,9 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                         null
                 }
                 {
-                    voteAverage ?
+                    showCompactRating && ratingsModel.compactBadge ?
                         <div className={styles['poster-stats-layer']}>
-                            <div className={styles['rating-pill']}>
-                                <Icon className={styles['icon']} name={'star'} />
-                                <span className={styles['text']}>{voteAverage.toFixed(1)}/10</span>
-                            </div>
+                            <ExternalRatings model={ratingsModel} mode={'compact'} />
                         </div>
                         :
                         null
@@ -127,7 +127,7 @@ const MetaItem = React.memo(({ className, type, name, poster, posterShape, poste
                             {typeof name === 'string' && name.length > 0 ? name : ''}
                         </div>
                         <div className={styles['meta-info-row']}>
-                            {voteAverage ? <span className={styles['rating']}>★ {voteAverage.toFixed(1)}</span> : null}
+                            {!showCompactRating && voteAverage ? <span className={styles['rating']}>★ {voteAverage.toFixed(1)}</span> : null}
                             {releaseInfo ? <span className={styles['year']}>{releaseInfo.toString().substring(0, 4)}</span> : null}
                         </div>
                         {
@@ -177,7 +177,10 @@ MetaItem.propTypes = {
     onClick: PropTypes.func,
     watched: PropTypes.bool,
     voteAverage: PropTypes.number,
+    links: PropTypes.array,
+    imdbRating: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     carouselLayout: PropTypes.bool,
+    showCompactRating: PropTypes.bool,
 };
 
 module.exports = MetaItem;

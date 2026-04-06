@@ -92,6 +92,7 @@ const SideDrawer = memo(forwardRef<HTMLDivElement, Props>(({ seriesInfo, classNa
                 <MetaPreview
                     className={styles['side-drawer-meta-preview']}
                     compact={true}
+                    variant={'drawer'}
                     name={metaItem.name}
                     logo={metaItem.logo}
                     runtime={metaItem.runtime}
