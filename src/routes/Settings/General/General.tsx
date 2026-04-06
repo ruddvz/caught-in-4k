@@ -9,6 +9,7 @@ import DevicesWidget from './DevicesWidget';
 import styles from './General.less';
 const { navigateToAppHref } = require('stremio/common/navigation');
 const { useAuth } = require('stremio/common/AuthProvider');
+const { createProfileStore } = require('stremio/common/profileStore');
 const { resolveSubscriptionPlanId } = require('stremio/common/subscriptionPlans');
 const PinModal = require('../../Profiles/PinModal/PinModal');
 
@@ -21,9 +22,11 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const { core } = useServices();
     const platform = usePlatform();
     const auth = useAuth();
+    const profileStore = useMemo(() => createProfileStore(), []);
     const [dataExport] = useDataExport();
     const [traktAuthStarted, setTraktAuthStarted] = useState(false);
-    const [deleteAccountPinOpen, setDeleteAccountPinOpen] = useState(false);
+    const [deleteAccountPinMode, setDeleteAccountPinMode] = useState<null | 'verify' | 'set'>(null);
+    const [hasMasterCode, setHasMasterCode] = useState<boolean | null>(null);
 
     const isTraktAuthenticated = useMemo(() => {
         const trakt = profile?.auth?.user?.trakt;
@@ -40,6 +43,26 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const deviceUserId = auth.user?.id ?? auth.profile?.id ?? null;
     const showDevicesWidget = Boolean(profile.auth && deviceUserId && devicePlanId);
 
+    useEffect(() => {
+        let cancelled = false;
+
+        profileStore.hasMasterCodeConfigured({ auth })
+            .then((value) => {
+                if (!cancelled) {
+                    setHasMasterCode(value);
+                }
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setHasMasterCode(false);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [auth, profileStore]);
+
     const onLogout = useCallback(async () => {
         core.transport.dispatch({
             action: 'Ctx',
@@ -50,21 +73,24 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
 
     const onChangePassword = useCallback(() => {
         platform.openExternal('https://www.strem.io/acc-management');
-    }, []);
+    }, [platform]);
 
-    const onDeleteAccount = useCallback(() => {
-        // Gate 1: PIN verification — opens PIN modal
-        setDeleteAccountPinOpen(true);
-    }, []);
-
-    const onDeleteAccountConfirmed = useCallback(() => {
-        setDeleteAccountPinOpen(false);
-        // Gate 2: final confirmation dialog before proceeding
+    const finalizeAccountDeletion = useCallback(() => {
+        setDeleteAccountPinMode(null);
         const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
         if (confirmed) {
             platform.openExternal('https://www.strem.io/acc-management');
         }
+        return true;
     }, [platform]);
+
+    const onDeleteAccount = useCallback(() => {
+        if (hasMasterCode === null) {
+            return;
+        }
+
+        setDeleteAccountPinMode(hasMasterCode ? 'verify' : 'set');
+    }, [hasMasterCode]);
 
     const onToggleTrakt = useCallback(() => {
         if (!isTraktAuthenticated && profile.auth !== null && profile.auth.user !== null && typeof profile.auth.user._id === 'string') {
@@ -96,13 +122,45 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
 
     return (
         <div ref={ref} className={styles['account-widget']}>
-            {deleteAccountPinOpen && (
+            {deleteAccountPinMode === 'verify' && (
                 <PinModal
                     mode="delete"
                     title="Confirm Account Deletion"
                     subtitle="Enter your master code to continue"
-                    onSuccess={onDeleteAccountConfirmed}
-                    onCancel={() => setDeleteAccountPinOpen(false)}
+                    onSubmitCode={async (code) => {
+                        try {
+                            const isValid = await profileStore.verifyMasterCode({ auth, code });
+                            if (!isValid) {
+                                return false;
+                            }
+
+                            return finalizeAccountDeletion();
+                        } catch (error) {
+                            return error instanceof Error ? error.message : 'Failed to verify the master code.';
+                        }
+                    }}
+                    onCancel={() => setDeleteAccountPinMode(null)}
+                />
+            )}
+
+            {deleteAccountPinMode === 'set' && (
+                <PinModal
+                    mode="set-master"
+                    title="Set Master Code"
+                    subtitle="Create a master code before deleting this account"
+                    onSuccess={async (code) => {
+                        try {
+                            await profileStore.setMasterCode({ auth, code });
+                            if (typeof auth.refreshProfile === 'function') {
+                                await auth.refreshProfile();
+                            }
+                            setHasMasterCode(true);
+                            return finalizeAccountDeletion();
+                        } catch (error) {
+                            return error.message || 'Failed to save the master code.';
+                        }
+                    }}
+                    onCancel={() => setDeleteAccountPinMode(null)}
                 />
             )}
             <div className={styles['account-header']}>
@@ -136,7 +194,11 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                         <Button className={classnames(styles['action-btn'], styles['btn-secondary'])} onClick={onChangePassword}>
                             Change Password
                         </Button>
-                        <Button className={classnames(styles['action-btn'], styles['btn-danger'])} onClick={onDeleteAccount}>
+                        <Button
+                            className={classnames(styles['action-btn'], styles['btn-danger'])}
+                            onClick={onDeleteAccount}
+                            disabled={hasMasterCode === null}
+                        >
                             Delete Account
                         </Button>
                     </>

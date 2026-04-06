@@ -9,6 +9,10 @@ import AppLogo from 'stremio/components/AppLogo/AppLogo';
 import { useTranslation } from 'react-i18next';
 // @ts-expect-error navigation helpers are implemented in plain JS
 import { buildAppHref, navigateToAppHref } from 'stremio/common/navigation';
+// @ts-expect-error auth/profile helpers are implemented in plain JS
+const { useAuth } = require('stremio/common/AuthProvider');
+// @ts-expect-error auth/profile helpers are implemented in plain JS
+const { getCurrentProfile } = require('stremio/common/profileStore');
 // @ts-expect-error less modules are resolved by webpack
 import styles from './styles.less';
 import useFullscreen from '../../../common/useFullscreen';
@@ -24,6 +28,7 @@ type Props = {
 
 const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
     const { t } = useTranslation();
+    const auth = useAuth();
     const [fullscreen, , , toggleFullscreen] = useFullscreen() as [boolean, unknown, unknown, () => void];
 
     const onFullscreenClick = React.useCallback(() => {
@@ -38,7 +43,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
     const [currentProfile, setCurrentProfile] = React.useState<any>(null);
 
     const readProfile = React.useCallback(() => {
-        const stored = localStorage.getItem('c4k_current_profile');
+        const stored = getCurrentProfile(localStorage, auth);
         if (stored) {
             try {
                 setCurrentProfile(JSON.parse(stored));
@@ -48,7 +53,7 @@ const TopNavigationBar = memo(({ className, route, query, tabs }: Props) => {
         } else {
             setCurrentProfile(null);
         }
-    }, []);
+    }, [auth]);
 
     React.useEffect(() => {
         readProfile();

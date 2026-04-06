@@ -3,6 +3,8 @@
 -- Run this in your Supabase SQL Editor (Dashboard → SQL Editor)
 -- ============================================================
 
+create extension if not exists pgcrypto;
+
 -- 1. USERS TABLE
 -- Extends Supabase Auth with C4K-specific fields
 create table if not exists public.users (
@@ -12,6 +14,28 @@ create table if not exists public.users (
     avatar_index int not null default 0,
     status text not null default 'pending' check (status in ('pending', 'approved', 'suspended')),
     is_admin boolean not null default false,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+alter table if exists public.users
+    add column if not exists has_master_code boolean not null default false;
+
+create table if not exists public.user_profiles (
+    id text not null,
+    user_id uuid not null references public.users(id) on delete cascade,
+    name text not null,
+    avatar_index int not null default 0,
+    pin_hash text,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now(),
+    primary key (user_id, id),
+    constraint user_profiles_name_length check (char_length(btrim(name)) between 1 and 20)
+);
+
+create table if not exists public.user_master_codes (
+    user_id uuid primary key references public.users(id) on delete cascade,
+    code_hash text not null,
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
@@ -58,6 +82,7 @@ create index if not exists idx_subscriptions_status on public.subscriptions(stat
 create unique index if not exists idx_subscriptions_stripe_session on public.subscriptions(stripe_session_id) where stripe_session_id is not null;
 create index if not exists idx_subscriptions_payment_intent on public.subscriptions(stripe_payment_intent_id) where stripe_payment_intent_id is not null;
 create index if not exists idx_user_addons_user on public.user_addons(user_id);
+create index if not exists idx_user_profiles_user on public.user_profiles(user_id);
 
 -- 5. AUTO-UPDATE updated_at
 create or replace function public.update_updated_at()
@@ -71,6 +96,16 @@ $$ language plpgsql;
 drop trigger if exists users_updated_at on public.users;
 create trigger users_updated_at
     before update on public.users
+    for each row execute function public.update_updated_at();
+
+drop trigger if exists user_profiles_updated_at on public.user_profiles;
+create trigger user_profiles_updated_at
+    before update on public.user_profiles
+    for each row execute function public.update_updated_at();
+
+drop trigger if exists user_master_codes_updated_at on public.user_master_codes;
+create trigger user_master_codes_updated_at
+    before update on public.user_master_codes
     for each row execute function public.update_updated_at();
 
 -- 6. AUTO-CREATE user row on signup
@@ -97,6 +132,8 @@ alter table public.users enable row level security;
 alter table public.subscriptions enable row level security;
 alter table public.user_addons enable row level security;
 alter table public.stripe_payment_reversals enable row level security;
+alter table public.user_profiles enable row level security;
+alter table public.user_master_codes enable row level security;
 
 create or replace function public.is_current_user_admin()
 returns boolean
@@ -195,6 +232,394 @@ begin
 end;
 $$;
 
+create or replace function public.is_valid_security_code(code text)
+returns boolean
+language sql
+immutable
+as $$
+    select coalesce(code, '') ~ '^\d{4}$';
+$$;
+
+create or replace function public.create_security_code_hash(code text)
+returns text
+language sql
+as $$
+    select crypt(code, gen_salt('bf'));
+$$;
+
+create or replace function public.matches_security_code(code text, stored_hash text)
+returns boolean
+language sql
+immutable
+as $$
+    select stored_hash is not null
+       and public.is_valid_security_code(code)
+       and crypt(code, stored_hash) = stored_hash;
+$$;
+
+create or replace function public.list_current_user_profiles()
+returns table (
+    id text,
+    name text,
+    avatar_index int,
+    has_pin boolean,
+    created_at timestamptz,
+    updated_at timestamptz
+)
+language sql
+security definer
+set search_path = public
+as $$
+    select
+        user_profiles.id,
+        user_profiles.name,
+        user_profiles.avatar_index,
+        user_profiles.pin_hash is not null as has_pin,
+        user_profiles.created_at,
+        user_profiles.updated_at
+    from public.user_profiles
+    where user_profiles.user_id = auth.uid()
+    order by user_profiles.created_at asc;
+$$;
+
+create or replace function public.create_current_user_profile(
+    p_profile_id text,
+    p_name text,
+    p_avatar_index int,
+    p_pin_code text default null
+)
+returns table (
+    id text,
+    name text,
+    avatar_index int,
+    has_pin boolean,
+    created_at timestamptz,
+    updated_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    normalized_name text := btrim(coalesce(p_name, ''));
+    normalized_pin_code text := nullif(btrim(coalesce(p_pin_code, '')), '');
+begin
+    if auth.uid() is null then
+        raise exception 'Authentication required'
+            using errcode = '42501';
+    end if;
+
+    if btrim(coalesce(p_profile_id, '')) = '' then
+        raise exception 'Profile id is required'
+            using errcode = '22023';
+    end if;
+
+    if normalized_name = '' or char_length(normalized_name) > 20 then
+        raise exception 'Profile names must be between 1 and 20 characters'
+            using errcode = '22023';
+    end if;
+
+    if normalized_pin_code is not null and not public.is_valid_security_code(normalized_pin_code) then
+        raise exception 'Codes must be exactly 4 digits.'
+            using errcode = '22023';
+    end if;
+
+    if exists (
+        select 1
+        from public.user_profiles
+        where user_profiles.user_id = auth.uid()
+          and user_profiles.id = p_profile_id
+    ) then
+        raise exception 'Profile already exists'
+            using errcode = '23505';
+    end if;
+
+    if (
+        select count(*)
+        from public.user_profiles
+        where user_profiles.user_id = auth.uid()
+    ) >= 4 then
+        raise exception 'Only 4 profiles are supported'
+            using errcode = '22023';
+    end if;
+
+    return query
+    insert into public.user_profiles (
+        id,
+        user_id,
+        name,
+        avatar_index,
+        pin_hash
+    )
+    values (
+        p_profile_id,
+        auth.uid(),
+        normalized_name,
+        greatest(coalesce(p_avatar_index, 0), 0),
+        case
+            when normalized_pin_code is null then null
+            else public.create_security_code_hash(normalized_pin_code)
+        end
+    )
+    returning
+        user_profiles.id,
+        user_profiles.name,
+        user_profiles.avatar_index,
+        user_profiles.pin_hash is not null,
+        user_profiles.created_at,
+        user_profiles.updated_at;
+end;
+$$;
+
+create or replace function public.set_current_user_master_code(p_code text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    normalized_code text := nullif(btrim(coalesce(p_code, '')), '');
+begin
+    if auth.uid() is null then
+        raise exception 'Authentication required'
+            using errcode = '42501';
+    end if;
+
+    if normalized_code is null or not public.is_valid_security_code(normalized_code) then
+        raise exception 'Codes must be exactly 4 digits.'
+            using errcode = '22023';
+    end if;
+
+    if exists (
+        select 1
+        from public.user_master_codes
+        where user_master_codes.user_id = auth.uid()
+    ) then
+        raise exception 'Master code already exists.'
+            using errcode = '22023';
+    end if;
+
+    insert into public.user_master_codes (user_id, code_hash)
+    values (auth.uid(), public.create_security_code_hash(normalized_code));
+
+    update public.users
+    set has_master_code = true
+    where users.id = auth.uid();
+
+    return true;
+end;
+$$;
+
+create or replace function public.rotate_current_user_master_code(
+    p_current_code text,
+    p_next_code text
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    normalized_current_code text := nullif(btrim(coalesce(p_current_code, '')), '');
+    normalized_next_code text := nullif(btrim(coalesce(p_next_code, '')), '');
+begin
+    if auth.uid() is null then
+        raise exception 'Authentication required'
+            using errcode = '42501';
+    end if;
+
+    if normalized_current_code is null or normalized_next_code is null
+        or not public.is_valid_security_code(normalized_current_code)
+        or not public.is_valid_security_code(normalized_next_code) then
+        raise exception 'Codes must be exactly 4 digits.'
+            using errcode = '22023';
+    end if;
+
+    update public.user_master_codes
+    set code_hash = public.create_security_code_hash(normalized_next_code)
+    where user_master_codes.user_id = auth.uid()
+      and public.matches_security_code(normalized_current_code, user_master_codes.code_hash);
+
+    if not found then
+        return false;
+    end if;
+
+    update public.users
+    set has_master_code = true
+    where users.id = auth.uid();
+
+    return true;
+end;
+$$;
+
+create or replace function public.verify_current_user_master_code(p_code text)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+    select exists (
+        select 1
+        from public.user_master_codes
+        where user_master_codes.user_id = auth.uid()
+          and public.matches_security_code(nullif(btrim(coalesce(p_code, '')), ''), user_master_codes.code_hash)
+    );
+$$;
+
+create or replace function public.verify_current_user_profile_pin(
+    p_profile_id text,
+    p_code text
+)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+    select exists (
+        select 1
+        from public.user_profiles
+        where user_profiles.user_id = auth.uid()
+          and user_profiles.id = p_profile_id
+          and user_profiles.pin_hash is not null
+          and public.matches_security_code(nullif(btrim(coalesce(p_code, '')), ''), user_profiles.pin_hash)
+    );
+$$;
+
+create or replace function public.set_current_user_profile_pin(
+    p_profile_id text,
+    p_pin_code text
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    normalized_pin_code text := nullif(btrim(coalesce(p_pin_code, '')), '');
+    existing_pin_hash text;
+begin
+    if auth.uid() is null then
+        raise exception 'Authentication required'
+            using errcode = '42501';
+    end if;
+
+    if normalized_pin_code is null or not public.is_valid_security_code(normalized_pin_code) then
+        raise exception 'Codes must be exactly 4 digits.'
+            using errcode = '22023';
+    end if;
+
+    select user_profiles.pin_hash
+    into existing_pin_hash
+    from public.user_profiles
+    where user_profiles.user_id = auth.uid()
+      and user_profiles.id = p_profile_id;
+
+    if not found then
+        raise exception 'Profile not found'
+            using errcode = 'P0002';
+    end if;
+
+    if existing_pin_hash is not null then
+        raise exception 'Profile already has a PIN. Remove it before setting a new one.'
+            using errcode = '22023';
+    end if;
+
+    update public.user_profiles
+    set pin_hash = public.create_security_code_hash(normalized_pin_code)
+    where user_profiles.user_id = auth.uid()
+      and user_profiles.id = p_profile_id;
+
+    return true;
+end;
+$$;
+
+create or replace function public.clear_current_user_profile_pin(
+    p_profile_id text,
+    p_code text
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    normalized_code text := nullif(btrim(coalesce(p_code, '')), '');
+    current_pin_hash text;
+    master_code_hash text;
+begin
+    if auth.uid() is null then
+        raise exception 'Authentication required'
+            using errcode = '42501';
+    end if;
+
+    select user_profiles.pin_hash
+    into current_pin_hash
+    from public.user_profiles
+    where user_profiles.user_id = auth.uid()
+      and user_profiles.id = p_profile_id;
+
+    if not found then
+        raise exception 'Profile not found'
+            using errcode = 'P0002';
+    end if;
+
+    select user_master_codes.code_hash
+    into master_code_hash
+    from public.user_master_codes
+    where user_master_codes.user_id = auth.uid();
+
+    if normalized_code is null or not public.is_valid_security_code(normalized_code) then
+        return false;
+    end if;
+
+    if not public.matches_security_code(normalized_code, current_pin_hash)
+        and not public.matches_security_code(normalized_code, master_code_hash) then
+        return false;
+    end if;
+
+    update public.user_profiles
+    set pin_hash = null
+    where user_profiles.user_id = auth.uid()
+      and user_profiles.id = p_profile_id;
+
+    return true;
+end;
+$$;
+
+create or replace function public.delete_current_user_profile(
+    p_profile_id text,
+    p_master_code text
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    normalized_master_code text := nullif(btrim(coalesce(p_master_code, '')), '');
+begin
+    if auth.uid() is null then
+        raise exception 'Authentication required'
+            using errcode = '42501';
+    end if;
+
+    if not exists (
+        select 1
+        from public.user_master_codes
+        where user_master_codes.user_id = auth.uid()
+          and public.matches_security_code(normalized_master_code, user_master_codes.code_hash)
+    ) then
+        return false;
+    end if;
+
+    delete from public.user_profiles
+    where user_profiles.user_id = auth.uid()
+      and user_profiles.id = p_profile_id;
+
+    return found;
+end;
+$$;
+
 -- Users: read own row, admin reads all
 drop policy if exists "users_select_own" on public.users;
 drop policy if exists "users_select_admin" on public.users;
@@ -209,6 +634,10 @@ drop policy if exists "subs_select_admin" on public.subscriptions;
 drop policy if exists "subs_insert_admin" on public.subscriptions;
 drop policy if exists "subs_update_admin" on public.subscriptions;
 create policy "subs_select_own" on public.subscriptions
+    for select using (user_id = auth.uid());
+
+drop policy if exists "profiles_select_own" on public.user_profiles;
+create policy "profiles_select_own" on public.user_profiles
     for select using (user_id = auth.uid());
 
 -- User addons: read own when entitled
@@ -458,6 +887,15 @@ revoke all on function public.admin_list_subscriptions() from public;
 revoke all on function public.admin_update_user_status(uuid, text) from public;
 revoke all on function public.admin_upsert_user_addon(uuid, text, text) from public;
 revoke all on function public.admin_remove_user_addon(uuid) from public;
+revoke all on function public.list_current_user_profiles() from public;
+revoke all on function public.create_current_user_profile(text, text, int, text) from public;
+revoke all on function public.set_current_user_master_code(text) from public;
+revoke all on function public.rotate_current_user_master_code(text, text) from public;
+revoke all on function public.verify_current_user_master_code(text) from public;
+revoke all on function public.verify_current_user_profile_pin(text, text) from public;
+revoke all on function public.set_current_user_profile_pin(text, text) from public;
+revoke all on function public.clear_current_user_profile_pin(text, text) from public;
+revoke all on function public.delete_current_user_profile(text, text) from public;
 
 grant execute on function public.admin_list_users() to authenticated;
 grant execute on function public.admin_list_user_addons() to authenticated;
@@ -465,6 +903,15 @@ grant execute on function public.admin_list_subscriptions() to authenticated;
 grant execute on function public.admin_update_user_status(uuid, text) to authenticated;
 grant execute on function public.admin_upsert_user_addon(uuid, text, text) to authenticated;
 grant execute on function public.admin_remove_user_addon(uuid) to authenticated;
+grant execute on function public.list_current_user_profiles() to authenticated;
+grant execute on function public.create_current_user_profile(text, text, int, text) to authenticated;
+grant execute on function public.set_current_user_master_code(text) to authenticated;
+grant execute on function public.rotate_current_user_master_code(text, text) to authenticated;
+grant execute on function public.verify_current_user_master_code(text) to authenticated;
+grant execute on function public.verify_current_user_profile_pin(text, text) to authenticated;
+grant execute on function public.set_current_user_profile_pin(text, text) to authenticated;
+grant execute on function public.clear_current_user_profile_pin(text, text) to authenticated;
+grant execute on function public.delete_current_user_profile(text, text) to authenticated;
 
 -- 8. CREATE YOUR ADMIN ACCOUNT
 -- After running this migration, sign up through the app, then run:

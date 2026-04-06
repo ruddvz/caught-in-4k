@@ -6,6 +6,7 @@ const { Button } = require('stremio/components');
 const { navigateToAppHref } = require('stremio/common/navigation');
 const { withCoreSuspender } = require('stremio/common');
 const { useAuth } = require('stremio/common/AuthProvider');
+const { PROFILE_CHANGE_EVENT, createProfileStore, getSelectedProfileId } = require('stremio/common/profileStore');
 const { extractAccentFromAvatar } = require('../../common/useAvatarAccentColor');
 const PinModal = require('./PinModal/PinModal');
 const styles = require('./styles.less');
@@ -35,8 +36,6 @@ const AVAILABLE_AVATARS = [
     require('../../../assets/images/avatars/c4k-avatar-20.png'),
 ];
 
-const LOCAL_STORAGE_KEY = 'c4k_profiles';
-
 // Dominant accent color per avatar — fallback when Canvas extraction hasn't run yet
 const AVATAR_ACCENTS = [
     '#7ecec4', // 1  — teal
@@ -61,12 +60,9 @@ const AVATAR_ACCENTS = [
     '#e88070', // 20 — coral
 ];
 
-// Returns true if a profile has a stored PIN
-const isProfileLocked = (profileId) =>
-    !!localStorage.getItem(`c4k_profile_pin_${profileId}`);
-
 const Profiles = () => {
     const auth = useAuth();
+    const profileStore = React.useMemo(() => createProfileStore(), []);
     const [profiles, setProfiles] = React.useState([]);
     const [view, setView] = React.useState('select'); // 'select' | 'add'
     const [newName, setNewName] = React.useState('');
@@ -74,10 +70,11 @@ const Profiles = () => {
     const [focusedIndex, setFocusedIndex] = React.useState(0);
     const [isExiting, setIsExiting] = React.useState(false);
     const [pinModalProfile, setPinModalProfile] = React.useState(null); // profile awaiting PIN
+    const [createProfilePinOpen, setCreateProfilePinOpen] = React.useState(false);
 
     // Phase 3: track which profile is active (persisted across page opens)
     const [selectedProfileId, setSelectedProfileId] = React.useState(() => {
-        return localStorage.getItem('c4k_active_profile_id') || null;
+        return getSelectedProfileId(localStorage, auth) || null;
     });
 
     // Phase 2: Canvas-extracted accent colors, keyed by avatarIndex
@@ -85,16 +82,27 @@ const Profiles = () => {
     const [extractedAccents, setExtractedAccents] = React.useState({});
     const extractionAttempted = React.useRef({});
 
-    React.useEffect(() => {
+    const refreshProfiles = React.useCallback(async () => {
         try {
-            const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-            if (Array.isArray(stored)) {
-                setProfiles(stored);
-            }
-        } catch (e) {
-            console.error('Failed to parse profiles', e);
+            const nextProfiles = await profileStore.loadProfiles({ auth });
+            setProfiles(nextProfiles);
+            setSelectedProfileId(getSelectedProfileId(localStorage, auth) || null);
+        } catch (error) {
+            console.error('Failed to load profiles', error);
+            setProfiles([]);
         }
-    }, []);
+    }, [auth, profileStore]);
+
+    React.useEffect(() => {
+        void refreshProfiles();
+
+        const handleProfileChange = () => {
+            void refreshProfiles();
+        };
+
+        window.addEventListener(PROFILE_CHANGE_EVENT, handleProfileChange);
+        return () => window.removeEventListener(PROFILE_CHANGE_EVENT, handleProfileChange);
+    }, [refreshProfiles]);
 
     // Phase 3: once profiles load, set focusedIndex to the currently active profile
     React.useEffect(() => {
@@ -115,7 +123,7 @@ const Profiles = () => {
             } else if (e.key === 'Enter') {
                 if (focusedIndex < profiles.length) {
                     const p = profiles[focusedIndex];
-                    if (isProfileLocked(p.id)) {
+                    if (p.hasPin) {
                         setPinModalProfile(p);
                     } else {
                         doSelectProfile(p);
@@ -129,24 +137,10 @@ const Profiles = () => {
         return () => window.removeEventListener('keydown', handleKey);
     }, [view, profiles, focusedIndex]);
 
-    const saveProfiles = (updated) => {
-        setProfiles(updated);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
-    };
-
-    const handleCreateProfile = () => {
+    const handleCreateProfileRequest = React.useCallback(() => {
         if (!newName.trim()) return;
-        const newProfile = {
-            id: Date.now().toString(),
-            name: newName.trim(),
-            avatarIndex: newAvatarIndex
-        };
-        const updated = [...profiles, newProfile];
-        saveProfiles(updated);
-        setNewName('');
-        setNewAvatarIndex(0);
-        setView('select');
-    };
+        setCreateProfilePinOpen(true);
+    }, [newName]);
 
     const getAvatarUrl = (p) =>
         p.avatarIndex !== undefined ? AVAILABLE_AVATARS[p.avatarIndex] : p.avatar;
@@ -198,9 +192,6 @@ const Profiles = () => {
         setIsExiting(true);
         setSelectedProfileId(profile.id);
 
-        // Persist selected profile ID immediately (Phase 3)
-        localStorage.setItem('c4k_active_profile_id', profile.id);
-
         // Apply accent from extraction cache if available; otherwise extract now
         const applyAccent = (accent) => {
             if (!accent) return;
@@ -218,11 +209,10 @@ const Profiles = () => {
         }
 
         setTimeout(() => {
-            localStorage.setItem('c4k_current_profile', JSON.stringify(profile));
-            window.dispatchEvent(new Event('c4k-profile-changed'));
+            profileStore.selectProfile(profile, auth);
             navigateToAppHref('/');
         }, 400);
-    }, [extractedAccents]);
+    }, [auth, extractedAccents, profileStore]);
 
     return (
         <div className={classnames(styles['profiles-page'], { [styles['exiting']]: isExiting })}>
@@ -231,13 +221,55 @@ const Profiles = () => {
             {pinModalProfile && (
                 <PinModal
                     mode="unlock"
-                    profileId={pinModalProfile.id}
-                    onSuccess={() => {
-                        const p = pinModalProfile;
-                        setPinModalProfile(null);
-                        doSelectProfile(p);
+                    title={`Unlock ${pinModalProfile.name}`}
+                    subtitle={`Enter ${pinModalProfile.name}'s 4-digit PIN`}
+                    onSubmitCode={async (code) => {
+                        try {
+                            const isValid = await profileStore.verifyProfilePin({
+                                auth,
+                                profileId: pinModalProfile.id,
+                                code,
+                            });
+
+                            if (!isValid) {
+                                return false;
+                            }
+
+                            doSelectProfile(pinModalProfile);
+                            setPinModalProfile(null);
+                            return true;
+                        } catch (error) {
+                            return error instanceof Error ? error.message : 'Failed to verify the profile PIN.';
+                        }
                     }}
                     onCancel={() => setPinModalProfile(null)}
+                />
+            )}
+
+            {createProfilePinOpen && (
+                <PinModal
+                    mode="set"
+                    title="Set Profile PIN"
+                    subtitle="Create a 4-digit PIN for this profile"
+                    onSuccess={async (pinCode) => {
+                        try {
+                            await profileStore.createProfile({
+                                auth,
+                                name: newName,
+                                avatarIndex: newAvatarIndex,
+                                pinCode,
+                            });
+                            await refreshProfiles();
+                            setCreateProfilePinOpen(false);
+                            setNewName('');
+                            setNewAvatarIndex(0);
+                            setView('select');
+                            return true;
+                        } catch (error) {
+                            return error.message || 'Failed to create profile.';
+                        }
+                    }}
+                    onCancel={() => setCreateProfilePinOpen(false)}
                 />
             )}
 
@@ -259,12 +291,12 @@ const Profiles = () => {
                                     styles['profile-card'],
                                     { [styles['focused']]: i === focusedIndex },
                                     { [styles['selected']]: p.id === selectedProfileId },
-                                    { [styles['locked']]: isProfileLocked(p.id) }
+                                    { [styles['locked']]: p.hasPin }
                                 )}
                                 style={getAccentStyle(p)}
                                 onMouseEnter={() => handleCardMouseEnter(p, i)}
                                 onClick={() => {
-                                    if (isProfileLocked(p.id)) {
+                                    if (p.hasPin) {
                                         setPinModalProfile(p);
                                     } else {
                                         doSelectProfile(p);
@@ -276,7 +308,7 @@ const Profiles = () => {
                                     style={{ backgroundImage: `url(${getAvatarUrl(p)})` }}
                                 />
                                 {/* Padlock overlay — visible when profile is locked */}
-                                {isProfileLocked(p.id) && (
+                                {p.hasPin && (
                                     <div className={styles['lock-overlay']}>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -356,7 +388,7 @@ const Profiles = () => {
                                 placeholder="Enter a name..."
                                 value={newName}
                                 onChange={(e) => setNewName(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && newName.trim() && handleCreateProfile()}
+                                onKeyDown={(e) => e.key === 'Enter' && newName.trim() && handleCreateProfileRequest()}
                                 maxLength={20}
                                 autoFocus
                             />
@@ -364,7 +396,7 @@ const Profiles = () => {
                             <div className={styles['add-actions']}>
                                 <Button
                                     className={classnames(styles['action-btn'], styles['primary-btn'])}
-                                    onClick={handleCreateProfile}
+                                    onClick={handleCreateProfileRequest}
                                     disabled={!newName.trim()}
                                 >
                                     Create Profile
