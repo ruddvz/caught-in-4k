@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import Icon from '@stremio/stremio-icons/react';
 import styles from './MultiselectMenu.less';
 import useOutsideClick from 'stremio/common/useOutsideClick';
+const { getMultiselectTriggerA11yProps } = require('./a11y');
 
 type Props = {
     className?: string,
@@ -45,8 +46,7 @@ const MultiselectMenu = ({ className, title, options, value, disabled, onSelect,
                 disabled={disabled}
                 onClick={toggleMenu}
                 tabIndex={0}
-                aria-haspopup='menu'
-                aria-expanded={menuOpen}
+                {...getMultiselectTriggerA11yProps(menuOpen)}
             >
                 <div className={styles['label']}>
                     {

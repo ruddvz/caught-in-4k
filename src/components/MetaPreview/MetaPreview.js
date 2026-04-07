@@ -3,7 +3,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-const UrlUtils = require('url');
 const { useTranslation } = require('react-i18next');
 const { default: Image } = require('stremio/components/Image');
 const ModalDialog = require('stremio/components/ModalDialog');
@@ -13,7 +12,6 @@ const { usePlatform } = require('stremio/common/Platform');
 const CONSTANTS = require('stremio/common/CONSTANTS');
 const { buildExternalRatingsModel } = require('stremio/common/externalRatings');
 const { navigateToAppHref } = require('stremio/common/navigation');
-const routesRegexp = require('stremio/common/routesRegexp');
 const useBinaryState = require('stremio/common/useBinaryState');
 const { useSatisfactionMeter } = require('stremio/common/useSatisfactionMeter');
 const useProfile = require('stremio/common/useProfile');
@@ -22,12 +20,7 @@ const MetaLinks = require('./MetaLinks');
 const MetaPreviewPlaceholder = require('./MetaPreviewPlaceholder');
 const styles = require('./styles');
 const { Ratings } = require('./Ratings');
-
-const ALLOWED_LINK_REDIRECTS = [
-    routesRegexp.search.regexp,
-    routesRegexp.discover.regexp,
-    routesRegexp.metadetails.regexp,
-];
+const { getMetaPreviewLinksGroups } = require('./getLinksGroups');
 
 const MetaPreview = React.forwardRef(({
     className,
@@ -120,48 +113,11 @@ const MetaPreview = React.forwardRef(({
     }, [imdbRating, ratingsModel, voteAverageProp]);
 
     const linksGroups = React.useMemo(() => {
-        return Array.isArray(links)
-            ? links
-                .filter((link) => link && typeof link.category === 'string' && typeof link.url === 'string')
-                .reduce((groups, { category, name: linkName, url }) => {
-                    if (showFullRatings && ratingLinkHrefs.has(url)) {
-                        return groups;
-                    }
-
-                    const { protocol, path, pathname, hostname } = UrlUtils.parse(url);
-
-                    if (category === CONSTANTS.SHARE_LINK_CATEGORY) {
-                        groups.set(category, {
-                            label: linkName,
-                            href: url,
-                        });
-                        return groups;
-                    }
-
-                    if (typeof hostname === 'string' && hostname.length > 0) {
-                        if (!groups.has(category)) {
-                            groups.set(category, []);
-                        }
-                        groups.get(category).push({
-                            label: linkName,
-                            href: `https://www.stremio.com/warning#${encodeURIComponent(url)}`,
-                        });
-                        return groups;
-                    }
-
-                    if (protocol === 'stremio:' && pathname !== null && ALLOWED_LINK_REDIRECTS.some((regexp) => pathname.match(regexp))) {
-                        if (!groups.has(category)) {
-                            groups.set(category, []);
-                        }
-                        groups.get(category).push({
-                            label: linkName,
-                            href: `#${path}`,
-                        });
-                    }
-
-                    return groups;
-                }, new Map())
-            : new Map();
+        return getMetaPreviewLinksGroups({
+            links,
+            ratingLinkHrefs,
+            showFullRatings,
+        });
     }, [links, ratingLinkHrefs, showFullRatings]);
 
     const showHref = React.useMemo(() => {

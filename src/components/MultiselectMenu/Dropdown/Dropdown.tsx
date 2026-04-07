@@ -8,6 +8,7 @@ import Option from './Option';
 import Icon from '@stremio/stremio-icons/react';
 import styles from './Dropdown.less';
 import optionStyles from './Option/Option.less';
+const { getDropdownMenuA11yProps, getDropdownOptionA11yProps } = require('../a11y');
 
 type Props = {
     options: MultiselectMenuOption[];
@@ -22,6 +23,7 @@ const Dropdown = ({ level, setLevel, options, onSelect, value, menuOpen }: Props
     const { t } = useTranslation();
     const optionsRef = useRef<Map<any, HTMLButtonElement>>(new Map());
     const containerRef = useRef<HTMLDivElement | null>(null);
+    const menuA11yProps = getDropdownMenuA11yProps(t('Options'));
 
     const selectedOption = options.find((opt) => opt.value === value);
 
@@ -68,11 +70,12 @@ const Dropdown = ({ level, setLevel, options, onSelect, value, menuOpen }: Props
                 </Button>
                 : null
             }
-            <div className={styles['options-list']} role="menu" aria-label={t('Options')}>
+            <div className={styles['options-list']} {...menuA11yProps}>
                 {options
                     .filter((option: MultiselectMenuOption) => !option.hidden)
                     .map((option: MultiselectMenuOption) => {
                         const selected = option.value === value;
+                        const optionA11yProps = getDropdownOptionA11yProps({ label: option.label, selected });
 
                         const optionContent = <Option option={option} selected={selected} />;
 
@@ -83,9 +86,7 @@ const Dropdown = ({ level, setLevel, options, onSelect, value, menuOpen }: Props
                                     key={option.value}
                                     ref={handleSetOptionRef(option.value)}
                                     className={classNames(optionStyles['option'], optionStyles['selected'])}
-                                    role="menuitemradio"
-                                    aria-label={String(option.label)}
-                                    aria-checked="true"
+                                    {...optionA11yProps}
                                     onClick={() => onSelect(option.value)}
                                 >
                                     {optionContent}
@@ -99,9 +100,7 @@ const Dropdown = ({ level, setLevel, options, onSelect, value, menuOpen }: Props
                                 key={option.value}
                                 ref={handleSetOptionRef(option.value)}
                                 className={optionStyles['option']}
-                                role="menuitemradio"
-                                aria-label={String(option.label)}
-                                aria-checked="false"
+                                {...optionA11yProps}
                                 onClick={() => onSelect(option.value)}
                             >
                                 {optionContent}
