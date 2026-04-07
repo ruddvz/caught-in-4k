@@ -29,15 +29,6 @@ const ALLOWED_LINK_REDIRECTS = [
     routesRegexp.metadetails.regexp,
 ];
 
-const isExternalRatingCategory = (category) => {
-    if (typeof category !== 'string') {
-        return false;
-    }
-
-    const normalizedCategory = category.toLowerCase();
-    return category === CONSTANTS.IMDB_LINK_CATEGORY || normalizedCategory.includes('tomatoes') || normalizedCategory.includes('metacritic');
-};
-
 const MetaPreview = React.forwardRef(({
     className,
     compact,
@@ -98,27 +89,15 @@ const MetaPreview = React.forwardRef(({
         imdbRating,
         voteAverage: voteAverageProp,
     }), [imdbRating, links, voteAverageProp]);
+    const ratingLinkHrefs = React.useMemo(() => new Set(
+        Array.isArray(ratingsModel?.cards)
+            ? ratingsModel.cards.map((card) => card.href).filter(Boolean)
+            : []
+    ), [ratingsModel]);
 
     const effectiveVariant = variant || (compact ? 'drawer' : 'details');
     const showCompactRatings = compact && effectiveVariant === 'browse';
     const showFullRatings = effectiveVariant === 'details';
-    const ratingsSummaryCopy = React.useMemo(() => {
-        const sourceCount = Array.isArray(ratingsModel?.cards) ? ratingsModel.cards.length : 0;
-
-        if (sourceCount >= 3) {
-            return t('C4K_OVERALL_SIGNAL_COPY_THREE', { defaultValue: 'Three sources, one clean verdict.' });
-        }
-
-        if (sourceCount === 2) {
-            return t('C4K_OVERALL_SIGNAL_COPY_TWO', { defaultValue: 'Two sources, one combined read.' });
-        }
-
-        if (sourceCount === 1) {
-            return t('C4K_OVERALL_SIGNAL_COPY_ONE', { defaultValue: 'Built from the rating data available.' });
-        }
-
-        return t('C4K_OVERALL_SIGNAL_COPY_NONE', { defaultValue: 'Built from the catalog signal available.' });
-    }, [ratingsModel, t]);
 
     const satisfactionTier = React.useMemo(() => {
         if (ratingsModel?.consensus?.score !== null && ratingsModel?.consensus?.score !== undefined) {
@@ -145,7 +124,7 @@ const MetaPreview = React.forwardRef(({
             ? links
                 .filter((link) => link && typeof link.category === 'string' && typeof link.url === 'string')
                 .reduce((groups, { category, name: linkName, url }) => {
-                    if (isExternalRatingCategory(category) && effectiveVariant !== 'drawer') {
+                    if (showFullRatings && ratingLinkHrefs.has(url)) {
                         return groups;
                     }
 
@@ -183,7 +162,7 @@ const MetaPreview = React.forwardRef(({
                     return groups;
                 }, new Map())
             : new Map();
-    }, [effectiveVariant, links]);
+    }, [links, ratingLinkHrefs, showFullRatings]);
 
     const showHref = React.useMemo(() => {
         if (!deepLinks) {
@@ -210,7 +189,7 @@ const MetaPreview = React.forwardRef(({
             return null;
         }
 
-        const sourceLabel = card.id === 'imdb' ? 'IMDb' : card.id === 'rottenTomatoes' ? 'RT' : 'MC';
+        const sourceLabel = card.label;
         const content = (
             <React.Fragment>
                 <span className={styles['source-logo-badge']}>{sourceLabel}</span>
@@ -342,14 +321,6 @@ const MetaPreview = React.forwardRef(({
                             <div className={styles['ratings-stack']}>
                                 {satisfactionTier ? (
                                     <div className={styles['satisfaction-meter-container']}>
-                                        <div className={styles['satisfaction-meter-header']}>
-                                            <div className={styles['satisfaction-meter-label']}>
-                                                {t('C4K_OVERALL_SIGNAL', { defaultValue: 'Overall Signal' })}
-                                            </div>
-                                            <div className={styles['satisfaction-meter-copy']}>
-                                                {ratingsSummaryCopy}
-                                            </div>
-                                        </div>
                                         {Array.isArray(ratingsModel?.cards) && ratingsModel.cards.length > 0 ? (
                                             <div className={styles['source-ratings-row']}>
                                                 {ratingsModel.cards.map(renderSourceRating)}

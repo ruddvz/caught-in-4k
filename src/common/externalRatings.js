@@ -49,6 +49,10 @@ function formatOneDecimal(value) {
     return rounded.toFixed(1);
 }
 
+function normalizeText(value) {
+    return typeof value === 'string' ? value.toLowerCase() : '';
+}
+
 function createSourceCard(sourceId, rawValue, options = {}) {
     const source = SOURCE_META[sourceId];
     if (!source) {
@@ -99,6 +103,31 @@ function getVerdictForScore(score) {
     return VERDICTS.find((verdict) => score >= verdict.min && score <= verdict.max) || VERDICTS[VERDICTS.length - 1];
 }
 
+function getExternalRatingSourceId(link) {
+    if (!link || typeof link !== 'object') {
+        return null;
+    }
+
+    const category = normalizeText(link.category);
+    const name = normalizeText(link.name);
+    const url = normalizeText(link.url);
+    const combined = `${category} ${name} ${url}`;
+
+    if (link.category === CONSTANTS.IMDB_LINK_CATEGORY || url.includes('imdb.com') || /\bimdb\b/.test(combined)) {
+        return 'imdb';
+    }
+
+    if (url.includes('rottentomatoes.com') || /rotten\s*tomatoes|rottentomatoes|tomatometer/.test(combined)) {
+        return 'rottenTomatoes';
+    }
+
+    if (url.includes('metacritic.com') || combined.includes('metacritic')) {
+        return 'metacritic';
+    }
+
+    return null;
+}
+
 function findSupportedLinks(links = []) {
     const supported = {
         imdb: null,
@@ -107,25 +136,16 @@ function findSupportedLinks(links = []) {
     };
 
     links.forEach((link) => {
-        if (!link || typeof link.category !== 'string') {
+        if (!link) {
             return;
         }
 
-        const normalizedCategory = link.category.toLowerCase();
-
-        if (!supported.imdb && link.category === CONSTANTS.IMDB_LINK_CATEGORY) {
-            supported.imdb = createSourceCard('imdb', link.name, { href: link.url || null });
+        const sourceId = getExternalRatingSourceId(link);
+        if (!sourceId || supported[sourceId]) {
             return;
         }
 
-        if (!supported.rottenTomatoes && normalizedCategory.includes('tomatoes')) {
-            supported.rottenTomatoes = createSourceCard('rottenTomatoes', link.name, { href: link.url || null });
-            return;
-        }
-
-        if (!supported.metacritic && normalizedCategory.includes('metacritic')) {
-            supported.metacritic = createSourceCard('metacritic', link.name, { href: link.url || null });
-        }
+        supported[sourceId] = createSourceCard(sourceId, link.name, { href: link.url || null });
     });
 
     return supported;
@@ -206,6 +226,7 @@ module.exports = {
     VERDICTS,
     buildExternalRatingsModel,
     getCompactRatingBadge,
+    getExternalRatingSourceId,
     getSpreadPenalty,
     getVerdictForScore,
 };

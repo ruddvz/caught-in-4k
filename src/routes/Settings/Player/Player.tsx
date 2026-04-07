@@ -22,6 +22,27 @@ type Props = {
     profile: Profile,
 };
 
+type SectionCardProps = {
+    kicker: string,
+    title: string,
+    copy: string,
+    children: React.ReactNode,
+};
+
+const SectionCard = ({ kicker, title, copy, children }: SectionCardProps) => (
+    <section className={styles['section-card']}>
+        <div className={styles['section-meta']}>
+            <div className={styles['section-kicker']}>{kicker}</div>
+            <h3 className={styles['section-title']}>{title}</h3>
+            <p className={styles['section-copy']}>{copy}</p>
+        </div>
+
+        <div className={styles['options-group']}>
+            {children}
+        </div>
+    </section>
+);
+
 const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
     const { shell } = useServices();
 
@@ -31,10 +52,18 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         subtitlesTextColorInput,
         subtitlesBackgroundColorInput,
         subtitlesOutlineColorInput,
+        assSubtitlesStylingToggle,
+        audioLanguageSelect,
+        surroundSoundToggle,
+        seekTimeDurationSelect,
+        seekShortTimeDurationSelect,
         playInExternalPlayerSelect,
         nextVideoPopupDurationSelect,
         bingeWatchingToggle,
+        playInBackgroundToggle,
         hardwareDecodingToggle,
+        videoModeSelect,
+        pauseOnMinimizeToggle,
     } = usePlayerOptions(profile);
 
     const {
@@ -45,118 +74,120 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
 
     return (
         <div ref={ref} className={styles['player-dashboard']}>
-            <div className={styles['engine-grid']}>
+            <div className={styles['player-grid']}>
+                <SectionCard
+                    kicker={'Captions'}
+                    title={'Readable in one glance'}
+                    copy={'Dial in subtitle language, audio preference, and contrast before you press play.'}
+                >
+                    <Option label={'Subtitle language'}>
+                        <MultiselectMenu className={styles['multiselect']} {...subtitlesLanguageSelect} />
+                    </Option>
+                    <Option label={'Preferred audio'}>
+                        <MultiselectMenu className={styles['multiselect']} {...audioLanguageSelect} />
+                    </Option>
+                    <Option label={'Subtitle size'}>
+                        <MultiselectMenu className={styles['multiselect']} {...subtitlesSizeSelect} />
+                    </Option>
+                    <Option label={'Caption color'}>
+                        <MultiselectMenu
+                            className={styles['multiselect']}
+                            options={FONT_COLOR_OPTIONS}
+                            value={subtitlesTextColorInput.value || '#ffffff'}
+                            title={() => {
+                                const value = subtitlesTextColorInput.value || '#ffffff';
+                                return FONT_COLOR_OPTIONS.find((option) => option.value === value)?.label ?? 'White';
+                            }}
+                            onSelect={(value) => subtitlesTextColorInput.onChange(value)}
+                        />
+                    </Option>
+                    <Option label={'Backdrop'}>
+                        <MultiselectMenu
+                            className={styles['multiselect']}
+                            options={BG_OPACITY_OPTIONS}
+                            value={subtitlesBackgroundColorInput.value || 'rgba(0,0,0,0.5)'}
+                            title={() => {
+                                const value = subtitlesBackgroundColorInput.value || 'rgba(0,0,0,0.5)';
+                                return BG_OPACITY_OPTIONS.find((option) => option.value === value)?.label ?? 'Semi-black';
+                            }}
+                            onSelect={(value) => subtitlesBackgroundColorInput.onChange(value)}
+                        />
+                    </Option>
+                    <Option label={'Edge style'}>
+                        <MultiselectMenu
+                            className={styles['multiselect']}
+                            options={[
+                                { value: 'outline', label: 'Outline' },
+                                { value: 'shadow', label: 'Drop Shadow' },
+                                { value: 'none', label: 'None' }
+                            ]}
+                            value={subtitlesOutlineColorInput.value ? 'outline' : 'none'}
+                            onSelect={(value: string) => {
+                                subtitlesOutlineColorInput.onChange(value === 'none' ? '' : '#000000');
+                            }}
+                        />
+                    </Option>
+                    <Option label={'Respect styled subtitles'}>
+                        <Toggle tabIndex={-1} {...assSubtitlesStylingToggle} />
+                    </Option>
+                </SectionCard>
 
-                {/* Internal Sub-Column 1 — Visuals & Subtitles */}
-                <div className={styles['col']}>
-                    <div className={styles['section-header']}>
-                        <div className={styles['header-top']}>
-                            <svg className={styles['header-icon']} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            <span className={styles['header-text']}>SUBTITLES</span>
-                        </div>
-                        <div className={styles['header-divider']} />
-                    </div>
+                <SectionCard
+                    kicker={'Flow'}
+                    title={'Make bingeing feel natural'}
+                    copy={'Set autoplay timing, seek jumps, and background playback so controls feel predictable.'}
+                >
+                    <Option label={'Auto-play next episode'}>
+                        <Toggle tabIndex={-1} {...bingeWatchingToggle} />
+                    </Option>
+                    <Option label={'Next-up countdown'}>
+                        <MultiselectMenu className={styles['multiselect']} {...nextVideoPopupDurationSelect} />
+                    </Option>
+                    <Option label={'Main seek jump'}>
+                        <MultiselectMenu className={styles['multiselect']} {...seekTimeDurationSelect} />
+                    </Option>
+                    <Option label={'Quick seek jump'}>
+                        <MultiselectMenu className={styles['multiselect']} {...seekShortTimeDurationSelect} />
+                    </Option>
+                    <Option label={'Keep audio in background'}>
+                        <Toggle tabIndex={-1} {...playInBackgroundToggle} />
+                    </Option>
+                    <Option label={'SETTINGS_BLUR_UNWATCHED_IMAGE'}>
+                        <Toggle tabIndex={-1} {...hideSpoilersToggle} />
+                    </Option>
+                </SectionCard>
 
-                    <div className={styles['options-group']}>
-                        <Option label={'Language'}>
-                            <MultiselectMenu className={styles['multiselect']} {...subtitlesLanguageSelect} />
+                <SectionCard
+                    kicker={'Device'}
+                    title={'Choose the right playback lane'}
+                    copy={'Switch engines, hand off to another player, and decide how aggressively the app uses your hardware.'}
+                >
+                    <Option label={'Open in external player'}>
+                        <MultiselectMenu className={styles['multiselect']} {...playInExternalPlayerSelect} />
+                    </Option>
+                    <Option label={'Video engine'}>
+                        <MultiselectMenu className={styles['multiselect']} {...videoModeSelect} />
+                    </Option>
+                    <Option label={'Hardware acceleration'}>
+                        <Toggle tabIndex={-1} {...hardwareDecodingToggle} />
+                    </Option>
+                    <Option label={'Surround sound'}>
+                        <Toggle tabIndex={-1} {...surroundSoundToggle} />
+                    </Option>
+                    <Option label={'Pause when app loses focus'}>
+                        <Toggle tabIndex={-1} {...pauseOnMinimizeToggle} />
+                    </Option>
+                    {shell.active && (
+                        <Option label={'SETTINGS_QUIT_ON_CLOSE'}>
+                            <Toggle tabIndex={-1} {...quitOnCloseToggle} />
                         </Option>
-                        <Option label={'Font Size'}>
-                            <MultiselectMenu className={styles['multiselect']} {...subtitlesSizeSelect} />
+                    )}
+                    {shell.active && (
+                        <Option label={'SETTINGS_FULLSCREEN_EXIT'}>
+                            <Toggle tabIndex={-1} {...escExitFullscreenToggle} />
                         </Option>
-                        <Option label={'Font Color'}>
-                            <MultiselectMenu
-                                className={styles['multiselect']}
-                                options={FONT_COLOR_OPTIONS}
-                                value={subtitlesTextColorInput.value || '#ffffff'}
-                                title={() => {
-                                    const val = subtitlesTextColorInput.value || '#ffffff';
-                                    return FONT_COLOR_OPTIONS.find((o) => o.value === val)?.label ?? 'White';
-                                }}
-                                onSelect={(v) => subtitlesTextColorInput.onChange(v)}
-                            />
-                        </Option>
-                        <Option label={'Background Opacity'}>
-                            <MultiselectMenu
-                                className={styles['multiselect']}
-                                options={BG_OPACITY_OPTIONS}
-                                value={subtitlesBackgroundColorInput.value || 'rgba(0,0,0,0.5)'}
-                                title={() => {
-                                    const val = subtitlesBackgroundColorInput.value || 'rgba(0,0,0,0.5)';
-                                    return BG_OPACITY_OPTIONS.find((o) => o.value === val)?.label ?? 'Semi-black';
-                                }}
-                                onSelect={(v) => subtitlesBackgroundColorInput.onChange(v)}
-                            />
-                        </Option>
-                        <Option label={'Edge Style'}>
-                            <MultiselectMenu
-                                className={styles['multiselect']}
-                                options={[
-                                    { value: 'outline', label: 'Outline' },
-                                    { value: 'shadow', label: 'Drop Shadow' },
-                                    { value: 'none', label: 'None' }
-                                ]}
-                                value={subtitlesOutlineColorInput.value ? 'outline' : 'none'}
-                                onSelect={(value: string) => {
-                                    subtitlesOutlineColorInput.onChange(value === 'none' ? '' : '#000000');
-                                }}
-                            />
-                        </Option>
-                    </div>
-
-                    {/* Visual Logic: Blur toggle at the bottom */}
-                    <div className={`${styles['options-group']} ${styles['options-group-spaced']}`}>
-                        <Option label={'Blur unwatched episodes image'}>
-                            <Toggle tabIndex={-1} {...hideSpoilersToggle} />
-                        </Option>
-                        {shell.active && (
-                            <Option label={'Quit on close'}>
-                                <Toggle tabIndex={-1} {...quitOnCloseToggle} />
-                            </Option>
-                        )}
-                        {shell.active && (
-                            <Option label={'Exit Fullscreen (ESC)'}>
-                                <Toggle tabIndex={-1} {...escExitFullscreenToggle} />
-                            </Option>
-                        )}
-                    </div>
-                </div>
-
-                {/* Internal Sub-Column 2 — Performance & Automation */}
-                <div className={styles['col']}>
-                    <div className={styles['section-header']}>
-                        <div className={styles['header-top']}>
-                            <svg className={styles['header-icon']} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                            <span className={styles['header-text']}>AUTOMATION</span>
-                        </div>
-                        <div className={styles['header-divider']} />
-                    </div>
-                    <div className={styles['options-group']}>
-                        <Option label={'Auto-play next episode'}>
-                            <Toggle tabIndex={-1} {...bingeWatchingToggle} />
-                        </Option>
-                        <Option label={'Next Video Popup Duration'}>
-                            <MultiselectMenu className={styles['multiselect']} {...nextVideoPopupDurationSelect} />
-                        </Option>
-                    </div>
-
-                    <div className={`${styles['section-header']} ${styles['section-header-spaced']}`}>
-                        <div className={styles['header-top']}>
-                            <svg className={styles['header-icon']} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                            <span className={styles['header-text']}>ADVANCED ENGINE</span>
-                        </div>
-                        <div className={styles['header-divider']} />
-                    </div>
-                    <div className={styles['options-group']}>
-                        <Option label={'Hardware Acceleration'}>
-                            <Toggle tabIndex={-1} {...hardwareDecodingToggle} />
-                        </Option>
-                        <Option label={'Play in External Player'}>
-                            <MultiselectMenu className={styles['multiselect']} {...playInExternalPlayerSelect} />
-                        </Option>
-                    </div>
-                </div>
-
+                    )}
+                </SectionCard>
             </div>
         </div>
     );

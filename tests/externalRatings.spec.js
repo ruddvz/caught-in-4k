@@ -23,6 +23,32 @@ describe('externalRatings', () => {
         expect(model.cards.map((card) => card.display)).toEqual(['8.7', '94%', '81']);
     });
 
+    it('detects supported ratings from known review URLs when categories are generic', () => {
+        const model = buildExternalRatingsModel({
+            links: [
+                { category: 'Reviews', name: '94%', url: 'https://www.rottentomatoes.com/m/top_gun_maverick' },
+                { category: 'Reviews', name: '81', url: 'https://www.metacritic.com/movie/top-gun-maverick' },
+                { category: 'External', name: '8.7', url: 'https://www.imdb.com/title/tt1745960/' },
+            ],
+        });
+
+        expect(model.cards.map((card) => card.id)).toEqual(SOURCE_ORDER);
+        expect(model.cards.map((card) => card.display)).toEqual(['8.7', '94%', '81']);
+    });
+
+    it('ignores non-numeric review links when building rating cards', () => {
+        const model = buildExternalRatingsModel({
+            links: [
+                { category: 'Reviews', name: 'IMDb', url: 'https://www.imdb.com/title/tt1745960/' },
+                { category: 'Reviews', name: 'Rotten Tomatoes', url: 'https://www.rottentomatoes.com/m/top_gun_maverick' },
+                { category: 'Reviews', name: 'Metacritic', url: 'https://www.metacritic.com/movie/top-gun-maverick' },
+            ],
+        });
+
+        expect(model.cards).toHaveLength(0);
+        expect(model.compactBadge).toBeNull();
+    });
+
     it('falls back to imdbRating when no imdb link exists', () => {
         const model = buildExternalRatingsModel({
             links: [{ category: 'Genres', name: 'Drama', url: 'stremio:///genre/drama' }],

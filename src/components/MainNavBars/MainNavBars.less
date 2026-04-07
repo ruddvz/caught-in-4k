@@ -131,6 +131,12 @@
             }
         }
 
+        &.route-settings {
+            .nav-content-container {
+                padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8rem);
+            }
+        }
+
         // Full-width floating bottom bar
         .mobile-bottom-nav {
             display: flex !important;
@@ -184,6 +190,37 @@
                     color: #0d0e12;
                     padding: 0.35rem 0.7rem;
                     box-shadow: 0 6px 18px var(--accent-primary-glow);
+                }
+            }
+        }
+
+        &.route-settings {
+            .mobile-bottom-nav {
+                left: 50%;
+                right: auto;
+                bottom: calc(env(safe-area-inset-bottom, 0px) + 0.35rem);
+                transform: translateX(-50%);
+                width: min(21.5rem, calc(100% - 1rem));
+                max-width: calc(100% - 1rem);
+                border-radius: 999px;
+                padding: 0.34rem;
+                background: rgba(11, 13, 19, 0.92) !important;
+                border: 1px solid rgba(255, 255, 255, 0.12) !important;
+                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.48) !important;
+                justify-content: center;
+                gap: 0.18rem;
+
+                .bottom-nav-tab {
+                    min-width: 0;
+                    padding: 0.32rem 0.46rem;
+                }
+
+                .bottom-nav-tab.active {
+                    padding: 0.32rem 0.6rem;
+                }
+
+                .bottom-tab-label {
+                    font-size: 0.54rem;
                 }
             }
         }

@@ -124,39 +124,33 @@
   }
 
   .detailContent {
-    display: grid;
-    grid-template-columns: auto auto minmax(0, 1fr);
+    display: flex;
     align-items: center;
-    gap: 0.75rem 0.9rem;
+    justify-content: space-between;
+    gap: 0.75rem;
     font-size: 0.875rem;
 
     .percentage {
       font-weight: 900;
       font-size: 1.5rem;
       color: #ffffff;
-      min-width: 3.3rem;
+      min-width: 3.5rem;
       letter-spacing: -0.05em;
     }
 
     .tierInfo {
-      display: flex;
-      gap: 0.5rem;
+      display: inline-flex;
       align-items: center;
       color: #f4d38c;
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 0.72rem;
+      font-size: 0.82rem;
       padding: 0.42rem 0.7rem;
       border-radius: 999px;
       background: rgba(244, 211, 140, 0.12);
       border: 1px solid rgba(244, 211, 140, 0.18);
-    }
-
-    .oneLiner {
-      color: rgba(255, 255, 255, 0.72);
-      font-size: 0.86rem;
-      line-height: 1.55;
+      margin-left: auto;
+      text-align: right;
+      white-space: nowrap;
     }
   }
 }
@@ -174,7 +168,6 @@
     .detailContent {
       gap: 0.5rem;
       flex-wrap: wrap;
-      grid-template-columns: 1fr;
 
       .percentage {
         font-size: 1.2rem;
@@ -182,12 +175,9 @@
       }
 
       .tierInfo {
-        font-size: 0.8rem;
+        font-size: 0.78rem;
         width: fit-content;
-      }
-
-      .oneLiner {
-        font-size: 0.75rem;
+        margin-left: 0;
       }
     }
   }

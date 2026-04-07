@@ -1,6 +1,6 @@
 /**
  * Satisfaction Meter Bar Component
- * Displays a colored gradient bar with tier emoji, percentage, and oneLiner
+ * Displays a colored gradient bar with a clean verdict treatment per surface
  * Supports 3 sizes: global (board), card (3px strip), detail (full bar in panel)
  */
 
@@ -42,10 +42,7 @@ const SatisfactionMeterBar = ({ tier, size = 'detail', animated = false }) => {
             {size === 'detail' && (
                 <div className={styles.detailContent}>
                     <span className={styles.percentage}>{tier.percentage}%</span>
-                    <span className={styles.tierInfo}>
-                        {tier.emoji} {tier.name}
-                    </span>
-                    <span className={styles.oneLiner}>{tier.oneLiner}</span>
+                    <span className={styles.tierInfo}>{tier.name}</span>
                 </div>
             )}
 

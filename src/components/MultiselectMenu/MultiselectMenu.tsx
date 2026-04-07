@@ -36,13 +36,16 @@ const MultiselectMenu = ({ className, title, options, value, disabled, onSelect,
     };
 
     return (
-        <div className={classNames(styles['multiselect-menu'], { [styles['active']]: menuOpen }, className)} ref={multiselectMenuRef}>
+        <div
+            className={classNames('multiselect-menu', { 'active': menuOpen }, styles['multiselect-menu'], { [styles['active']]: menuOpen }, className)}
+            ref={multiselectMenuRef}
+        >
             <Button
-                className={classNames(styles['multiselect-button'], { [styles['open']]: menuOpen })}
+                className={classNames('multiselect-menu-button', styles['multiselect-button'], { [styles['open']]: menuOpen })}
                 disabled={disabled}
                 onClick={toggleMenu}
                 tabIndex={0}
-                aria-haspopup='listbox'
+                aria-haspopup='menu'
                 aria-expanded={menuOpen}
             >
                 <div className={styles['label']}>

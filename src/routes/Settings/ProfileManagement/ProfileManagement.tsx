@@ -4,6 +4,7 @@ import styles from './ProfileManagement.less';
 
 const { useAuth } = require('stremio/common/AuthProvider');
 const { MAX_PROFILES, PROFILE_CHANGE_EVENT, createProfileStore } = require('stremio/common/profileStore');
+const AVAILABLE_AVATARS: string[] = require('../../../common/profileAvatars');
 const PinModal = require('../../Profiles/PinModal/PinModal');
 
 type SubProfile = {
@@ -21,6 +22,11 @@ type PinState =
     | { type: 'master-verify' }
     | { type: 'master-set'; currentCode?: string | null; nextAction?: { type: 'delete'; profileId: string; profileName: string } | null }
     | null;
+
+const getProfileAvatarUrl = (avatarIndex: number) => {
+    const normalizedIndex = Number.isInteger(avatarIndex) && avatarIndex >= 0 ? avatarIndex : 0;
+    return AVAILABLE_AVATARS[normalizedIndex] || AVAILABLE_AVATARS[0];
+};
 
 const ProfileManagement = () => {
     const auth = useAuth();
@@ -144,33 +150,21 @@ const ProfileManagement = () => {
         setPinState({ type: 'delete', profileId, profileName });
     }, [hasMasterCode]);
 
-    const getProfileBadgeLabel = useCallback((profile: SubProfile, index: number): string => {
-        const parts = profile.name.trim().split(/\s+/).filter(Boolean);
-        if (parts.length === 0) {
-            return String(index + 1).padStart(2, '0');
-        }
-
-        if (parts.length === 1) {
-            return parts[0].slice(0, 2).toUpperCase();
-        }
-
-        return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    }, []);
-
     return (
         <div className={styles['profile-management']}>
             <div className={styles['section-header']}>
                 <div className={styles['header-top']}>
                     <svg className={styles['header-icon']} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <span className={styles['header-text']}>SUB-PROFILES</span>
+                    <span className={styles['header-text']}>PROFILES</span>
                 </div>
                 <div className={styles['header-divider']} />
             </div>
 
             {/* Profile List — SYNCED with Profile Selection page */}
             <div className={styles['profile-list']}>
-                {profiles.map((p, index) => {
+                {profiles.map((p) => {
                     const locked = p.hasPin;
+                    const avatarUrl = getProfileAvatarUrl(p.avatarIndex);
                     return (
                         <div
                             key={p.id}
@@ -184,13 +178,14 @@ const ProfileManagement = () => {
                                 handleSelect(p);
                             }}
                         >
-                            <span className={styles['profile-badge']} aria-hidden="true">
-                                {getProfileBadgeLabel(p, index)}
+                            <span className={styles['profile-avatar']} aria-hidden="true">
+                                <img className={styles['profile-avatar-image']} src={avatarUrl} alt="" />
                             </span>
                             <span className={styles['profile-name']}>{p.name}</span>
 
                             {/* Lock / unlock icon button */}
-                            <div
+                            <button
+                                type="button"
                                 className={`${styles['lock-icon']}${locked ? ` ${styles['lock-active']}` : ''}`}
                                 title={locked ? 'Disable PIN' : 'Set PIN'}
                                 onClick={(e) => {
@@ -215,10 +210,11 @@ const ProfileManagement = () => {
                                         <path d="M7 11V7a5 5 0 0 1 9.9-1" />
                                     </svg>
                                 )}
-                            </div>
+                            </button>
 
                             {/* Trash delete icon */}
-                            <div
+                            <button
+                                type="button"
                                 className={styles['trash-icon']}
                                 title="Delete profile"
                                 onClick={(e) => {
@@ -227,7 +223,7 @@ const ProfileManagement = () => {
                                 }}
                             >
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                            </div>
+                            </button>
                         </div>
                     );
                 })}

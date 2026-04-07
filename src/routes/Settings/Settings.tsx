@@ -26,22 +26,6 @@ const Settings = () => {
     const { t } = useTranslation();
     const profile = useProfile();
     const containerRef = useRef<HTMLDivElement>(null);
-    const isSignedIn = profile.auth !== null;
-
-    const summaryCards = [
-        {
-            label: t('Mode'),
-            value: isSignedIn ? t('Signed in and synced') : t('Guest session'),
-        },
-        {
-            label: t('Profiles'),
-            value: t('Locks, switching, and access control'),
-        },
-        {
-            label: t('Playback'),
-            value: t('Subtitles, automation, and hardware'),
-        },
-    ];
 
     const quickLinks = [
         {
@@ -119,25 +103,12 @@ const Settings = () => {
     }, [handleKeyDown]);
 
     return (
-        <MainNavBars className={styles['settings-container']} route={'settings'}>
+        <MainNavBars className={classNames('settings-container', styles['settings-container'])} route={'settings'}>
             <div ref={containerRef} className={classNames(styles['settings-content'], 'animation-fade-in')}>
                 <section className={styles['settings-hero']}>
                     <div className={styles['hero-copy']}>
                         <div className={styles['hero-eyebrow']}>{t('CONTROL ROOM')}</div>
                         <h1 className={styles['hero-title']}>{t('Tune the room, not just the player.')}</h1>
-                        <p className={styles['hero-description']}>
-                            {t('A cleaner settings layout for account access, profile control, and playback behavior.')} {' '}
-                            {t('The visual noise is gone, including the profile artwork treatment.')}
-                        </p>
-                    </div>
-
-                    <div className={styles['hero-summary-grid']}>
-                        {summaryCards.map((card) => (
-                            <div key={card.label} className={styles['summary-card']}>
-                                <div className={styles['summary-label']}>{card.label}</div>
-                                <div className={styles['summary-value']}>{card.value}</div>
-                            </div>
-                        ))}
                     </div>
                 </section>
 
@@ -158,13 +129,6 @@ const Settings = () => {
                                     </button>
                                 ))}
                             </div>
-                        </div>
-
-                        <div className={styles['sidebar-card']}>
-                            <div className={styles['sidebar-label']}>{t('Direction')}</div>
-                            <p className={styles['sidebar-note']}>
-                                {t('Account surfaces are now text-first. Profile switching stays available without showing the old avatar art in the top bar or the main settings header.')}
-                            </p>
                         </div>
                     </aside>
 
@@ -194,9 +158,9 @@ const Settings = () => {
                         <section id="settings-playback" tabIndex={-1} className={styles['panel-shell']}>
                             <div className={styles['panel-heading']}>
                                 <div className={styles['panel-kicker']}>{t('Playback')}</div>
-                                <h2 className={styles['panel-title']}>{t('Player engine')}</h2>
+                                <h2 className={styles['panel-title']}>{t('Player controls')}</h2>
                                 <p className={styles['panel-copy']}>
-                                    {t('Subtitle styling, autoplay behavior, and advanced playback controls in one place.')}
+                                    {t('Subtitle look, seek timing, autoplay flow, and device handoff in one clean stack.')}
                                 </p>
                             </div>
                             <Player profile={profile} />
@@ -219,7 +183,7 @@ const Settings = () => {
 };
 
 const SettingsFallback = () => (
-    <MainNavBars className={styles['settings-container']} route={'settings'} />
+    <MainNavBars className={classNames('settings-container', styles['settings-container'])} route={'settings'} />
 );
 
 export default withCoreSuspender(Settings, SettingsFallback);

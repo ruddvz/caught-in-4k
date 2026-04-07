@@ -2,6 +2,7 @@
 
 .option {
     position: relative;
+    z-index: 0;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -13,6 +14,14 @@
 
     &:last-child {
         border-bottom: none;
+    }
+
+    &:focus-within {
+        z-index: 4;
+    }
+
+    &:has(:global(.multiselect-menu.active)) {
+        z-index: 12;
     }
 
     .heading {
@@ -53,8 +62,11 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        position: relative;
+        z-index: 1;
         min-width: 12rem;
         margin-left: 1.5rem;
+        overflow: visible;
 
         :global(.multiselect) {
             background: rgba(255, 255, 255, 0.04);
@@ -76,6 +88,10 @@
                 border-color: #f4d38c;
                 box-shadow: 0 0 0 2px rgba(244, 211, 140, 0.18);
             }
+        }
+
+        :global(.multiselect-menu.active) {
+            z-index: 9999;
         }
 
         :global(.button) {
@@ -124,6 +140,10 @@
         align-items: stretch;
         gap: 1rem;
         padding: 1rem 0.25rem;
+
+        &:focus-within {
+            z-index: 8;
+        }
 
         .heading {
             .icon {
