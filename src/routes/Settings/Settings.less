@@ -48,56 +48,6 @@
             z-index: -1;
         }
 
-        .settings-hero {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 15rem;
-            padding: 2.35rem 2.2rem;
-            border-radius: 1.75rem;
-            background:
-                linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02)),
-                linear-gradient(180deg, rgba(11, 14, 21, 0.92), rgba(8, 10, 15, 0.72));
-            border: 1px solid @border-subtle;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
-
-            &::after {
-                content: '';
-                position: absolute;
-                inset: auto 0 0 0;
-                height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(244, 211, 140, 0.45), transparent);
-            }
-
-            .hero-copy {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 1.1rem;
-                justify-content: center;
-                text-align: center;
-            }
-
-            .hero-eyebrow {
-                font-size: 0.78rem;
-                font-weight: 800;
-                letter-spacing: 0.24em;
-                text-transform: uppercase;
-                color: rgba(244, 211, 140, 0.82);
-            }
-
-            .hero-title {
-                margin: 0;
-                font-size: clamp(3.15rem, 6vw, 5.4rem);
-                line-height: 0.92;
-                letter-spacing: -0.04em;
-                color: #ffffff;
-                max-width: 10ch;
-            }
-        }
-
         .settings-layout {
             display: grid;
             grid-template-columns: minmax(15rem, 17rem) minmax(0, 1fr);
@@ -307,21 +257,6 @@
             padding-left: 1rem;
             padding-right: 1rem;
             padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.8rem);
-
-            .settings-hero {
-                min-height: 11.1rem;
-                padding: 1.25rem 1.05rem;
-
-                .hero-copy {
-                    gap: 0.8rem;
-                }
-
-                .hero-title {
-                    max-width: none;
-                    font-size: clamp(2.45rem, 10vw, 3.75rem);
-                    line-height: 0.88;
-                }
-            }
 
             .settings-layout {
                 grid-template-columns: 1fr;

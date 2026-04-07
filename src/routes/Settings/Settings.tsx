@@ -105,13 +105,6 @@ const Settings = () => {
     return (
         <MainNavBars className={classNames('settings-container', styles['settings-container'])} route={'settings'}>
             <div ref={containerRef} className={classNames(styles['settings-content'], 'animation-fade-in')}>
-                <section className={styles['settings-hero']}>
-                    <div className={styles['hero-copy']}>
-                        <div className={styles['hero-eyebrow']}>{t('CONTROL ROOM')}</div>
-                        <h1 className={styles['hero-title']}>{t('Tune the room, not just the player.')}</h1>
-                    </div>
-                </section>
-
                 <div className={styles['settings-layout']}>
                     <aside className={styles['settings-sidebar']}>
                         <div className={styles['sidebar-card']}>
