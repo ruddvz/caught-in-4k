@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CONSTANTS, languageNames, useLanguageSorting, usePlatform } from 'stremio/common';
+import { CONSTANTS, languageNames, useC4KSettings, useLanguageSorting, usePlatform } from 'stremio/common';
 import { useServices } from 'stremio/services';
 
 const LANGUAGES_NAMES: Record<string, string> = languageNames;
@@ -9,6 +9,7 @@ const usePlayerOptions = (profile: Profile) => {
     const { t } = useTranslation();
     const { core } = useServices();
     const platform = usePlatform();
+    const [c4kSettings, updateC4KSetting] = useC4KSettings();
 
     const languageOptions = useMemo(() => Object.keys(LANGUAGES_NAMES).map((code) => ({
         value: code,
@@ -16,6 +17,14 @@ const usePlayerOptions = (profile: Profile) => {
     })), []);
 
     const { sortedOptions: sortedLanguageOptions } = useLanguageSorting(languageOptions);
+
+    useEffect(() => {
+        if (profile.settings.playerType || !c4kSettings.externalPlayerFallback) {
+            return;
+        }
+
+        updateC4KSetting('externalPlayerFallback', false);
+    }, [c4kSettings.externalPlayerFallback, profile.settings.playerType, updateC4KSetting]);
 
     const subtitlesLanguageSelect = useMemo(() => ({
         options: [
@@ -203,19 +212,23 @@ const usePlayerOptions = (profile: Profile) => {
         }
     }), [profile.settings]);
 
-    const playInExternalPlayerSelect = useMemo(() => ({
-        options: CONSTANTS.EXTERNAL_PLAYERS
+    const externalPlayerOptions = useMemo(() => (
+        CONSTANTS.EXTERNAL_PLAYERS
             .filter(({ platforms }) => platforms.includes(platform.name))
             .map(({ label, value }) => ({
                 value,
                 label: t(label),
-            })),
+            }))
+    ), [platform.name, t]);
+
+    const playInExternalPlayerSelect = useMemo(() => ({
+        options: externalPlayerOptions,
         value: profile.settings.playerType,
         title: () => {
-            const selectedOption = CONSTANTS.EXTERNAL_PLAYERS.find(({ value }) => value === profile.settings.playerType);
-            return selectedOption ? t(selectedOption.label, { defaultValue: selectedOption.label }) : profile.settings.playerType;
+            const selectedOption = externalPlayerOptions.find(({ value }) => value === profile.settings.playerType);
+            return selectedOption ? selectedOption.label : (profile.settings.playerType || t('SETTINGS_DISABLED'));
         },
-        onSelect: (value: string) => {
+        onSelect: (value: string | null) => {
             core.transport.dispatch({
                 action: 'Ctx',
                 args: {
@@ -226,8 +239,24 @@ const usePlayerOptions = (profile: Profile) => {
                     }
                 }
             });
+
+            if (value === null && c4kSettings.externalPlayerFallback) {
+                updateC4KSetting('externalPlayerFallback', false);
+            }
         }
-    }), [profile.settings]);
+    }), [c4kSettings.externalPlayerFallback, core.transport, externalPlayerOptions, profile.settings, t, updateC4KSetting]);
+
+    const externalPlayerFallbackToggle = useMemo(() => ({
+        checked: c4kSettings.externalPlayerFallback,
+        disabled: !profile.settings.playerType,
+        onClick: () => {
+            if (!profile.settings.playerType) {
+                return;
+            }
+
+            updateC4KSetting('externalPlayerFallback', !c4kSettings.externalPlayerFallback);
+        }
+    }), [c4kSettings.externalPlayerFallback, profile.settings.playerType, updateC4KSetting]);
 
     const nextVideoPopupDurationSelect = useMemo(() => ({
         options: CONSTANTS.NEXT_VIDEO_POPUP_DURATIONS.map((duration) => ({
@@ -363,6 +392,7 @@ const usePlayerOptions = (profile: Profile) => {
         seekTimeDurationSelect,
         seekShortTimeDurationSelect,
         playInExternalPlayerSelect,
+        externalPlayerFallbackToggle,
         nextVideoPopupDurationSelect,
         bingeWatchingToggle,
         playInBackgroundToggle,

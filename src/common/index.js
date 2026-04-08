@@ -31,6 +31,7 @@ const useTranslate = require('./useTranslate');
 const { default: useOrientation } = require('./useOrientation');
 const { default: useLanguageSorting } = require('./useLanguageSorting');
 const useInViewport = require('./useInViewport');
+const useC4KSettings = require('./useC4KSettings');
 
 module.exports = {
     FileDropProvider,
@@ -71,4 +72,5 @@ module.exports = {
     useOrientation,
     useLanguageSorting,
     useInViewport,
+    useC4KSettings,
 };

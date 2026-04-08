@@ -102,13 +102,6 @@ All confirmed, not yet fixed. Structured by session.
 
 ---
 
-### [BUG-S2.3] Top Bar Missing on Detail Page Mobile
-**Severity:** Major | **Status:** Open
-**Files:** `src/routes/MetaDetails/MetaDetails.js`, `src/components/MainNavBars/MainNavBars.tsx`
-**Fix:** `position: sticky; top: 0; z-index: 100` on top bar.
-
----
-
 ## RESOLVED BUGS
 
 - S1.1a Settings cannot scroll — **FIXED** (overflow-y: auto)
@@ -131,6 +124,7 @@ All confirmed, not yet fixed. Structured by session.
 - S4.2 Content hides behind bottom nav — **FIXED** (padding-bottom added to Board; MainNavBars already handles others)
 - S4.3 Add to Library no feedback — **VERIFIED FIXED** (auth redirect already in MetaPreview.js)
 - B1 overflow:hidden clips hover animations + box-shadows globally — **FIXED** (changed `overflow: hidden` → `overflow: clip` on `*` universal selector in styles.less, .hero-shelf-container, and .main-nav-bars-container mobile override)
+- BUG-S2.3 Top bar missing on detail page mobile — **VERIFIED FIXED** (`position: sticky; top: 0; z-index: 100` already in `MetaDetails/styles.less` for both 768px and @minimum breakpoints with backdrop-blur)
 
 ---
 

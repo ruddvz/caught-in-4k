@@ -221,6 +221,7 @@
             width: 100%;
             margin-top: 0.55rem;
             max-height: min(16rem, 42vh);
+            padding: 0.35rem;
             border-radius: 1rem;
             border: 1px solid @border-subtle;
             background: rgba(10, 11, 17, 0.96);
@@ -229,8 +230,38 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
         }
 
-        .label {
-            white-space: nowrap !important;
+        .multiselect-menu-dropdown > div {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .multiselect-menu-dropdown [role="menuitemradio"] {
+            min-height: 2.85rem;
+            padding: 0.9rem 1rem;
+            border-radius: 0.95rem;
+            transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .multiselect-menu-dropdown [role="menuitemradio"]:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .multiselect-menu-dropdown [role="menuitemradio"][aria-checked="true"] {
+            background: linear-gradient(135deg, rgba(244, 211, 140, 0.18), rgba(244, 211, 140, 0.07));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 24px rgba(0, 0, 0, 0.24);
+        }
+
+        .multiselect-menu-dropdown [role="menuitemradio"]:focus-visible {
+            outline: 2px solid rgba(244, 211, 140, 0.7);
+            outline-offset: -2px;
+        }
+
+        .multiselect-menu-button > div:first-child,
+        .multiselect-menu-dropdown [role="menuitemradio"] > div:first-child {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .multiselect-menu {

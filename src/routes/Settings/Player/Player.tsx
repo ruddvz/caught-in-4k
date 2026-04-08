@@ -58,6 +58,7 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         seekTimeDurationSelect,
         seekShortTimeDurationSelect,
         playInExternalPlayerSelect,
+        externalPlayerFallbackToggle,
         nextVideoPopupDurationSelect,
         bingeWatchingToggle,
         playInBackgroundToggle,
@@ -164,6 +165,9 @@ const Player = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                 >
                     <Option label={'Open in external player'}>
                         <MultiselectMenu className={styles['multiselect']} {...playInExternalPlayerSelect} />
+                    </Option>
+                    <Option label={'Fallback to external player if playback fails'}>
+                        <Toggle tabIndex={-1} {...externalPlayerFallbackToggle} />
                     </Option>
                     <Option label={'Video engine'}>
                         <MultiselectMenu className={styles['multiselect']} {...videoModeSelect} />

@@ -8,7 +8,7 @@ const langs = require('langs');
 const { useTranslation } = require('react-i18next');
 const { useRouteFocused } = require('stremio-router');
 const { useServices } = require('stremio/services');
-const { onFileDrop, useSettings, useProfile, useFullscreen, useBinaryState, useToast, useStreamingServer, withCoreSuspender, CONSTANTS, useShell, usePlatform, onShortcut } = require('stremio/common');
+const { onFileDrop, useSettings, useProfile, useFullscreen, useBinaryState, useToast, useStreamingServer, withCoreSuspender, CONSTANTS, useShell, usePlatform, onShortcut, useC4KSettings } = require('stremio/common');
 const { useAuth } = require('stremio/common/AuthProvider');
 const { PROFILE_CHANGE_EVENT, getSelectedProfileId } = require('stremio/common/profileStore');
 const { HorizontalNavBar, Transition, ContextMenu } = require('stremio/components');
@@ -28,6 +28,9 @@ const { default: SideDrawer } = require('./SideDrawer');
 const usePlayer = require('./usePlayer');
 const useStatistics = require('./useStatistics');
 const useVideo = require('./useVideo');
+const useStreamFallback = require('./useStreamFallback');
+const useBackgroundStreams = require('./useBackgroundStreams');
+const { resolveExternalPlayerFallbackTarget } = require('./resolveExternalPlayerFallbackTarget');
 const { getMaxAudioChannels } = require('./getMaxAudioChannels');
 const styles = require('./styles');
 const Video = require('./Video');
@@ -40,6 +43,8 @@ const Player = ({ urlParams, queryParams }) => {
     const { t } = useTranslation();
     const services = useServices();
     const shell = useShell();
+    const platform = usePlatform();
+    const toast = useToast();
     const forceTranscoding = React.useMemo(() => {
         return queryParams.has('forceTranscoding');
     }, [queryParams]);
@@ -50,9 +55,68 @@ const Player = ({ urlParams, queryParams }) => {
     const streamingServer = useStreamingServer();
     const statistics = useStatistics(player, streamingServer);
     const video = useVideo();
+    const [c4kSettings] = useC4KSettings();
+    const playbackSessionKey = React.useMemo(() => {
+        return [
+            urlParams.stream,
+            urlParams.streamTransportUrl,
+            urlParams.metaTransportUrl,
+            urlParams.type,
+            urlParams.id,
+            urlParams.videoId,
+        ]
+            .map((value) => (typeof value === 'string' ? value : ''))
+            .join('|');
+    }, [urlParams.stream, urlParams.streamTransportUrl, urlParams.metaTransportUrl, urlParams.type, urlParams.id, urlParams.videoId]);
+    const fallback = useStreamFallback(video.state, video.events, playbackSessionKey);
+    useBackgroundStreams(urlParams, fallback, playbackSessionKey);
+    const externalFallbackTriggeredRef = React.useRef(false);
+    const externalFallbackTarget = React.useMemo(() => {
+        return resolveExternalPlayerFallbackTarget({
+            exhausted: fallback.exhausted,
+            externalPlayerFallbackEnabled: c4kSettings.externalPlayerFallback,
+            playerType: profile.settings.playerType,
+            selectedStream: player?.selected?.stream,
+            videoStream: video.state.stream,
+            platformName: platform.name,
+        });
+    }, [c4kSettings.externalPlayerFallback, fallback.exhausted, platform.name, player?.selected?.stream, profile.settings.playerType, video.state.stream]);
+
+    React.useEffect(() => {
+        externalFallbackTriggeredRef.current = false;
+    }, [playbackSessionKey]);
+
+    // When the internal fallback chain is exhausted and the user has opted in
+    // to external-player fallback, redirect to their configured external player
+    // (VLC, MPV, Infuse, etc.) for the currently-selected stream instead of
+    // dead-ending in the Error UI. Guarded so it fires exactly once per
+    // exhaustion event.
+    React.useEffect(() => {
+        if (!externalFallbackTarget) return;
+        if (externalFallbackTriggeredRef.current) return;
+
+        externalFallbackTriggeredRef.current = true;
+        toast.show({
+            type: 'success',
+            title: 'All internal sources failed — handing off to external player',
+            timeout: 4000,
+        });
+
+        if (externalFallbackTarget.download && typeof document !== 'undefined' && document.body) {
+            const link = document.createElement('a');
+            link.href = externalFallbackTarget.href;
+            link.download = externalFallbackTarget.download;
+            link.rel = 'noreferrer';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            return;
+        }
+
+        window.location.assign(externalFallbackTarget.href);
+    }, [externalFallbackTarget, toast]);
     const routeFocused = useRouteFocused();
-    const platform = usePlatform();
-    const toast = useToast();
     const historyStore = React.useMemo(() => createProfileContinueWatchingStore(), []);
     const [selectedProfileId, setSelectedProfileId] = React.useState(() => (
         typeof localStorage !== 'undefined' ? getSelectedProfileId(localStorage, auth) : null
@@ -841,8 +905,9 @@ const Player = ({ urlParams, queryParams }) => {
     }, [menusOpen, nextVideoPopupOpen, video.state.time, onSeekRequested]);
 
     onShortcut('mute', () => {
+        if (menusOpen || nextVideoPopupOpen) return;
         video.state.muted === true ? onUnmuteRequested() : onMuteRequested();
-    }, [video.state.muted]);
+    }, [video.state.muted, menusOpen, nextVideoPopupOpen]);
 
     onShortcut('volumeUp', () => {
         if (!menusOpen && !nextVideoPopupOpen && video.state.volume !== null) {
@@ -857,14 +922,17 @@ const Player = ({ urlParams, queryParams }) => {
     }, [menusOpen, nextVideoPopupOpen, video.state.volume]);
 
     onShortcut('subtitlesDelay', (combo) => {
+        if (menusOpen || nextVideoPopupOpen) return;
         combo === 1 ? onIncreaseSubtitlesDelay() : onDecreaseSubtitlesDelay();
-    }, [onIncreaseSubtitlesDelay, onDecreaseSubtitlesDelay]);
+    }, [onIncreaseSubtitlesDelay, onDecreaseSubtitlesDelay, menusOpen, nextVideoPopupOpen]);
 
     onShortcut('subtitlesSize', (combo) => {
+        if (menusOpen || nextVideoPopupOpen) return;
         combo === 1 ? onUpdateSubtitlesSize(-1) : onUpdateSubtitlesSize(1);
-    }, [onUpdateSubtitlesSize, onUpdateSubtitlesSize]);
+    }, [onUpdateSubtitlesSize, menusOpen, nextVideoPopupOpen]);
 
     onShortcut('toggleSubtitles', () => {
+        if (menusOpen || nextVideoPopupOpen) return;
         const savedTrack = player.streamState?.subtitleTrack;
 
         if (subtitlesEnabled.current) {
@@ -875,7 +943,7 @@ const Player = ({ urlParams, queryParams }) => {
         }
 
         subtitlesEnabled.current = !subtitlesEnabled.current;
-    }, [player.streamState]);
+    }, [player.streamState, menusOpen, nextVideoPopupOpen]);
 
     onShortcut('subtitlesMenu', () => {
         closeMenus();
@@ -908,7 +976,7 @@ const Player = ({ urlParams, queryParams }) => {
     onShortcut('statisticsMenu', () => {
         closeMenus();
         const stream = player.selected?.stream;
-        if (streamingServer?.statistics?.type !== 'Err' && typeof stream === 'string' && typeof stream === 'number') {
+        if (streamingServer?.statistics?.type !== 'Err' && (typeof stream === 'string' || typeof stream === 'number')) {
             toggleStatisticsMenu();
         }
     }, [player.selected, streamingServer.statistics, toggleStatisticsMenu]);
@@ -928,6 +996,7 @@ const Player = ({ urlParams, queryParams }) => {
     React.useLayoutEffect(() => {
         const onKeyDown = (e) => {
             if (e.code !== 'Space' || e.repeat) return;
+            if (menusOpen || nextVideoPopupOpen) return;
 
             longPress.current = false;
 
@@ -965,6 +1034,8 @@ const Player = ({ urlParams, queryParams }) => {
 
         const onMouseDownHold = (e) => {
             if (e.button !== 0) return; // left mouse button only
+            if (!video.containerRef.current?.contains(e.target)) return;
+            if (menusOpen || nextVideoPopupOpen) return;
 
             longPress.current = false;
 
@@ -998,7 +1069,22 @@ const Player = ({ urlParams, queryParams }) => {
             window.removeEventListener('mousedown', onMouseDownHold);
             window.removeEventListener('mouseup', onMouseUp);
         };
-    }, [routeFocused, menusOpen, video.state.volume]);
+    }, [routeFocused, menusOpen, nextVideoPopupOpen, video.state.volume]);
+
+    // Cancel an in-flight hold-to-speed-up when a menu/popup opens mid-hold.
+    // Otherwise the 2x timer fires (or stays active) while the user is in a
+    // menu and there's no key/mouse-up to restore 1x speed. Upstream fix.
+    React.useEffect(() => {
+        if (!menusOpen && !nextVideoPopupOpen) return;
+        if (pressTimer.current) {
+            clearTimeout(pressTimer.current);
+            pressTimer.current = null;
+        }
+        if (longPress.current) {
+            longPress.current = false;
+            onPlaybackSpeedChanged(1);
+        }
+    }, [menusOpen, nextVideoPopupOpen]);
 
     React.useEffect(() => {
         video.events.on('error', onError);
@@ -1047,11 +1133,12 @@ const Player = ({ urlParams, queryParams }) => {
                     null
             }
             {
-                (video.state.buffering || !video.state.loaded) && !error ?
+                (video.state.buffering || !video.state.loaded) && !error && !fallback.exhausted ?
                     <BufferingLoader
                         ref={bufferingRef}
                         className={classnames(styles['layer'], styles['buffering-layer'])}
-                        logo={player?.metaItem?.content?.logo}
+                        attemptNumber={fallback.enabled ? fallback.attemptNumber : null}
+                        totalCandidates={fallback.enabled ? fallback.totalCandidates : null}
                     />
                     :
                     null
@@ -1064,8 +1151,16 @@ const Player = ({ urlParams, queryParams }) => {
                         stream={video.state.stream}
                         {...error}
                     />
-                    :
-                    null
+                    : fallback.exhausted ?
+                        <Error
+                            ref={errorRef}
+                            className={classnames(styles['layer'], styles['error-layer'])}
+                            stream={video.state.stream}
+                            code={1}
+                            message={`All ${fallback.totalCandidates} stream sources failed. Try a different quality or addon.`}
+                        />
+                        :
+                        null
             }
             {
                 menusOpen ?

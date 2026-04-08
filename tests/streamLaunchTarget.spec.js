@@ -66,6 +66,27 @@ describe('resolveStreamLaunchTarget', () => {
         }));
     });
 
+    it('falls back to the platform-specific open-player link when no web target is available', () => {
+        expect(resolveStreamLaunchTarget({
+            deepLinks: createDeepLinks({
+                externalPlayer: {
+                    web: '',
+                    playlist: 'https://example.com/playlist.m3u',
+                    fileName: 'Example.m3u',
+                    openPlayer: {
+                        windows: 'vlc://example-stream',
+                    },
+                },
+            }),
+            playerType: 'vlc',
+            platformName: 'windows',
+        })).toEqual(expect.objectContaining({
+            href: 'vlc://example-stream',
+            isExternal: true,
+            target: null,
+        }));
+    });
+
     it('falls back to the internal player when external mode is selected but no external link exists', () => {
         expect(resolveStreamLaunchTarget({
             deepLinks: createDeepLinks({ externalPlayer: null }),

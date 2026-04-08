@@ -3,7 +3,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-const { comparatorWithPriorities, languages } = require('stremio/common');
+const { comparatorWithPriorities, languages, useProfile } = require('stremio/common');
 const { SUBTITLES_SIZES } = require('stremio/common/CONSTANTS');
 const { Button } = require('stremio/components');
 const styles = require('./styles');
@@ -16,12 +16,22 @@ const ORIGIN_PRIORITIES = {
     'EMBEDDED': 2,
     'EXCLUSIVE': 1,
 };
-const LANGUAGE_PRIORITIES = {
+const BASE_LANGUAGE_PRIORITIES = {
     'local': 2,
     'eng': 1,
 };
 
 const SubtitlesMenu = React.memo((props) => {
+    const profile = useProfile();
+    const languagePriorities = React.useMemo(() => {
+        // Pin the user's preferred subtitle language above the defaults so the
+        // language list opens with their pick at the top. Upstream parity.
+        const preferred = profile?.settings?.subtitlesLanguage;
+        if (typeof preferred !== 'string' || preferred.length === 0) {
+            return BASE_LANGUAGE_PRIORITIES;
+        }
+        return { ...BASE_LANGUAGE_PRIORITIES, [preferred]: 3 };
+    }, [profile?.settings?.subtitlesLanguage]);
     const subtitlesLanguages = React.useMemo(() => {
         return (Array.isArray(props.subtitlesTracks) ? props.subtitlesTracks : [])
             .concat(Array.isArray(props.extraSubtitlesTracks) ? props.extraSubtitlesTracks : [])
@@ -32,8 +42,8 @@ const SubtitlesMenu = React.memo((props) => {
 
                 return subtitlesLanguages;
             }, [])
-            .sort(comparatorWithPriorities(LANGUAGE_PRIORITIES));
-    }, [props.subtitlesTracks, props.extraSubtitlesTracks]);
+            .sort(comparatorWithPriorities(languagePriorities));
+    }, [props.subtitlesTracks, props.extraSubtitlesTracks, languagePriorities]);
     const selectedSubtitlesLanguage = React.useMemo(() => {
         return typeof props.selectedSubtitlesTrackId === 'string' ?
             (Array.isArray(props.subtitlesTracks) ? props.subtitlesTracks : [])
@@ -180,7 +190,7 @@ const SubtitlesMenu = React.memo((props) => {
                                     <div className={styles['info']}>
                                         <div className={styles['variant-label']}>
                                             {
-                                                languages.label(!track.label.startsWith('http') ? track.label : track.lang)
+                                                languages.label(typeof track.label === 'string' && !track.label.startsWith('http') ? track.label : track.lang)
                                             }
                                         </div>
                                         <div className={styles['variant-origin']}>
@@ -244,7 +254,7 @@ const SubtitlesMenu = React.memo((props) => {
     );
 });
 
-SubtitlesMenu.displayName = 'MainNavBars';
+SubtitlesMenu.displayName = 'SubtitlesMenu';
 
 SubtitlesMenu.propTypes = {
     className: PropTypes.string,

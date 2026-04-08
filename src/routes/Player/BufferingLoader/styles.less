@@ -2,24 +2,61 @@
 
 .buffering-loader-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 
-    .buffering-loader {
+    .buffering-loader-svg {
         flex: none;
         max-width: 15rem;
         max-height: 15rem;
-        animation: fadeInOut 2s infinite; 
         display: block; 
         width: auto;
         height: auto; 
+        color: white; /* Make the filling white primarily */
+        
+        /* 3D and neon effect using filters bounding on SVG stroke/fill */
+        filter: 
+            drop-shadow(0px 1px 0px rgba(255, 30, 30, 0.8))
+            drop-shadow(0px 2px 0px rgba(255, 30, 30, 0.7))
+            drop-shadow(0px 3px 0px rgba(255, 30, 30, 0.6))
+            drop-shadow(0px 8px 10px rgba(255, 30, 30, 0.6))
+            drop-shadow(0px 15px 20px rgba(255, 30, 30, 0.4));
+            
+        animation: depthPulse 2s ease-in-out infinite alternate;
     }
-    
+
+    .status-text {
+        margin-top: 1.5rem;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.7);
+        text-align: center;
+        letter-spacing: 0.02em;
+        animation: statusFadeIn 0.5s ease-in;
+    }
 }
 
+@keyframes statusFadeIn {
+    0% { opacity: 0; transform: translateY(5px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
 
-@keyframes fadeInOut {
-    0%   { opacity: 0.2; }
-    50%  { opacity: 1; }
-    100% { opacity: 0.2; }
+@keyframes depthPulse {
+    0% {
+        transform: translateY(0);
+        filter: 
+            drop-shadow(0px 1px 0px rgba(255, 30, 30, 0.8))
+            drop-shadow(0px 2px 0px rgba(255, 30, 30, 0.7))
+            drop-shadow(0px 5px 10px rgba(255, 30, 30, 0.4));
+    }
+    100% {
+        transform: translateY(-4px);
+        filter: 
+            drop-shadow(0px 1px 0px rgba(255, 30, 30, 0.8))
+            drop-shadow(0px 2px 0px rgba(255, 30, 30, 0.7))
+            drop-shadow(0px 3px 0px rgba(255, 30, 30, 0.6))
+            drop-shadow(0px 4px 0px rgba(255, 30, 30, 0.5))
+            drop-shadow(0px 15px 25px rgba(255, 30, 30, 0.8))
+            drop-shadow(0px 25px 40px rgba(255, 30, 30, 0.6));
+    }
 }

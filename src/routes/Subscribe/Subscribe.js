@@ -217,19 +217,39 @@ const Subscribe = () => {
 
                     {!authConfigured ? (
                         <div className={styles['config-section']}>
-                            <h2 className={styles['heading']}>Live Preview Mode</h2>
+                            <div className={styles['coming-soon-icon']}>&#127909;</div>
+                            <h2 className={styles['heading']}>Coming Soon</h2>
                             <p className={styles['sub-text']}>
-                                Auth is not connected yet. Add the Supabase and billing env values to activate checkout.
+                                Premium subscriptions are on the way. Pick a plan on the left to preview pricing. You will be among the first to know when checkout goes live.
                             </p>
-                            <div className={styles['config-note']}>
-                                Select a plan on the left to preview the design. Checkout stays disabled until the host is configured.
+                            <div className={styles['coming-soon-plans']}>
+                                <div className={styles['coming-soon-plan']}>
+                                    <span className={styles['coming-soon-plan-label']}>Pro</span>
+                                    <span className={styles['coming-soon-plan-price']}>from $4.99</span>
+                                </div>
+                                <div className={styles['coming-soon-plan']}>
+                                    <span className={styles['coming-soon-plan-label']}>Max</span>
+                                    <span className={styles['coming-soon-plan-price']}>from $8.99</span>
+                                </div>
                             </div>
+                            <Button className={classnames(styles['notify-btn'])} disabled>
+                                Notify Me When Available
+                            </Button>
                         </div>
                     ) : isSubscribed ? (
                         <div className={styles['subscribed-section']}>
                             <div className={styles['check-icon']}>&#10003;</div>
                             <h2 className={styles['heading']}>Access is live</h2>
                             <p className={styles['sub-text']}>{daysRemaining} days remaining on your current term.</p>
+                            <div className={styles['countdown-bar']}>
+                                <div
+                                    className={styles['countdown-fill']}
+                                    style={{ width: `${Math.max(2, Math.min(100, (daysRemaining / (selectedPlanConfig?.days || 30)) * 100))}%` }}
+                                />
+                            </div>
+                            <div className={styles['countdown-label']}>
+                                {daysRemaining} of {selectedPlanConfig?.days || 30} days
+                            </div>
                             <Button className={styles['back-home-btn']} onClick={() => navigateToAppHref('/')}>
                                 Go Home
                             </Button>

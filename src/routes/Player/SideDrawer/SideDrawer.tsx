@@ -52,7 +52,7 @@ const SideDrawer = memo(forwardRef<HTMLDivElement, Props>(({ seriesInfo, classNa
     }, []);
 
     const seasonWatched = React.useMemo(() => {
-        return videos.every((video) => video.watched);
+        return Array.isArray(videos) && videos.length > 0 && videos.every((video) => video.watched);
     }, [videos]);
 
     const onMarkVideoAsWatched = useCallback((video: Video, watched: boolean) => {

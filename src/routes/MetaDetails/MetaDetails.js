@@ -8,7 +8,7 @@ const { useServices } = require('stremio/services');
 const { getCurrentAppLocation, navigateToAppHref } = require('stremio/common/navigation');
 const { withCoreSuspender } = require('stremio/common');
 const { VerticalNavBar, HorizontalNavBar, DelayedRenderer, Image, MetaPreview, ModalDialog } = require('stremio/components');
-const StreamsList = require('./StreamsList');
+const QualityPicker = require('./QualityPicker');
 const VideosList = require('./VideosList');
 const useMetaDetails = require('./useMetaDetails');
 const useSeason = require('./useSeason');
@@ -189,7 +189,7 @@ const MetaDetails = ({ urlParams, queryParams }) => {
                 <div className={styles['spacing']} />
                 {
                     streamPath !== null ?
-                        <StreamsList
+                        <QualityPicker
                             className={styles['streams-list']}
                             streams={metaDetails.streams}
                             video={video}

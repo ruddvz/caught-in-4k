@@ -68,26 +68,41 @@
         margin-left: 1.5rem;
         overflow: visible;
 
-        :global(.multiselect) {
-            background: rgba(255, 255, 255, 0.04);
+        :global(.multiselect-menu) {
+            width: 100%;
+            min-width: 12rem;
+        }
+
+        :global(.multiselect-menu-button) {
+            width: 100%;
+            min-height: 2.8rem;
+            padding: 0.72rem 0.95rem;
             border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            font-weight: 700;
-            height: 2.25rem;
-            padding: 0 0.875rem;
-            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 24px rgba(0, 0, 0, 0.2);
             transition: all 0.25s ease;
+        }
+
+        :global(.multiselect-menu-button > div:first-child) {
             font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
 
-            &:hover {
-                background: rgba(255, 255, 255, 0.08);
-                border-color: rgba(244, 211, 140, 0.38);
-            }
+        :global(.multiselect-menu-button svg) {
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-            &:focus-within {
-                border-color: #f4d38c;
-                box-shadow: 0 0 0 2px rgba(244, 211, 140, 0.18);
-            }
+        :global(.multiselect-menu-button:hover) {
+            border-color: rgba(244, 211, 140, 0.38);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04));
+        }
+
+        :global(.multiselect-menu.active .multiselect-menu-button),
+        :global(.multiselect-menu-button[aria-expanded='true']) {
+            border-color: rgba(244, 211, 140, 0.52);
+            box-shadow: 0 0 0 2px rgba(244, 211, 140, 0.14), 0 14px 30px rgba(0, 0, 0, 0.28);
         }
 
         :global(.multiselect-menu.active) {
@@ -163,14 +178,14 @@
             min-width: 0;
             justify-content: stretch;
             
-            :global(.multiselect),
+            :global(.multiselect-menu),
+            :global(.multiselect-menu-button),
             :global(.button),
             :global(.color-input),
             :global(.input) {
                 flex: 1;
                 width: 100%;
-                justify-content: center;
-                text-align: center;
+                text-align: left;
             }
         }
     }
