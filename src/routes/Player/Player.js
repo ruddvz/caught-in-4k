@@ -28,6 +28,7 @@ const { default: SideDrawer } = require('./SideDrawer');
 const usePlayer = require('./usePlayer');
 const useStatistics = require('./useStatistics');
 const useVideo = require('./useVideo');
+const { getMaxAudioChannels } = require('./getMaxAudioChannels');
 const styles = require('./styles');
 const Video = require('./Video');
 const { default: Indicator } = require('./Indicator/Indicator');
@@ -532,7 +533,7 @@ const Player = ({ urlParams, queryParams }) => {
                     fallbackTime,
                 }),
                 forceTranscoding: forceTranscoding || casting,
-                maxAudioChannels: settings.surroundSound ? 32 : 2,
+                maxAudioChannels: getMaxAudioChannels(settings.surroundSound),
                 hardwareDecoding: settings.hardwareDecoding,
                 assSubtitlesStyling: settings.assSubtitlesStyling,
                 videoMode: settings.videoMode,
