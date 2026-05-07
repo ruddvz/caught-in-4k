@@ -36,7 +36,7 @@
         "@stremio/stremio-video": "0.0.70",
         "@stripe/stripe-js": "^9.0.1",
         "@supabase/supabase-js": "^2.101.1",
-        "@tabler/icons-react": "^3.40.0",
+        "@tabler/icons-react": "^3.43.0",
         "a-color-picker": "1.2.1",
         "animate.css": "^4.1.1",
         "bowser": "2.11.0",
