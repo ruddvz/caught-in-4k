@@ -32,7 +32,7 @@
         "@sentry/browser": "8.42.0",
         "@stremio/stremio-colors": "5.2.0",
         "@stremio/stremio-core-web": "0.57.0",
-        "@stremio/stremio-icons": "5.8.0",
+        "@stremio/stremio-icons": "5.10.0",
         "@stremio/stremio-video": "0.0.70",
         "@stripe/stripe-js": "^9.0.1",
         "@supabase/supabase-js": "^2.101.1",
