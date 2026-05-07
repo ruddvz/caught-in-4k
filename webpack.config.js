@@ -215,8 +215,9 @@ module.exports = (env, argv) => ({
         server: 'http',
         liveReload: false
     },
+    // Production: minify JS; split vendors + runtime for the `main` entry only so the core worker bundle stays small.
     optimization: {
-        minimize: false,
+        minimize: argv.mode === 'production',
         minimizer: [
             new TerserPlugin({
                 test: /\.js$/,
@@ -232,7 +233,32 @@ module.exports = (env, argv) => ({
                     }
                 }
             })
-        ]
+        ],
+        runtimeChunk: argv.mode === 'production'
+            ? {
+                name(entrypoint) {
+                    return entrypoint.name === 'worker' ? undefined : 'runtime';
+                },
+            }
+            : false,
+        splitChunks: argv.mode === 'production'
+            ? {
+                chunks(chunk) {
+                    return chunk.name !== 'worker';
+                },
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks(chunk) {
+                            return chunk.name !== 'worker';
+                        },
+                        priority: 10,
+                        reuseExistingChunk: true,
+                    },
+                },
+            }
+            : false,
     },
     plugins: [
         new webpack.ProgressPlugin(),
