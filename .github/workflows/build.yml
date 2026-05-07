@@ -61,6 +61,7 @@ jobs:
           REACT_APP_SUPABASE_URL: ${{ vars.REACT_APP_SUPABASE_URL }}
           REACT_APP_SUPABASE_ANON_KEY: ${{ vars.REACT_APP_SUPABASE_ANON_KEY }}
           REACT_APP_STRIPE_PUBLISHABLE_KEY: ${{ vars.REACT_APP_STRIPE_PUBLISHABLE_KEY }}
+          C4K_ACCESS_KEYS: ${{ vars.C4K_ACCESS_KEYS }}
 
       - name: Disable Jekyll processing in published output
         run: touch ./build/.nojekyll

@@ -21,6 +21,7 @@ const ErrorDialog = require('./ErrorDialog');
 const withProtectedRoutes = require('./withProtectedRoutes');
 const routerViewsConfig = require('./routerViewsConfig');
 const { AuthProvider } = require('stremio/common/AuthProvider');
+const AccessKeyGate = require('stremio/components/AccessKeyGate');
 const styles = require('./styles');
 
 const RouterWithProtectedRoutes = withCoreSuspender(withProtectedRoutes(Router));
@@ -262,27 +263,29 @@ const App = () => {
                             :
                             <PlatformProvider>
                                 <AuthProvider>
-                                    <ToastProvider className={styles['toasts-container']}>
-                                        <TooltipProvider className={styles['tooltip-container']}>
-                                            <FileDropProvider className={styles['file-drop-container']}>
-                                                <ShortcutsProvider onShortcut={onShortcut}>
-                                                    {
-                                                        shortcutModalOpen && <ShortcutsModal onClose={closeShortcutsModal}/>
-                                                    }
-                                                    <ServicesToaster />
-                                                    <DeepLinkHandler />
-                                                    <SearchParamsHandler />
-                                                    <ManagedAddonSync />
-                                                    <UpdaterBanner className={styles['updater-banner-container']} />
-                                                    <RouterWithProtectedRoutes
-                                                        className={classnames(styles['router'], 'animation-fade-in')}
-                                                        viewsConfig={routerViewsConfig}
-                                                        onPathNotMatch={onPathNotMatch}
-                                                    />
-                                                </ShortcutsProvider>
-                                            </FileDropProvider>
-                                        </TooltipProvider>
-                                    </ToastProvider>
+                                    <AccessKeyGate>
+                                        <ToastProvider className={styles['toasts-container']}>
+                                            <TooltipProvider className={styles['tooltip-container']}>
+                                                <FileDropProvider className={styles['file-drop-container']}>
+                                                    <ShortcutsProvider onShortcut={onShortcut}>
+                                                        {
+                                                            shortcutModalOpen && <ShortcutsModal onClose={closeShortcutsModal}/>
+                                                        }
+                                                        <ServicesToaster />
+                                                        <DeepLinkHandler />
+                                                        <SearchParamsHandler />
+                                                        <ManagedAddonSync />
+                                                        <UpdaterBanner className={styles['updater-banner-container']} />
+                                                        <RouterWithProtectedRoutes
+                                                            className={classnames(styles['router'], 'animation-fade-in')}
+                                                            viewsConfig={routerViewsConfig}
+                                                            onPathNotMatch={onPathNotMatch}
+                                                        />
+                                                    </ShortcutsProvider>
+                                                </FileDropProvider>
+                                            </TooltipProvider>
+                                        </ToastProvider>
+                                    </AccessKeyGate>
                                 </AuthProvider>
                             </PlatformProvider>
                         :

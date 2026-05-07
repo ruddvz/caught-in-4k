@@ -37,6 +37,12 @@ const caughtIn4KTranslations = {
     SHADER_HERO_SETTINGS: 'Settings',
     SHADER_HERO_LOGIN: 'Login',
     SHADER_HERO_DISCOVER_ARIA: 'Open discover page',
+    ACCESS_KEY_TITLE: 'Access key required',
+    ACCESS_KEY_SUBTITLE: 'Enter the 12-character invite key you were given. Dashes are filled in for you — type four characters, then the next four, then the last four.',
+    ACCESS_KEY_CONTINUE: 'Continue',
+    ACCESS_KEY_INVALID: 'That key does not match. Double-check and try again.',
+    ACCESS_KEY_INCOMPLETE: 'Enter all 12 characters.',
+    ACCESS_KEY_SEGMENT_ARIA: 'Access key segment {{index}} of 3',
 };
 
 module.exports = caughtIn4KTranslations;
