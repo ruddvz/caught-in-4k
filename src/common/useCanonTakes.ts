@@ -32,7 +32,7 @@ export const useCanonTakes = () => {
         }
     }, []);
 
-    const isCached = useCallback((title, year) => {
+    const isCached = useCallback((title: string, year: string | number) => {
         return getCached(title, year) !== null;
     }, [getCached]);
 

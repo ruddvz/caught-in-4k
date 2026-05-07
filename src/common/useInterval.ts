@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 const useInterval = (duration: number) => {
-    const interval = useRef<NodeJS.Timer | null>(null);
+    const interval = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const start = (callback: () => void) => {
         cancel();

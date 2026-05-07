@@ -10,7 +10,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+require('dotenv').config({ quiet: process.env.NODE_ENV === 'test' });
 const { getSubscriptionPlan } = require('./src/common/subscriptionPlans');
 
 // Lazy-load Stripe and Supabase — only initialized when env vars are present

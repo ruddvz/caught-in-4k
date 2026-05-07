@@ -90,6 +90,16 @@ describe('api proxy helpers', () => {
         expect(extendsExistingTerm.toISOString()).toBe('2025-02-09T00:00:00.000Z');
     });
 
+    it('treats an invalid latest expiry as starting the term from now', () => {
+        const result = calculateSubscriptionExpiry({
+            days: 7,
+            latestExpiryIso: 'not-a-date',
+            now: '2025-01-01T00:00:00.000Z',
+        });
+
+        expect(result.toISOString()).toBe('2025-01-08T00:00:00.000Z');
+    });
+
     it('requires a valid bearer token for checkout verification', async () => {
         const supabaseClient = {
             auth: {
