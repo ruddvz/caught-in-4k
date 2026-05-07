@@ -1,19 +1,12 @@
 import React, { memo } from 'react';
 import classnames from 'classnames';
-// @ts-expect-error stremio-icons package lacks TS declarations
 import Icon from '@stremio/stremio-icons/react';
-// @ts-expect-error button module is resolved through the stremio alias
 import Button from 'stremio/components/Button';
-// @ts-expect-error app logo module is resolved through the stremio alias
 import AppLogo from 'stremio/components/AppLogo/AppLogo';
 import { useTranslation } from 'react-i18next';
-// @ts-expect-error navigation helpers are implemented in plain JS
 import { buildAppHref, navigateToAppHref } from 'stremio/common/navigation';
-// @ts-expect-error auth/profile helpers are implemented in plain JS
 const { useAuth } = require('stremio/common/AuthProvider');
-// @ts-expect-error auth/profile helpers are implemented in plain JS
 const { getCurrentProfile } = require('stremio/common/profileStore');
-// @ts-expect-error less modules are resolved by webpack
 import styles from './styles.less';
 import useFullscreen from '../../../common/useFullscreen';
 // Inline Tabler SVG icons — zero bundle cost (see NavIcons.tsx)

@@ -13,6 +13,7 @@
         "build": "webpack --mode production",
         "test": "jest",
         "lint": "eslint src",
+        "typecheck": "tsc --noEmit",
         "scan-translations": "pnpx jest ./tests/i18nScan.test.js",
         "e2e": "expect-cli",
         "e2e:auto": "expect-cli --target unstaged -a claude -y",

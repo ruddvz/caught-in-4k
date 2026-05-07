@@ -3,9 +3,7 @@
 import React, { memo } from 'react';
 import classnames from 'classnames';
 import { TopNavigationBar } from '../NavBar';
-// @ts-expect-error stremio-icons package lacks TS declarations
 import Icon from '@stremio/stremio-icons/react';
-// @ts-expect-error button module is resolved through the stremio alias
 import Button from 'stremio/components/Button';
 import styles from './MainNavBars.less';
 

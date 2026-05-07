@@ -38,14 +38,13 @@ export function ShaderBackground({ children }: ShaderBackgroundProps) {
                 className='absolute inset-0 h-full w-full'
                 colors={['#000000', '#8B4513', '#ffffff', '#3E2723', '#5D4037']}
                 speed={isActive ? 0.4 : 0.3}
-                backgroundColor='#000000'
             />
             <MeshGradient
                 className={`absolute inset-0 h-full w-full transition-opacity duration-500 ${isActive ? 'opacity-80' : 'opacity-60'}`}
                 colors={['#000000', '#ffffff', '#8B4513', '#000000']}
                 speed={isActive ? 0.25 : 0.2}
-                wireframe={true}
-                backgroundColor='transparent'
+                distortion={0.35}
+                grainOverlay={0.12}
             />
 
             {children}
@@ -72,7 +71,7 @@ export function PulsingCircle() {
                     thickness={0.1}
                     softness={0.2}
                     intensity={5}
-                    spotsPerColor={5}
+                    spots={5}
                     spotSize={0.1}
                     pulse={0.1}
                     smoke={0.5}

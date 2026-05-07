@@ -10,9 +10,9 @@ const { generateCanonTake, fetchCanonTakeFromProxy } = require('./pollinationsAp
 const CACHE_PREFIX = 'c4k_canon_take_';
 
 export const useCanonTakes = () => {
-    const getCacheKey = (title, year) => `${CACHE_PREFIX}${title}_${year}`;
+    const getCacheKey = (title: string, year: string | number) => `${CACHE_PREFIX}${title}_${year}`;
 
-    const getCached = useCallback((title, year) => {
+    const getCached = useCallback((title: string, year: string | number) => {
         try {
             const key = getCacheKey(title, year);
             const cached = localStorage.getItem(key);
@@ -23,7 +23,7 @@ export const useCanonTakes = () => {
         }
     }, []);
 
-    const setCached = useCallback((title, year, canonTake) => {
+    const setCached = useCallback((title: string, year: string | number, canonTake: string) => {
         try {
             const key = getCacheKey(title, year);
             localStorage.setItem(key, JSON.stringify({ canonTake, timestamp: Date.now() }));
@@ -40,7 +40,12 @@ export const useCanonTakes = () => {
      * Fetch Canon Take — tries Pollinations.AI first, then Gemini proxy fallback
      */
     const fetchCanonTake = useCallback(
-        async (title, year, genres, imdbRating) => {
+        async (
+            title: string,
+            year: string | number,
+            genres: string | string[] | undefined,
+            imdbRating: string | number | null | undefined
+        ) => {
             const cached = getCached(title, year);
             if (cached) {
                 return cached.canonTake;

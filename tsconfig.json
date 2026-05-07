@@ -5,7 +5,9 @@
         "rootDir": "./src",
         "baseUrl": "./src",
         "outDir": "./dist",
-        "moduleResolution": "node",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "skipLibCheck": true,
         "ignoreDeprecations": "5.0",
         "paths": {
             "@/*": ["*"],

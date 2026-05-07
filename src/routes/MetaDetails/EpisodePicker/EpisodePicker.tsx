@@ -2,7 +2,6 @@
 
 import React, { useCallback, useMemo, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-// @ts-expect-error navigation helpers are implemented in plain JS
 import { getCurrentAppLocation } from 'stremio/common/navigation';
 import { Button, NumberInput } from 'stremio/components';
 import styles from './EpisodePicker.less';

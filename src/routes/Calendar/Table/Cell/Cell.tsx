@@ -45,8 +45,8 @@ const Cell = ({ selected, monthInfo, date, items, onClick }: Props) => {
                             <Icon className={styles['icon']} name={'play'} />
                             <Image
                                 className={styles['poster']}
-                                src={poster}
-                                alt={name}
+                                src={poster ?? ''}
+                                alt={name ?? ''}
                             />
                         </Button>
                     ))

@@ -258,7 +258,7 @@ const ProfileManagement = () => {
                     mode="unlock"
                     title={`Unlock ${pinState.profile.name}`}
                     subtitle={`Enter ${pinState.profile.name}'s 4-digit PIN`}
-                    onSubmitCode={async (code) => {
+                    onSubmitCode={async (code: string) => {
                         try {
                             const isValid = await profileStore.verifyProfilePin({ auth, profileId: pinState.profile.id, code });
                             if (!isValid) {
@@ -268,7 +268,7 @@ const ProfileManagement = () => {
                             handleSelect(pinState.profile);
                             setPinState(null);
                             return true;
-                        } catch (error) {
+                        } catch (error: unknown) {
                             return error instanceof Error ? error.message : 'Failed to verify the profile PIN.';
                         }
                     }}
@@ -280,7 +280,7 @@ const ProfileManagement = () => {
                 <PinModal
                     mode="delete"
                     profileName={pinState.profileName}
-                    onSubmitCode={(code) => handleDeleteConfirmed(pinState.profileId, code)}
+                    onSubmitCode={(code: string) => handleDeleteConfirmed(pinState.profileId, code)}
                     onCancel={() => setPinState(null)}
                 />
             )}
@@ -298,7 +298,7 @@ const ProfileManagement = () => {
             {pinState?.type === 'lock-remove' && (
                 <PinModal
                     mode="remove"
-                    onSubmitCode={(code) => handlePinRemoved(pinState.profileId, code)}
+                    onSubmitCode={(code: string) => handlePinRemoved(pinState.profileId, code)}
                     onCancel={() => setPinState(null)}
                 />
             )}
@@ -320,7 +320,7 @@ const ProfileManagement = () => {
                     mode="delete"
                     title="Confirm Current Master Code"
                     subtitle="Enter the current master code before changing it"
-                    onSubmitCode={async (code) => {
+                    onSubmitCode={async (code: string) => {
                         try {
                             const isValid = await profileStore.verifyMasterCode({ auth, code });
                             if (!isValid) {

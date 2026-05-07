@@ -3,7 +3,6 @@
 import { createElement, forwardRef, useCallback, useMemo } from 'react';
 import classNames from 'classnames';
 import { LongPressEventType, useLongPress } from 'use-long-press';
-// @ts-expect-error navigation helpers are implemented in plain JS
 import { isAppHref, normalizeAppHref } from 'stremio/common/navigation';
 import styles from './Button.less';
 

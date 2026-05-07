@@ -1,16 +1,15 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 import React, { useCallback, useLayoutEffect, useState } from 'react';
-// @ts-expect-error less modules are resolved by webpack
 import styles from './styles.less';
 
 type Props = {
     className: string,
     src: string,
     alt: string,
-    fallbackSrc: string,
-    renderFallback: () => React.ReactNode,
-    onError: (event: React.SyntheticEvent<HTMLImageElement>) => void,
+    fallbackSrc?: string,
+    renderFallback?: () => React.ReactNode,
+    onError?: (event: React.SyntheticEvent<HTMLImageElement>) => void,
 };
 
 // Default fallback: dark grey rectangle with a subtle photo outline icon
@@ -34,15 +33,15 @@ const DefaultImageFallback = ({ className }: { className?: string }) => (
     </div>
 );
 
-const Image = ({ className, src, alt, fallbackSrc, renderFallback, ...props }: Props) => {
+const Image = ({ className, src, alt, fallbackSrc, renderFallback, onError, ...props }: Props) => {
     const [broken, setBroken] = useState(false);
-    const onError = useCallback((event: React.SyntheticEvent<HTMLImageElement>) => {
-        if (typeof props.onError === 'function') {
-            props.onError(event);
+    const handleError = useCallback((event: React.SyntheticEvent<HTMLImageElement>) => {
+        if (typeof onError === 'function') {
+            onError(event);
         }
 
         setBroken(true);
-    }, [props.onError]);
+    }, [onError]);
 
     useLayoutEffect(() => {
         setBroken(false);
@@ -54,7 +53,7 @@ const Image = ({ className, src, alt, fallbackSrc, renderFallback, ...props }: P
         return <DefaultImageFallback className={className} />; // merges with image-fallback class
     }
 
-    return <img {...props} className={className} src={src} alt={alt} loading='lazy' onError={onError} />;
+    return <img {...props} className={className} src={src} alt={alt} loading='lazy' onError={handleError} />;
 };
 
 export default Image;

@@ -3,12 +3,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     ArrowLeft,
-    Chrome,
     Eye,
     EyeOff,
     Loader2,
     MailCheck,
 } from 'lucide-react';
+import { IconBrandChrome } from '@tabler/icons-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -154,7 +154,7 @@ function AuthSocialButtons({ isLoading }: AuthSocialButtonsProps) {
                 className='h-12 w-full border-border/50 bg-background/50'
                 disabled={isLoading}
             >
-                <Chrome className='mr-2 h-4 w-4' />
+                <IconBrandChrome className='mr-2 h-4 w-4' stroke={1.5} />
                 Google
             </Button>
         </div>

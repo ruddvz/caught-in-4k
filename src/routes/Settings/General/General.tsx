@@ -48,7 +48,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
         let cancelled = false;
 
         profileStore.hasMasterCodeConfigured({ auth })
-            .then((value) => {
+            .then((value: boolean) => {
                 if (!cancelled) {
                     setHasMasterCode(value);
                 }
@@ -131,7 +131,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     mode="delete"
                     title="Confirm Account Deletion"
                     subtitle="Enter your master code to continue"
-                    onSubmitCode={async (code) => {
+                    onSubmitCode={async (code: string) => {
                         try {
                             const isValid = await profileStore.verifyMasterCode({ auth, code });
                             if (!isValid) {
@@ -139,7 +139,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                             }
 
                             return finalizeAccountDeletion();
-                        } catch (error) {
+                        } catch (error: unknown) {
                             return error instanceof Error ? error.message : 'Failed to verify the master code.';
                         }
                     }}
@@ -152,7 +152,7 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                     mode="set-master"
                     title="Set Master Code"
                     subtitle="Create a master code before deleting this account"
-                    onSuccess={async (code) => {
+                    onSuccess={async (code: string) => {
                         try {
                             await profileStore.setMasterCode({ auth, code });
                             if (typeof auth.refreshProfile === 'function') {
@@ -160,8 +160,8 @@ const General = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
                             }
                             setHasMasterCode(true);
                             return finalizeAccountDeletion();
-                        } catch (error) {
-                            return error.message || 'Failed to save the master code.';
+                        } catch (error: unknown) {
+                            return error instanceof Error ? error.message : 'Failed to save the master code.';
                         }
                     }}
                     onCancel={() => setDeleteAccountPinMode(null)}
