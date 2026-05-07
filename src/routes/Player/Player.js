@@ -566,7 +566,20 @@ const Player = ({ urlParams, queryParams }) => {
         video.unload();
         lastSavedPlaybackTimeRef.current = 0;
 
-        if (player.selected && player.stream?.type === 'Ready' && streamingServer.settings?.type !== 'Loading') {
+        const streamContent = player.stream?.type === 'Ready' ? player.stream.content : null;
+        const settingsLoading = streamingServer.settings?.type === 'Loading';
+        // Web builds often never leave Loading until a local server is configured.
+        // Direct HTTP / embeddable streams do not need server settings — only wait when
+        // the pipeline requires convertStream to talk to the server (torrent/magnet/proxy).
+        const mustWaitForServerSettings = Boolean(
+            streamContent && settingsLoading && (
+                (typeof streamContent.url === 'string' && streamContent.url.indexOf('magnet:') === 0) ||
+                typeof streamContent.infoHash === 'string' ||
+                Boolean(streamContent.behaviorHints && streamContent.behaviorHints.proxyHeaders)
+            )
+        );
+
+        if (player.selected && streamContent && !mustWaitForServerSettings) {
             const fallbackTime = player.libraryItem !== null &&
                 player.selected.streamRequest !== null &&
                 player.selected.streamRequest.path !== null &&
@@ -575,17 +588,31 @@ const Player = ({ urlParams, queryParams }) => {
                 :
                 0;
 
+            const streamPayload = {
+                ...streamContent,
+                subtitles: Array.isArray(player.selected.stream.subtitles) ?
+                    player.selected.stream.subtitles.map((subtitles) => ({
+                        ...subtitles,
+                        label: subtitles.url
+                    }))
+                    :
+                    []
+            };
+            // @stremio/stremio-video treats any string externalUrl as "external only" and
+            // refuses to pick an implementation — empty strings from addons break playback.
+            if (typeof streamPayload.externalUrl === 'string' && streamPayload.externalUrl.trim().length === 0) {
+                delete streamPayload.externalUrl;
+            }
+
+            const serverBase = streamingServer.baseUrl;
+            const selectedTransport = streamingServer.selected?.transportUrl;
+            const streamingServerURL = casting && serverBase ?
+                serverBase
+                :
+                (serverBase ? selectedTransport : (selectedTransport || null));
+
             video.load({
-                stream: {
-                    ...player.stream.content,
-                    subtitles: Array.isArray(player.selected.stream.subtitles) ?
-                        player.selected.stream.subtitles.map((subtitles) => ({
-                            ...subtitles,
-                            label: subtitles.url
-                        }))
-                        :
-                        []
-                },
+                stream: streamPayload,
                 autoplay: true,
                 time: historyStore.resolveResumeTime({
                     auth,
@@ -602,11 +629,9 @@ const Player = ({ urlParams, queryParams }) => {
                 assSubtitlesStyling: settings.assSubtitlesStyling,
                 videoMode: settings.videoMode,
                 platform: platform.name,
-                streamingServerURL: streamingServer.baseUrl ?
-                    casting ?
-                        streamingServer.baseUrl
-                        :
-                        streamingServer.selected.transportUrl
+                streamingServerURL,
+                streamingServerSettings: streamingServer.settings?.type === 'Ready' ?
+                    streamingServer.settings.content
                     :
                     null,
                 seriesInfo: player.seriesInfo,
@@ -615,7 +640,7 @@ const Player = ({ urlParams, queryParams }) => {
                 shellTransport: services.shell.active ? services.shell.transport : null,
             });
         }
-    }, [auth, casting, forceTranscoding, historyStore, player.libraryItem, player.metaItem, player.selected, player.seriesInfo, player.stream, player.selected?.stream, selectedProfileId, services.chromecast.active, services.shell.active, settings.assSubtitlesStyling, settings.hardwareDecoding, settings.surroundSound, settings.videoMode, streamingServer.baseUrl, streamingServer.selected.transportUrl, streamingServer.settings?.type, urlParams.id, urlParams.type]);
+    }, [auth, casting, forceTranscoding, historyStore, player.libraryItem, player.metaItem, player.selected, player.seriesInfo, player.stream, player.selected?.stream, selectedProfileId, services.chromecast.active, services.shell.active, settings.assSubtitlesStyling, settings.hardwareDecoding, settings.surroundSound, settings.videoMode, streamingServer.baseUrl, streamingServer.selected.transportUrl, streamingServer.settings, urlParams.id, urlParams.type]);
     React.useEffect(() => {
         if (video.state.stream !== null) {
             const tracks = player.subtitles.map((subtitles) => ({
