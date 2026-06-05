@@ -1,54 +1,70 @@
-# Caught in 4K — Design System (Cinematic Gold Glass)
+# Caught in 4K — Design System (C4K iOS Cinema v1)
 
-> Living design document. Canonical tokens: `src/styles/tokens.css`
+> **Single product direction:** Premium OLED streaming PWA — soft glass, gold accent, iPhone-first navigation.  
+> Canonical tokens: `src/styles/tokens.css`, `src/App/caught-in-4k-theme.less`  
+> Full spec: `docs/design-system.md`
 
 ---
 
-## 1. Design Identity
+## 1. Identity
 
 | Attribute | Value |
 |---|---|
-| **Aesthetic** | Cinematic Gold Glass — OLED black, gold highlights, frosted surfaces |
-| **Layout** | iPhone-first PWA with safe-area aware shell |
-| **Typography** | System UI stack + Plus Jakarta Sans where loaded |
+| **Aesthetic** | Cinematic iOS Cinema — near-black, gold highlights, calm glass |
+| **Layout** | iPhone PWA shell with floating bottom tabs + safe areas |
+| **Typography** | Apple system stack first (`-apple-system`, SF Pro) |
+
+Legacy README “liquid glass neon” and old matte dashboard directions are **retired** — use this document only.
 
 ---
 
-## 2. Canonical Tokens (`src/styles/tokens.css`)
+## 2. Tokens (summary)
 
 | Token | Usage |
 |---|---|
-| `--c4k-bg` | App base `#050506` |
-| `--c4k-gold` | Primary accent |
-| `--c4k-surface` / `--c4k-surface-2` | Frosted panels |
-| `--c4k-touch` | Minimum 44px tap targets |
-| `--safe-top` / `--safe-bottom` | iOS safe-area insets |
-
-App shell also defines `--safe-area-inset-*` in `src/App/styles.less`.
+| `--c4k-bg` | `#05060A` app background |
+| `--c4k-gold` | Primary accent, focus, active tab |
+| `--c4k-glass-1` | Cards and panels |
+| `--c4k-top-bar-height` | 58px + safe-top |
+| `--c4k-bottom-tab-height` | 74px + safe-bottom padding |
+| `--poster-card-width` | `clamp(124px, 34vw, 178px)` |
 
 ---
 
-## 3. Route polish status
+## 3. Navigation (iPhone)
 
-| Route | Notes |
+Five bottom tabs: **Home · Search · Library · Addons · Profile**
+
+- Discover opens from Search (same tab highlight)
+- Calendar, Admin, Subscribe under Profile
+- Player / MetaDetails: no bottom bar
+
+---
+
+## 4. Route status
+
+| Route | Status |
 |---|---|
-| Board / Search / Discover | Carousels + empty states |
-| MetaDetails | Safe-area top padding, rating tooltips |
-| Player | Control bar safe-area, HDR badge when metadata indicates HDR |
-| Library | Placeholder when not signed in |
-| Settings | Sectioned: Account, Profiles, Playback, Interface, Streaming, About |
-| Addons | Legal notice for lawful user-configured add-ons |
+| Board | Hero + rows, bottom safe padding |
+| Search / Discover | 2-col mobile grid, hints when empty |
+| MetaDetails | Safe-area, min-height preview, gold legal links |
+| Player | Immersive, safe-area controls |
+| Library | Empty state + continue scroll |
+| Settings / Addons | Sectioned, 44px+ targets |
+| Tos / Privacy | Selectable text, gold links |
 
 ---
 
-## 4. Motion
+## 5. Motion & a11y
 
-- Respect `prefers-reduced-motion`
-- Poster hover effects desktop-only
-- Avoid heavy shaders on low-end mobile
+- `prefers-reduced-motion`: disable shimmer/parallax
+- `:focus-visible`: gold ring (not cyan)
+- Icon buttons: `aria-label` on player + nav
 
 ---
 
-## 5. Parity reference
+## 6. PWA
 
-Upstream inspiration: Stremio Web v5.0.0-beta.37. See `docs/stremio-upstream-sync.md` for ported vs rejected items.
+- `manifest.json`: `#05060A`, `portrait-primary`, maskable icons
+- `viewport-fit=cover` in `src/index.html`
+- Install banner: `PwaInstallBanner`
