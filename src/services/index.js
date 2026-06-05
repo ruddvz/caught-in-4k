@@ -6,13 +6,17 @@ const DragAndDrop = require('./DragAndDrop');
 const KeyboardShortcuts = require('./KeyboardShortcuts');
 const { ServicesProvider, useServices } = require('./ServicesContext');
 const Shell = require('./Shell');
+const { GamepadProvider, GamepadNavigation, useGamepad } = require('./Gamepad');
 
 module.exports = {
     Chromecast,
     Core,
     DragAndDrop,
+    GamepadProvider,
+    GamepadNavigation,
     KeyboardShortcuts,
     ServicesProvider,
     useServices,
-    Shell
+    Shell,
+    useGamepad,
 };

@@ -20,6 +20,7 @@
         "lint": "eslint src",
         "scan-translations": "cross-env JEST_INCLUDE_I18N=1 jest ./tests/i18nScan.test.js",
         "verify-service-worker": "node scripts/verify-service-worker.js",
+        "visual-regression": "node scripts/capture-visual-regression.js",
         "e2e": "playwright test",
         "e2e:expect": "expect-cli",
         "e2e:auto": "expect-cli --target unstaged -a claude -y",

@@ -8,9 +8,9 @@ const {
     isAccessKeyGateEnabled,
     isAccessKeyBrowserUnlocked,
     setAccessKeyBrowserUnlocked,
-    verifyAccessKey,
     normalizeAccessKey,
 } = require('stremio/common/accessKey');
+const { verifyAccessKeyWithApi } = require('stremio/common/accessKeyApi');
 
 const styles = require('./styles.less');
 
@@ -24,6 +24,7 @@ const AccessKeyGate = ({ children }) => {
     const [sessionUnlocked, setSessionUnlocked] = React.useState(false);
     const [segments, setSegments] = React.useState(() => Array(NUM_SEG).fill(''));
     const [error, setError] = React.useState('');
+    const [verifying, setVerifying] = React.useState(false);
     const inputRefs = [
         React.useRef(null),
         React.useRef(null),
@@ -33,19 +34,25 @@ const AccessKeyGate = ({ children }) => {
     const gateEnabled = isAccessKeyGateEnabled();
     const unlocked = !gateEnabled || isAccessKeyBrowserUnlocked() || sessionUnlocked;
 
-    const submit = React.useCallback(() => {
+    const submit = React.useCallback(async () => {
         const combined = segments.join('');
         if (normalizeAccessKey(combined).length !== SEG_LEN * NUM_SEG) {
             setError(t('ACCESS_KEY_INCOMPLETE'));
             return;
         }
-        if (!verifyAccessKey(combined)) {
-            setError(t('ACCESS_KEY_INVALID'));
-            return;
-        }
-        setAccessKeyBrowserUnlocked();
-        setSessionUnlocked(true);
+        setVerifying(true);
         setError('');
+        try {
+            const valid = await verifyAccessKeyWithApi(combined);
+            if (!valid) {
+                setError(t('ACCESS_KEY_INVALID'));
+                return;
+            }
+            setAccessKeyBrowserUnlocked();
+            setSessionUnlocked(true);
+        } finally {
+            setVerifying(false);
+        }
     }, [segments, t]);
 
     const onSegmentChange = React.useCallback((index, raw) => {
@@ -142,8 +149,8 @@ const AccessKeyGate = ({ children }) => {
                     {error || ''}
                 </p>
                 <div className={styles['access-key-actions']}>
-                    <Button onClick={submit}>
-                        {t('ACCESS_KEY_CONTINUE')}
+                    <Button onClick={submit} disabled={verifying}>
+                        {verifying ? t('ACCESS_KEY_VERIFYING', 'Verifying…') : t('ACCESS_KEY_CONTINUE')}
                     </Button>
                 </div>
             </div>

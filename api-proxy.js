@@ -12,6 +12,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config({ quiet: process.env.NODE_ENV === 'test' });
 const { getSubscriptionPlan } = require('./src/common/subscriptionPlans');
+const { canonTakeBodySchema, checkoutBodySchema, accessKeyBodySchema, validateBody } = require('./api-proxy/schemas');
+const { verifyAccessKey, isAccessKeyGateEnabled } = require('./src/common/accessKey');
 
 // Lazy-load Stripe and Supabase — only initialized when env vars are present
 let stripe = null;
@@ -358,7 +360,7 @@ app.use((req, res, next) => {
     if (req.originalUrl === '/api/stripe/webhook') {
         next();
     } else {
-        express.json()(req, res, next);
+        express.json({ limit: '32kb' })(req, res, next);
     }
 });
 
@@ -387,11 +389,7 @@ const handleCanonTake = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { title, year, genres, imdbRating } = req.body;
-
-  if (!title || !year || !genres || imdbRating === undefined) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
+  const { title, year, genres, imdbRating } = req.validatedBody || req.body;
 
   try {
     const apiKey = process.env.GEMINI_API_KEY;
@@ -466,12 +464,20 @@ const handleCanonTake = async (req, res) => {
   }
 };
 
-app.post('/api/canon-take', handleCanonTake);
+app.post('/api/canon-take', validateBody(canonTakeBodySchema), handleCanonTake);
+
+app.post('/api/access/verify', validateBody(accessKeyBodySchema), (req, res) => {
+    if (!isAccessKeyGateEnabled()) {
+        return res.status(200).json({ valid: true, gateEnabled: false });
+    }
+    const valid = verifyAccessKey(req.validatedBody.key);
+    return res.status(valid ? 200 : 403).json({ valid, gateEnabled: true });
+});
 
 // ────────────────────────────────────────────────────────────
 // Stripe Checkout — creates a Stripe Checkout Session
 // ────────────────────────────────────────────────────────────
-app.post('/api/stripe/create-checkout-session', async (req, res) => {
+app.post('/api/stripe/create-checkout-session', validateBody(checkoutBodySchema), async (req, res) => {
     const stripeClient = getStripe();
   const sb = getSupabaseAdmin();
     if (!stripeClient) {
@@ -481,10 +487,7 @@ app.post('/api/stripe/create-checkout-session', async (req, res) => {
     return res.status(503).json({ error: 'Supabase admin is not configured' });
   }
 
-  const { plan } = req.body || {};
-  if (!plan) {
-    return res.status(400).json({ error: 'Missing plan' });
-    }
+  const { plan } = req.validatedBody || req.body || {};
 
   const planConfig = getSubscriptionPlan(plan);
   if (!planConfig) {

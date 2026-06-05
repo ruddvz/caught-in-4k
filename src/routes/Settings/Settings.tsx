@@ -4,11 +4,14 @@ import React, { useEffect, useCallback, useRef } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 const { buildAppHref } = require('stremio/common/navigation');
-import { useProfile, withCoreSuspender } from 'stremio/common';
+import { useProfile, useStreamingServer, withCoreSuspender } from 'stremio/common';
 import { MainNavBars } from 'stremio/components';
 import General from './General';
 import ProfileManagement from './ProfileManagement';
 import Player from './Player';
+import Interface from './Interface';
+import Streaming from './Streaming';
+import Info from './Info';
 import Shortcuts from './Shortcuts';
 import styles from './Settings.less';
 
@@ -25,6 +28,7 @@ const FOCUSABLE_SELECTOR = [
 const Settings = () => {
     const { t } = useTranslation();
     const profile = useProfile();
+    const streamingServer = useStreamingServer();
     const containerRef = useRef<HTMLDivElement>(null);
 
     const quickLinks = [
@@ -42,6 +46,21 @@ const Settings = () => {
             id: 'settings-playback',
             label: t('Playback'),
             copy: t('Subtitles, autoplay, and engine controls'),
+        },
+        {
+            id: 'settings-interface',
+            label: t('Interface'),
+            copy: t('Fullscreen, spoilers, and gamepad navigation'),
+        },
+        {
+            id: 'settings-streaming',
+            label: t('Streaming'),
+            copy: t('Streaming server URLs and transcoding'),
+        },
+        {
+            id: 'settings-about',
+            label: t('About'),
+            copy: t('App version and server info'),
         },
     ];
 
@@ -158,13 +177,46 @@ const Settings = () => {
                             </div>
                             <Player profile={profile} />
                         </section>
+
+                        <section id="settings-interface" tabIndex={-1} className={styles['panel-shell']}>
+                            <div className={styles['panel-heading']}>
+                                <div className={styles['panel-kicker']}>{t('Interface')}</div>
+                                <h2 className={styles['panel-title']}>{t('Interface & system')}</h2>
+                                <p className={styles['panel-copy']}>
+                                    {t('Spoiler blur, shell behavior, and optional gamepad navigation.')}
+                                </p>
+                            </div>
+                            <Interface profile={profile} />
+                        </section>
+
+                        <section id="settings-streaming" tabIndex={-1} className={styles['panel-shell']}>
+                            <div className={styles['panel-heading']}>
+                                <div className={styles['panel-kicker']}>{t('Sources')}</div>
+                                <h2 className={styles['panel-title']}>{t('Streaming server')}</h2>
+                                <p className={styles['panel-copy']}>
+                                    {t('Configure how C4K reaches your local streaming server for playback.')}
+                                </p>
+                            </div>
+                            <Streaming profile={profile} streamingServer={streamingServer} />
+                        </section>
+
+                        <section id="settings-about" tabIndex={-1} className={styles['panel-shell']}>
+                            <div className={styles['panel-heading']}>
+                                <div className={styles['panel-kicker']}>{t('About')}</div>
+                                <h2 className={styles['panel-title']}>{t('App info')}</h2>
+                                <p className={styles['panel-copy']}>
+                                    {t('Build metadata and connected shell or server versions.')}
+                                </p>
+                            </div>
+                            <Info streamingServer={streamingServer} />
+                        </section>
                     </div>
                 </div>
 
                 <div className={styles['settings-footer']}>
-                    <a href={buildAppHref('/tos')} className={styles['footer-link']}>Terms of Service</a>
+                    <a href={buildAppHref('/tos')} className={styles['footer-link']}>{t('TERMS_OF_SERVICE')}</a>
                     <span className={styles['footer-separator']}>|</span>
-                    <a href={buildAppHref('/privacy')} className={styles['footer-link']}>Privacy Policy</a>
+                    <a href={buildAppHref('/privacy')} className={styles['footer-link']}>{t('PRIVACY_POLICY')}</a>
                 </div>
 
                 <div className={styles['parked-content']}>

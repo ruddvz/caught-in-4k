@@ -15,6 +15,7 @@ const STORAGE_KEY = 'c4k:settings';
 
 const DEFAULTS = {
     externalPlayerFallback: false,
+    gamepadNavigation: true,
 };
 
 const readSettings = () => {

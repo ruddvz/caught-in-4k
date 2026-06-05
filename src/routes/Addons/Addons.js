@@ -117,6 +117,9 @@ const Addons = ({ urlParams, queryParams }) => {
     return (
         <MainNavBars className={styles['addons-container']} route={'addons'}>
             <div className={styles['addons-content']}>
+                <p className={styles['legal-notice']}>
+                    {t('ADDONS_LEGAL_NOTICE', 'Install only lawful add-ons and sources you trust. You are responsible for how add-ons are used.')}
+                </p>
                 <div className={styles['selectable-inputs-container']}>
                     {selectInputs.map((selectInput, index) => (
                         <MultiselectMenu

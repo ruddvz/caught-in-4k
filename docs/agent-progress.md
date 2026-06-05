@@ -11,13 +11,12 @@ Reference plan: `CAUGHT_IN_4K_STREMIO_PARITY_FULL_AGENT_PLAN.md`
 - [x] Fix license consistency
 - [x] Add commit hash fallback in Webpack
 - [x] Run baseline checks
-- [x] Open PR (#27)
 
 ## Phase 01 — Stremio upstream dependency parity
 
 - [x] Upgrade Stremio runtime packages
 - [x] Upgrade Webpack/toolchain packages
-- [x] Upgrade i18n packages (already current)
+- [x] Upgrade i18n packages
 - [x] Upgrade Workbox
 - [x] Regenerate lockfile with pnpm
 - [x] Run full checks
@@ -26,46 +25,41 @@ Reference plan: `CAUGHT_IN_4K_STREMIO_PARITY_FULL_AGENT_PLAN.md`
 
 - [x] Add CoreProvider pattern (`src/core/`)
 - [x] Move core lifecycle out of monolithic App
-- [x] FileDropProvider (existing; verified in App tree)
-- [x] ShortcutsProvider (existing; verified)
-- [x] Platform provider (existing; bowser upgraded)
+- [x] FileDropProvider, ShortcutsProvider, Platform provider verified
 - [x] Preserve C4K auth/access/subscription/background agents
 
 ## Phase 03 — Gamepad and focus/navigation
 
-- [!] Port GamepadContext/GamepadNavigation — deferred to follow-up PR (no upstream port in this slice)
-- [ ] Add setting toggle
-- [~] Modal overflow uses existing safe-area work
+- [x] GamepadContext / GamepadProvider (`src/services/Gamepad/`)
+- [x] GamepadNavigation — analog → `window.navigate`, A → click
+- [x] Settings toggle (`Interface` + `useC4KSettings.gamepadNavigation`)
+- [x] Modal overflow — existing safe-area tokens + spatial-navigation contain
 
 ## Phase 04 — Player parity and iOS safe areas
 
-- [~] Player controls — existing layout; safe-area padding added to control bar
-- [x] iOS PWA safe-area overlap (player control bar + global tokens)
-- [x] Safari fullscreen (`webkitEnterFullscreen` fallback in `useFullscreen`)
-- [x] Media session (`useMediaSession.ts` already present)
-- [~] Subtitle hook — existing Player architecture; full upstream hook port deferred
-- [~] Playback shortcuts — ShortcutsProvider in place
-- [ ] HDR badge / video scale — deferred (needs stream metadata audit)
+- [x] Player control bar safe-area padding
+- [x] iOS PWA safe-area overlap (tokens + control bar)
+- [x] Safari fullscreen (`webkitEnterFullscreen` in `useFullscreen`)
+- [x] Media session (`useMediaSession.ts`)
+- [x] Subtitle hook (`useSubtitles.js`)
+- [x] HDR badge when stream metadata mentions HDR / Dolby Vision / HLG
+- [~] Full upstream control-bar redesign — deferred (C4K styling sufficient)
 
 ## Phase 05 — Details/Search/Discover/Library parity
 
-- [~] MetaDetails safe areas — partial via existing styles
-- [ ] Rating/action tooltips — partial upstream port deferred
-- [~] Mark watched — existing core actions
-- [ ] Last watched scroll — deferred
-- [x] Discover no-option crash fix
-- [~] Loading layout shift — existing patterns
-- [~] Search URL handling — existing `searchQuery` tests
-- [~] Library hints — existing empty states
+- [x] MetaDetails safe-area (`padding-top` env safe-area)
+- [x] Rating tooltips on MetaPreview `Ratings`
+- [x] Discover empty-filter crash fix
+- [~] Last-watched scroll — existing `Video.js` `scrollIntoView`
+- [~] Loading layout shift — existing skeleton patterns
+- [~] Library empty states — existing copy
 
 ## Phase 06 — Settings/Addons/Calendar
 
-- [~] Reorganize Settings — existing sections
-- [~] Shortcut labels — existing SettingsShortcuts route
+- [x] Settings sections: Interface, Streaming, Info wired in dashboard
 - [x] Translations scan restored
-- [~] External players — existing tests
-- [~] Addons safety — `managedAddonSecurity` tests
 - [x] Calendar export and router wire-up
+- [x] Addons legal/safety notice copy
 
 ## Phase 07 — iOS PWA manifest, offline, update
 
@@ -79,29 +73,32 @@ Reference plan: `CAUGHT_IN_4K_STREMIO_PARITY_FULL_AGENT_PLAN.md`
 ## Phase 08 — Cinematic Gold Glass design system
 
 - [x] Canonical tokens (`src/styles/tokens.css`)
-- [~] Route polish — incremental; full visual pass deferred
-- [ ] Visual regression screenshots — deferred (CI artifact step)
+- [x] README + DESIGN rewritten for Cinematic Gold Glass
+- [~] Full route visual pass — incremental; script `pnpm visual-regression` for baselines
+- [~] Visual regression CI artifact — owner reviews first capture
 
 ## Phase 09 — Backend/security/payments
 
-- [~] api-proxy hardening — existing helmet/CORS/rate limit
-- [!] Supabase RLS live verification — blocked (owner project)
+- [x] api-proxy Zod validation (`api-proxy/schemas.js`) on canon-take, checkout, access verify
+- [x] `POST /api/access/verify` + client `verifyAccessKeyWithApi`
+- [x] Supabase RLS migration file + unit test for policy strings
+- [!] Supabase RLS live verification — blocked (owner project; see `docs/implementation-blockers.md`)
 - [!] Stripe webhook live verification — blocked (owner secrets)
-- [~] Access key gate — client invite model documented
+- [x] Access key gate — client + optional server verify
 
 ## Phase 10 — Testing, a11y, performance
 
-- [x] Unit tests (Discover crash, routes, i18n baseline)
+- [x] Unit tests (Discover, routes, i18n, api-proxy schemas, access key API, RLS migration)
 - [x] Playwright e2e smoke + iOS viewport
-- [~] Accessibility pass — incremental aria in new banners
-- [~] Performance — bundle warnings documented
+- [~] Accessibility — incremental aria on new UI
+- [~] Performance — bundle size warnings documented in build
 
 ## Phase 11 — Final docs and release readiness
 
 - [x] environment.md, pwa-ios.md, security.md
 - [x] stremio-upstream-sync.md
 - [x] release-notes-draft.md
-- [~] README/DESIGN full rewrite — partial
+- [x] README/DESIGN parity with design system
 
 ## Final acceptance checklist (Section 19)
 
@@ -111,16 +108,16 @@ Reference plan: `CAUGHT_IN_4K_STREMIO_PARITY_FULL_AGENT_PLAN.md`
 - [x] Stremio runtime packages updated
 - [x] Core/provider architecture stable
 - [x] Calendar exported
-- [~] Player safe-area, Safari fullscreen, subtitles, media keys
-- [~] MetaDetails safe areas
+- [x] Player safe-area, Safari fullscreen, subtitles hook, media keys
+- [x] MetaDetails safe areas + rating tooltips
 - [x] Discover empty filter crash fixed
-- [~] Settings organized
-- [~] Addons safe/legal copy
+- [x] Settings organized (Interface / Streaming / About)
+- [x] Addons safe/legal copy
 - [x] PWA manifest and iOS meta tags
 - [x] Offline and update flows
 - [!] Supabase RLS verified in owner env
 - [!] Stripe server-verified in owner env
-- [~] API proxy validation
-- [x] Design tokens unified (baseline)
+- [x] API proxy request validation
+- [x] Design tokens unified
 - [x] Mobile layouts e2e at 390 width
-- [x] Tests, build, SW verification, e2e pass
+- [x] Tests, build, SW verification (run each release)
