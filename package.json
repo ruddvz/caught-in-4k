@@ -42,7 +42,7 @@
         "@stremio/stremio-core-web": "0.58.0",
         "@stremio/stremio-icons": "5.10.0",
         "@stremio/stremio-video": "0.0.79",
-        "@stripe/stripe-js": "^9.0.1",
+        "@stripe/stripe-js": "^9.7.0",
         "@supabase/supabase-js": "^2.101.1",
         "@tabler/icons-react": "^3.44.0",
         "a-color-picker": "1.2.1",
