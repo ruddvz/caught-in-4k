@@ -9,13 +9,17 @@ Compared on: 2026-06-05
 | Upstream item | C4K PR | Files changed | Notes |
 |---|---|---|---|
 | Dependency parity matrix | #27+ | `package.json`, `pnpm-lock.yaml` | core-web 0.58, icons 5.10, video 0.0.79, webpack 5.106 |
-| CoreProvider lifecycle | TBD | `src/core/*`, `src/App/App.js` | Wraps existing `services/Core` |
+| CoreProvider lifecycle | #27–#28 | `src/core/*`, `src/App/App.js` | Wraps existing `services/Core` |
 | Calendar route export | #27 | `src/routes/index.js`, `routerViewsConfig.js` | Watch Calendar |
-| Discover empty extra crash | TBD | `mapSelectableInputs.js` | Upstream no-selection fix |
-| PWA manifest icons/labels | TBD | `manifest.json` | maskable + any entries |
-| Offline/update UX | TBD | `OfflineBanner`, `PwaUpdateBanner`, `index.js` | SW update event |
-| Safari video fullscreen | TBD | `useFullscreen.ts` | webkitEnterFullscreen |
-| Player safe-area padding | TBD | `Player/styles.less` | control bar bottom inset |
+| Discover empty extra crash | #28 | `mapSelectableInputs.js` | Upstream no-selection fix |
+| PWA manifest icons/labels | #28 | `manifest.json` | maskable + any entries |
+| Offline/update UX | #28 | `OfflineBanner`, `PwaUpdateBanner`, `index.js` | SW update event |
+| Safari video fullscreen | #28 | `useFullscreen.ts` | webkitEnterFullscreen |
+| Player safe-area padding | #28 | `Player/styles.less` | control bar bottom inset |
+| GamepadProvider + GamepadNavigation | complete-parity | `src/services/Gamepad/*` | Analog spatial nav + settings toggle |
+| useSubtitles hook | complete-parity | `src/routes/Player/useSubtitles.js` | Track persistence |
+| HDR badge | complete-parity | `ControlBar.js` | Stream JSON heuristic |
+| api-proxy Zod + access verify | complete-parity | `api-proxy/schemas.js` | canon-take, checkout, access |
 | i18n scan | #27 | `tests/i18nScan.test.js` | baseline debt tracked |
 
 ## Rejected / Not Applicable
@@ -30,10 +34,8 @@ Compared on: 2026-06-05
 
 | Item | Blocker | Next action |
 |---|---|---|
-| GamepadContext / GamepadNavigation | Time/complexity in single agent slice | Port from upstream `src/services/Gamepad*` |
-| Subtitle dedicated hook refactor | Large Player diff | Compare `routes/Player` with upstream |
-| HDR badge / video scale | Stream metadata API | Audit player stream props |
-| Visual regression screenshots | Golden file approval | Add CI capture to `test-results/visual/` |
+| Full upstream player control-bar layout | C4K design system | Optional future pass |
+| Visual regression screenshots | Golden file approval | Run `pnpm visual-regression` |
 | Supabase RLS + Stripe webhook live tests | Owner credentials | See `implementation-blockers.md` |
 
 ## Dependency parity

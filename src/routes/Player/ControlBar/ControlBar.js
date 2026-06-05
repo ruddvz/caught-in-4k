@@ -105,8 +105,22 @@ const ControlBar = ({
             chromecast.off('stateChanged', onStateChanged);
         };
     }, []);
+
+    const showHdrBadge = React.useMemo(() => {
+        if (!stream || typeof stream !== 'object') {
+            return false;
+        }
+        const hay = JSON.stringify(stream).toLowerCase();
+        return hay.includes('hdr') || hay.includes('dolby vision') || hay.includes('hlg');
+    }, [stream]);
+
     return (
         <div {...props} onTouchStart={props.onMouseOver} onTouchMove={props.onMouseMove} onTouchEnd={onTouchEnd} className={classnames(className, styles['control-bar-container'])}>
+            {showHdrBadge ? (
+                <div className={styles['hdr-badge']} aria-label={t('PLAYER_HDR')}>
+                    {t('PLAYER_HDR')}
+                </div>
+            ) : null}
             <SeekBar
                 className={styles['seek-bar']}
                 time={time}

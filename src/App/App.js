@@ -5,7 +5,8 @@ const React = require('react');
 const classnames = require('classnames');
 const { useTranslation } = require('react-i18next');
 const { Router } = require('stremio-router');
-const { Shell, Chromecast, DragAndDrop, KeyboardShortcuts, ServicesProvider } = require('stremio/services');
+const { Shell, Chromecast, DragAndDrop, KeyboardShortcuts, ServicesProvider, GamepadProvider, GamepadNavigation } = require('stremio/services');
+const useC4KSettings = require('stremio/common/useC4KSettings');
 const { CoreProvider, useCore } = require('stremio/core');
 const { NotFound } = require('stremio/routes');
 const { addLocationChangeListener, getCurrentAppLocation, getNavigationTargetForEvent, navigateToAppHref } = require('stremio/common/navigation');
@@ -34,6 +35,7 @@ const AppShell = () => {
     const i18n = translation.i18n || (Array.isArray(translation) ? translation[1] : null);
     const shell = useShell();
     const core = useCore();
+    const [c4kSettings] = useC4KSettings();
     const onPathNotMatch = React.useCallback(() => {
         return NotFound;
     }, []);
@@ -264,21 +266,27 @@ const AppShell = () => {
                                             <TooltipProvider className={styles['tooltip-container']}>
                                                 <FileDropProvider className={styles['file-drop-container']}>
                                                     <ShortcutsProvider onShortcut={onShortcut}>
-                                                        {
-                                                            shortcutModalOpen && <ShortcutsModal onClose={closeShortcutsModal}/>
-                                                        }
-                                                        <ServicesToaster />
-                                                        <DeepLinkHandler />
-                                                        <SearchParamsHandler />
-                                                        <ManagedAddonSync />
-                                                        <UpdaterBanner className={styles['updater-banner-container']} />
-                                                        <PwaUpdateBanner className={styles['updater-banner-container']} />
-                                                        <OfflineBanner />
-                                                        <RouterWithProtectedRoutes
-                                                            className={classnames(styles['router'], 'animation-fade-in')}
-                                                            viewsConfig={routerViewsConfig}
-                                                            onPathNotMatch={onPathNotMatch}
-                                                        />
+                                                        <GamepadProvider
+                                                            enabled={c4kSettings.gamepadNavigation !== false}
+                                                            onGuide={toggleShortcutModal}
+                                                        >
+                                                            {c4kSettings.gamepadNavigation !== false ? <GamepadNavigation /> : null}
+                                                            {
+                                                                shortcutModalOpen && <ShortcutsModal onClose={closeShortcutsModal}/>
+                                                            }
+                                                            <ServicesToaster />
+                                                            <DeepLinkHandler />
+                                                            <SearchParamsHandler />
+                                                            <ManagedAddonSync />
+                                                            <UpdaterBanner className={styles['updater-banner-container']} />
+                                                            <PwaUpdateBanner className={styles['updater-banner-container']} />
+                                                            <OfflineBanner />
+                                                            <RouterWithProtectedRoutes
+                                                                className={classnames(styles['router'], 'animation-fade-in')}
+                                                                viewsConfig={routerViewsConfig}
+                                                                onPathNotMatch={onPathNotMatch}
+                                                            />
+                                                        </GamepadProvider>
                                                     </ShortcutsProvider>
                                                 </FileDropProvider>
                                             </TooltipProvider>

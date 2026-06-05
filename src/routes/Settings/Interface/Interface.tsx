@@ -1,8 +1,10 @@
 import React, { forwardRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useServices } from 'stremio/services';
 import { Toggle } from 'stremio/components';
 import { Option } from '../components';
 import useInterfaceOptions from './useInterfaceOptions';
+import useC4KSettings from 'stremio/common/useC4KSettings';
 import styles from './Interface.less';
 
 type Props = {
@@ -10,6 +12,7 @@ type Props = {
 };
 
 const Interface = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) => {
+    const { t } = useTranslation();
     const { shell } = useServices();
 
     const {
@@ -17,10 +20,16 @@ const Interface = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) =>
         escExitFullscreenToggle,
         hideSpoilersToggle,
     } = useInterfaceOptions(profile);
+    const [c4kSettings, updateC4kSetting] = useC4KSettings();
+
+    const gamepadToggle = {
+        checked: c4kSettings.gamepadNavigation !== false,
+        onClick: () => updateC4kSetting('gamepadNavigation', c4kSettings.gamepadNavigation === false),
+    };
 
     return (
         <div ref={ref} className={styles['interface-widget']}>
-            <div className={styles['widget-label']}>INTERFACE & SYSTEM</div>
+            <div className={styles['widget-label']}>{t('SETTINGS_INTERFACE_SYSTEM')}</div>
 
             <div className={styles['options-stack']}>
                 <Option label={'SETTINGS_BLUR_UNWATCHED_IMAGE'}>
@@ -38,6 +47,10 @@ const Interface = forwardRef<HTMLDivElement, Props>(({ profile }: Props, ref) =>
                         <Toggle tabIndex={-1} {...escExitFullscreenToggle} />
                     </Option>
                 )}
+
+                <Option label={'C4K_GAMEPAD_NAVIGATION'}>
+                    <Toggle tabIndex={-1} {...gamepadToggle} />
+                </Option>
             </div>
         </div>
     );

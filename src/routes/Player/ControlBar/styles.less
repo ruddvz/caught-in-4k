@@ -5,6 +5,23 @@
 
 .control-bar-container {
     padding: 0 1.5rem;
+    position: relative;
+
+    .hdr-badge {
+        position: absolute;
+        top: 0;
+        right: calc(1.5rem + var(--safe-right, 0px));
+        z-index: 2;
+        padding: 0.2rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: var(--c4k-gold, #f4d38c);
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid var(--c4k-gold-soft, rgba(244, 211, 140, 0.16));
+        pointer-events: none;
+    }
 
     .seek-bar {
         --track-size: 0.5rem;
