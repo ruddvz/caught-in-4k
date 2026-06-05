@@ -80,7 +80,7 @@
         "spatial-navigation-polyfill": "github:Stremio/spatial-navigation#64871b1422466f5f45d24ebc8bbd315b2ebab6a6",
         "stremio-translations": "github:Stremio/stremio-translations#72a0decf9c636efc3171ee7238a0037ccefc36c1",
         "stripe": "^22.2.0",
-        "tailwind-merge": "^3.5.0",
+        "tailwind-merge": "^3.6.0",
         "url": "0.11.4",
         "use-long-press": "^3.3.0",
         "zod": "^4.3.6"
