@@ -20,6 +20,9 @@
 .meta-item-container {
     // Title overlays inside the poster — no separate block below
     position: relative;
+    width: var(--poster-card-width, clamp(124px, 34vw, 178px));
+    max-width: 100%;
+    flex: 0 0 var(--poster-card-width, clamp(124px, 34vw, 178px));
     padding: 0.4rem 0.15rem;
     overflow: visible;
     display: flex;

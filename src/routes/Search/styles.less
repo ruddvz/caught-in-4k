@@ -22,6 +22,14 @@
         padding: 0 1rem;
         overflow-y: auto;
 
+        @media only screen and (max-width: 768px) {
+            .search-results-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 16px 12px;
+            }
+        }
+
         .search-row {
             margin-top: 1rem;
             margin-bottom: 2rem;

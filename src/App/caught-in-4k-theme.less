@@ -1,133 +1,127 @@
-// Caught in 4K — Premium Cinema Theme
-// Unified dark palette. Single gold accent. No conflicting greens/purples/cyans.
+// Caught in 4K — C4K iOS Cinema v1
+// Premium OLED black, soft glass, single gold accent.
 
 :root {
-    // ─── Base background ──────────────────────────────────────────────────────
-    --bg-body: #07080c;           // near-black cold undertone (Apple TV+ style)
-    --bg-base: #07080c;           // alias used by MetaDetails
+    --c4k-bg: #05060A;
+    --c4k-bg-elevated: #0B0D14;
+    --c4k-bg-soft: #11131C;
 
-    // ─── Glass surface system ─────────────────────────────────────────────────
-    // Translucent overlays — not opaque fills.
-    --bg-surface-1: rgba(255, 255, 255, 0.05);    // card/panel glass
-    --bg-surface-2: rgba(255, 255, 255, 0.08);    // elevated glass (modal/sheet)
-    --bg-surface-border: rgba(255, 255, 255, 0.09); // subtle glass border
+    --c4k-glass-1: rgba(255, 255, 255, 0.055);
+    --c4k-glass-2: rgba(255, 255, 255, 0.085);
+    --c4k-glass-3: rgba(255, 255, 255, 0.12);
+    --c4k-border: rgba(255, 255, 255, 0.10);
+    --c4k-border-strong: rgba(255, 255, 255, 0.16);
 
-    // Legacy elevation tokens (backward compat)
-    --elevation-1: rgba(255, 255, 255, 0.05);
-    --elevation-2: rgba(255, 255, 255, 0.08);
-    --elevation-3: rgba(255, 255, 255, 0.12);
-    --elevation-border: rgba(255, 255, 255, 0.09);
+    --c4k-gold: #F4D38C;
+    --c4k-gold-strong: #FFD875;
+    --c4k-gold-soft: rgba(244, 211, 140, 0.14);
+    --c4k-gold-glow: rgba(244, 211, 140, 0.24);
 
-    // ─── Accent — Gold (C4K brand, one accent only) ───────────────────────────
-    --accent-primary: #f4d38c;
-    --accent-primary-light: #fff2cc;
-    --accent-primary-glow: rgba(244, 211, 140, 0.28);
-    --accent-primary-dim: rgba(244, 211, 140, 0.12);
-    --outer-glow: 0 0 20px rgba(244, 211, 140, 0.22);
-    --accent-dark: rgba(175, 135, 55, 1);
+    --c4k-success: #35D07F;
+    --c4k-warning: #FFB84D;
+    --c4k-danger: #FF5D73;
+    --c4k-info: #7CA7FF;
 
-    --accent-secondary: #ff4d4f;
-    --accent-tertiary: #f4d38c;
+    --c4k-text: #F7F7F9;
+    --c4k-text-muted: rgba(247, 247, 249, 0.68);
+    --c4k-text-subtle: rgba(247, 247, 249, 0.46);
 
-    // ─── Text ─────────────────────────────────────────────────────────────────
-    --text-primary: #f5f5f7;                     // Apple-style off-white
-    --text-secondary: rgba(255, 255, 255, 0.5);
-    --text-tertiary: rgba(255, 255, 255, 0.3);
+    --c4k-radius-lg: 24px;
+    --c4k-radius-xl: 30px;
+    --c4k-radius-pill: 999px;
 
-    // ─── Radius & shadow ──────────────────────────────────────────────────────
-    --radius-card: 20px;
-    --radius-card-lg: 26px;
-    --radius-pill: 999px;
-    --radius-avatar: 16px;
-    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.4);
-    --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --c4k-top-bar-height: 58px;
+    --c4k-bottom-tab-height: 74px;
 
-    // ─── Legacy overrides (backward compat) ───────────────────────────────────
-    --primary-accent-color: var(--accent-primary);
-    --secondary-accent-color: var(--text-secondary);
-    --primary-background-color: var(--bg-body);
-    --secondary-background-color: var(--bg-surface-1);
-    --modal-background-color: rgba(9, 10, 15, 0.94);
+    --bg-body: var(--c4k-bg);
+    --bg-base: var(--c4k-bg);
+    --bg-surface-1: var(--c4k-glass-1);
+    --bg-surface-2: var(--c4k-glass-2);
+    --bg-surface-border: var(--c4k-border);
 
-    // ─── Gradient ambient accents (fixed — were undefined, caused broken renders)
-    --gradient-gold: radial-gradient(circle at 78% 8%, rgba(244, 211, 140, 0.11) 0%, transparent 40%);
-    --gradient-blue: radial-gradient(circle at 14% 6%, rgba(80, 110, 255, 0.09) 0%, transparent 38%);
-    --gradient-violet: radial-gradient(circle at 52% 92%, rgba(110, 75, 255, 0.05) 0%, transparent 38%);
-    --gradient-pink: radial-gradient(circle at 88% 68%, rgba(255, 75, 130, 0.04) 0%, transparent 32%);
+    --accent-primary: var(--c4k-gold);
+    --accent-primary-light: var(--c4k-gold-strong);
+    --accent-primary-glow: var(--c4k-gold-glow);
+    --accent-primary-dim: var(--c4k-gold-soft);
+    --outer-glow: 0 0 24px var(--c4k-gold-glow);
+
+    --text-primary: var(--c4k-text);
+    --text-secondary: var(--c4k-text-muted);
+    --text-tertiary: var(--c4k-text-subtle);
+
+    --radius-card: var(--c4k-radius-lg);
+    --radius-card-lg: var(--c4k-radius-xl);
+    --radius-pill: var(--c4k-radius-pill);
+
+    --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.34);
+    --shadow-card: 0 18px 45px rgba(0, 0, 0, 0.34);
+
+    --gradient-gold: radial-gradient(circle at 78% 8%, rgba(244, 211, 140, 0.08) 0%, transparent 42%);
+    --gradient-blue: radial-gradient(circle at 14% 6%, rgba(80, 110, 255, 0.05) 0%, transparent 38%);
+    --gradient-violet: none;
+    --gradient-pink: none;
+
+    --poster-card-width: clamp(124px, 34vw, 178px);
+    --landscape-card-width: clamp(220px, 64vw, 330px);
 }
 
-// ─── Frosted Glass ────────────────────────────────────────────────────────────
-.frosted-glass {
-    background: var(--bg-surface-1);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--bg-surface-border);
-    border-radius: var(--radius-card);
+.c4k-glass {
+    background: var(--c4k-glass-1);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid var(--c4k-border);
+    border-radius: var(--c4k-radius-lg);
 }
 
-// ─── Gradient Burst (ambient light) ──────────────────────────────────────────
-.gradient-burst {
-    position: relative;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background:
-            var(--gradient-gold),
-            var(--gradient-blue),
-            var(--gradient-violet),
-            var(--gradient-pink);
-        pointer-events: none;
-        z-index: 0;
-    }
+.c4k-surface {
+    background: var(--c4k-bg-soft);
+    border: 1px solid var(--c4k-border);
+    border-radius: var(--c4k-radius-lg);
 }
 
-// ─── Specular highlight ───────────────────────────────────────────────────────
-.specular-highlight {
-    position: relative;
+.c4k-pill {
+    border-radius: var(--c4k-radius-pill);
+}
+
+.c4k-safe-page {
+    padding-top: calc(var(--safe-top, env(safe-area-inset-top, 0px)) + var(--c4k-top-bar-height));
+    padding-bottom: calc(var(--c4k-bottom-tab-height) + var(--safe-bottom, env(safe-area-inset-bottom, 0px)) + 28px);
+    padding-left: var(--safe-left, env(safe-area-inset-left, 0px));
+    padding-right: var(--safe-right, env(safe-area-inset-right, 0px));
+}
+
+.c4k-scroll-area {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
+
+.c4k-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
     overflow: hidden;
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.07) 50%, transparent 100%);
-        animation: shimmer 4s infinite;
-        pointer-events: none;
-    }
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-@keyframes shimmer {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(200%); }
+.frosted-glass {
+    .c4k-glass();
 }
 
-// ─── Body-level class ─────────────────────────────────────────────────────────
 .caught-in-4k {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', Inter, 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    position: relative;
-    z-index: 1;
-    background-color: var(--bg-body);
+    background-color: var(--c4k-bg);
+}
 
-    .button-container {
-        background: var(--bg-surface-1);
-        border: 1px solid var(--bg-surface-border);
-        border-radius: 12px;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        color: var(--text-primary);
-        transition: all 0.2s ease;
-        position: relative;
-        overflow: hidden;
-
-        &:hover {
-            background: var(--bg-surface-2);
-            border-color: rgba(255, 255, 255, 0.14);
-        }
+@media (prefers-reduced-motion: reduce) {
+    .specular-highlight::after {
+        animation: none !important;
+        display: none;
     }
 }

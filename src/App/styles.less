@@ -117,16 +117,46 @@
     border: none;
     outline: none;
     list-style: none;
-    -webkit-user-select: none;
-    user-select: none;
     text-decoration: none;
     appearance: none;
     background: none;
     box-shadow: none;
-    overflow: clip;
     word-break: break-word;
     scrollbar-width: thin;
     scrollbar-color: var(--overlay-color) transparent;
+}
+
+button,
+a,
+[role="button"],
+.poster-card,
+.bottom-nav-tab,
+.meta-item-container {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+p,
+span,
+input,
+textarea,
+select,
+.legal-content,
+.description,
+.settings-copy,
+.message-body,
+.panel-copy,
+.sidebar-link-copy {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+input,
+textarea,
+select,
+button {
+    font: inherit;
 }
 
 ::-webkit-scrollbar {
@@ -151,23 +181,21 @@ svg {
     overflow: visible;
 }
 
-/* Consistent cyan glow highlight for keyboard focus across all interactive elements */
+/* Gold focus ring — matches C4K iOS Cinema accent */
 :focus-visible {
-    outline: 2px solid var(--primary-accent-color) !important;
-    outline-offset: 2px !important;
-    box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.15) !important;
+    outline: 2px solid var(--c4k-gold, var(--accent-primary)) !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 5px var(--c4k-gold-glow, rgba(244, 211, 140, 0.16)) !important;
 }
 
 html {
     width: @html-width;
     height: @html-height;
-    font-family: 'Inter', 'Arial', 'Helvetica', 'sans-serif';
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', Inter, 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
     overflow: auto;
     overscroll-behavior: none;
-    -webkit-user-select: none;
-    user-select: none;
     touch-action: manipulation;
-    background-color: #0c0c0c;
+    background-color: var(--c4k-bg, #05060A);
     -webkit-tap-highlight-color: transparent;
 
     @media (display-mode: standalone) {

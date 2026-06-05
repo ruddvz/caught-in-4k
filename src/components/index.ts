@@ -1,6 +1,7 @@
 import AddonDetailsModal from './AddonDetailsModal';
 import BottomSheet from './BottomSheet';
 import Button from './Button';
+import C4KEmptyState from './C4KEmptyState';
 import Checkbox from './Checkbox';
 import Chips from './Chips';
 import ColorInput from './ColorInput';
@@ -41,6 +42,7 @@ export {
     AddonDetailsModal,
     BottomSheet,
     Button,
+    C4KEmptyState,
     Checkbox,
     Chips,
     ColorInput,

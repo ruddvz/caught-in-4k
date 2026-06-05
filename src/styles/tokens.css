@@ -1,35 +1,79 @@
-/* Cinematic Gold Glass — canonical design tokens */
+/* C4K iOS Cinema v1 — canonical design tokens */
 :root {
-  --c4k-bg: #050506;
-  --c4k-bg-elevated: #0b0b10;
-  --c4k-surface: rgba(255, 255, 255, 0.055);
-  --c4k-surface-2: rgba(255, 255, 255, 0.085);
+  --c4k-bg: #05060A;
+  --c4k-bg-elevated: #0B0D14;
+  --c4k-bg-soft: #11131C;
+
+  --c4k-glass-1: rgba(255, 255, 255, 0.055);
+  --c4k-glass-2: rgba(255, 255, 255, 0.085);
+  --c4k-glass-3: rgba(255, 255, 255, 0.12);
   --c4k-border: rgba(255, 255, 255, 0.10);
-  --c4k-border-strong: rgba(255, 255, 255, 0.18);
-  --c4k-text: #f7f3ea;
-  --c4k-text-muted: rgba(247, 243, 234, 0.68);
-  --c4k-text-soft: rgba(247, 243, 234, 0.48);
-  --c4k-gold: #f4d38c;
-  --c4k-gold-strong: #ffe3a3;
-  --c4k-gold-soft: rgba(244, 211, 140, 0.16);
-  --c4k-danger: #ff5b6e;
-  --c4k-success: #49d17d;
-  --c4k-warning: #f6b84b;
-  --c4k-info: #7bb7ff;
-  --c4k-radius-sm: 10px;
-  --c4k-radius-md: 16px;
-  --c4k-radius-lg: 22px;
+  --c4k-border-strong: rgba(255, 255, 255, 0.16);
+
+  --c4k-gold: #F4D38C;
+  --c4k-gold-strong: #FFD875;
+  --c4k-gold-soft: rgba(244, 211, 140, 0.14);
+  --c4k-gold-glow: rgba(244, 211, 140, 0.24);
+
+  --c4k-success: #35D07F;
+  --c4k-warning: #FFB84D;
+  --c4k-danger: #FF5D73;
+  --c4k-info: #7CA7FF;
+
+  --c4k-text: #F7F7F9;
+  --c4k-text-muted: rgba(247, 247, 249, 0.68);
+  --c4k-text-subtle: rgba(247, 247, 249, 0.46);
+  --c4k-text-disabled: rgba(247, 247, 249, 0.30);
+
+  --c4k-radius-xs: 10px;
+  --c4k-radius-sm: 14px;
+  --c4k-radius-md: 18px;
+  --c4k-radius-lg: 24px;
   --c4k-radius-xl: 30px;
+  --c4k-radius-pill: 999px;
+
+  --c4k-space-4: 16px;
+  --c4k-space-6: 24px;
+  --c4k-space-8: 32px;
+
+  --c4k-top-bar-height: 58px;
+  --c4k-bottom-tab-height: 74px;
   --c4k-touch: 44px;
+  --c4k-touch-lg: 48px;
+
+  --poster-card-width: clamp(124px, 34vw, 178px);
+  --landscape-card-width: clamp(220px, 64vw, 330px);
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
+
+  /* Aliases used across Stremio-derived LESS */
+  --bg-body: var(--c4k-bg);
+  --bg-base: var(--c4k-bg);
+  --bg-surface-1: var(--c4k-glass-1);
+  --bg-surface-2: var(--c4k-glass-2);
+  --bg-surface-border: var(--c4k-border);
+  --accent-primary: var(--c4k-gold);
+  --accent-primary-light: var(--c4k-gold-strong);
+  --accent-primary-glow: var(--c4k-gold-glow);
+  --text-primary: var(--c4k-text);
+  --text-secondary: var(--c4k-text-muted);
+  --text-tertiary: var(--c4k-text-subtle);
+  --radius-card: var(--c4k-radius-lg);
+  --radius-card-lg: var(--c4k-radius-xl);
+  --radius-pill: var(--c4k-radius-pill);
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root {
     scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
