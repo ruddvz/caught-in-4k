@@ -13,7 +13,21 @@ const TerserPlugin = require('terser-webpack-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
 const packageJson = require('./package.json');
 
-const COMMIT_HASH = execSync('git rev-parse HEAD').toString().trim();
+function getCommitHash() {
+    if (process.env.COMMIT_HASH) {
+        return process.env.COMMIT_HASH;
+    }
+    if (process.env.GITHUB_SHA) {
+        return process.env.GITHUB_SHA;
+    }
+    try {
+        return execSync('git rev-parse HEAD').toString().trim();
+    } catch (_) {
+        return 'local';
+    }
+}
+
+const COMMIT_HASH = getCommitHash();
 const BUILD_CNAME_PATH = path.join(__dirname, 'build', 'CNAME');
 
 if (fs.existsSync(BUILD_CNAME_PATH) && fs.lstatSync(BUILD_CNAME_PATH).isDirectory()) {

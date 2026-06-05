@@ -4,6 +4,7 @@ const Addons = require('./Addons');
 const Board = require('./Board');
 const Discover = require('./Discover');
 const Library = require('./Library');
+const { default: Calendar } = require('./Calendar');
 const MetaDetails = require('./MetaDetails');
 const NotFound = require('./NotFound');
 const Search = require('./Search');
@@ -25,6 +26,7 @@ module.exports = {
     Board,
     Discover,
     Library,
+    Calendar,
     MetaDetails,
     NotFound,
     Search,
