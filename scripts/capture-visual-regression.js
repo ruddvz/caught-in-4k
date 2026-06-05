@@ -17,7 +17,7 @@ const VIEWPORTS = [
     { name: 'desktop', width: 1440, height: 900 },
 ];
 
-const ROUTES = ['/', '/search', '/discover', '/library', '/calendar', '/settings'];
+const ROUTES = ['/', '/search', '/discover', '/library', '/calendar', '/settings', '/addons'];
 
 async function capture() {
     fs.mkdirSync(OUT_DIR, { recursive: true });

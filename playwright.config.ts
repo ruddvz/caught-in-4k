@@ -20,12 +20,12 @@ export default defineConfig({
     projects: [
         {
             name: 'chromium',
-            testIgnore: /ios-pwa\.spec\.ts/,
+            testIgnore: /(ios-pwa|mobile-layout)\.spec\.ts/,
             use: { ...devices['Desktop Chrome'] },
         },
         {
             name: 'iphone',
-            testMatch: /(ios-pwa|smoke)\.spec\.ts/,
+            testMatch: /(ios-pwa|smoke|mobile-layout)\.spec\.ts/,
             use: {
                 ...devices['iPhone 14'],
                 browserName: 'chromium',
