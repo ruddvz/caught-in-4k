@@ -7,7 +7,10 @@
  *   - Satisfaction Meter (dynamic AI-powered one-liners)
  */
 
+const { hashCode } = require('./hashCode.mjs');
+
 const POLLINATIONS_TEXT_URL = 'https://text.pollinations.ai';
+const POLLINATIONS_IMAGE_URL = 'https://image.pollinations.ai/prompt';
 const CANON_TAKE_PROXY_URL = process.env.REACT_APP_CANON_PROXY_URL || '';
 const hasCanonTakeProxy = Boolean(CANON_TAKE_PROXY_URL);
 
@@ -91,6 +94,52 @@ async function generateCanonTake(title, year, genres, imdbRating) {
 }
 
 /**
+ * Pollinations → configured proxy (Gemini/Groq/OpenRouter on the backend).
+ */
+async function generateCanonTakeWithFallbacks(title, year, genres, imdbRating) {
+    const genresStr = Array.isArray(genres) ? genres.join(', ') : (genres || 'unknown');
+    let take = '';
+
+    try {
+        take = await generateCanonTake(title, year, genresStr, imdbRating);
+    } catch (_error) {
+        // Fall through to proxy providers
+    }
+
+    if (!take) {
+        try {
+            take = await fetchCanonTakeFromProxy(title, year, genresStr, imdbRating);
+        } catch (_proxyError) {
+            // All providers unavailable
+        }
+    }
+
+    return take;
+}
+
+function buildPollinationsImageUrl(prompt, { width = 400, height = 600, seed } = {}) {
+    const params = new URLSearchParams();
+    params.set('width', String(width));
+    params.set('height', String(height));
+    if (seed !== undefined) {
+        params.set('seed', String(seed));
+    }
+
+    return `${POLLINATIONS_IMAGE_URL}/${encodeURIComponent(prompt)}?${params.toString()}`;
+}
+
+function buildPosterFallbackUrl(title, year, { width = 400, height = 600 } = {}) {
+    const safeTitle = typeof title === 'string' ? title.trim() : 'movie';
+    const safeYear = year || '';
+    const prompt = `cinematic movie poster for ${safeTitle} ${safeYear}, dramatic lighting, premium streaming artwork, no text`;
+    return buildPollinationsImageUrl(prompt, {
+        width,
+        height,
+        seed: hashCode(`poster_${safeTitle}_${safeYear}`),
+    });
+}
+
+/**
  * Generate a personalized satisfaction one-liner for a movie
  */
 async function generateSatisfactionOneLiner(title, year, tierName, score) {
@@ -99,13 +148,13 @@ async function generateSatisfactionOneLiner(title, year, tierName, score) {
     return pollinationsText(SATISFACTION_SYSTEM, userPrompt, { seed });
 }
 
-/** Simple deterministic hash for consistent seed per movie */
-function hashCode(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
-    }
-    return Math.abs(hash);
-}
-
-module.exports = { generateCanonTake, generateSatisfactionOneLiner, pollinationsText, fetchCanonTakeFromProxy, hasCanonTakeProxy };
+module.exports = {
+    generateCanonTake,
+    generateCanonTakeWithFallbacks,
+    generateSatisfactionOneLiner,
+    pollinationsText,
+    fetchCanonTakeFromProxy,
+    hasCanonTakeProxy,
+    buildPollinationsImageUrl,
+    buildPosterFallbackUrl,
+};

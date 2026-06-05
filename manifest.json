@@ -41,6 +41,47 @@
             "purpose": "maskable"
         }
     ],
+    "shortcuts": [
+        {
+            "name": "Home",
+            "short_name": "Home",
+            "description": "Open the C4K home board",
+            "url": "./",
+            "icons": [
+                {
+                    "src": "images/pwa-icon-192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Discover",
+            "short_name": "Discover",
+            "description": "Browse movies and shows",
+            "url": "./discover",
+            "icons": [
+                {
+                    "src": "images/pwa-icon-192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Library",
+            "short_name": "Library",
+            "description": "Your saved library",
+            "url": "./library",
+            "icons": [
+                {
+                    "src": "images/pwa-icon-192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        }
+    ],
     "screenshots": [
         {
             "src": "screenshots/board_wide.webp",

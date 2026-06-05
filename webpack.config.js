@@ -284,6 +284,7 @@ module.exports = (env, argv) => ({
             REACT_APP_SUPABASE_URL: null,
             REACT_APP_SUPABASE_ANON_KEY: null,
             REACT_APP_STRIPE_PUBLISHABLE_KEY: null,
+            REACT_APP_PLAUSIBLE_DOMAIN: null,
             // Comma-separated invite keys (12 alphanumeric chars each, optional XXXX-XXXX-XXXX formatting).
             // When empty, the access gate is disabled (typical for local dev).
             C4K_ACCESS_KEYS: '',

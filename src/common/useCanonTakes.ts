@@ -5,7 +5,7 @@
 
 import { useCallback } from 'react';
 
-const { generateCanonTake, fetchCanonTakeFromProxy } = require('./pollinationsApi');
+const { generateCanonTakeWithFallbacks } = require('./pollinationsApi');
 
 const CACHE_PREFIX = 'c4k_canon_take_';
 
@@ -51,23 +51,7 @@ export const useCanonTakes = () => {
                 return cached.canonTake;
             }
 
-            const genresStr = Array.isArray(genres) ? genres.join(', ') : (genres || 'unknown');
-            let take = '';
-
-            // Pollinations.AI (free, no key needed)
-            try {
-                take = await generateCanonTake(title, year, genresStr, imdbRating);
-            } catch (_err) {
-                // Fall through to the configured proxy when Pollinations is unavailable
-            }
-
-            if (!take) {
-                try {
-                    take = await fetchCanonTakeFromProxy(title, year, genresStr, imdbRating);
-                } catch (_proxyErr) {
-                    // Both providers unavailable — CanonTakeBox will hide itself
-                }
-            }
+            const take = await generateCanonTakeWithFallbacks(title, year, genres, imdbRating);
 
             if (take) {
                 setCached(title, year, take);

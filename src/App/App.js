@@ -27,6 +27,7 @@ const withProtectedRoutes = require('./withProtectedRoutes');
 const routerViewsConfig = require('./routerViewsConfig');
 const { AuthProvider } = require('stremio/common/AuthProvider');
 const AccessKeyGate = require('stremio/components/AccessKeyGate');
+const ProfileLockGate = require('stremio/components/ProfileLockGate/ProfileLockGate');
 const styles = require('./styles');
 
 const RouterWithProtectedRoutes = withCoreSuspender(withProtectedRoutes(Router));
@@ -263,36 +264,38 @@ const AppShell = () => {
                             <PlatformProvider>
                                 <AuthProvider>
                                     <AccessKeyGate>
-                                        <ToastProvider className={styles['toasts-container']}>
-                                            <TooltipProvider className={styles['tooltip-container']}>
-                                                <FileDropProvider className={styles['file-drop-container']}>
-                                                    <ShortcutsProvider onShortcut={onShortcut}>
-                                                        <GamepadProvider
-                                                            enabled={c4kSettings.gamepadNavigation !== false}
-                                                            onGuide={toggleShortcutModal}
-                                                        >
-                                                            {c4kSettings.gamepadNavigation !== false ? <GamepadNavigation /> : null}
-                                                            {
-                                                                shortcutModalOpen && <ShortcutsModal onClose={closeShortcutsModal}/>
-                                                            }
-                                                            <ServicesToaster />
-                                                            <DeepLinkHandler />
-                                                            <SearchParamsHandler />
-                                                            <ManagedAddonSync />
-                                                            <UpdaterBanner className={styles['updater-banner-container']} />
-                                                            <PwaUpdateBanner className={styles['updater-banner-container']} />
-                                                            <PwaInstallBanner className={styles['updater-banner-container']} />
-                                                            <OfflineBanner />
-                                                            <RouterWithProtectedRoutes
-                                                                className={classnames(styles['router'], 'animation-fade-in')}
-                                                                viewsConfig={routerViewsConfig}
-                                                                onPathNotMatch={onPathNotMatch}
-                                                            />
-                                                        </GamepadProvider>
-                                                    </ShortcutsProvider>
-                                                </FileDropProvider>
-                                            </TooltipProvider>
-                                        </ToastProvider>
+                                        <ProfileLockGate>
+                                            <ToastProvider className={styles['toasts-container']}>
+                                                <TooltipProvider className={styles['tooltip-container']}>
+                                                    <FileDropProvider className={styles['file-drop-container']}>
+                                                        <ShortcutsProvider onShortcut={onShortcut}>
+                                                            <GamepadProvider
+                                                                enabled={c4kSettings.gamepadNavigation !== false}
+                                                                onGuide={toggleShortcutModal}
+                                                            >
+                                                                {c4kSettings.gamepadNavigation !== false ? <GamepadNavigation /> : null}
+                                                                {
+                                                                    shortcutModalOpen && <ShortcutsModal onClose={closeShortcutsModal}/>
+                                                                }
+                                                                <ServicesToaster />
+                                                                <DeepLinkHandler />
+                                                                <SearchParamsHandler />
+                                                                <ManagedAddonSync />
+                                                                <UpdaterBanner className={styles['updater-banner-container']} />
+                                                                <PwaUpdateBanner className={styles['updater-banner-container']} />
+                                                                <PwaInstallBanner className={styles['updater-banner-container']} />
+                                                                <OfflineBanner />
+                                                                <RouterWithProtectedRoutes
+                                                                    className={classnames(styles['router'], 'animation-fade-in')}
+                                                                    viewsConfig={routerViewsConfig}
+                                                                    onPathNotMatch={onPathNotMatch}
+                                                                />
+                                                            </GamepadProvider>
+                                                        </ShortcutsProvider>
+                                                    </FileDropProvider>
+                                                </TooltipProvider>
+                                            </ToastProvider>
+                                        </ProfileLockGate>
                                     </AccessKeyGate>
                                 </AuthProvider>
                             </PlatformProvider>

@@ -7,6 +7,7 @@ const { navigateToAppHref } = require('stremio/common/navigation');
 const { withCoreSuspender } = require('stremio/common');
 const { useAuth } = require('stremio/common/AuthProvider');
 const { PROFILE_CHANGE_EVENT, createProfileStore, getSelectedProfileId } = require('stremio/common/profileStore');
+const { markProfileUnlocked } = require('stremio/common/profileUnlock');
 const { extractAccentFromAvatar } = require('../../common/useAvatarAccentColor');
 const AVAILABLE_AVATARS = require('../../common/profileAvatars');
 const PinModal = require('./PinModal/PinModal');
@@ -213,6 +214,7 @@ const Profiles = () => {
                                 return false;
                             }
 
+                            markProfileUnlocked(pinModalProfile.id);
                             doSelectProfile(pinModalProfile);
                             setPinModalProfile(null);
                             return true;
