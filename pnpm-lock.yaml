@@ -60,8 +60,8 @@ importers:
         specifier: ^2.101.1
         version: 2.105.3
       '@tabler/icons-react':
-        specifier: ^3.40.0
-        version: 3.41.0(react@18.3.1)
+        specifier: ^3.44.0
+        version: 3.44.0(react@18.3.1)
       a-color-picker:
         specifier: 1.2.1
         version: 1.2.1
@@ -2204,13 +2204,13 @@ packages:
     resolution: {integrity: sha512-5Dm9+I61LAWwjw+0zcqXhSmTxUJaYHBPyHwMCIBH4TBUNwDn2pYUIsi6oUu0I5r9HtLtaFl7w4wa+DV9gRsbDg==}
     engines: {node: '>=20.0.0'}
 
-  '@tabler/icons-react@3.41.0':
-    resolution: {integrity: sha512-8XKc3wZKf1icxqwIPSOO61M+dtf8yJPwAE/rtFAVzc5Ros+OjCqowfcoI5IpKK09RSo8s0hHrWvydGgnXqYILg==}
+  '@tabler/icons-react@3.44.0':
+    resolution: {integrity: sha512-8+rvzBbVm/1Z3sG3x7GUNAaxIKxwgz8xaMhRs23nrCnMTKRFAhEC+82zAIFeAA0seXdrAGX5HFCkaLpGK2rVHg==}
     peerDependencies:
       react: '>= 16'
 
-  '@tabler/icons@3.41.0':
-    resolution: {integrity: sha512-arlig0nkaC9UGqTZuT1MMZepX29t3Ysx5HSy2UvmR+CZrhlNxZrCM6Z4qYBoaIO+2ICZykttjBCSpf+p/t0H3w==}
+  '@tabler/icons@3.44.0':
+    resolution: {integrity: sha512-Wn0AOZG9sg0L+bjfMqq4eNhC6pQjIrk94LvvWYNYkY8KH8wC3YILRzQlrnVJc4FUeMxH/AK97QsYCX35H3LndA==}
 
   '@tanstack/query-core@5.100.9':
     resolution: {integrity: sha512-SJSFw1S8+kQ0+knv/XGfrbocWoAlT7vDKsSImtLx3ZPQmEcR46hkDjLSvynSy25N8Ms4tIEini1FuBd5k7IscQ==}
@@ -8975,12 +8975,12 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@tabler/icons-react@3.41.0(react@18.3.1)':
+  '@tabler/icons-react@3.44.0(react@18.3.1)':
     dependencies:
-      '@tabler/icons': 3.41.0
+      '@tabler/icons': 3.44.0
       react: 18.3.1
 
-  '@tabler/icons@3.41.0': {}
+  '@tabler/icons@3.44.0': {}
 
   '@tanstack/query-core@5.100.9': {}
 
