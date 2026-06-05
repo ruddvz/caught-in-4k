@@ -54,8 +54,8 @@ importers:
         specifier: 0.0.79
         version: 0.0.79
       '@stripe/stripe-js':
-        specifier: ^9.0.1
-        version: 9.4.0
+        specifier: ^9.7.0
+        version: 9.7.0
       '@supabase/supabase-js':
         specifier: ^2.101.1
         version: 2.105.3
@@ -2161,8 +2161,8 @@ packages:
   '@stremio/stremio-video@0.0.79':
     resolution: {integrity: sha512-RfxmeG+rQdoflfqBybRB9vSqb3cjc3Fd5T9uNNUbwC287apQsNyjYOlvk7sfRlQ1Za/UdFsyoqR5vGBSBDzlhQ==}
 
-  '@stripe/stripe-js@9.4.0':
-    resolution: {integrity: sha512-zXG86DnoLU5nH2U18tX5ApTE3IAm+txoiPm4YFyEtRS0K5y7ZDH9M8e1Le/cZyI6wvW3BkJn2daZe2FqZOrSSg==}
+  '@stripe/stripe-js@9.7.0':
+    resolution: {integrity: sha512-r1ElolvWXM4aYnZZVHvKW3EDL8JcwEuIgTuWxlB5lvC+YsvjkQ0gX35x9d8dTDubX395fViLVqkaolVs1PmIQQ==}
     engines: {node: '>=12.16'}
 
   '@stylistic/eslint-plugin-jsx@4.4.1':
@@ -8915,7 +8915,7 @@ snapshots:
       video-name-parser: 1.4.6
       vtt.js: https://codeload.github.com/jaruba/vtt.js/tar.gz/84d33d157848407d790d78423dacc41a096294f0
 
-  '@stripe/stripe-js@9.4.0': {}
+  '@stripe/stripe-js@9.7.0': {}
 
   '@stylistic/eslint-plugin-jsx@4.4.1(eslint@9.39.4(jiti@1.21.7))':
     dependencies:
