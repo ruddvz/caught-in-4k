@@ -38,6 +38,10 @@ const routerViewsConfig = [
         {
             ...routesRegexp.search,
             component: routes.Search
+        },
+        {
+            ...routesRegexp.calendar,
+            component: routes.Calendar
         }
     ],
     [

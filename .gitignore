@@ -15,8 +15,13 @@ lint_result.json
 
 # Environment files — NEVER commit secrets or API keys
 .env
+.env.local
+.env.*.local
+.env.production
+.env.development
 .env.*
 !.env.example
+package-lock.json
 
 # Claude Organize — ephemeral log file
 docs/organization-log.json

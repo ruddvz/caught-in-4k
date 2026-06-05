@@ -27,6 +27,18 @@ describe('routesRegexp', () => {
         });
     });
 
+    describe('calendar route regexp', () => {
+        it('match /calendar', () => {
+            expect(Array.from('/calendar'.match(routesRegexp.calendar.regexp)))
+                .toEqual(['/calendar', undefined, undefined]);
+        });
+
+        it('match /calendar/2026/06', () => {
+            expect(Array.from('/calendar/2026/06'.match(routesRegexp.calendar.regexp)))
+                .toEqual(['/calendar/2026/06', '2026', '06']);
+        });
+    });
+
     describe('shaders hero preview route regexp', () => {
         it('match /shaders-hero-preview', async () => {
             expect(Array.from('/shaders-hero-preview'.match(routesRegexp.shadersHeroPreview.regexp)))

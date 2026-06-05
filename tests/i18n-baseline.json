@@ -1,0 +1,177 @@
+[
+  {
+    "file": "src/components/ExternalRatings/ExternalRatings.js",
+    "line": 74,
+    "string": "C4K Consensus"
+  },
+  {
+    "file": "src/components/NavBar/HorizontalNavBar/NavMenu/NavMenuContent.js",
+    "line": 55,
+    "string": "Switch Profile"
+  },
+  {
+    "file": "src/components/NavBar/HorizontalNavBar/NavMenu/NavMenuContent.js",
+    "line": 77,
+    "string": "Help"
+  },
+  {
+    "file": "src/components/SatisfactionMeterLegend/SatisfactionMeterLegend.js",
+    "line": 8,
+    "string": "Satisfaction Ratings"
+  },
+  {
+    "file": "src/components/ui/pricing-section.tsx",
+    "line": 151,
+    "string": "✓ Selected"
+  },
+  {
+    "file": "src/components/ui/pricing-section.tsx",
+    "line": 164,
+    "string": "Pricing"
+  },
+  {
+    "file": "src/components/ui/pricing-section.tsx",
+    "line": 165,
+    "string": "Select the plan that best suits your needs."
+  },
+  {
+    "file": "src/components/ui/pricing-slider-demo.tsx",
+    "line": 77,
+    "string": "★ Popular"
+  },
+  {
+    "file": "src/components/ui/pricing-slider-demo.tsx",
+    "line": 82,
+    "string": "base + $"
+  },
+  {
+    "file": "src/components/ui/pricing-slider-demo.tsx",
+    "line": 82,
+    "string": "/extra user"
+  },
+  {
+    "file": "src/components/ui/pricing-slider-demo.tsx",
+    "line": 106,
+    "string": "Customize Your Squad"
+  },
+  {
+    "file": "src/components/ui/pricing-slider-demo.tsx",
+    "line": 107,
+    "string": "Scale your plan based on simultaneous connections."
+  },
+  {
+    "file": "src/components/ui/pricing-slider-demo.tsx",
+    "line": 113,
+    "string": "Number of Users"
+  },
+  {
+    "file": "src/components/ui/pricing-slider-demo.tsx",
+    "line": 134,
+    "string": "Team pricing is a preview concept only. Live checkout currently supports the fixed 30, 90, and 180 day plans on the subscribe page."
+  },
+  {
+    "file": "src/components/ui/pricing-slider-demo.tsx",
+    "line": 139,
+    "string": "Open fixed-term checkout"
+  },
+  {
+    "file": "src/routes/MetaDetails/QualityPicker/QualityPicker.js",
+    "line": 112,
+    "string": "Back to quality selection"
+  },
+  {
+    "file": "src/routes/MetaDetails/QualityPicker/QualityPicker.js",
+    "line": 136,
+    "string": "Select Quality"
+  },
+  {
+    "file": "src/routes/MetaDetails/QualityPicker/QualityPicker.js",
+    "line": 138,
+    "string": "Scanning sources..."
+  },
+  {
+    "file": "src/routes/Settings/General/DevicesWidget.tsx",
+    "line": 33,
+    "string": "This device"
+  },
+  {
+    "file": "src/routes/Settings/General/DevicesWidget.tsx",
+    "line": 35,
+    "string": "max"
+  },
+  {
+    "file": "src/routes/Settings/General/DevicesWidget.tsx",
+    "line": 41,
+    "string": "Device preview unavailable."
+  },
+  {
+    "file": "src/routes/Settings/General/DevicesWidget.tsx",
+    "line": 54,
+    "string": "This device"
+  },
+  {
+    "file": "src/routes/Settings/General/DevicesWidget.tsx",
+    "line": 56,
+    "string": "Active"
+  },
+  {
+    "file": "src/routes/Settings/General/DevicesWidget.tsx",
+    "line": 64,
+    "string": "Current-browser preview only. Account-wide counts and device removal unlock after backend sync is connected."
+  },
+  {
+    "file": "src/routes/Settings/General/General.tsx",
+    "line": 208,
+    "string": "Change Password"
+  },
+  {
+    "file": "src/routes/Settings/General/General.tsx",
+    "line": 215,
+    "string": "Delete Account"
+  },
+  {
+    "file": "src/routes/Settings/Interface/Interface.tsx",
+    "line": 23,
+    "string": "INTERFACE & SYSTEM"
+  },
+  {
+    "file": "src/routes/Settings/ProfileManagement/ProfileManagement.tsx",
+    "line": 158,
+    "string": "PROFILES"
+  },
+  {
+    "file": "src/routes/Settings/ProfileManagement/ProfileManagement.tsx",
+    "line": 236,
+    "string": "Add Profile"
+  },
+  {
+    "file": "src/routes/Settings/ProfileManagement/ProfileManagement.tsx",
+    "line": 251,
+    "string": "Set a master code before deleting profiles."
+  },
+  {
+    "file": "src/routes/Settings/Settings.tsx",
+    "line": 165,
+    "string": "Terms of Service"
+  },
+  {
+    "file": "src/routes/Settings/Settings.tsx",
+    "line": 167,
+    "string": "Privacy Policy"
+  },
+  {
+    "file": "src/routes/SettingsShortcuts/SettingsShortcuts.tsx",
+    "line": 17,
+    "string": "Back to Settings"
+  },
+  {
+    "file": "src/routes/SettingsShortcuts/SettingsShortcuts.tsx",
+    "line": 19,
+    "string": "Keyboard Shortcuts"
+  },
+  {
+    "file": "src/routes/SettingsShortcuts/SettingsShortcuts.tsx",
+    "line": 20,
+    "string": "Master the keys, master the stream"
+  }
+]

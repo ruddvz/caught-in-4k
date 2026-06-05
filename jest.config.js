@@ -1,3 +1,5 @@
+const includeI18nScan = process.env.JEST_INCLUDE_I18N === '1';
+
 module.exports = {
     roots: ['<rootDir>/tests'],
     testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
@@ -10,5 +12,6 @@ module.exports = {
         '<rootDir>/build/',
         '<rootDir>/everything-claude-code/',
         '<rootDir>/\\.claude/',
+        ...(includeI18nScan ? [] : ['<rootDir>/tests/i18nScan.test.js']),
     ],
 };

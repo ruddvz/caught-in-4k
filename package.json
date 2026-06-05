@@ -6,14 +6,20 @@
     "description": "Caught in 4K — watch in 4K. Gen Z streaming experience.",
     "author": "Caught in 4K",
     "private": true,
-    "license": "gpl-2.0",
+    "license": "GPL-2.0-only",
+    "packageManager": "pnpm@10.33.3",
+    "engines": {
+        "node": ">=20 <23",
+        "pnpm": ">=10"
+    },
     "scripts": {
         "start": "webpack serve --mode development",
         "start-prod": "webpack serve --mode production",
         "build": "webpack --mode production",
         "test": "jest",
         "lint": "eslint src",
-        "scan-translations": "pnpx jest ./tests/i18nScan.test.js",
+        "scan-translations": "cross-env JEST_INCLUDE_I18N=1 jest ./tests/i18nScan.test.js",
+        "verify-service-worker": "node scripts/verify-service-worker.js",
         "e2e": "expect-cli",
         "e2e:auto": "expect-cli --target unstaged -a claude -y",
         "e2e:branch": "expect-cli --target branch -a claude -y"
@@ -79,6 +85,7 @@
     },
     "devDependencies": {
         "@babel/core": "7.26.0",
+        "@babel/parser": "^7.29.7",
         "@babel/preset-env": "7.26.0",
         "@babel/preset-react": "7.26.3",
         "@eslint/js": "^9.16.0",
