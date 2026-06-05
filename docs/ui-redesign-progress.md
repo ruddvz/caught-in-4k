@@ -4,7 +4,7 @@ Master plan: `CAUGHT_IN_4K_IOS_PWA_UI_UX_REDESIGN_MASTER_PLAN.md`
 
 | Phase | Branch | PR | Status | Screens verified | Tests run | Notes |
 |---|---|---|---|---|---|---|
-| 0 | cursor/ios-pwa-ui-redesign-28ab | — | done | baseline doc | lint/test/build | Progress + route map created |
+| 0 | cursor/ios-pwa-ui-redesign-28ab | #32 | done | baseline doc | lint/test/build | Progress + route map created |
 | 1 | cursor/ios-pwa-ui-redesign-28ab | — | done | tokens | lint/test/build | C4K iOS Cinema tokens + DESIGN.md |
 | 2 | cursor/ios-pwa-ui-redesign-28ab | — | done | shell | lint/test/build | Global reset, dvh shell, gold focus |
 | 3 | cursor/ios-pwa-ui-redesign-28ab | — | done | nav | e2e | 5-tab iOS bar, Profile tab |
