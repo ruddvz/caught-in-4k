@@ -10,15 +10,30 @@ const useFullscreen = () => {
 
     const [fullscreen, setFullscreen] = useState(() => document.fullscreenElement === document.documentElement);
 
-    const requestFullscreen = useCallback(async () => {
+    const requestFullscreen = useCallback(async (videoElement?: HTMLVideoElement) => {
         if (shell.active) {
             shell.send('win-set-visibility', { fullscreen: true });
-        } else {
+            return;
+        }
+
+        const video = videoElement ?? document.querySelector('video');
+        const webkitVideo = video as HTMLVideoElement & {
+            webkitEnterFullscreen?: () => void;
+        };
+
+        if (webkitVideo?.webkitEnterFullscreen) {
             try {
-                await document.documentElement.requestFullscreen();
+                webkitVideo.webkitEnterFullscreen();
+                return;
             } catch (err) {
-                console.error('Error enabling fullscreen', err);
+                console.warn('webkitEnterFullscreen failed, falling back to document fullscreen', err);
             }
+        }
+
+        try {
+            await document.documentElement.requestFullscreen();
+        } catch (err) {
+            console.error('Error enabling fullscreen', err);
         }
     }, []);
 
