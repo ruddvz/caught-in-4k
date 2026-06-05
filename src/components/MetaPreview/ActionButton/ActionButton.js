@@ -4,7 +4,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const { default: Icon } = require('@stremio/stremio-icons/react');
-const { Button } = require('stremio/components');
+const { default: Button } = require('stremio/components/Button');
 const styles = require('./styles');
 const { Tooltip } = require('stremio/common/Tooltips');
 

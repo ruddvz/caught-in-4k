@@ -3,7 +3,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const { useTranslation } = require('react-i18next');
-const { Button } = require('stremio/components');
+const { default: Button } = require('stremio/components/Button');
 const {
     isAccessKeyGateEnabled,
     isAccessKeyBrowserUnlocked,

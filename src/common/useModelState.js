@@ -6,7 +6,7 @@ const { deepEqual } = require('fast-equals');
 const intersection = require('lodash.intersection');
 const { useCoreSuspender } = require('stremio/common/CoreSuspender');
 const { useRouteFocused } = require('stremio-router');
-const { useServices } = require('stremio/services');
+const useServices = require('stremio/services/ServicesContext/useServices');
 
 const useModelState = ({ action, ...args }) => {
     const { core } = useServices();
