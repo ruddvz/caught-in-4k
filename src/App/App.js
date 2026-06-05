@@ -18,6 +18,7 @@ const ManagedAddonSync = require('./ManagedAddonSync');
 const { default: UpdaterBanner } = require('./UpdaterBanner');
 const { default: OfflineBanner } = require('./OfflineBanner');
 const { default: PwaUpdateBanner } = require('./PwaUpdateBanner');
+const { default: PwaInstallBanner } = require('./PwaInstallBanner');
 const { default: ShortcutsModal } = require('./ShortcutsModal');
 const { c4kAgents } = require('../services/BackgroundAgents/C4KBackgroundAgents');
 const { registerCurrentDevice } = require('../common/useDeviceSession');
@@ -280,6 +281,7 @@ const AppShell = () => {
                                                             <ManagedAddonSync />
                                                             <UpdaterBanner className={styles['updater-banner-container']} />
                                                             <PwaUpdateBanner className={styles['updater-banner-container']} />
+                                                            <PwaInstallBanner className={styles['updater-banner-container']} />
                                                             <OfflineBanner />
                                                             <RouterWithProtectedRoutes
                                                                 className={classnames(styles['router'], 'animation-fade-in')}

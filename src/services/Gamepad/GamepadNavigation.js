@@ -10,6 +10,17 @@ const DIRECTION_MAP = {
     right: 'right',
 };
 
+const dismissOpenOverlay = () => {
+    const closeButton = document.querySelector(
+        '[data-gamepad-dismiss], .modal-dialog-container button[aria-label], [role="dialog"] button'
+    );
+    if (closeButton instanceof HTMLElement) {
+        closeButton.click();
+        return true;
+    }
+    return false;
+};
+
 /**
  * Maps gamepad D-pad / left-stick analog events to spatial-navigation `window.navigate`.
  */
@@ -31,12 +42,23 @@ const GamepadNavigation = () => {
             }
         };
 
+        const onButtonB = () => {
+            if (dismissOpenOverlay()) {
+                return;
+            }
+            if (typeof window.history !== 'undefined' && window.history.length > 1) {
+                window.history.back();
+            }
+        };
+
         gamepad.on('analog', 'spatial-nav', onAnalog);
         gamepad.on('buttonA', 'spatial-nav', onButtonA);
+        gamepad.on('buttonB', 'spatial-nav', onButtonB);
 
         return () => {
             gamepad.off('analog', 'spatial-nav');
             gamepad.off('buttonA', 'spatial-nav');
+            gamepad.off('buttonB', 'spatial-nav');
         };
     }, [gamepad]);
 

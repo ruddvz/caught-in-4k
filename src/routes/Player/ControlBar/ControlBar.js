@@ -129,18 +129,18 @@ const ControlBar = ({
                 onSeekRequested={onSeekRequested}
             />
             <div className={styles['control-bar-buttons-container']}>
-                <Button className={classnames(styles['control-bar-button'], { 'disabled': typeof paused !== 'boolean' })} title={paused ? t('PLAYER_PLAY') : t('PLAYER_PAUSE')} tabIndex={-1} onClick={onPlayPauseButtonClick}>
+                <Button className={classnames(styles['control-bar-button'], { 'disabled': typeof paused !== 'boolean' })} title={paused ? t('PLAYER_PLAY') : t('PLAYER_PAUSE')} aria-label={paused ? t('PLAYER_PLAY') : t('PLAYER_PAUSE')} tabIndex={-1} onClick={onPlayPauseButtonClick}>
                     <Icon className={styles['icon']} name={typeof paused !== 'boolean' || paused ? 'play' : 'pause'} />
                 </Button>
                 {
                     nextVideo !== null ?
-                        <Button className={classnames(styles['control-bar-button'])} title={t('PLAYER_NEXT_VIDEO')} tabIndex={-1} onClick={onNextVideoButtonClick}>
+                        <Button className={classnames(styles['control-bar-button'])} title={t('PLAYER_NEXT_VIDEO')} aria-label={t('PLAYER_NEXT_VIDEO')} tabIndex={-1} onClick={onNextVideoButtonClick}>
                             <Icon className={styles['icon']} name={'next'} />
                         </Button>
                         :
                         null
                 }
-                <Button className={classnames(styles['control-bar-button'], { 'disabled': typeof muted !== 'boolean' })} title={muted ? t('PLAYER_UNMUTE') : t('PLAYER_MUTE')} tabIndex={-1} onClick={onMuteButtonClick}>
+                <Button className={classnames(styles['control-bar-button'], { 'disabled': typeof muted !== 'boolean' })} title={muted ? t('PLAYER_UNMUTE') : t('PLAYER_MUTE')} aria-label={muted ? t('PLAYER_UNMUTE') : t('PLAYER_MUTE')} tabIndex={-1} onClick={onMuteButtonClick}>
                     <Icon
                         className={styles['icon']}
                         name={
@@ -164,34 +164,34 @@ const ControlBar = ({
                         : null
                 }
                 <div className={styles['spacing']} />
-                <Button className={styles['control-bar-buttons-menu-button']} onClick={toggleButtonsMenu}>
+                <Button className={styles['control-bar-buttons-menu-button']} title={t('PLAYER_MORE_CONTROLS', 'More controls')} aria-label={t('PLAYER_MORE_CONTROLS', 'More controls')} onClick={toggleButtonsMenu}>
                     <Icon className={styles['icon']} name={'more-vertical'} />
                 </Button>
                 <div className={classnames(styles['control-bar-buttons-menu-container'], { 'open': buttonsMenuOpen })}>
-                    <Button className={classnames(styles['control-bar-button'], { 'disabled': statistics === null || statistics.type === 'Err' || stream === null || typeof stream.infoHash !== 'string' || typeof stream.fileIdx !== 'number' })} tabIndex={-1} onMouseDown={onStatisticsButtonMouseDown} onClick={onToggleStatisticsMenu}>
+                    <Button className={classnames(styles['control-bar-button'], { 'disabled': statistics === null || statistics.type === 'Err' || stream === null || typeof stream.infoHash !== 'string' || typeof stream.fileIdx !== 'number' })} title={t('PLAYER_STATISTICS', 'Statistics')} aria-label={t('PLAYER_STATISTICS', 'Statistics')} tabIndex={-1} onMouseDown={onStatisticsButtonMouseDown} onClick={onToggleStatisticsMenu}>
                         <Icon className={styles['icon']} name={'network'} />
                     </Button>
-                    <Button className={classnames(styles['control-bar-button'], { 'disabled': playbackSpeed === null })} tabIndex={-1} onMouseDown={onSpeedButtonMouseDown} onClick={onToggleSpeedMenu}>
+                    <Button className={classnames(styles['control-bar-button'], { 'disabled': playbackSpeed === null })} title={t('PLAYER_PLAYBACK_SPEED', 'Playback speed')} aria-label={t('PLAYER_PLAYBACK_SPEED', 'Playback speed')} tabIndex={-1} onMouseDown={onSpeedButtonMouseDown} onClick={onToggleSpeedMenu}>
                         <Icon className={styles['icon']} name={'speed'} />
                     </Button>
-                    <Button className={classnames(styles['control-bar-button'], { 'disabled': !chromecastServiceActive })} tabIndex={-1} onClick={onChromecastButtonClick}>
+                    <Button className={classnames(styles['control-bar-button'], { 'disabled': !chromecastServiceActive })} title={t('PLAYER_CAST', 'Cast')} aria-label={t('PLAYER_CAST', 'Cast')} tabIndex={-1} onClick={onChromecastButtonClick}>
                         <Icon className={styles['icon']} name={'cast'} />
                     </Button>
-                    <Button className={classnames(styles['control-bar-button'], { 'disabled': !Array.isArray(subtitlesTracks) || subtitlesTracks.length === 0 })} tabIndex={-1} onMouseDown={onSubtitlesButtonMouseDown} onClick={onToggleSubtitlesMenu}>
+                    <Button className={classnames(styles['control-bar-button'], { 'disabled': !Array.isArray(subtitlesTracks) || subtitlesTracks.length === 0 })} title={t('PLAYER_SUBTITLES', 'Subtitles')} aria-label={t('PLAYER_SUBTITLES', 'Subtitles')} tabIndex={-1} onMouseDown={onSubtitlesButtonMouseDown} onClick={onToggleSubtitlesMenu}>
                         <Icon className={styles['icon']} name={'subtitles'} />
                     </Button>
-                    <Button className={classnames(styles['control-bar-button'], { 'disabled': !Array.isArray(audioTracks) || audioTracks.length === 0 })} tabIndex={-1} onMouseDown={onAudioButtonMouseDown} onClick={onToggleAudioMenu}>
+                    <Button className={classnames(styles['control-bar-button'], { 'disabled': !Array.isArray(audioTracks) || audioTracks.length === 0 })} title={t('PLAYER_AUDIO', 'Audio')} aria-label={t('PLAYER_AUDIO', 'Audio')} tabIndex={-1} onMouseDown={onAudioButtonMouseDown} onClick={onToggleAudioMenu}>
                         <Icon className={styles['icon']} name={'audio-tracks'} />
                     </Button>
                     {
                         metaItem?.content?.videos?.length > 0 ?
-                            <Button className={styles['control-bar-button']} tabIndex={-1} onMouseDown={onVideosButtonMouseDown} onClick={onToggleSideDrawer}>
+                            <Button className={styles['control-bar-button']} title={t('PLAYER_EPISODES', 'Episodes')} aria-label={t('PLAYER_EPISODES', 'Episodes')} tabIndex={-1} onMouseDown={onVideosButtonMouseDown} onClick={onToggleSideDrawer}>
                                 <Icon className={styles['icon']} name={'episodes'} />
                             </Button>
                             :
                             null
                     }
-                    <Button className={classnames(styles['control-bar-button'], { 'disabled': !stream })} tabIndex={-1} onMouseDown={onOptionsButtonMouseDown} onClick={onToggleOptionsMenu}>
+                    <Button className={classnames(styles['control-bar-button'], { 'disabled': !stream })} title={t('PLAYER_OPTIONS', 'Options')} aria-label={t('PLAYER_OPTIONS', 'Options')} tabIndex={-1} onMouseDown={onOptionsButtonMouseDown} onClick={onToggleOptionsMenu}>
                         <Icon className={styles['icon']} name={'more-horizontal'} />
                     </Button>
                 </div>

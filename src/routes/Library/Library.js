@@ -5,7 +5,9 @@ const { useTranslation } = require('react-i18next');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const NotFound = require('stremio/routes/NotFound');
+const { buildAppHref } = require('stremio/common/navigation');
 const { useProfile, useNotifications, routesRegexp, useOnScrollToBottom, withCoreSuspender } = require('stremio/common');
+const { Button } = require('stremio/components');
 const { DelayedRenderer, Chips, Image, MainNavBars, LibItem, MultiselectMenu } = require('stremio/components');
 const { default: Placeholder } = require('./Placeholder');
 const useLibrary = require('./useLibrary');
@@ -61,10 +63,31 @@ const Library = ({ model, urlParams, queryParams }) => {
     }, [hasNextPage, loadNextPage]);
     const onScroll = useOnScrollToBottom(onScrollToBottom, SCROLL_TO_BOTTOM_TRESHOLD);
     React.useLayoutEffect(() => {
-        if (scrollContainerRef.current !== null && library.selected && library.selected.request.page === 1 && library.catalog.length !== 0) {
+        if (scrollContainerRef.current === null || !library.selected || library.catalog.length === 0) {
+            return;
+        }
+        if (model === 'continue_watching') {
+            const inProgressIndex = library.catalog.findIndex(
+                (item) => typeof item.progress === 'number' && !isNaN(item.progress) && item.progress > 0 && item.progress < 1
+            );
+            const targetIndex = inProgressIndex >= 0
+                ? inProgressIndex
+                : library.catalog.findIndex(
+                    (item) => typeof item.progress === 'number' && !isNaN(item.progress) && item.progress > 0
+                );
+            if (targetIndex >= 0) {
+                const items = scrollContainerRef.current.querySelectorAll(`.${styles['lib-item']}`);
+                const target = items[targetIndex];
+                if (target instanceof HTMLElement) {
+                    target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+                }
+                return;
+            }
+        }
+        if (library.selected.request.page === 1) {
             scrollContainerRef.current.scrollTop = 0;
         }
-    }, [profile.auth, library.selected]);
+    }, [model, profile.auth, library.selected, library.catalog]);
     React.useEffect(() => {
         if (!library.selected?.type && typeSelect.value) {
             window.location = typeSelect.value;
@@ -99,7 +122,21 @@ const Library = ({ model, urlParams, queryParams }) => {
                                             src={require('/assets/images/empty_state.png')}
                                             alt={' '}
                                         />
-                                        <div className={styles['message-label']}>{model === 'library' ? t('LIBRARY_EMPTY') : t('BOARD_CONTINUE_WATCHING_EMPTY')}</div>
+                                        <h2 className={styles['message-title']}>
+                                            {model === 'library' ? t('LIBRARY_EMPTY_TITLE', 'Nothing here yet') : t('BOARD_CONTINUE_WATCHING_EMPTY_TITLE', 'Nothing in progress')}
+                                        </h2>
+                                        <p className={styles['message-body']}>
+                                            {model === 'library'
+                                                ? t('LIBRARY_EMPTY_BODY', 'Add titles from Discover or Meta Details to build your library.')
+                                                : t('BOARD_CONTINUE_WATCHING_EMPTY_BODY', 'Start watching something and it will show up here.')}
+                                        </p>
+                                        <Button
+                                            className={styles['message-cta']}
+                                            href={model === 'library' ? buildAppHref('/discover') : buildAppHref('/')}
+                                            tabIndex={0}
+                                        >
+                                            {model === 'library' ? t('LIBRARY_EMPTY_CTA', 'Browse Discover') : t('BOARD_CONTINUE_WATCHING_EMPTY_CTA', 'Go to Home')}
+                                        </Button>
                                     </div>
                                     :
                                     <div ref={scrollContainerRef} className={classnames(styles['meta-items-container'], 'animation-fade-in')} onScroll={onScroll}>
