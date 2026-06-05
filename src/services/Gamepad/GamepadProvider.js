@@ -3,7 +3,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const { useTranslation } = require('react-i18next');
-const { useToast } = require('stremio/common');
+const useToast = require('stremio/common/Toast/useToast');
 const GamepadContext = require('./GamepadContext');
 
 const detectControllerType = (gamepad) => {

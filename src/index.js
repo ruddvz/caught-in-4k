@@ -86,7 +86,7 @@ root.render(
 );
 
 // Register service worker for PWA install + update prompts
-if ('serviceWorker' in navigator && !process.env.DISABLE_SERVICE_WORKER) {
+if ('serviceWorker' in navigator && !process.env.SERVICE_WORKER_DISABLED) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
             .then((registration) => {
