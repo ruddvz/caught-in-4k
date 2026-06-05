@@ -7,7 +7,10 @@ if (typeof process.env.SENTRY_DSN === 'string') {
 
 const Bowser = require('bowser');
 const browser = Bowser.parse(window.navigator?.userAgent || '');
-if (browser?.platform?.type === 'desktop') {
+const isMobileLike =
+    browser?.platform?.type === 'mobile' ||
+    /iPhone|iPad|iPod|Android/i.test(window.navigator?.userAgent || '');
+if (browser?.platform?.type === 'desktop' && !isMobileLike) {
     document.querySelector('meta[name="viewport"]')?.setAttribute('content', '');
 }
 
@@ -17,6 +20,7 @@ const i18n = require('i18next');
 const { initReactI18next, I18nextProvider } = require('react-i18next');
 const stremioTranslations = require('stremio-translations');
 const caughtIn4KTranslations = require('./common/caught-in-4k-translations');
+require('./styles/tokens.css');
 require('./styles/tailwind.css');
 const App = require('./App');
 
@@ -81,11 +85,33 @@ root.render(
     )
 );
 
-// Register service worker for PWA install support
-if ('serviceWorker' in navigator) {
+// Register service worker for PWA install + update prompts
+if ('serviceWorker' in navigator && !process.env.DISABLE_SERVICE_WORKER) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js').catch(() => {
-            // SW registration failed — app still works without it
-        });
+        navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+                registration.addEventListener('updatefound', () => {
+                    const installing = registration.installing;
+                    if (!installing) {
+                        return;
+                    }
+                    installing.addEventListener('statechange', () => {
+                        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.dispatchEvent(new CustomEvent('c4k-sw-update-ready'));
+                        }
+                    });
+                });
+            })
+            .catch(() => {
+                // SW registration failed — app still works without it
+            });
     });
 }
+
+window.addEventListener('offline', () => {
+    document.body.classList.add('c4k-offline');
+});
+
+window.addEventListener('online', () => {
+    document.body.classList.remove('c4k-offline');
+});

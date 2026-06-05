@@ -31,3 +31,4 @@ docs/organization-log.json
 # Git worktrees
 .claude/worktrees/
 .worktrees/
+test-results/

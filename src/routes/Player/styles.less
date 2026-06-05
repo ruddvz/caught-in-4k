@@ -95,6 +95,7 @@ html:not(.active-slider-within) {
         &.control-bar-layer {
             top: initial;
             overflow: visible;
+            padding-bottom: calc(var(--safe-bottom, env(safe-area-inset-bottom, 0px)) + 0.25rem);
 
             &::before {
                 position: absolute;

@@ -1,0 +1,35 @@
+/* Cinematic Gold Glass — canonical design tokens */
+:root {
+  --c4k-bg: #050506;
+  --c4k-bg-elevated: #0b0b10;
+  --c4k-surface: rgba(255, 255, 255, 0.055);
+  --c4k-surface-2: rgba(255, 255, 255, 0.085);
+  --c4k-border: rgba(255, 255, 255, 0.10);
+  --c4k-border-strong: rgba(255, 255, 255, 0.18);
+  --c4k-text: #f7f3ea;
+  --c4k-text-muted: rgba(247, 243, 234, 0.68);
+  --c4k-text-soft: rgba(247, 243, 234, 0.48);
+  --c4k-gold: #f4d38c;
+  --c4k-gold-strong: #ffe3a3;
+  --c4k-gold-soft: rgba(244, 211, 140, 0.16);
+  --c4k-danger: #ff5b6e;
+  --c4k-success: #49d17d;
+  --c4k-warning: #f6b84b;
+  --c4k-info: #7bb7ff;
+  --c4k-radius-sm: 10px;
+  --c4k-radius-md: 16px;
+  --c4k-radius-lg: 22px;
+  --c4k-radius-xl: 30px;
+  --c4k-touch: 44px;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    scroll-behavior: auto;
+  }
+}

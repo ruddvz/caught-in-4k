@@ -5,7 +5,8 @@ const React = require('react');
 const classnames = require('classnames');
 const { useTranslation } = require('react-i18next');
 const { Router } = require('stremio-router');
-const { Core, Shell, Chromecast, DragAndDrop, KeyboardShortcuts, ServicesProvider } = require('stremio/services');
+const { Shell, Chromecast, DragAndDrop, KeyboardShortcuts, ServicesProvider } = require('stremio/services');
+const { CoreProvider, useCore } = require('stremio/core');
 const { NotFound } = require('stremio/routes');
 const { addLocationChangeListener, getCurrentAppLocation, getNavigationTargetForEvent, navigateToAppHref } = require('stremio/common/navigation');
 const { FileDropProvider, PlatformProvider, ToastProvider, TooltipProvider, ShortcutsProvider, CONSTANTS, withCoreSuspender, useShell, useBinaryState } = require('stremio/common');
@@ -14,6 +15,8 @@ const DeepLinkHandler = require('./DeepLinkHandler');
 const SearchParamsHandler = require('./SearchParamsHandler');
 const ManagedAddonSync = require('./ManagedAddonSync');
 const { default: UpdaterBanner } = require('./UpdaterBanner');
+const { default: OfflineBanner } = require('./OfflineBanner');
+const { default: PwaUpdateBanner } = require('./PwaUpdateBanner');
 const { default: ShortcutsModal } = require('./ShortcutsModal');
 const { c4kAgents } = require('../services/BackgroundAgents/C4KBackgroundAgents');
 const { registerCurrentDevice } = require('../common/useDeviceSession');
@@ -26,26 +29,21 @@ const styles = require('./styles');
 
 const RouterWithProtectedRoutes = withCoreSuspender(withProtectedRoutes(Router));
 
-const App = () => {
+const AppShell = () => {
     const translation = useTranslation();
     const i18n = translation.i18n || (Array.isArray(translation) ? translation[1] : null);
     const shell = useShell();
+    const core = useCore();
     const onPathNotMatch = React.useCallback(() => {
         return NotFound;
     }, []);
-    const services = React.useMemo(() => {
-        const core = new Core({
-            appVersion: process.env.VERSION,
-            shellVersion: null
-        });
-        return {
-            core,
-            shell: new Shell(),
-            chromecast: new Chromecast(),
-            keyboardShortcuts: new KeyboardShortcuts(),
-            dragAndDrop: new DragAndDrop({ core })
-        };
-    }, []);
+    const services = React.useMemo(() => ({
+        core,
+        shell: new Shell(),
+        chromecast: new Chromecast(),
+        keyboardShortcuts: new KeyboardShortcuts(),
+        dragAndDrop: new DragAndDrop({ core }),
+    }), [core]);
     const [initialized, setInitialized] = React.useState(false);
     const [shortcutModalOpen,, closeShortcutsModal, toggleShortcutModal] = useBinaryState(false);
 
@@ -142,14 +140,12 @@ const App = () => {
         services.core.on('stateChanged', onCoreStateChanged);
         services.shell.on('stateChanged', onShellStateChanged);
         services.chromecast.on('stateChanged', onChromecastStateChange);
-        services.core.start();
         services.shell.start();
         services.chromecast.start();
         services.keyboardShortcuts.start();
         services.dragAndDrop.start();
         window.services = services;
         return () => {
-            services.core.stop();
             services.shell.stop();
             services.chromecast.stop();
             services.keyboardShortcuts.stop();
@@ -158,7 +154,7 @@ const App = () => {
             services.shell.off('stateChanged', onShellStateChanged);
             services.chromecast.off('stateChanged', onChromecastStateChange);
         };
-    }, []);
+    }, [services]);
 
     // Handle shell events
     React.useEffect(() => {
@@ -276,6 +272,8 @@ const App = () => {
                                                         <SearchParamsHandler />
                                                         <ManagedAddonSync />
                                                         <UpdaterBanner className={styles['updater-banner-container']} />
+                                                        <PwaUpdateBanner className={styles['updater-banner-container']} />
+                                                        <OfflineBanner />
                                                         <RouterWithProtectedRoutes
                                                             className={classnames(styles['router'], 'animation-fade-in')}
                                                             viewsConfig={routerViewsConfig}
@@ -295,5 +293,11 @@ const App = () => {
         </React.StrictMode>
     );
 };
+
+const App = () => (
+    <CoreProvider appVersion={process.env.VERSION}>
+        <AppShell />
+    </CoreProvider>
+);
 
 module.exports = App;
