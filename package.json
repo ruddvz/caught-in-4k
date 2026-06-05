@@ -116,7 +116,7 @@
         "postcss": "^8.5.8",
         "postcss-loader": "8.2.1",
         "puppeteer": "^24.40.0",
-        "readdirp": "4.0.2",
+        "readdirp": "5.0.0",
         "recast": "0.23.11",
         "serve": "^14.2.6",
         "sharp": "^0.34.5",
