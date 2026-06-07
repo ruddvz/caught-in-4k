@@ -14,6 +14,7 @@ require('dotenv').config({ quiet: process.env.NODE_ENV === 'test' });
 const { getSubscriptionPlan } = require('./src/common/subscriptionPlans');
 const { canonTakeBodySchema, checkoutBodySchema, accessKeyBodySchema, validateBody } = require('./api-proxy/schemas');
 const { verifyAccessKey, isAccessKeyGateEnabled } = require('./src/common/accessKey');
+const { generateCanonTakeText } = require('./api-proxy/llmProviders');
 
 // Lazy-load Stripe and Supabase — only initialized when env vars are present
 let stripe = null;
@@ -392,72 +393,31 @@ const handleCanonTake = async (req, res) => {
   const { title, year, genres, imdbRating } = req.validatedBody || req.body;
 
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: 'API key not configured' });
+    const hasAnyProvider = Boolean(
+      process.env.GEMINI_API_KEY ||
+      process.env.GROQ_API_KEY ||
+      process.env.OPENROUTER_API_KEY
+    );
+
+    if (!hasAnyProvider) {
+      return res.status(500).json({ error: 'No LLM provider configured' });
     }
-
-    const userPrompt = `Write a Canon Take for: ${title} (${year}). Genre: ${genres}. IMDB: ${imdbRating}/10.`;
-
-    const systemPrompt = `You write Canon Takes — short, honest movie summaries for a Gen Z film platform called Caught in 4K. Rules: max 3 sentences, no more. Sound like a friend who has seen the film giving you the real verdict. Have an actual opinion. Reference the cultural moment if there is one (memes, catchphrases, awards, controversies). Never start with "This film" or "The movie". No spoilers. No em dashes. No AI tells like "delves into", "testament to", "nuanced". Write in lowercase where it fits the tone.`;
 
     console.log(`[Canon Take] Generating for: ${title} (${year})`);
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{ text: systemPrompt }],
-          },
-          contents: [
-            {
-              parts: [{ text: userPrompt }],
-            },
-          ],
-          safety_settings: [
-            {
-              category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-              threshold: 'BLOCK_NONE',
-            },
-            {
-              category: 'HARM_CATEGORY_HATE_SPEECH',
-              threshold: 'BLOCK_NONE',
-            },
-            {
-              category: 'HARM_CATEGORY_HARASSMENT',
-              threshold: 'BLOCK_NONE',
-            },
-            {
-              category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-              threshold: 'BLOCK_NONE',
-            },
-          ],
-          generation_config: {
-            max_output_tokens: 120,
-            temperature: 0.7,
-          },
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (data.error) {
-      console.error(`[Canon Take] Gemini error:`, data.error);
-      return res.status(400).json({ error: data.error.message });
-    }
-
-    const canonTake = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const { canonTake, provider } = await generateCanonTakeText({
+      title,
+      year,
+      genres,
+      imdbRating,
+    });
 
     if (!canonTake) {
-      return res.status(500).json({ error: 'No response from Gemini' });
+      return res.status(500).json({ error: 'All LLM providers failed' });
     }
 
-    console.log(`[Canon Take] ✅ Generated: "${canonTake.substring(0, 60)}..."`);
-    return res.status(200).json({ canonTake });
+    console.log(`[Canon Take] ✅ Generated via ${provider}: "${canonTake.substring(0, 60)}..."`);
+    return res.status(200).json({ canonTake, provider });
   } catch (error) {
     console.error('[Canon Take] Error:', error.message);
     return res.status(500).json({ error: error.message });

@@ -24,6 +24,14 @@ require('./styles/tokens.css');
 require('./styles/tailwind.css');
 const App = require('./App');
 
+if (typeof process.env.REACT_APP_PLAUSIBLE_DOMAIN === 'string' && process.env.REACT_APP_PLAUSIBLE_DOMAIN.length > 0) {
+    const plausibleScript = document.createElement('script');
+    plausibleScript.defer = true;
+    plausibleScript.dataset.domain = process.env.REACT_APP_PLAUSIBLE_DOMAIN;
+    plausibleScript.src = 'https://plausible.io/js/script.js';
+    document.head.appendChild(plausibleScript);
+}
+
 const allTranslations = stremioTranslations();
 const baseTranslation = allTranslations['en-US'] || {};
 // Merge Caught in 4K overrides on top of default translations

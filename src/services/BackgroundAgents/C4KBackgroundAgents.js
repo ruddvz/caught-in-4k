@@ -6,7 +6,7 @@
  */
 
 const { SATISFACTION_TIERS } = require('../../common/useSatisfactionMeter');
-const { generateCanonTake, fetchCanonTakeFromProxy, hasCanonTakeProxy } = require('../../common/pollinationsApi');
+const { generateCanonTakeWithFallbacks, hasCanonTakeProxy } = require('../../common/pollinationsApi');
 
 const CACHE_PREFIX = 'c4k_canon_take_';
 const MAX_PROXY_RETRIES = 2;
@@ -114,9 +114,8 @@ class C4KBackgroundAgents {
             let take = '';
             let shouldRetry = false;
 
-            // Pollinations.AI (free, no key)
             try {
-                take = await generateCanonTake(
+                take = await generateCanonTakeWithFallbacks(
                     item.name,
                     item.releaseInfo,
                     genres,
@@ -127,17 +126,7 @@ class C4KBackgroundAgents {
             }
 
             if (!take) {
-                try {
-                    take = await fetchCanonTakeFromProxy(
-                        item.name,
-                        item.releaseInfo,
-                        genres,
-                        item.vote_average || 0
-                    );
-                    shouldRetry = false;
-                } catch (_e) {
-                    shouldRetry = true;
-                }
+                shouldRetry = true;
             }
 
             if (take) {

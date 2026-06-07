@@ -5,7 +5,7 @@
 const sharp = require('sharp');
 const path = require('path');
 
-const BG = { r: 8, g: 6, b: 16 }; // rgba(8,6,16) — exact app background color
+const BG = { r: 5, g: 6, b: 10 }; // #05060A — matches manifest theme/background
 const SRC = path.join(__dirname, '../../assets/images/icon_512x512.png');
 
 async function generate() {

@@ -1,13 +1,18 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
-import React, { useCallback, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import styles from './styles.less';
+
+const { buildPosterFallbackUrl } = require('stremio/common/pollinationsApi');
 
 type Props = {
     className: string,
     src: string,
     alt: string,
     fallbackSrc?: string,
+    enableAiPosterFallback?: boolean,
+    posterTitle?: string,
+    posterYear?: string | number,
     renderFallback?: () => React.ReactNode,
     onError?: (event: React.SyntheticEvent<HTMLImageElement>) => void,
 };
@@ -33,8 +38,27 @@ const DefaultImageFallback = ({ className }: { className?: string }) => (
     </div>
 );
 
-const Image = ({ className, src, alt, fallbackSrc, renderFallback, onError, ...props }: Props) => {
+const Image = ({
+    className,
+    src,
+    alt,
+    fallbackSrc,
+    enableAiPosterFallback = false,
+    posterTitle,
+    posterYear,
+    renderFallback,
+    onError,
+    ...props
+}: Props) => {
     const [broken, setBroken] = useState(false);
+    const aiPosterFallbackSrc = useMemo(() => {
+        if (!enableAiPosterFallback || typeof posterTitle !== 'string' || posterTitle.length === 0) {
+            return null;
+        }
+
+        return buildPosterFallbackUrl(posterTitle, posterYear);
+    }, [enableAiPosterFallback, posterTitle, posterYear]);
+
     const handleError = useCallback((event: React.SyntheticEvent<HTMLImageElement>) => {
         if (typeof onError === 'function') {
             onError(event);
@@ -50,6 +74,9 @@ const Image = ({ className, src, alt, fallbackSrc, renderFallback, onError, ...p
     if (broken || typeof src !== 'string' || src.length === 0) {
         if (typeof renderFallback === 'function') return renderFallback();
         if (typeof fallbackSrc === 'string') return <img {...props} className={className} src={fallbackSrc} alt={alt} loading='lazy' />;
+        if (typeof aiPosterFallbackSrc === 'string') {
+            return <img {...props} className={className} src={aiPosterFallbackSrc} alt={alt} loading='lazy' />;
+        }
         return <DefaultImageFallback className={className} />; // merges with image-fallback class
     }
 

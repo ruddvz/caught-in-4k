@@ -6,11 +6,17 @@ const classnames = require('classnames');
 const useTranslate = require('stremio/common/useTranslate');
 const { default: Button } = require('stremio/components/Button');
 const { default: Image } = require('stremio/components/Image');
+const SatisfactionMeterDial = require('stremio/components/SatisfactionMeterDial/SatisfactionMeterDial');
+const { buildExternalRatingsModel } = require('stremio/common/externalRatings');
+const { useCanonTakes } = require('stremio/common/useCanonTakes');
+const { c4kAgents } = require('stremio/services/BackgroundAgents/C4KBackgroundAgents');
 const styles = require('./styles');
 
 const HeroShelf = ({ items }) => {
     const t = useTranslate();
+    const { fetchCanonTake } = useCanonTakes();
     const [currentIndex, setCurrentIndex] = React.useState(0);
+    const [canonTake, setCanonTake] = React.useState('');
     const [autoplayAllowed, setAutoplayAllowed] = React.useState(true);
     const [isHovered, setIsHovered] = React.useState(false);
     const [isFocusWithin, setIsFocusWithin] = React.useState(false);
@@ -111,16 +117,65 @@ const HeroShelf = ({ items }) => {
 
     const item = validItems[currentIndex] || validItems[0] || {};
 
-    if (validItems.length === 0) {
-        return null;
-    }
-
     const year =
         item.released instanceof Date && !isNaN(item.released.getTime())
             ? item.released.getFullYear()
             : typeof item.releaseInfo === 'string' && item.releaseInfo.length > 0
                 ? item.releaseInfo.split(' ')[0].substring(0, 4)
                 : null;
+
+    const ratingsModel = React.useMemo(() => buildExternalRatingsModel({
+        links: item.links,
+        imdbRating: item.imdbRating,
+    }), [item.links, item.imdbRating]);
+
+    React.useEffect(() => {
+        setCanonTake('');
+        if (!item.name || !ratingsModel.consensus) {
+            return undefined;
+        }
+
+        let cancelled = false;
+        const genres = Array.isArray(item.genres)
+            ? item.genres.join(', ')
+            : (Array.isArray(item.genre) ? item.genre.join(', ') : (item.genre || 'unknown'));
+
+        c4kAgents.prioritizeForCanonTake({
+            name: item.name,
+            releaseInfo: year || item.releaseInfo || 'unknown',
+            genre: genres,
+            vote_average: ratingsModel.imdb?.value ? ratingsModel.imdb.value / 10 : item.imdbRating,
+        });
+
+        void fetchCanonTake(item.name, year || item.releaseInfo || 'unknown', genres, item.imdbRating)
+            .then((take) => {
+                if (!cancelled && typeof take === 'string') {
+                    setCanonTake(take);
+                }
+            })
+            .catch(() => {
+                // Hero dial still renders without the one-liner
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        currentIndex,
+        fetchCanonTake,
+        item.name,
+        item.links,
+        item.imdbRating,
+        item.genre,
+        item.genres,
+        item.releaseInfo,
+        ratingsModel.consensus,
+        year,
+    ]);
+
+    if (validItems.length === 0) {
+        return null;
+    }
 
     const watchHref =
         item.deepLinks
@@ -149,6 +204,9 @@ const HeroShelf = ({ items }) => {
                     className={styles['hero-background']}
                     src={item.background}
                     alt={' '}
+                    enableAiPosterFallback={true}
+                    posterTitle={item.name}
+                    posterYear={year || item.releaseInfo}
                 />
                 <div className={styles['hero-gradient']} />
                 <div className={styles['hero-content']}>
@@ -173,6 +231,19 @@ const HeroShelf = ({ items }) => {
                     {
                         typeof item.description === 'string' && item.description.length > 0 ?
                             <p className={styles['hero-description']}>{item.description}</p>
+                            : null
+                    }
+                    {
+                        ratingsModel.consensus ?
+                            <div className={styles['hero-ratings']}>
+                                <SatisfactionMeterDial
+                                    score={ratingsModel.consensus.score}
+                                    imdbRaw={ratingsModel.imdb ? ratingsModel.imdb.display : null}
+                                    rtScore={ratingsModel.rottenTomatoes ? ratingsModel.rottenTomatoes.value : null}
+                                    mcScore={ratingsModel.metacritic ? ratingsModel.metacritic.value : null}
+                                    canonTake={canonTake}
+                                />
+                            </div>
                             : null
                     }
                     <div className={styles['hero-actions']}>

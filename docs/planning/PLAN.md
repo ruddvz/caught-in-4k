@@ -189,22 +189,22 @@ All confirmed, not yet fixed. Structured by session.
 - [x] **[F6]** Canon Take Redesign — One-Line (no label, single punchy sentence, integrated into F7)
 - [x] **[F7]** Satisfaction Meter — Dial + Verdict + Canon one-liner + 3 rating pills (IMDB, RT, Metacritic); fix visibility bug; mobile compact mode
 - [x] **[F8]** Hero Mobile Gap — close space between action buttons and hero bottom
-- [ ] **[F2]** Profile PIN lock — Depends on: F1
-- [ ] **[F3]** PWA icon with black background — PARALLEL
+- [x] **[F2]** Profile PIN lock — Depends on: F1
+- [x] **[F3]** PWA icon with black background — PARALLEL
 - [ ] **[F4]** Hero swipe gesture — same as S2.5b
 
 ---
 
 ### ROADMAP — After All Bugs Fixed
 
-- [ ] **[R1]** Canon Take additional LLM fallbacks (OpenRouter/Groq) — Agent: Soul
-- [ ] **[R2]** AI poster fallbacks (Pollinations image API) — Agent: Soul
-- [ ] **[R3]** Satisfaction Meter one-liners audit — Agent: Soul
-- [ ] **[R4]** Rate limiting + helmet.js on api-proxy.js — Agent: Soul
-- [ ] **[R5]** PWA improvements (Workbox, install prompt) — Agent: Structure
-- [ ] **[R6]** Analytics (Plausible) — Agent: Structure
-- [ ] **[R7]** Performance audit — Agent: Guardian
-- [ ] **[R8]** CJS → ESM migration — Agent: Structure
+- [x] **[R1]** Canon Take additional LLM fallbacks (OpenRouter/Groq) — Agent: Soul
+- [x] **[R2]** AI poster fallbacks (Pollinations image API) — Agent: Soul
+- [x] **[R3]** Satisfaction Meter one-liners audit — Agent: Soul
+- [x] **[R4]** Rate limiting + helmet.js on api-proxy.js — Agent: Soul
+- [x] **[R5]** PWA improvements (Workbox, install prompt) — Agent: Structure
+- [x] **[R6]** Analytics (Plausible) — Agent: Structure
+- [x] **[R7]** Performance audit — Agent: Guardian
+- [x] **[R8]** CJS → ESM migration — Agent: Structure
 
 ---
 
