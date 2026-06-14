@@ -1,7 +1,6 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 const React = require('react');
-const magnet = require('magnet-uri');
 const { useServices } = require('stremio/services');
 const useToast = require('stremio/common/Toast/useToast');
 const useStreamingServer = require('stremio/common/useStreamingServer');
@@ -11,8 +10,12 @@ const useTorrent = () => {
     const streamingServer = useStreamingServer();
     const toast = useToast();
     const createTorrentTimeout = React.useRef(null);
-    const createTorrentFromMagnet = React.useCallback((text) => {
-        const parsed = magnet.decode(text);
+    const createTorrentFromMagnet = React.useCallback(async (text) => {
+        // magnet-uri v7 is ESM-only, so load it on demand: webpack resolves the
+        // package's ESM entry for a dynamic import(), unlike a CommonJS require().
+        const magnet = await import('magnet-uri');
+        const decode = typeof magnet.decode === 'function' ? magnet.decode : magnet.default.decode;
+        const parsed = decode(text);
         if (parsed && typeof parsed.infoHash === 'string') {
             core.transport.dispatch({
                 action: 'StreamingServer',
