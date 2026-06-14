@@ -14,6 +14,7 @@ const { resolveApiBaseUrl } = require('stremio/common/apiBaseUrl');
 const { trimTrailingSlash } = require('stremio/common/subscriptionCheckout');
 const { GUIDE_PRODUCT, SETUP_SERVICE, getGuideAccessState } = require('stremio/common/guideAccess');
 const { GUIDE_CONTENT } = require('stremio/common/guideContent');
+const { consumeGuideSection, requestWizardStep } = require('stremio/common/guideWizardLink');
 const styles = require('./styles.less');
 
 const readGuideCheckoutSuccess = () => {
@@ -31,7 +32,7 @@ const GuideSection = ({ section, index, expanded, onToggle }) => {
         (section.links && section.links.length > 0);
 
     return (
-        <article className={classnames(styles['section-card'], { [styles['section-open']]: expanded })}>
+        <article id={`guide-section-${section.id}`} className={classnames(styles['section-card'], { [styles['section-open']]: expanded })}>
             <button
                 type="button"
                 className={styles['section-header']}
@@ -89,6 +90,22 @@ const GuideSection = ({ section, index, expanded, onToggle }) => {
                             ))}
                         </div>
                     ) : null}
+
+                    {section.wizardStep ? (
+                        <button
+                            type="button"
+                            className={styles['section-wizard-link']}
+                            onClick={() => {
+                                requestWizardStep(section.wizardStep);
+                                navigateToAppHref('/wizard');
+                            }}
+                        >
+                            Do this in the wizard
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                        </button>
+                    ) : null}
                 </div>
             ) : null}
         </article>
@@ -120,6 +137,22 @@ const Guide = () => {
     const toggleAll = React.useCallback(() => {
         setExpandedIds(allExpanded ? new Set() : new Set(GUIDE_CONTENT.map((section) => section.id)));
     }, [allExpanded]);
+
+    // If we arrived here from a wizard "full details" link, expand + scroll to
+    // the requested section.
+    React.useEffect(() => {
+        const focusId = consumeGuideSection();
+        if (!focusId) return;
+        setExpandedIds((current) => new Set(current).add(focusId));
+        if (typeof document !== 'undefined') {
+            window.setTimeout(() => {
+                const el = document.getElementById(`guide-section-${focusId}`);
+                if (el && el.scrollIntoView) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 80);
+        }
+    }, []);
 
     // Checkout + inline auth state (guide unlock is per Supabase account).
     const [checkoutLoading, setCheckoutLoading] = React.useState(false);
@@ -242,9 +275,10 @@ const Guide = () => {
                     <React.Fragment>
                         <div className={styles['wizard-launch']}>
                             <div>
-                                <h2 className={styles['wizard-launch-title']}>Not sure where to start?</h2>
+                                <h2 className={styles['wizard-launch-title']}>Prefer step-by-step?</h2>
                                 <p className={styles['wizard-launch-copy']}>
-                                    Answer a few questions and the wizard builds your setup path step by step.
+                                    The wizard walks you through setup one step at a time — starting with your Stremio
+                                    account — and links back here for the full detail on each step.
                                 </p>
                             </div>
                             <Button className={styles['wizard-launch-btn']} onClick={() => navigateToAppHref('/wizard')}>
@@ -405,6 +439,7 @@ GuideSection.propTypes = {
             label: PropTypes.string,
             url: PropTypes.string,
         })),
+        wizardStep: PropTypes.string,
     }).isRequired,
     index: PropTypes.number.isRequired,
     expanded: PropTypes.bool.isRequired,

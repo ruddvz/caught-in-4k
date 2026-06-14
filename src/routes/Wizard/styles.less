@@ -119,6 +119,66 @@
     font-size: 0.84rem;
 }
 
+.ordered-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--text-primary);
+    font-size: 0.92rem;
+    line-height: 1.5;
+
+    strong {
+        color: var(--c4k-gold);
+        font-weight: 700;
+    }
+}
+
+.callout {
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--c4k-radius-sm);
+    border-left: 3px solid var(--c4k-gold);
+    background: var(--c4k-gold-soft);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.step-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.step-external-link,
+.step-guide-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--c4k-gold);
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+        border-radius: var(--c4k-radius-sm);
+    }
+}
+
 /* ── Path fork ── */
 .path-grid {
     display: grid;

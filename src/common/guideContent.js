@@ -10,6 +10,9 @@
 //
 // Shape per section:
 //   { id, title, intro, steps: string[], notes: string[], links: [{ label, url }] }
+//
+// `wizardStep` (optional) links a section to the matching interactive Wizard
+// step so the Guide and Wizard cross-reference each other.
 
 const GUIDE_CONTENT = [
     {
@@ -37,6 +40,7 @@ const GUIDE_CONTENT = [
     {
         id: 'install-stremio',
         title: 'Install Stremio',
+        wizardStep: 'account',
         intro: 'Create a Stremio account and install the app (or use Stremio Web). Do the initial setup once on a desktop/laptop and your account syncs add-ons and library to every other device you sign in on.',
         steps: [
             'Do the initial setup on a laptop or desktop. Once set up, logging in with the same account on any device syncs your configuration automatically.',
@@ -62,6 +66,7 @@ const GUIDE_CONTENT = [
     {
         id: 'choose-debrid',
         title: 'Choose a Debrid Service',
+        wizardStep: 'debrid',
         intro: 'A debrid service downloads torrents to its own high-speed servers so you can stream over HTTPS without buffering or exposing your IP. The guides cover Real-Debrid, TorBox, Premiumize, AllDebrid, Debrid-Link and Put.io. After subscribing, you copy an API key to plug into your add-ons.',
         steps: [
             'Compare providers on cost, cache size, server proximity (run their speed tests) and extra features. Real-Debrid has the largest cache; Premiumize is the most stable with an accurate cache indicator; TorBox is cheaper, improving fast, has accurate cache indicators and no IP restrictions.',
@@ -96,6 +101,7 @@ const GUIDE_CONTENT = [
     {
         id: 'install-addons',
         title: 'Install Add-ons',
+        wizardStep: 'addons',
         intro: 'Stream-provider add-ons supply the playable links. Install them from their configuration pages, enter your debrid API key where prompted, then install into Stremio. Less is more — enough add-ons to find content, not so many that results get cluttered.',
         steps: [
             'Browse add-ons via the in-app Community tab or the community list at stremio-addons.net. Know the types: torrent, HTTP, debrid and Usenet (an add-on with both torrent and debrid icons works with or without a debrid service).',
@@ -120,6 +126,7 @@ const GUIDE_CONTENT = [
     {
         id: 'aiostreams',
         title: 'AIOStreams — All-in-One',
+        wizardStep: 'addons',
         intro: 'AIOStreams (by Viren070) combines multiple stream-provider add-ons and debrid services into one unified, de-duplicated, consistently sorted results list. The numb3rs guide recommends configuring it via an importable template for a fast setup.',
         steps: [
             'Choose a public AIOStreams instance and open its configuration page. Do NOT use the ElfHosted instance if you need Torrentio (it does not work there); pick a non-Nightly instance as a beginner, and stick with one instance (config is stored per-instance).',

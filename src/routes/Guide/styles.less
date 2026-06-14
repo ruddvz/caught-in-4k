@@ -322,6 +322,33 @@
     }
 }
 
+.section-wizard-link {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.25rem;
+    padding: 0.5rem 0.95rem;
+    border-radius: var(--c4k-radius-pill);
+    border: 1px solid var(--c4k-gold);
+    background: var(--c4k-gold-soft);
+    color: var(--c4k-gold);
+    font-family: inherit;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--c4k-gold);
+        color: #100c02;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+    }
+}
+
 .setup-banner {
     display: flex;
     align-items: center;
