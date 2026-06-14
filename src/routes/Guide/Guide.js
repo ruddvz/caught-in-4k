@@ -14,6 +14,7 @@ const { resolveApiBaseUrl } = require('stremio/common/apiBaseUrl');
 const { trimTrailingSlash } = require('stremio/common/subscriptionCheckout');
 const { GUIDE_PRODUCT, SETUP_SERVICE, getGuideAccessState } = require('stremio/common/guideAccess');
 const { GUIDE_CONTENT } = require('stremio/common/guideContent');
+const { consumeGuideSection, requestWizardStep } = require('stremio/common/guideWizardLink');
 const styles = require('./styles.less');
 
 const readGuideCheckoutSuccess = () => {
@@ -31,12 +32,13 @@ const GuideSection = ({ section, index, expanded, onToggle }) => {
         (section.links && section.links.length > 0);
 
     return (
-        <article className={classnames(styles['section-card'], { [styles['section-open']]: expanded })}>
+        <article id={`guide-section-${section.id}`} className={classnames(styles['section-card'], { [styles['section-open']]: expanded })}>
             <button
                 type="button"
                 className={styles['section-header']}
                 onClick={() => onToggle(section.id)}
                 aria-expanded={expanded}
+                aria-controls={hasDetail ? `section-detail-${section.id}` : undefined}
             >
                 <span className={styles['section-index']}>{String(index + 1).padStart(2, '0')}</span>
                 <span className={styles['section-heading']}>
@@ -56,7 +58,7 @@ const GuideSection = ({ section, index, expanded, onToggle }) => {
             </button>
 
             {expanded && hasDetail ? (
-                <div className={styles['section-detail']}>
+                <div className={styles['section-detail']} id={`section-detail-${section.id}`}>
                     {section.steps && section.steps.length > 0 ? (
                         <ol className={styles['step-list']}>
                             {section.steps.map((step, stepIndex) => (
@@ -87,6 +89,22 @@ const GuideSection = ({ section, index, expanded, onToggle }) => {
                                 </a>
                             ))}
                         </div>
+                    ) : null}
+
+                    {section.wizardStep ? (
+                        <button
+                            type="button"
+                            className={styles['section-wizard-link']}
+                            onClick={() => {
+                                requestWizardStep(section.wizardStep);
+                                navigateToAppHref('/wizard');
+                            }}
+                        >
+                            Do this in the wizard
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                        </button>
                     ) : null}
                 </div>
             ) : null}
@@ -120,6 +138,22 @@ const Guide = () => {
         setExpandedIds(allExpanded ? new Set() : new Set(GUIDE_CONTENT.map((section) => section.id)));
     }, [allExpanded]);
 
+    // If we arrived here from a wizard "full details" link, expand + scroll to
+    // the requested section.
+    React.useEffect(() => {
+        const focusId = consumeGuideSection();
+        if (!focusId) return;
+        setExpandedIds((current) => new Set(current).add(focusId));
+        if (typeof document !== 'undefined') {
+            window.setTimeout(() => {
+                const el = document.getElementById(`guide-section-${focusId}`);
+                if (el && el.scrollIntoView) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 80);
+        }
+    }, []);
+
     // Checkout + inline auth state (guide unlock is per Supabase account).
     const [checkoutLoading, setCheckoutLoading] = React.useState(false);
     const [checkoutError, setCheckoutError] = React.useState(null);
@@ -127,7 +161,9 @@ const Guide = () => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [authLoading, setAuthLoading] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
     const [checkoutSuccess] = React.useState(readGuideCheckoutSuccess);
+    const [unlockTimedOut, setUnlockTimedOut] = React.useState(false);
 
     // After returning from Stripe, poll the profile until the webhook flips the flag.
     React.useEffect(() => {
@@ -146,6 +182,10 @@ const Guide = () => {
             }
             if (!cancelled && attempts < 5) {
                 timerId = setTimeout(poll, 1500);
+            } else if (!cancelled) {
+                // Webhook hasn't flipped the flag yet — stop spinning silently and
+                // tell the buyer what to do next instead of an endless "unlocking…".
+                setUnlockTimedOut(true);
             }
         };
         poll();
@@ -235,9 +275,10 @@ const Guide = () => {
                     <React.Fragment>
                         <div className={styles['wizard-launch']}>
                             <div>
-                                <h2 className={styles['wizard-launch-title']}>Not sure where to start?</h2>
+                                <h2 className={styles['wizard-launch-title']}>Prefer step-by-step?</h2>
                                 <p className={styles['wizard-launch-copy']}>
-                                    Answer a few questions and the wizard builds your setup path step by step.
+                                    The wizard walks you through setup one step at a time — starting with your Stremio
+                                    account — and links back here for the full detail on each step.
                                 </p>
                             </div>
                             <Button className={styles['wizard-launch-btn']} onClick={() => navigateToAppHref('/wizard')}>
@@ -287,6 +328,10 @@ const Guide = () => {
                             <span className={styles['paywall-price']}>{GUIDE_PRODUCT.price}</span>
                             <h2 className={styles['paywall-title']}>{GUIDE_PRODUCT.name}</h2>
                             <p className={styles['paywall-tagline']}>{GUIDE_PRODUCT.tagline}</p>
+                            <p className={styles['paywall-price']}>
+                                <span className={styles['paywall-price-amount']}>{GUIDE_PRODUCT.price}</span>
+                                <span className={styles['paywall-price-unit']}>one-time · yours forever</span>
+                            </p>
                             <ul className={styles['paywall-list']}>
                                 <li>Every step, in order — no guesswork</li>
                                 <li>Interactive setup wizard</li>
@@ -295,8 +340,10 @@ const Guide = () => {
                             </ul>
 
                             {checkoutSuccess && isLoggedIn ? (
-                                <p className={styles['paywall-fineprint']}>
-                                    Payment received — unlocking your guide. This can take a few seconds.
+                                <p className={styles['paywall-fineprint']} role="status">
+                                    {unlockTimedOut
+                                        ? 'Payment received, but unlocking is taking longer than usual. Refresh this page in a moment — if it still doesn’t unlock, contact us and we’ll sort it out.'
+                                        : 'Payment received — unlocking your guide. This can take a few seconds.'}
                                 </p>
                             ) : null}
 
@@ -314,19 +361,33 @@ const Guide = () => {
                                         className={styles['paywall-input']}
                                         type="email"
                                         placeholder="Email"
+                                        aria-label="Email"
+                                        autoComplete="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
                                     />
-                                    <input
-                                        className={styles['paywall-input']}
-                                        type="password"
-                                        placeholder="Password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                        minLength={8}
-                                    />
+                                    <div className={styles['paywall-password']}>
+                                        <input
+                                            className={styles['paywall-input']}
+                                            type={showPassword ? 'text' : 'password'}
+                                            placeholder="Password"
+                                            aria-label="Password"
+                                            autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                            minLength={8}
+                                        />
+                                        <button
+                                            type="button"
+                                            className={styles['paywall-password-toggle']}
+                                            onClick={() => setShowPassword((value) => !value)}
+                                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                        >
+                                            {showPassword ? 'Hide' : 'Show'}
+                                        </button>
+                                    </div>
                                     <button className={styles['paywall-btn']} type="submit" disabled={authLoading}>
                                         {authLoading ? 'Please wait…' : authMode === 'signup' ? 'Create account to buy' : 'Sign in to buy'}
                                     </button>
@@ -340,7 +401,7 @@ const Guide = () => {
                                 </form>
                             )}
 
-                            {checkoutError ? <p className={styles['paywall-error']}>{checkoutError}</p> : null}
+                            {checkoutError ? <p className={styles['paywall-error']} role="alert">{checkoutError}</p> : null}
 
                             <p className={styles['paywall-fineprint']}>
                                 Already paid? It unlocks automatically once your purchase is confirmed.
@@ -378,6 +439,7 @@ GuideSection.propTypes = {
             label: PropTypes.string,
             url: PropTypes.string,
         })),
+        wizardStep: PropTypes.string,
     }).isRequired,
     index: PropTypes.number.isRequired,
     expanded: PropTypes.bool.isRequired,

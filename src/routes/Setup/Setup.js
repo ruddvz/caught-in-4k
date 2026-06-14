@@ -153,8 +153,8 @@ const Setup = () => {
                 </header>
 
                 {submitted ? (
-                    <div className={styles['success-card']}>
-                        <div className={styles['success-icon']}>✓</div>
+                    <div className={styles['success-card']} role="status">
+                        <div className={styles['success-icon']} aria-hidden="true">✓</div>
                         <h2 className={styles['success-title']}>Request received</h2>
                         <p className={styles['success-copy']}>
                             We&apos;ll reach out at <strong>{email}</strong> to arrange payment and get your account
@@ -175,28 +175,38 @@ const Setup = () => {
                                         type="button"
                                         className={classnames(styles['tier-card'], { [styles['tier-selected']]: serverTier === tier.id })}
                                         onClick={() => setServerTier(tier.id)}
+                                        aria-pressed={serverTier === tier.id}
                                     >
                                         {tier.mostPopular ? (
                                             <span className={styles['tier-badge']}>Most popular</span>
                                         ) : null}
                                         <div className={styles['tier-head']}>
-                                            <span className={styles['tier-name']}>{tier.name}</span>
-                                            <span className={styles['tier-monthly']}>{tier.termLabel}</span>
+                                            <span className={styles['tier-name']}>
+                                                {serverTier === tier.id ? (
+                                                    <span className={styles['tier-check']} aria-hidden="true">✓</span>
+                                                ) : null}
+                                                {tier.name}
+                                            </span>
+                                            <span className={styles['tier-price']}>
+                                                {SETUP_SERVICE.price}
+                                                <span className={styles['tier-price-unit']}>one-time</span>
+                                            </span>
                                         </div>
+                                        <span className={styles['tier-term']}>{tier.termLabel}</span>
                                         <span className={styles['tier-devices']}>{tier.devicesLabel}</span>
                                         <span className={styles['tier-summary']}>{tier.summary}</span>
-                                        <span className={styles['tier-after']}>Renews around {tier.monthlyAfter} after</span>
+                                        <span className={styles['tier-after']}>Then {tier.monthlyAfter} to renew after that</span>
                                     </button>
                                 ))}
                             </div>
                             <p className={styles['tier-note']}>
-                                Both options are the same {SETUP_SERVICE.price} one-time fee. The difference is concurrent
-                                streams and how long is included — Single IP includes 6 months, Multi-Stream includes 3.
+                                Same {SETUP_SERVICE.price} one-time fee either way — what changes is how many simultaneous
+                                streams you get and how long is included (Single IP: 6 months · Multi-Stream: 3 months).
                             </p>
                         </fieldset>
 
                         <label className={styles['field']}>
-                            <span className={styles['field-label']}>Contact email</span>
+                            <span className={styles['field-label']}>Contact email<span className={styles['req']} aria-hidden="true"> *</span></span>
                             <input
                                 className={styles['field-input']}
                                 type="email"
@@ -215,7 +225,7 @@ const Setup = () => {
                             </p>
 
                             <label className={styles['field']}>
-                                <span className={styles['field-label']}>Desired username / ID</span>
+                                <span className={styles['field-label']}>Desired username / ID<span className={styles['req']} aria-hidden="true"> *</span></span>
                                 <input
                                     className={styles['field-input']}
                                     type="text"
@@ -228,7 +238,7 @@ const Setup = () => {
                             </label>
 
                             <label className={styles['field']}>
-                                <span className={styles['field-label']}>Desired password</span>
+                                <span className={styles['field-label']}>Desired password<span className={styles['req']} aria-hidden="true"> *</span></span>
                                 <div className={styles['password-wrap']}>
                                     <input
                                         className={styles['field-input']}
@@ -292,11 +302,11 @@ const Setup = () => {
                             </span>
                         </label>
 
-                        {error ? <p className={styles['error-text']}>{error}</p> : null}
+                        {error ? <p className={styles['error-text']} role="alert">{error}</p> : null}
 
-                        <Button className={styles['submit-btn']} type="submit" disabled={submitting}>
+                        <button className={styles['submit-btn']} type="submit" disabled={submitting}>
                             {submitting ? 'Sending…' : `Request setup — ${SETUP_SERVICE.price}`}
-                        </Button>
+                        </button>
                         <p className={styles['fineprint']}>
                             No charge yet. This sends a request; we confirm details and arrange payment before any setup.
                         </p>

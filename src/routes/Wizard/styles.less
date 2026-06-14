@@ -119,6 +119,66 @@
     font-size: 0.84rem;
 }
 
+.ordered-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--text-primary);
+    font-size: 0.92rem;
+    line-height: 1.5;
+
+    strong {
+        color: var(--c4k-gold);
+        font-weight: 700;
+    }
+}
+
+.callout {
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--c4k-radius-sm);
+    border-left: 3px solid var(--c4k-gold);
+    background: var(--c4k-gold-soft);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.step-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.step-external-link,
+.step-guide-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--c4k-gold);
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+        border-radius: var(--c4k-radius-sm);
+    }
+}
+
 /* ── Path fork ── */
 .path-grid {
     display: grid;
@@ -211,11 +271,12 @@
 }
 
 .option-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     text-align: left;
-    padding: 0.9rem 1rem;
+    padding: 0.9rem 2.4rem 0.9rem 1rem;
     border-radius: var(--c4k-radius-sm);
     border: 1px solid var(--c4k-border);
     background: var(--c4k-glass-1);
@@ -225,11 +286,33 @@
     &:hover {
         border-color: var(--c4k-border-strong);
     }
+
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+    }
 }
 
 .option-selected {
     border-color: var(--c4k-gold);
     background: var(--c4k-gold-soft);
+}
+
+.option-check {
+    position: absolute;
+    top: 50%;
+    right: 0.9rem;
+    transform: translateY(-50%);
+    width: 1.35rem;
+    height: 1.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--c4k-gold);
+    color: #100c02;
+    font-size: 0.8rem;
+    font-weight: 800;
 }
 
 .option-name {
@@ -282,6 +365,11 @@
     font-weight: 700;
     border: 1px solid var(--c4k-border);
     cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+    }
 }
 
 .nav-back {
@@ -298,6 +386,11 @@
     background: var(--c4k-gold);
     color: #100c02;
     border-color: transparent;
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
 }
 
 /* ── Locked state ── */

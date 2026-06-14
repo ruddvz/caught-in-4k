@@ -674,7 +674,7 @@ app.post('/api/setup/fulfill', validateBody(setupFulfillBodySchema), async (req,
         const { id } = req.validatedBody;
         const { data: request, error: requestError } = await sb
             .from('setup_requests')
-            .select('id, server_tier, user_id')
+            .select('id, server_tier, user_id, email')
             .eq('id', id)
             .single();
         if (requestError || !request) {
@@ -700,6 +700,31 @@ app.post('/api/setup/fulfill', validateBody(setupFulfillBodySchema), async (req,
         // Bundle: setup customers with a C4K account also get the guide unlocked.
         if (request.user_id) {
             await sb.from('users').update({ guide_unlocked: true }).eq('id', request.user_id);
+        }
+
+        // Hand-off email: tell the customer it's ready and remind them to verify
+        // the email on each service so their streaming isn't interrupted.
+        if (request.email) {
+            await sendEmail({
+                to: request.email,
+                subject: 'Your Caught in 4K setup is ready 🎬',
+                text: [
+                    'Good news — your Caught in 4K account is all set up and ready to stream.',
+                    '',
+                    "We've configured everything on our end. There's just one quick thing to do on yours:",
+                    '',
+                    '👉 Please verify the email address for each service we set up for you (your Stremio',
+                    '   account and your debrid provider). Open the confirmation emails in your inbox and',
+                    '   click the verification links.',
+                    '',
+                    'This matters: providers can limit or suspend accounts whose email is unverified, which',
+                    'would interrupt your streaming. Verifying now keeps everything running smoothly.',
+                    '',
+                    "Can't find a verification email? Check your spam folder, and reply here if you need a hand.",
+                    '',
+                    'Enjoy! — Caught in 4K',
+                ].join('\n'),
+            });
         }
 
         return res.json({ ok: true, term_expires_at: termExpiresAt.toISOString() });
