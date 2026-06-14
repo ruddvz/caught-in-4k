@@ -1,0 +1,321 @@
+@import (reference) "~stremio/common/screen-sizes.less";
+
+.setup-page {
+    min-height: 100dvh;
+    width: 100%;
+    background:
+        var(--gradient-gold),
+        var(--gradient-blue),
+        linear-gradient(180deg, #0a0b10 0%, #06070b 55%, #040508 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    font-family: 'PlusJakartaSans', -apple-system, sans-serif;
+    color: var(--text-primary);
+    padding:
+        calc(env(safe-area-inset-top, 0px) + 7rem) 2rem
+        calc(env(safe-area-inset-bottom, 0px) + 3rem);
+    overflow-y: auto;
+}
+
+.ambient-orb-a,
+.ambient-orb-b {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ambient-orb-a {
+    top: 8%;
+    left: 6%;
+    width: 16rem;
+    height: 16rem;
+    background: rgba(244, 211, 140, 0.07);
+}
+
+.ambient-orb-b {
+    right: 6%;
+    bottom: 8%;
+    width: 18rem;
+    height: 18rem;
+    background: rgba(80, 110, 255, 0.06);
+}
+
+.brand-header {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.brand-logo {
+    height: 64px;
+    width: auto;
+    object-fit: contain;
+    opacity: 0.92;
+}
+
+.back-btn {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 2rem);
+    left: 2rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+        color: var(--text-primary);
+    }
+}
+
+.setup-shell {
+    position: relative;
+    z-index: 1;
+    width: min(640px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.setup-hero {
+    text-align: center;
+}
+
+.eyebrow {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.72rem;
+    color: var(--c4k-gold);
+    margin-bottom: 0.6rem;
+}
+
+.hero-title {
+    font-size: clamp(1.7rem, 5.5vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0 0 0.75rem;
+}
+
+.hero-copy {
+    margin: 0 auto;
+    color: var(--text-secondary);
+    font-size: 0.96rem;
+    line-height: 1.55;
+}
+
+/* ── Form ── */
+.setup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tier-fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.field-legend {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    padding: 0;
+}
+
+.tier-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+}
+
+.tier-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    text-align: left;
+    padding: 1.1rem;
+    border-radius: var(--c4k-radius-md);
+    border: 1px solid var(--c4k-border);
+    background: var(--c4k-glass-1);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+
+    &:hover {
+        border-color: var(--c4k-border-strong);
+    }
+}
+
+.tier-selected {
+    border-color: var(--c4k-gold);
+    background:
+        linear-gradient(135deg, var(--c4k-gold-soft), transparent 70%),
+        var(--c4k-glass-2);
+}
+
+.tier-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.tier-name {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.tier-monthly {
+    color: var(--c4k-gold);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.tier-devices {
+    font-size: 0.84rem;
+    color: var(--text-primary);
+}
+
+.tier-summary {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+.tier-note {
+    margin: 0.75rem 0 0;
+    color: var(--text-tertiary);
+    font-size: 0.8rem;
+    line-height: 1.45;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.field-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.field-input,
+.field-textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: var(--c4k-radius-sm);
+    border: 1px solid var(--c4k-border);
+    background: var(--c4k-glass-1);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.92rem;
+
+    &:focus {
+        outline: none;
+        border-color: var(--c4k-gold);
+    }
+
+    &::placeholder {
+        color: var(--text-tertiary);
+    }
+}
+
+.field-textarea {
+    resize: vertical;
+    min-height: 4.5rem;
+}
+
+.error-text {
+    margin: 0;
+    color: var(--c4k-danger);
+    font-size: 0.85rem;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 0.95rem 1.4rem;
+    border-radius: var(--c4k-radius-pill);
+    background: var(--c4k-gold);
+    color: #100c02;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.fineprint {
+    margin: 0;
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 0.78rem;
+}
+
+/* ── Success ── */
+.success-card {
+    text-align: center;
+    padding: 2rem;
+    border-radius: var(--c4k-radius-lg);
+    border: 1px solid var(--c4k-border-strong);
+    background: var(--c4k-glass-2);
+}
+
+.success-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--c4k-gold-soft);
+    color: var(--c4k-gold);
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.success-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.success-copy {
+    margin: 0 0 1.5rem;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.55;
+}
+
+.success-btn {
+    padding: 0.85rem 1.6rem;
+    border-radius: var(--c4k-radius-pill);
+    background: var(--c4k-gold);
+    color: #100c02;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+}
+
+@media (max-width: 560px) {
+    .tier-grid {
+        grid-template-columns: 1fr;
+    }
+}
