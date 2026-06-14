@@ -5,61 +5,96 @@
 // the $30 guide product is unlocked, otherwise a purchase panel.
 
 const React = require('react');
+const PropTypes = require('prop-types');
+const classnames = require('classnames');
 const { Button } = require('stremio/components');
 const { navigateToAppHref } = require('stremio/common/navigation');
 const { useAuth } = require('stremio/common/AuthProvider');
 const { GUIDE_PRODUCT, SETUP_SERVICE, getGuideAccessState } = require('stremio/common/guideAccess');
+const { GUIDE_CONTENT } = require('stremio/common/guideContent');
 const styles = require('./styles.less');
 
 const APP_LOGO = require('/assets/images/logo1.png');
 
-// High-level, source-accurate section outline aggregated from the four guides.
-// Detailed step-by-step copy is delivered through the Wizard and a follow-up
-// content pass — these summaries stay deliberately high-level so nothing is
-// stated incorrectly.
-const GUIDE_SECTIONS = [
-    {
-        id: 'beginner-concepts',
-        title: 'Beginner Concepts',
-        summary: 'What Stremio is, what a debrid service does, and how add-ons turn it into an on-demand streaming experience.',
-    },
-    {
-        id: 'install-stremio',
-        title: 'Install Stremio',
-        summary: 'Get the app on every device — iPhone, Android, Apple TV, web and desktop — and sign in to one account.',
-    },
-    {
-        id: 'choose-debrid',
-        title: 'Choose a Debrid Service',
-        summary: 'Compare the common providers (Real-Debrid, TorBox, AllDebrid, Premiumize) and grab your API key.',
-    },
-    {
-        id: 'install-addons',
-        title: 'Install Add-ons',
-        summary: 'Add the streaming sources and wire your debrid key in so you get fast, high-quality cached links.',
-    },
-    {
-        id: 'aiostreams',
-        title: 'AIOStreams — All-in-One',
-        summary: 'Consolidate multiple add-ons and debrid services into a single, highly customisable super-addon.',
-    },
-    {
-        id: 'player-quality',
-        title: 'Player & Quality',
-        summary: 'Tune resolution, preferred languages and playback so you reliably get the best stream available.',
-    },
-    {
-        id: 'troubleshooting',
-        title: 'Configuration Q&A',
-        summary: 'The most common setup questions and fixes, so a stuck step never ends your setup.',
-    },
-];
+const GuideSection = ({ section, index, expanded, onToggle }) => {
+    const hasDetail = (section.steps && section.steps.length > 0) ||
+        (section.notes && section.notes.length > 0) ||
+        (section.links && section.links.length > 0);
+
+    return (
+        <article className={classnames(styles['section-card'], { [styles['section-open']]: expanded })}>
+            <button
+                type="button"
+                className={styles['section-header']}
+                onClick={() => onToggle(section.id)}
+                aria-expanded={expanded}
+            >
+                <span className={styles['section-index']}>{String(index + 1).padStart(2, '0')}</span>
+                <span className={styles['section-heading']}>
+                    <span className={styles['section-title']}>{section.title}</span>
+                    <span className={styles['section-summary']}>{section.intro}</span>
+                </span>
+                {hasDetail ? (
+                    <svg
+                        className={styles['section-chevron']}
+                        width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                        aria-hidden="true"
+                    >
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                ) : null}
+            </button>
+
+            {expanded && hasDetail ? (
+                <div className={styles['section-detail']}>
+                    {section.steps && section.steps.length > 0 ? (
+                        <ol className={styles['step-list']}>
+                            {section.steps.map((step, stepIndex) => (
+                                <li key={stepIndex} className={styles['step-item']}>{step}</li>
+                            ))}
+                        </ol>
+                    ) : null}
+
+                    {section.notes && section.notes.length > 0 ? (
+                        <div className={styles['note-list']}>
+                            {section.notes.map((note, noteIndex) => (
+                                <p key={noteIndex} className={styles['note-item']}>{note}</p>
+                            ))}
+                        </div>
+                    ) : null}
+
+                    {section.links && section.links.length > 0 ? (
+                        <div className={styles['link-list']}>
+                            {section.links.map((link, linkIndex) => (
+                                <a
+                                    key={linkIndex}
+                                    className={styles['link-item']}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {link.label}
+                                </a>
+                            ))}
+                        </div>
+                    ) : null}
+                </div>
+            ) : null}
+        </article>
+    );
+};
 
 const Guide = () => {
     const auth = useAuth();
     const isAdmin = Boolean(auth && auth.isAdmin);
     const profile = auth ? auth.profile : null;
     const { guideUnlocked } = getGuideAccessState({ isAdmin, profile });
+
+    const [expandedId, setExpandedId] = React.useState(null);
+    const onToggle = React.useCallback((id) => {
+        setExpandedId((current) => (current === id ? null : id));
+    }, []);
 
     return (
         <div className={styles['guide-page']}>
@@ -102,18 +137,20 @@ const Guide = () => {
                         </div>
 
                         <div className={styles['section-grid']}>
-                            {GUIDE_SECTIONS.map((section, index) => (
-                                <article key={section.id} className={styles['section-card']}>
-                                    <span className={styles['section-index']}>{String(index + 1).padStart(2, '0')}</span>
-                                    <h3 className={styles['section-title']}>{section.title}</h3>
-                                    <p className={styles['section-summary']}>{section.summary}</p>
-                                </article>
+                            {GUIDE_CONTENT.map((section, index) => (
+                                <GuideSection
+                                    key={section.id}
+                                    section={section}
+                                    index={index}
+                                    expanded={expandedId === section.id}
+                                    onToggle={onToggle}
+                                />
                             ))}
                         </div>
 
                         <p className={styles['content-note']}>
-                            Full step-by-step instructions for each section are being added. Use the Wizard above for the
-                            guided path in the meantime.
+                            Built from Viren070&apos;s Guides and the numb3rs Perfect Setup guide. Use the Wizard above for
+                            the guided path.
                         </p>
                     </React.Fragment>
                 ) : (
@@ -157,6 +194,23 @@ const Guide = () => {
             </div>
         </div>
     );
+};
+
+GuideSection.propTypes = {
+    section: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        intro: PropTypes.string,
+        steps: PropTypes.arrayOf(PropTypes.string),
+        notes: PropTypes.arrayOf(PropTypes.string),
+        links: PropTypes.arrayOf(PropTypes.shape({
+            label: PropTypes.string,
+            url: PropTypes.string,
+        })),
+    }).isRequired,
+    index: PropTypes.number.isRequired,
+    expanded: PropTypes.bool.isRequired,
+    onToggle: PropTypes.func.isRequired,
 };
 
 module.exports = Guide;
