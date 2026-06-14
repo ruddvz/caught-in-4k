@@ -181,18 +181,27 @@ const Setup = () => {
                                             <span className={styles['tier-badge']}>Most popular</span>
                                         ) : null}
                                         <div className={styles['tier-head']}>
-                                            <span className={styles['tier-name']}>{tier.name}</span>
-                                            <span className={styles['tier-monthly']}>{tier.termLabel}</span>
+                                            <span className={styles['tier-name']}>
+                                                {serverTier === tier.id ? (
+                                                    <span className={styles['tier-check']} aria-hidden="true">✓</span>
+                                                ) : null}
+                                                {tier.name}
+                                            </span>
+                                            <span className={styles['tier-price']}>
+                                                {SETUP_SERVICE.price}
+                                                <span className={styles['tier-price-unit']}>one-time</span>
+                                            </span>
                                         </div>
+                                        <span className={styles['tier-term']}>{tier.termLabel}</span>
                                         <span className={styles['tier-devices']}>{tier.devicesLabel}</span>
                                         <span className={styles['tier-summary']}>{tier.summary}</span>
-                                        <span className={styles['tier-after']}>Renews around {tier.monthlyAfter} after</span>
+                                        <span className={styles['tier-after']}>Then {tier.monthlyAfter} to renew after that</span>
                                     </button>
                                 ))}
                             </div>
                             <p className={styles['tier-note']}>
-                                Both options are the same {SETUP_SERVICE.price} one-time fee. The difference is concurrent
-                                streams and how long is included — Single IP includes 6 months, Multi-Stream includes 3.
+                                Same {SETUP_SERVICE.price} one-time fee either way — what changes is how many simultaneous
+                                streams you get and how long is included (Single IP: 6 months · Multi-Stream: 3 months).
                             </p>
                         </fieldset>
 

@@ -128,6 +128,7 @@ const Guide = () => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [authLoading, setAuthLoading] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
     const [checkoutSuccess] = React.useState(readGuideCheckoutSuccess);
     const [unlockTimedOut, setUnlockTimedOut] = React.useState(false);
 
@@ -293,6 +294,10 @@ const Guide = () => {
                             <span className={styles['paywall-price']}>{GUIDE_PRODUCT.price}</span>
                             <h2 className={styles['paywall-title']}>{GUIDE_PRODUCT.name}</h2>
                             <p className={styles['paywall-tagline']}>{GUIDE_PRODUCT.tagline}</p>
+                            <p className={styles['paywall-price']}>
+                                <span className={styles['paywall-price-amount']}>{GUIDE_PRODUCT.price}</span>
+                                <span className={styles['paywall-price-unit']}>one-time · yours forever</span>
+                            </p>
                             <ul className={styles['paywall-list']}>
                                 <li>Every step, in order — no guesswork</li>
                                 <li>Interactive setup wizard</li>
@@ -328,17 +333,27 @@ const Guide = () => {
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
                                     />
-                                    <input
-                                        className={styles['paywall-input']}
-                                        type="password"
-                                        placeholder="Password"
-                                        aria-label="Password"
-                                        autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                        minLength={8}
-                                    />
+                                    <div className={styles['paywall-password']}>
+                                        <input
+                                            className={styles['paywall-input']}
+                                            type={showPassword ? 'text' : 'password'}
+                                            placeholder="Password"
+                                            aria-label="Password"
+                                            autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                            minLength={8}
+                                        />
+                                        <button
+                                            type="button"
+                                            className={styles['paywall-password-toggle']}
+                                            onClick={() => setShowPassword((value) => !value)}
+                                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                        >
+                                            {showPassword ? 'Hide' : 'Show'}
+                                        </button>
+                                    </div>
                                     <button className={styles['paywall-btn']} type="submit" disabled={authLoading}>
                                         {authLoading ? 'Please wait…' : authMode === 'signup' ? 'Create account to buy' : 'Sign in to buy'}
                                     </button>

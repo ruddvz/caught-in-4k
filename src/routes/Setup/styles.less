@@ -167,7 +167,7 @@
 .tier-badge {
     position: absolute;
     top: -0.6rem;
-    right: 0.9rem;
+    left: 0.9rem;
     padding: 0.15rem 0.6rem;
     border-radius: var(--c4k-radius-pill);
     background: var(--c4k-gold);
@@ -208,20 +208,59 @@
 
 .tier-head {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 0.5rem;
+    margin-top: 0.2rem;
 }
 
 .tier-name {
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.05rem;
 }
 
-.tier-monthly {
+.tier-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-right: 0.4rem;
+    border-radius: 999px;
+    background: var(--c4k-gold);
+    color: #100c02;
+    font-size: 0.7rem;
+    font-weight: 800;
+    vertical-align: middle;
+}
+
+.tier-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     color: var(--c4k-gold);
+    font-weight: 800;
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.tier-price-unit {
+    margin-top: 0.2rem;
+    color: var(--text-tertiary);
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.tier-term {
+    align-self: flex-start;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--c4k-radius-pill);
+    background: var(--c4k-gold-soft);
+    color: var(--c4k-gold);
+    font-size: 0.74rem;
     font-weight: 700;
-    font-size: 0.9rem;
 }
 
 .tier-devices {

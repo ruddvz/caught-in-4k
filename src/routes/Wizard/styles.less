@@ -211,11 +211,12 @@
 }
 
 .option-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     text-align: left;
-    padding: 0.9rem 1rem;
+    padding: 0.9rem 2.4rem 0.9rem 1rem;
     border-radius: var(--c4k-radius-sm);
     border: 1px solid var(--c4k-border);
     background: var(--c4k-glass-1);
@@ -235,6 +236,23 @@
 .option-selected {
     border-color: var(--c4k-gold);
     background: var(--c4k-gold-soft);
+}
+
+.option-check {
+    position: absolute;
+    top: 50%;
+    right: 0.9rem;
+    transform: translateY(-50%);
+    width: 1.35rem;
+    height: 1.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--c4k-gold);
+    color: #100c02;
+    font-size: 0.8rem;
+    font-weight: 800;
 }
 
 .option-name {

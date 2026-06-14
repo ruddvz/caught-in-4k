@@ -136,6 +136,9 @@ const Wizard = () => {
                             >
                                 <span className={styles['option-name']}>{option.name}</span>
                                 <span className={styles['option-note']}>{option.note}</span>
+                                {debrid === option.id ? (
+                                    <span className={styles['option-check']} aria-hidden="true">✓</span>
+                                ) : null}
                             </button>
                         ))}
                     </div>
