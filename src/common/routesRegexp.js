@@ -80,6 +80,18 @@ const routesRegexp = {
     pricingDemo: {
         regexp: /^\/pricing-demo$/,
         urlParamsNames: []
+    },
+    guide: {
+        regexp: /^\/guide$/,
+        urlParamsNames: []
+    },
+    wizard: {
+        regexp: /^\/wizard$/,
+        urlParamsNames: []
+    },
+    setup: {
+        regexp: /^\/setup$/,
+        urlParamsNames: []
     }
 };
 

@@ -1,0 +1,310 @@
+// Copyright (C) 2026 Caught in 4K
+//
+// Done-for-you account setup request ($120 one-time). The member chooses a
+// streaming-server tier and submits a request; the request is sent to the
+// backend (which stores it securely and emails the operator), and the operator
+// provisions the account by hand and hands over a login. Falls back to an email
+// draft when the backend is not configured.
+
+const React = require('react');
+const classnames = require('classnames');
+const { Button } = require('stremio/components');
+const { navigateToAppHref } = require('stremio/common/navigation');
+const { useAuth } = require('stremio/common/AuthProvider');
+const { resolveApiBaseUrl } = require('stremio/common/apiBaseUrl');
+const { trimTrailingSlash } = require('stremio/common/subscriptionCheckout');
+const {
+    SETUP_SERVICE,
+    SERVER_TIERS,
+    DEFAULT_SERVER_TIER_ID,
+} = require('stremio/common/guideAccess');
+const styles = require('./styles.less');
+
+const APP_LOGO = require('/assets/images/logo1.png');
+
+// Where fallback requests are sent if the backend is not configured on this build.
+const SUPPORT_EMAIL = 'support@c4k.live';
+
+const Setup = () => {
+    const auth = useAuth();
+    const presetEmail = (auth && auth.user && auth.user.email) || '';
+
+    const [serverTier, setServerTier] = React.useState(DEFAULT_SERVER_TIER_ID);
+    const [email, setEmail] = React.useState(presetEmail);
+    const [desiredUsername, setDesiredUsername] = React.useState('');
+    const [desiredPassword, setDesiredPassword] = React.useState('');
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [devices, setDevices] = React.useState('');
+    const [notes, setNotes] = React.useState('');
+    const [agreed, setAgreed] = React.useState(false);
+    const [submitting, setSubmitting] = React.useState(false);
+    const [submitted, setSubmitted] = React.useState(false);
+    const [error, setError] = React.useState(null);
+
+    React.useEffect(() => {
+        if (presetEmail) {
+            setEmail((current) => current || presetEmail);
+        }
+    }, [presetEmail]);
+
+    const handleSubmit = React.useCallback(async (event) => {
+        event.preventDefault();
+        setError(null);
+
+        if (!email.trim()) {
+            setError('Please enter a contact email.');
+            return;
+        }
+
+        if (!desiredUsername.trim()) {
+            setError('Please choose the username / ID you want for the account.');
+            return;
+        }
+
+        if (desiredPassword.length < 8) {
+            setError('Please choose a password of at least 8 characters.');
+            return;
+        }
+
+        if (!agreed) {
+            setError('Please confirm you understand this is a setup & support service.');
+            return;
+        }
+
+        const payload = {
+            email: email.trim(),
+            server_tier: serverTier,
+            desired_username: desiredUsername.trim(),
+            desired_password: desiredPassword,
+            devices: devices.trim(),
+            notes: notes.trim(),
+        };
+
+        const apiBaseUrl = resolveApiBaseUrl();
+        const accessToken = (auth && auth.session && auth.session.access_token) || '';
+
+        // Email draft fallback so a request is never silently lost — used when
+        // there is no backend configured, or when the POST fails. The password
+        // is deliberately omitted so it is never written into a mailto URL /
+        // mail client history; it is collected securely once we reply.
+        const openEmailFallback = () => {
+            const subject = encodeURIComponent('C4K Account Setup Request');
+            const body = encodeURIComponent(
+                `Server tier: ${serverTier}\nContact email: ${payload.email}\nDesired username: ${payload.desired_username}\nDevices: ${payload.devices}\nNotes: ${payload.notes}\n\n(We'll collect your chosen password securely when we reply.)`
+            );
+            window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+            setSubmitted(true);
+        };
+
+        setSubmitting(true);
+        try {
+            if (!apiBaseUrl) {
+                openEmailFallback();
+                return;
+            }
+
+            const response = await fetch(`${trimTrailingSlash(apiBaseUrl)}/api/setup/request`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+                },
+                body: JSON.stringify(payload),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.error || 'Could not submit your request.');
+            }
+            setSubmitted(true);
+        } catch (submitError) {
+            // Backend unreachable or errored — don't drop the request, open the
+            // email draft so the customer can still reach us.
+            console.error('[Setup] request submit failed, falling back to email:', submitError);
+            openEmailFallback();
+        } finally {
+            setSubmitting(false);
+        }
+    }, [agreed, auth, desiredPassword, desiredUsername, devices, email, notes, serverTier]);
+
+    return (
+        <div className={styles['setup-page']}>
+            <div className={styles['ambient-orb-a']} />
+            <div className={styles['ambient-orb-b']} />
+
+            <div className={styles['brand-header']}>
+                <img src={APP_LOGO} className={styles['brand-logo']} alt="Caught in 4K" />
+            </div>
+
+            <Button className={styles['back-btn']} onClick={() => navigateToAppHref('/guide')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+                Guide
+            </Button>
+
+            <div className={styles['setup-shell']}>
+                <header className={styles['setup-hero']}>
+                    <span className={styles['eyebrow']}>Done-for-You</span>
+                    <h1 className={styles['hero-title']}>{SETUP_SERVICE.name}</h1>
+                    <p className={styles['hero-copy']}>
+                        {SETUP_SERVICE.tagline} For a one-time {SETUP_SERVICE.price}, we provision your streaming account,
+                        configure everything, and hand you a login that works in the Stremio apps on every device.
+                    </p>
+                </header>
+
+                {submitted ? (
+                    <div className={styles['success-card']}>
+                        <div className={styles['success-icon']}>✓</div>
+                        <h2 className={styles['success-title']}>Request received</h2>
+                        <p className={styles['success-copy']}>
+                            We&apos;ll reach out at <strong>{email}</strong> to arrange payment and get your account
+                            set up. Keep an eye on your inbox.
+                        </p>
+                        <Button className={styles['success-btn']} onClick={() => navigateToAppHref('/')}>
+                            Go Home
+                        </Button>
+                    </div>
+                ) : (
+                    <form className={styles['setup-form']} onSubmit={handleSubmit}>
+                        <fieldset className={styles['tier-fieldset']}>
+                            <legend className={styles['field-legend']}>Choose your streaming server</legend>
+                            <div className={styles['tier-grid']}>
+                                {SERVER_TIERS.map((tier) => (
+                                    <button
+                                        key={tier.id}
+                                        type="button"
+                                        className={classnames(styles['tier-card'], { [styles['tier-selected']]: serverTier === tier.id })}
+                                        onClick={() => setServerTier(tier.id)}
+                                    >
+                                        {tier.mostPopular ? (
+                                            <span className={styles['tier-badge']}>Most popular</span>
+                                        ) : null}
+                                        <div className={styles['tier-head']}>
+                                            <span className={styles['tier-name']}>{tier.name}</span>
+                                            <span className={styles['tier-monthly']}>{tier.termLabel}</span>
+                                        </div>
+                                        <span className={styles['tier-devices']}>{tier.devicesLabel}</span>
+                                        <span className={styles['tier-summary']}>{tier.summary}</span>
+                                        <span className={styles['tier-after']}>Renews around {tier.monthlyAfter} after</span>
+                                    </button>
+                                ))}
+                            </div>
+                            <p className={styles['tier-note']}>
+                                Both options are the same {SETUP_SERVICE.price} one-time fee. The difference is concurrent
+                                streams and how long is included — Single IP includes 6 months, Multi-Stream includes 3.
+                            </p>
+                        </fieldset>
+
+                        <label className={styles['field']}>
+                            <span className={styles['field-label']}>Contact email</span>
+                            <input
+                                className={styles['field-input']}
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="you@example.com"
+                                required
+                            />
+                        </label>
+
+                        <fieldset className={styles['cred-fieldset']}>
+                            <legend className={styles['field-legend']}>Your account login</legend>
+                            <p className={styles['cred-help']}>
+                                Pick the username and password you want for your streaming account — we&apos;ll create it
+                                with exactly these. You can change the password yourself any time after handover.
+                            </p>
+
+                            <label className={styles['field']}>
+                                <span className={styles['field-label']}>Desired username / ID</span>
+                                <input
+                                    className={styles['field-input']}
+                                    type="text"
+                                    value={desiredUsername}
+                                    onChange={(e) => setDesiredUsername(e.target.value)}
+                                    placeholder="e.g. moviefan_42"
+                                    autoComplete="off"
+                                    required
+                                />
+                            </label>
+
+                            <label className={styles['field']}>
+                                <span className={styles['field-label']}>Desired password</span>
+                                <div className={styles['password-wrap']}>
+                                    <input
+                                        className={styles['field-input']}
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={desiredPassword}
+                                        onChange={(e) => setDesiredPassword(e.target.value)}
+                                        placeholder="At least 8 characters"
+                                        autoComplete="new-password"
+                                        minLength={8}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        className={styles['password-toggle']}
+                                        onClick={() => setShowPassword((value) => !value)}
+                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    >
+                                        {showPassword ? 'Hide' : 'Show'}
+                                    </button>
+                                </div>
+                            </label>
+
+                            <p className={styles['cred-warning']}>
+                                Use a brand-new password you don&apos;t use anywhere else — you&apos;re sharing it so we can
+                                set the account up for you.
+                            </p>
+                        </fieldset>
+
+                        <label className={styles['field']}>
+                            <span className={styles['field-label']}>Which devices will you use? (optional)</span>
+                            <input
+                                className={styles['field-input']}
+                                type="text"
+                                value={devices}
+                                onChange={(e) => setDevices(e.target.value)}
+                                placeholder="e.g. iPhone, Apple TV, laptop"
+                            />
+                        </label>
+
+                        <label className={styles['field']}>
+                            <span className={styles['field-label']}>Anything else? (optional)</span>
+                            <textarea
+                                className={styles['field-textarea']}
+                                value={notes}
+                                onChange={(e) => setNotes(e.target.value)}
+                                rows={3}
+                                placeholder="Questions or preferences"
+                            />
+                        </label>
+
+                        <label className={styles['agree-row']}>
+                            <input
+                                type="checkbox"
+                                className={styles['agree-checkbox']}
+                                checked={agreed}
+                                onChange={(e) => setAgreed(e.target.checked)}
+                            />
+                            <span className={styles['agree-text']}>
+                                I understand this is a one-time setup &amp; support service. After the included term I&apos;m
+                                responsible for renewing the streaming server (pay it directly or arrange a renewal).
+                            </span>
+                        </label>
+
+                        {error ? <p className={styles['error-text']}>{error}</p> : null}
+
+                        <Button className={styles['submit-btn']} type="submit" disabled={submitting}>
+                            {submitting ? 'Sending…' : `Request setup — ${SETUP_SERVICE.price}`}
+                        </Button>
+                        <p className={styles['fineprint']}>
+                            No charge yet. This sends a request; we confirm details and arrange payment before any setup.
+                        </p>
+                    </form>
+                )}
+            </div>
+        </div>
+    );
+};
+
+module.exports = Setup;
