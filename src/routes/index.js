@@ -20,6 +20,9 @@ const Profiles = require('./Profiles');
 const Subscribe = require('./Subscribe');
 const Admin = require('./Admin');
 const { default: PricingDemo } = require('./PricingDemo');
+const Guide = require('./Guide');
+const Wizard = require('./Wizard');
+const Setup = require('./Setup');
 
 module.exports = {
     Addons,
@@ -41,5 +44,8 @@ module.exports = {
     Profiles,
     Subscribe,
     Admin,
-    PricingDemo
+    PricingDemo,
+    Guide,
+    Wizard,
+    Setup
 };

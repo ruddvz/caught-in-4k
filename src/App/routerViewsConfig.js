@@ -90,6 +90,18 @@ const routerViewsConfig = [
         {
             ...routesRegexp.pricingDemo,
             component: routes.PricingDemo
+        },
+        {
+            ...routesRegexp.guide,
+            component: routes.Guide
+        },
+        {
+            ...routesRegexp.wizard,
+            component: routes.Wizard
+        },
+        {
+            ...routesRegexp.setup,
+            component: routes.Setup
         }
     ]
 ];
