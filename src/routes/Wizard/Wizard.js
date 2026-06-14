@@ -185,8 +185,11 @@ const Wizard = () => {
     ], [debrid]);
 
     const totalSteps = steps.length;
-    const currentStep = steps[stepIndex];
-    const progress = Math.round(((stepIndex + 1) / totalSteps) * 100);
+    // Clamp the (possibly stale/persisted) index so an out-of-range value from
+    // localStorage can never render an undefined step and crash.
+    const safeStepIndex = Math.max(0, Math.min(stepIndex, totalSteps - 1));
+    const currentStep = steps[safeStepIndex];
+    const progress = Math.round(((safeStepIndex + 1) / totalSteps) * 100);
 
     if (!guideUnlocked) {
         return (
@@ -219,7 +222,7 @@ const Wizard = () => {
 
             <div className={styles['wizard-shell']}>
                 <div className={styles['progress-row']}>
-                    <span className={styles['progress-label']}>Step {stepIndex + 1} of {totalSteps}</span>
+                    <span className={styles['progress-label']}>Step {safeStepIndex + 1} of {totalSteps}</span>
                     <div className={styles['progress-track']}>
                         <div className={styles['progress-fill']} style={{ width: `${progress}%` }} />
                     </div>
@@ -231,15 +234,15 @@ const Wizard = () => {
                 <div className={styles['nav-row']}>
                     <Button
                         className={styles['nav-back']}
-                        disabled={stepIndex === 0}
-                        onClick={() => setStepIndex((index) => Math.max(0, index - 1))}
+                        disabled={safeStepIndex === 0}
+                        onClick={() => setStepIndex(Math.max(0, safeStepIndex - 1))}
                     >
                         Back
                     </Button>
-                    {stepIndex < totalSteps - 1 ? (
+                    {safeStepIndex < totalSteps - 1 ? (
                         <Button
                             className={styles['nav-next']}
-                            onClick={() => setStepIndex((index) => Math.min(totalSteps - 1, index + 1))}
+                            onClick={() => setStepIndex(Math.min(totalSteps - 1, safeStepIndex + 1))}
                         >
                             Next
                         </Button>

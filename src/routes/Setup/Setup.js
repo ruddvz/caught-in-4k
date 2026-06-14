@@ -83,34 +83,44 @@ const Setup = () => {
         const apiBaseUrl = resolveApiBaseUrl();
         const accessToken = (auth && auth.session && auth.session.access_token) || '';
 
+        // Email draft fallback so a request is never silently lost — used when
+        // there is no backend configured, or when the POST fails. The password
+        // is deliberately omitted so it is never written into a mailto URL /
+        // mail client history; it is collected securely once we reply.
+        const openEmailFallback = () => {
+            const subject = encodeURIComponent('C4K Account Setup Request');
+            const body = encodeURIComponent(
+                `Server tier: ${serverTier}\nContact email: ${payload.email}\nDesired username: ${payload.desired_username}\nDevices: ${payload.devices}\nNotes: ${payload.notes}\n\n(We'll collect your chosen password securely when we reply.)`
+            );
+            window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+            setSubmitted(true);
+        };
+
         setSubmitting(true);
         try {
-            if (apiBaseUrl) {
-                const response = await fetch(`${trimTrailingSlash(apiBaseUrl)}/api/setup/request`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-                    },
-                    body: JSON.stringify(payload),
-                });
-                const data = await response.json().catch(() => ({}));
-                if (!response.ok) {
-                    throw new Error(data.error || 'Could not submit your request.');
-                }
-                setSubmitted(true);
-            } else {
-                // No backend on this build — fall back to an email draft so the
-                // request is never silently lost.
-                const subject = encodeURIComponent('C4K Account Setup Request');
-                const body = encodeURIComponent(
-                    `Server tier: ${serverTier}\nContact email: ${payload.email}\nDesired username: ${payload.desired_username}\nDesired password: ${payload.desired_password}\nDevices: ${payload.devices}\nNotes: ${payload.notes}`
-                );
-                window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
-                setSubmitted(true);
+            if (!apiBaseUrl) {
+                openEmailFallback();
+                return;
             }
+
+            const response = await fetch(`${trimTrailingSlash(apiBaseUrl)}/api/setup/request`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+                },
+                body: JSON.stringify(payload),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.error || 'Could not submit your request.');
+            }
+            setSubmitted(true);
         } catch (submitError) {
-            setError(submitError.message || 'Could not send your request. Please try again.');
+            // Backend unreachable or errored — don't drop the request, open the
+            // email draft so the customer can still reach us.
+            console.error('[Setup] request submit failed, falling back to email:', submitError);
+            openEmailFallback();
         } finally {
             setSubmitting(false);
         }

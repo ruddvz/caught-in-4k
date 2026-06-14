@@ -69,6 +69,13 @@ const Admin = () => {
                 supabase.from('setup_requests').select('*').order('created_at', { ascending: false }),
             ]);
 
+            // Direct table reads return { data, error } instead of throwing, so
+            // surface RLS/permission/network failures rather than rendering an
+            // empty list that looks like "no requests".
+            if (setupRes && setupRes.error) {
+                throw setupRes.error;
+            }
+
             const nextUsers = usersRes || [];
             setUsers(nextUsers);
             setAccessRows(accessRes || []);

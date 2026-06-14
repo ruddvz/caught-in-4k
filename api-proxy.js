@@ -743,9 +743,17 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
           console.error('[Stripe Webhook] Missing userId for guide session:', session.id);
           return res.json({ received: true });
         }
-        const billedAmount = session.amount_total;
-        if (typeof billedAmount === 'number' && billedAmount !== GUIDE_PRODUCT.priceCents) {
-          console.error(`[Stripe Webhook] Ignoring guide session ${session.id}: unexpected amount ${billedAmount}`);
+        // Only unlock once the payment has actually cleared. For async payment
+        // methods Stripe fires checkout.session.completed with payment_status
+        // 'unpaid' (the charge settles later via async_payment_succeeded).
+        if (session.payment_status !== 'paid') {
+          console.error(`[Stripe Webhook] Ignoring guide session ${session.id}: payment_status=${session.payment_status}`);
+          return res.json({ received: true });
+        }
+        // Reject any amount that does not match the expected price (including a
+        // missing amount), rather than only when it is present and wrong.
+        if (session.amount_total !== GUIDE_PRODUCT.priceCents) {
+          console.error(`[Stripe Webhook] Ignoring guide session ${session.id}: unexpected amount ${session.amount_total}`);
           return res.json({ received: true });
         }
         try {
