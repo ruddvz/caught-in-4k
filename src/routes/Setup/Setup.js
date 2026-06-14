@@ -152,16 +152,17 @@ const Setup = () => {
                                     >
                                         <div className={styles['tier-head']}>
                                             <span className={styles['tier-name']}>{tier.name}</span>
-                                            <span className={styles['tier-monthly']}>{tier.monthly}</span>
+                                            <span className={styles['tier-monthly']}>{tier.termLabel}</span>
                                         </div>
                                         <span className={styles['tier-devices']}>{tier.devicesLabel}</span>
                                         <span className={styles['tier-summary']}>{tier.summary}</span>
+                                        <span className={styles['tier-after']}>Renews around {tier.monthlyAfter} after</span>
                                     </button>
                                 ))}
                             </div>
                             <p className={styles['tier-note']}>
-                                The {SETUP_SERVICE.price} setup fee is the same for both. The monthly figure is the
-                                ongoing server cost you carry after the initial term.
+                                Both options are the same {SETUP_SERVICE.price} one-time fee. The difference is concurrent
+                                streams and how long is included — Single IP includes 6 months, Multi-Stream includes 3.
                             </p>
                         </fieldset>
 

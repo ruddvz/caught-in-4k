@@ -2,8 +2,11 @@
 //
 // Products and access logic for the Stremio Setup Guide ($30 one-time) and the
 // done-for-you Account Setup service ($120 one-time). These live behind the
-// site-wide access-key gate; this module only governs which of the two paid
-// products an authenticated member has unlocked.
+// site-wide access-key gate; this module governs which of the two paid products
+// an authenticated member has unlocked.
+//
+// NOTE: This is entirely separate from the site's Pro/Max streaming
+// subscription (see subscriptionPlans.js) — do not conflate the two.
 
 // One-time purchase that unlocks the Guide hub + Wizard.
 const GUIDE_PRODUCT = {
@@ -17,7 +20,8 @@ const GUIDE_PRODUCT = {
 
 // One-time, done-for-you account setup. We provision a streaming account and
 // hand over login credentials; the customer logs into the real Stremio apps on
-// any device. The $120 covers setup + support for the initial term.
+// any device. The $120 covers setup + an included streaming term that depends on
+// the server tier they choose.
 const SETUP_SERVICE = {
     id: 'setup',
     name: 'Done-for-You Account Setup',
@@ -25,30 +29,33 @@ const SETUP_SERVICE = {
     price: '$120',
     priceCents: 12000,
     oneTime: true,
-    includedMonths: 6,
 };
 
-// The two streaming-server options the customer chooses for the setup service.
-// The setup fee is the same; these differ in how many devices/IPs can stream at
-// once and in the ongoing monthly server cost the customer carries afterwards.
+// The two streaming-server options for the setup service. The $120 fee is the
+// same for both — what differs is the number of concurrent streams and how many
+// months of streaming are included for that price.
 const SERVER_TIERS = [
     {
         id: 'single-ip',
         name: 'Single IP',
-        monthly: '$5/mo',
-        monthlyCents: 500,
+        includedMonths: 6,
+        includedDays: 180,
         concurrent: 1,
-        devicesLabel: 'One network (single IP)',
+        termLabel: '6 months included',
+        devicesLabel: 'One network / one IP at a time',
+        monthlyAfter: '~$5/mo',
         summary: 'Best for one household on one Wi-Fi. Streaming from a different IP can get the account blocked, so it is not for sharing.',
     },
     {
         id: 'multi-ip',
-        name: 'Multi-Device',
-        monthly: '$10/mo',
-        monthlyCents: 1000,
+        name: 'Multi-Stream',
+        includedMonths: 3,
+        includedDays: 90,
         concurrent: 10,
-        devicesLabel: 'Up to 10 concurrent devices / IPs',
-        summary: 'Higher cost, but supports up to 10 devices streaming at the same time across different networks. Best if you want to share.',
+        termLabel: '3 months included',
+        devicesLabel: 'Up to 10 concurrent streams',
+        monthlyAfter: '~$10/mo',
+        summary: 'Stream on up to 10 devices/networks at the same time. Costs more per month, so $120 covers a shorter term. Best if you want to share.',
     },
 ];
 
@@ -71,8 +78,8 @@ const getServerTier = (tierId) => {
 //
 // Admins always have access. A paid unlock is reflected on the profile row
 // (`guide_unlocked` boolean) — the column is read with `select('*')` in
-// AuthProvider, so adding it server-side after a successful $30 checkout is the
-// only backend work needed to flip real customers on.
+// AuthProvider, so the $30 Stripe webhook (or an admin fulfilling a setup
+// request) flipping that column is all that gates real customers.
 const getGuideAccessState = ({ profile, isAdmin = false } = {}) => {
     const profileUnlocked = profile?.guide_unlocked === true || profile?.guide_access === true;
     const guideUnlocked = Boolean(isAdmin || profileUnlocked);
