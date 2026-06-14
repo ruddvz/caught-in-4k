@@ -12,7 +12,16 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config({ quiet: process.env.NODE_ENV === 'test' });
 const { getSubscriptionPlan } = require('./src/common/subscriptionPlans');
-const { canonTakeBodySchema, checkoutBodySchema, accessKeyBodySchema, validateBody } = require('./api-proxy/schemas');
+const { GUIDE_PRODUCT, getServerTier } = require('./src/common/guideAccess');
+const {
+    canonTakeBodySchema,
+    checkoutBodySchema,
+    accessKeyBodySchema,
+    guideCheckoutBodySchema,
+    setupRequestBodySchema,
+    setupFulfillBodySchema,
+    validateBody,
+} = require('./api-proxy/schemas');
 const { verifyAccessKey, isAccessKeyGateEnabled } = require('./src/common/accessKey');
 const { generateCanonTakeText } = require('./api-proxy/llmProviders');
 
@@ -339,6 +348,35 @@ const getSupabaseAdmin = () => {
     return supabaseAdmin;
 };
 
+// Sends a transactional email via Resend. No-ops (returns false) when RESEND_API_KEY
+// is not configured, so the app degrades gracefully.
+const sendEmail = async ({ to, subject, text }) => {
+    const apiKey = process.env.RESEND_API_KEY;
+    const from = process.env.RESEND_FROM || 'Caught in 4K <noreply@c4k.live>';
+    if (!apiKey || !to) {
+        return false;
+    }
+
+    try {
+        const response = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ from, to, subject, text }),
+        });
+        if (!response.ok) {
+            console.error('[Resend] Email failed:', response.status, await response.text());
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error('[Resend] Email error:', error.message);
+        return false;
+    }
+};
+
 const app = express();
 
 // Security headers — applied first, before all other middleware
@@ -503,6 +541,175 @@ app.post('/api/stripe/create-checkout-session', validateBody(checkoutBodySchema)
 });
 
 // ────────────────────────────────────────────────────────────
+// Guide ($30 one-time) — creates a Stripe Checkout Session
+// ────────────────────────────────────────────────────────────
+app.post('/api/stripe/create-guide-checkout-session', validateBody(guideCheckoutBodySchema), async (req, res) => {
+    const stripeClient = getStripe();
+    const sb = getSupabaseAdmin();
+    if (!stripeClient) {
+        return res.status(503).json({ error: 'Stripe is not configured' });
+    }
+    if (!sb) {
+        return res.status(503).json({ error: 'Supabase admin is not configured' });
+    }
+
+    try {
+        const verified = await verifyCheckoutRequest({ headers: req.headers, supabaseClient: sb });
+        if (verified.error) {
+            return res.status(verified.error.status).json({ error: verified.error.message });
+        }
+
+        const userId = verified.user.id;
+        const email = verified.user.email;
+        const appBaseUrl = resolveCheckoutBaseUrl(req.headers.origin);
+        const session = await stripeClient.checkout.sessions.create({
+            client_reference_id: userId,
+            mode: 'payment',
+            customer_email: email,
+            line_items: [{
+                price_data: {
+                    currency: 'usd',
+                    product_data: { name: `C4K ${GUIDE_PRODUCT.name}` },
+                    unit_amount: GUIDE_PRODUCT.priceCents,
+                },
+                quantity: 1,
+            }],
+            metadata: { userId, product: 'guide', subscriptionEmail: email },
+            success_url: buildAppUrl(appBaseUrl, '/guide', { success: '1' }),
+            cancel_url: buildAppUrl(appBaseUrl, '/guide', { cancelled: '1' }),
+        });
+
+        console.log(`[Stripe] Guide checkout session created for user=${userId}`);
+        return res.json({ url: session.url });
+    } catch (err) {
+        console.error('[Stripe] Guide checkout error:', err.message);
+        return res.status(500).json({ error: 'Unable to start checkout right now.' });
+    }
+});
+
+// ────────────────────────────────────────────────────────────
+// Setup request ($120 done-for-you) — stores the request and emails the operator
+// ────────────────────────────────────────────────────────────
+app.post('/api/setup/request', validateBody(setupRequestBodySchema), async (req, res) => {
+    const sb = getSupabaseAdmin();
+    if (!sb) {
+        return res.status(503).json({ error: 'Supabase admin is not configured' });
+    }
+
+    const body = req.validatedBody;
+    const tier = getServerTier(body.server_tier);
+    if (!tier) {
+        return res.status(400).json({ error: 'Invalid server tier' });
+    }
+
+    // Attach the C4K user id when a valid session is present (optional).
+    let userId = null;
+    const verified = await verifyCheckoutRequest({ headers: req.headers, supabaseClient: sb });
+    if (!verified.error) {
+        userId = verified.user.id;
+    }
+
+    try {
+        const { error: insertError } = await sb.from('setup_requests').insert({
+            user_id: userId,
+            email: body.email,
+            server_tier: body.server_tier,
+            desired_username: body.desired_username,
+            desired_password: body.desired_password,
+            devices: body.devices || '',
+            notes: body.notes || '',
+            status: 'new',
+        });
+        if (insertError) {
+            throw insertError;
+        }
+
+        const operatorEmail = process.env.OPERATOR_EMAIL;
+        await sendEmail({
+            to: operatorEmail,
+            subject: 'New C4K account setup request',
+            text: [
+                'A new done-for-you setup request was submitted.',
+                '',
+                `Tier: ${tier.name} (${tier.termLabel})`,
+                `Contact: ${body.email}`,
+                `Desired username: ${body.desired_username}`,
+                `Devices: ${body.devices || '—'}`,
+                `Notes: ${body.notes || '—'}`,
+                '',
+                'Open the C4K admin panel to view the full request and provision the account.',
+            ].join('\n'),
+        });
+
+        return res.json({ ok: true });
+    } catch (err) {
+        console.error('[Setup] Request error:', err.message);
+        return res.status(500).json({ error: 'Unable to submit your request right now.' });
+    }
+});
+
+// Admin marks a setup request fulfilled: records the term-expiry for renewal
+// tracking and clears the stored password.
+app.post('/api/setup/fulfill', validateBody(setupFulfillBodySchema), async (req, res) => {
+    const sb = getSupabaseAdmin();
+    if (!sb) {
+        return res.status(503).json({ error: 'Supabase admin is not configured' });
+    }
+
+    try {
+        const verified = await verifyCheckoutRequest({ headers: req.headers, supabaseClient: sb });
+        if (verified.error) {
+            return res.status(verified.error.status).json({ error: verified.error.message });
+        }
+
+        const { data: adminRecord, error: adminError } = await sb
+            .from('users')
+            .select('is_admin')
+            .eq('id', verified.user.id)
+            .single();
+        if (adminError || !adminRecord || adminRecord.is_admin !== true) {
+            return res.status(403).json({ error: 'Admin access required' });
+        }
+
+        const { id } = req.validatedBody;
+        const { data: request, error: requestError } = await sb
+            .from('setup_requests')
+            .select('id, server_tier, user_id')
+            .eq('id', id)
+            .single();
+        if (requestError || !request) {
+            return res.status(404).json({ error: 'Request not found' });
+        }
+
+        const tier = getServerTier(request.server_tier);
+        const termExpiresAt = calculateSubscriptionExpiry({ days: tier ? tier.includedDays : 0 });
+
+        const { error: updateError } = await sb
+            .from('setup_requests')
+            .update({
+                status: 'fulfilled',
+                fulfilled_at: new Date().toISOString(),
+                term_expires_at: termExpiresAt.toISOString(),
+                desired_password: null,
+            })
+            .eq('id', id);
+        if (updateError) {
+            throw updateError;
+        }
+
+        // Bundle: setup customers with a C4K account also get the guide unlocked.
+        if (request.user_id) {
+            await sb.from('users').update({ guide_unlocked: true }).eq('id', request.user_id);
+        }
+
+        return res.json({ ok: true, term_expires_at: termExpiresAt.toISOString() });
+    } catch (err) {
+        console.error('[Setup] Fulfill error:', err.message);
+        return res.status(500).json({ error: 'Unable to fulfill request right now.' });
+    }
+});
+
+// ────────────────────────────────────────────────────────────
 // Stripe Webhook — handles checkout.session.completed
 // ────────────────────────────────────────────────────────────
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -528,7 +735,35 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
 
     if (POSITIVE_PAYMENT_EVENT_TYPES.has(event.type)) {
         const session = event.data.object;
-        const { userId, plan } = session.metadata || {};
+        const { userId, plan, product } = session.metadata || {};
+
+      // $30 guide one-time purchase — flip the unlock flag and finish.
+      if (product === 'guide') {
+        if (!userId) {
+          console.error('[Stripe Webhook] Missing userId for guide session:', session.id);
+          return res.json({ received: true });
+        }
+        const billedAmount = session.amount_total;
+        if (typeof billedAmount === 'number' && billedAmount !== GUIDE_PRODUCT.priceCents) {
+          console.error(`[Stripe Webhook] Ignoring guide session ${session.id}: unexpected amount ${billedAmount}`);
+          return res.json({ received: true });
+        }
+        try {
+          const { error: unlockError } = await sb
+            .from('users')
+            .update({ guide_unlocked: true })
+            .eq('id', userId);
+          if (unlockError) {
+            throw unlockError;
+          }
+          console.log(`[Stripe Webhook] Guide unlocked: user=${userId}`);
+        } catch (error) {
+          console.error('[Stripe Webhook] Guide unlock error:', error);
+          return res.status(500).json({ error: 'Failed to unlock guide' });
+        }
+        return res.json({ received: true });
+      }
+
       const planConfig = getSubscriptionPlan(plan);
 
       if (!userId || !planConfig) {

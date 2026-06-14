@@ -142,6 +142,7 @@
 }
 
 .tier-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
@@ -156,6 +157,41 @@
     &:hover {
         border-color: var(--c4k-border-strong);
     }
+}
+
+.tier-badge {
+    position: absolute;
+    top: -0.6rem;
+    right: 0.9rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: var(--c4k-radius-pill);
+    background: var(--c4k-gold);
+    color: #100c02;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.agree-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    cursor: pointer;
+}
+
+.agree-checkbox {
+    margin-top: 0.15rem;
+    width: 1.05rem;
+    height: 1.05rem;
+    accent-color: var(--c4k-gold);
+    flex: 0 0 auto;
+}
+
+.agree-text {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
 }
 
 .tier-selected {

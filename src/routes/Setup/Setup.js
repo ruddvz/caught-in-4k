@@ -1,17 +1,18 @@
 // Copyright (C) 2026 Caught in 4K
 //
 // Done-for-you account setup request ($120 one-time). The member chooses a
-// streaming-server tier and submits a request; the operator provisions the
-// account by hand (matching the existing admin/approval flow) and hands over a
-// login. Submissions are written to Supabase when configured, with a graceful
-// email fallback otherwise.
+// streaming-server tier and submits a request; the request is sent to the
+// backend (which stores it securely and emails the operator), and the operator
+// provisions the account by hand and hands over a login. Falls back to an email
+// draft when the backend is not configured.
 
 const React = require('react');
 const classnames = require('classnames');
 const { Button } = require('stremio/components');
 const { navigateToAppHref } = require('stremio/common/navigation');
 const { useAuth } = require('stremio/common/AuthProvider');
-const { supabase, isSupabaseConfigured } = require('stremio/common/supabaseClient');
+const { resolveApiBaseUrl } = require('stremio/common/apiBaseUrl');
+const { trimTrailingSlash } = require('stremio/common/subscriptionCheckout');
 const {
     SETUP_SERVICE,
     SERVER_TIERS,
@@ -21,7 +22,7 @@ const styles = require('./styles.less');
 
 const APP_LOGO = require('/assets/images/logo1.png');
 
-// Where fallback requests are sent if Supabase is not configured on this build.
+// Where fallback requests are sent if the backend is not configured on this build.
 const SUPPORT_EMAIL = 'support@c4k.live';
 
 const Setup = () => {
@@ -35,6 +36,7 @@ const Setup = () => {
     const [showPassword, setShowPassword] = React.useState(false);
     const [devices, setDevices] = React.useState('');
     const [notes, setNotes] = React.useState('');
+    const [agreed, setAgreed] = React.useState(false);
     const [submitting, setSubmitting] = React.useState(false);
     const [submitted, setSubmitted] = React.useState(false);
     const [error, setError] = React.useState(null);
@@ -64,23 +66,37 @@ const Setup = () => {
             return;
         }
 
+        if (!agreed) {
+            setError('Please confirm you understand this is a setup & support service.');
+            return;
+        }
+
         const payload = {
-            user_id: (auth && auth.user && auth.user.id) || null,
             email: email.trim(),
             server_tier: serverTier,
             desired_username: desiredUsername.trim(),
             desired_password: desiredPassword,
             devices: devices.trim(),
             notes: notes.trim(),
-            status: 'new',
         };
+
+        const apiBaseUrl = resolveApiBaseUrl();
+        const accessToken = (auth && auth.session && auth.session.access_token) || '';
 
         setSubmitting(true);
         try {
-            if (isSupabaseConfigured() && supabase) {
-                const { error: insertError } = await supabase.from('setup_requests').insert(payload);
-                if (insertError) {
-                    throw insertError;
+            if (apiBaseUrl) {
+                const response = await fetch(`${trimTrailingSlash(apiBaseUrl)}/api/setup/request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(data.error || 'Could not submit your request.');
                 }
                 setSubmitted(true);
             } else {
@@ -98,7 +114,7 @@ const Setup = () => {
         } finally {
             setSubmitting(false);
         }
-    }, [auth, desiredPassword, desiredUsername, devices, email, notes, serverTier]);
+    }, [agreed, auth, desiredPassword, desiredUsername, devices, email, notes, serverTier]);
 
     return (
         <div className={styles['setup-page']}>
@@ -150,6 +166,9 @@ const Setup = () => {
                                         className={classnames(styles['tier-card'], { [styles['tier-selected']]: serverTier === tier.id })}
                                         onClick={() => setServerTier(tier.id)}
                                     >
+                                        {tier.mostPopular ? (
+                                            <span className={styles['tier-badge']}>Most popular</span>
+                                        ) : null}
                                         <div className={styles['tier-head']}>
                                             <span className={styles['tier-name']}>{tier.name}</span>
                                             <span className={styles['tier-monthly']}>{tier.termLabel}</span>
@@ -248,6 +267,19 @@ const Setup = () => {
                                 rows={3}
                                 placeholder="Questions or preferences"
                             />
+                        </label>
+
+                        <label className={styles['agree-row']}>
+                            <input
+                                type="checkbox"
+                                className={styles['agree-checkbox']}
+                                checked={agreed}
+                                onChange={(e) => setAgreed(e.target.checked)}
+                            />
+                            <span className={styles['agree-text']}>
+                                I understand this is a one-time setup &amp; support service. After the included term I&apos;m
+                                responsible for renewing the streaming server (pay it directly or arrange a renewal).
+                            </span>
                         </label>
 
                         {error ? <p className={styles['error-text']}>{error}</p> : null}

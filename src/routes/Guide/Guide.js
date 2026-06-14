@@ -10,9 +10,18 @@ const classnames = require('classnames');
 const { Button } = require('stremio/components');
 const { navigateToAppHref } = require('stremio/common/navigation');
 const { useAuth } = require('stremio/common/AuthProvider');
+const { resolveApiBaseUrl } = require('stremio/common/apiBaseUrl');
+const { trimTrailingSlash } = require('stremio/common/subscriptionCheckout');
 const { GUIDE_PRODUCT, SETUP_SERVICE, getGuideAccessState } = require('stremio/common/guideAccess');
 const { GUIDE_CONTENT } = require('stremio/common/guideContent');
 const styles = require('./styles.less');
+
+const readGuideCheckoutSuccess = () => {
+    if (typeof window === 'undefined') {
+        return false;
+    }
+    return new URLSearchParams(window.location.search).get('success') === '1';
+};
 
 const APP_LOGO = require('/assets/images/logo1.png');
 
@@ -89,12 +98,112 @@ const Guide = () => {
     const auth = useAuth();
     const isAdmin = Boolean(auth && auth.isAdmin);
     const profile = auth ? auth.profile : null;
+    const isLoggedIn = Boolean(auth && auth.session);
+    const accessToken = (auth && auth.session && auth.session.access_token) || '';
+    const refreshProfile = auth ? auth.refreshProfile : null;
     const { guideUnlocked } = getGuideAccessState({ isAdmin, profile });
 
-    const [expandedId, setExpandedId] = React.useState(null);
+    const [expandedIds, setExpandedIds] = React.useState(() => new Set());
     const onToggle = React.useCallback((id) => {
-        setExpandedId((current) => (current === id ? null : id));
+        setExpandedIds((current) => {
+            const next = new Set(current);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
     }, []);
+    const allExpanded = expandedIds.size === GUIDE_CONTENT.length;
+    const toggleAll = React.useCallback(() => {
+        setExpandedIds(allExpanded ? new Set() : new Set(GUIDE_CONTENT.map((section) => section.id)));
+    }, [allExpanded]);
+
+    // Checkout + inline auth state (guide unlock is per Supabase account).
+    const [checkoutLoading, setCheckoutLoading] = React.useState(false);
+    const [checkoutError, setCheckoutError] = React.useState(null);
+    const [authMode, setAuthMode] = React.useState('login');
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [authLoading, setAuthLoading] = React.useState(false);
+    const [checkoutSuccess] = React.useState(readGuideCheckoutSuccess);
+
+    // After returning from Stripe, poll the profile until the webhook flips the flag.
+    React.useEffect(() => {
+        if (!checkoutSuccess || !refreshProfile || !isLoggedIn || guideUnlocked) {
+            return undefined;
+        }
+        let cancelled = false;
+        let attempts = 0;
+        let timerId = null;
+        const poll = async () => {
+            attempts += 1;
+            try {
+                await refreshProfile();
+            } catch (_e) {
+                // keep trying
+            }
+            if (!cancelled && attempts < 5) {
+                timerId = setTimeout(poll, 1500);
+            }
+        };
+        poll();
+        return () => {
+            cancelled = true;
+            if (timerId) clearTimeout(timerId);
+        };
+    }, [checkoutSuccess, isLoggedIn, guideUnlocked, refreshProfile]);
+
+    const handleAuth = React.useCallback(async (event) => {
+        event.preventDefault();
+        setCheckoutError(null);
+        setAuthLoading(true);
+        try {
+            const fn = authMode === 'signup'
+                ? auth.signUp(email, password, email.split('@')[0])
+                : auth.signIn(email, password);
+            const { error: authErr } = await fn;
+            if (authErr) throw authErr;
+        } catch (err) {
+            setCheckoutError(err.message || 'Authentication failed');
+        } finally {
+            setAuthLoading(false);
+        }
+    }, [auth, authMode, email, password]);
+
+    const startGuideCheckout = React.useCallback(async () => {
+        setCheckoutError(null);
+        const apiBaseUrl = resolveApiBaseUrl();
+        if (!apiBaseUrl) {
+            setCheckoutError('Checkout is not connected on this build yet.');
+            return;
+        }
+        if (!accessToken) {
+            setCheckoutError('Please sign in again before checkout.');
+            return;
+        }
+        setCheckoutLoading(true);
+        try {
+            const response = await fetch(`${trimTrailingSlash(apiBaseUrl)}/api/stripe/create-guide-checkout-session`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({}),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok || !data.url) {
+                throw new Error(data.error || 'Unable to start checkout.');
+            }
+            window.location.href = data.url;
+        } catch (err) {
+            setCheckoutError(err.message);
+        } finally {
+            setCheckoutLoading(false);
+        }
+    }, [accessToken]);
 
     return (
         <div className={styles['guide-page']}>
@@ -136,13 +245,20 @@ const Guide = () => {
                             </Button>
                         </div>
 
+                        <div className={styles['section-toolbar']}>
+                            <h2 className={styles['section-toolbar-title']}>The full guide</h2>
+                            <button type="button" className={styles['expand-all-btn']} onClick={toggleAll}>
+                                {allExpanded ? 'Collapse all' : 'Expand all'}
+                            </button>
+                        </div>
+
                         <div className={styles['section-grid']}>
                             {GUIDE_CONTENT.map((section, index) => (
                                 <GuideSection
                                     key={section.id}
                                     section={section}
                                     index={index}
-                                    expanded={expandedId === section.id}
+                                    expanded={expandedIds.has(section.id)}
                                     onToggle={onToggle}
                                 />
                             ))}
@@ -177,12 +293,55 @@ const Guide = () => {
                                 <li>Debrid, add-ons, AIOStreams & player settings</li>
                                 <li>One-time payment, keep it forever</li>
                             </ul>
-                            <Button
-                                className={styles['paywall-btn']}
-                                onClick={() => navigateToAppHref('/subscribe?product=guide')}
-                            >
-                                Unlock for {GUIDE_PRODUCT.price}
-                            </Button>
+
+                            {checkoutSuccess && isLoggedIn ? (
+                                <p className={styles['paywall-fineprint']}>
+                                    Payment received — unlocking your guide. This can take a few seconds.
+                                </p>
+                            ) : null}
+
+                            {isLoggedIn ? (
+                                <Button
+                                    className={styles['paywall-btn']}
+                                    onClick={startGuideCheckout}
+                                    disabled={checkoutLoading}
+                                >
+                                    {checkoutLoading ? 'Redirecting to checkout…' : `Unlock for ${GUIDE_PRODUCT.price}`}
+                                </Button>
+                            ) : (
+                                <form className={styles['paywall-auth']} onSubmit={handleAuth}>
+                                    <input
+                                        className={styles['paywall-input']}
+                                        type="email"
+                                        placeholder="Email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                    <input
+                                        className={styles['paywall-input']}
+                                        type="password"
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        minLength={8}
+                                    />
+                                    <button className={styles['paywall-btn']} type="submit" disabled={authLoading}>
+                                        {authLoading ? 'Please wait…' : authMode === 'signup' ? 'Create account to buy' : 'Sign in to buy'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={styles['paywall-auth-toggle']}
+                                        onClick={() => setAuthMode(authMode === 'signup' ? 'login' : 'signup')}
+                                    >
+                                        {authMode === 'signup' ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
+                                    </button>
+                                </form>
+                            )}
+
+                            {checkoutError ? <p className={styles['paywall-error']}>{checkoutError}</p> : null}
+
                             <p className={styles['paywall-fineprint']}>
                                 Already paid? It unlocks automatically once your purchase is confirmed.
                             </p>

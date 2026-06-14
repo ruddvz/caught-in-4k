@@ -38,6 +38,7 @@ const SERVER_TIERS = [
     {
         id: 'single-ip',
         name: 'Single IP',
+        mostPopular: true,
         includedMonths: 6,
         includedDays: 180,
         concurrent: 1,

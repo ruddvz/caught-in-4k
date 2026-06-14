@@ -33,8 +33,35 @@ const Wizard = () => {
     const profile = auth ? auth.profile : null;
     const { guideUnlocked } = getGuideAccessState({ isAdmin, profile });
 
-    const [stepIndex, setStepIndex] = React.useState(0);
-    const [debrid, setDebrid] = React.useState(null);
+    const WIZARD_STATE_KEY = 'c4k_wizard_state_v1';
+    const readSavedState = () => {
+        if (typeof localStorage === 'undefined') {
+            return { step: 0, debrid: null };
+        }
+        try {
+            const raw = localStorage.getItem(WIZARD_STATE_KEY);
+            const parsed = raw ? JSON.parse(raw) : null;
+            return parsed && typeof parsed === 'object'
+                ? { step: Number(parsed.step) || 0, debrid: parsed.debrid || null }
+                : { step: 0, debrid: null };
+        } catch (_e) {
+            return { step: 0, debrid: null };
+        }
+    };
+
+    const [stepIndex, setStepIndex] = React.useState(() => readSavedState().step);
+    const [debrid, setDebrid] = React.useState(() => readSavedState().debrid);
+
+    React.useEffect(() => {
+        if (typeof localStorage === 'undefined') {
+            return;
+        }
+        try {
+            localStorage.setItem(WIZARD_STATE_KEY, JSON.stringify({ step: stepIndex, debrid }));
+        } catch (_e) {
+            // ignore persistence failures
+        }
+    }, [stepIndex, debrid]);
 
     // Steps are defined inside the component so they can read selection state.
     const steps = React.useMemo(() => [

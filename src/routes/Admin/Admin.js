@@ -7,9 +7,12 @@ const { navigateToAppHref } = require('stremio/common/navigation');
 const { useAuth } = require('stremio/common/AuthProvider');
 const { sanitizeManagedAddonUrl, validateManagedAddonUrl } = require('stremio/common/managedAddonSecurity');
 const { supabase, isSupabaseConfigured } = require('stremio/common/supabaseClient');
+const { resolveApiBaseUrl } = require('stremio/common/apiBaseUrl');
+const { trimTrailingSlash } = require('stremio/common/subscriptionCheckout');
+const { getServerTier } = require('stremio/common/guideAccess');
 const styles = require('./styles.less');
 
-const TABS = ['Users', 'Access', 'Subscriptions'];
+const TABS = ['Users', 'Access', 'Subscriptions', 'Setup'];
 const getDisplaySubscriptionStatus = (subscription) => {
     if (
         subscription.status === 'active' &&
@@ -37,6 +40,8 @@ const Admin = () => {
     const [users, setUsers] = React.useState([]);
     const [accessRows, setAccessRows] = React.useState([]);
     const [subscriptions, setSubscriptions] = React.useState([]);
+    const [setupRequests, setSetupRequests] = React.useState([]);
+    const [revealedRequestId, setRevealedRequestId] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
     const [actionLoading, setActionLoading] = React.useState(null);
     const [accessLoading, setAccessLoading] = React.useState(false);
@@ -56,16 +61,19 @@ const Admin = () => {
 
         setLoading(true);
         try {
-            const [usersRes, accessRes, subscriptionsRes] = await Promise.all([
+            const [usersRes, accessRes, subscriptionsRes, setupRes] = await Promise.all([
                 callAdminRpc('admin_list_users'),
                 callAdminRpc('admin_list_user_addons'),
                 callAdminRpc('admin_list_subscriptions'),
+                // RLS lets admins read setup_requests directly.
+                supabase.from('setup_requests').select('*').order('created_at', { ascending: false }),
             ]);
 
             const nextUsers = usersRes || [];
             setUsers(nextUsers);
             setAccessRows(accessRes || []);
             setSubscriptions(subscriptionsRes || []);
+            setSetupRequests((setupRes && setupRes.data) || []);
 
             if (!selectedUserId) {
                 const firstManagedUser = nextUsers.find((user) => !user.is_admin);
@@ -180,6 +188,56 @@ const Admin = () => {
             setFeedback({ tone: 'error', message: error.message || 'Failed to remove curated access.' });
         } finally {
             setAccessLoading(false);
+        }
+    }, []);
+
+    const handleFulfillRequest = React.useCallback(async (requestId) => {
+        setActionLoading(requestId);
+        setFeedback(null);
+        try {
+            const apiBaseUrl = resolveApiBaseUrl();
+            const accessToken = (auth && auth.session && auth.session.access_token) || '';
+            if (!apiBaseUrl || !accessToken) {
+                throw new Error('Backend is not connected on this build.');
+            }
+            const response = await fetch(`${trimTrailingSlash(apiBaseUrl)}/api/setup/fulfill`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({ id: requestId }),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to fulfill request.');
+            }
+            setFeedback({ tone: 'success', message: 'Marked fulfilled — password cleared, term recorded.' });
+            await loadAdminData();
+        } catch (error) {
+            console.error('[Admin] Fulfill error:', error);
+            setFeedback({ tone: 'error', message: error.message || 'Failed to fulfill request.' });
+        } finally {
+            setActionLoading(null);
+        }
+    }, [auth, loadAdminData]);
+
+    const handleDeleteRequest = React.useCallback(async (requestId) => {
+        if (!supabase) return;
+        setActionLoading(requestId);
+        setFeedback(null);
+        try {
+            const { error } = await supabase.from('setup_requests').delete().eq('id', requestId);
+            if (error) {
+                throw error;
+            }
+            setSetupRequests((previous) => previous.filter((request) => request.id !== requestId));
+            setFeedback({ tone: 'success', message: 'Request deleted.' });
+        } catch (error) {
+            console.error('[Admin] Delete request error:', error);
+            setFeedback({ tone: 'error', message: error.message || 'Failed to delete request.' });
+        } finally {
+            setActionLoading(null);
         }
     }, []);
 
@@ -426,6 +484,76 @@ const Admin = () => {
                                 ))}
                                 {users.length === 0 && (
                                     <tr><td colSpan={6} className={styles['empty-row']}>No users yet</td></tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : activeTab === 'Setup' ? (
+                    <div className={styles['table-wrapper']}>
+                        <table className={styles['data-table']}>
+                            <thead>
+                                <tr>
+                                    <th>Contact</th>
+                                    <th>Tier</th>
+                                    <th>Login</th>
+                                    <th>Devices</th>
+                                    <th>Status</th>
+                                    <th>Term ends</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {setupRequests.map((request) => {
+                                    const tier = getServerTier(request.server_tier);
+                                    const revealed = revealedRequestId === request.id;
+                                    return (
+                                        <tr key={request.id}>
+                                            <td>{request.email}</td>
+                                            <td>{tier ? `${tier.name} · ${tier.termLabel}` : request.server_tier}</td>
+                                            <td>
+                                                <div>{request.desired_username || '—'}</div>
+                                                {request.desired_password ? (
+                                                    <button
+                                                        type="button"
+                                                        className={styles['danger-link']}
+                                                        onClick={() => setRevealedRequestId(revealed ? null : request.id)}
+                                                    >
+                                                        {revealed ? request.desired_password : 'Show password'}
+                                                    </button>
+                                                ) : (
+                                                    <span className={styles['empty-row']}>cleared</span>
+                                                )}
+                                            </td>
+                                            <td>{request.devices || '—'}</td>
+                                            <td>
+                                                <span className={classnames(styles['status-pill'], styles[`status-${request.status}`])}>
+                                                    {request.status}
+                                                </span>
+                                            </td>
+                                            <td>{request.term_expires_at ? new Date(request.term_expires_at).toLocaleDateString() : '—'}</td>
+                                            <td className={styles['actions-cell']}>
+                                                {request.status !== 'fulfilled' ? (
+                                                    <button
+                                                        className={classnames(styles['action-btn'], styles['approve-btn'])}
+                                                        onClick={() => handleFulfillRequest(request.id)}
+                                                        disabled={actionLoading === request.id}
+                                                    >
+                                                        Mark fulfilled
+                                                    </button>
+                                                ) : null}
+                                                <button
+                                                    className={classnames(styles['action-btn'], styles['suspend-btn'])}
+                                                    onClick={() => handleDeleteRequest(request.id)}
+                                                    disabled={actionLoading === request.id}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                {setupRequests.length === 0 && (
+                                    <tr><td colSpan={7} className={styles['empty-row']}>No setup requests yet</td></tr>
                                 )}
                             </tbody>
                         </table>
