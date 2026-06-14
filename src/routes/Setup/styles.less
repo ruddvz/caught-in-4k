@@ -201,6 +201,57 @@
     line-height: 1.45;
 }
 
+.cred-fieldset {
+    border: 1px solid var(--c4k-border);
+    border-radius: var(--c4k-radius-md);
+    margin: 0;
+    padding: 1.1rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    background: var(--c4k-glass-1);
+}
+
+.cred-help {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+.cred-warning {
+    margin: 0;
+    padding: 0.6rem 0.8rem;
+    border-radius: var(--c4k-radius-sm);
+    border-left: 3px solid var(--c4k-warning);
+    background: rgba(255, 184, 77, 0.10);
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    line-height: 1.45;
+}
+
+.password-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .field-input {
+        padding-right: 4rem;
+    }
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.5rem;
+    padding: 0.35rem 0.6rem;
+    background: none;
+    border: none;
+    color: var(--c4k-gold);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .field {
     display: flex;
     flex-direction: column;

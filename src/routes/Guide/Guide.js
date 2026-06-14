@@ -148,6 +148,18 @@ const Guide = () => {
                             ))}
                         </div>
 
+                        <div className={styles['setup-banner']}>
+                            <div>
+                                <h2 className={styles['setup-banner-title']}>Want us to set it up for you?</h2>
+                                <p className={styles['setup-banner-copy']}>
+                                    Skip the steps — we provision the account and hand you a login. {SETUP_SERVICE.price} one-time.
+                                </p>
+                            </div>
+                            <Button className={styles['setup-banner-btn']} onClick={() => navigateToAppHref('/setup')}>
+                                Done-for-you setup
+                            </Button>
+                        </div>
+
                         <p className={styles['content-note']}>
                             Built from Viren070&apos;s Guides and the numb3rs Perfect Setup guide. Use the Wizard above for
                             the guided path.

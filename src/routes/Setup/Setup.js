@@ -30,6 +30,9 @@ const Setup = () => {
 
     const [serverTier, setServerTier] = React.useState(DEFAULT_SERVER_TIER_ID);
     const [email, setEmail] = React.useState(presetEmail);
+    const [desiredUsername, setDesiredUsername] = React.useState('');
+    const [desiredPassword, setDesiredPassword] = React.useState('');
+    const [showPassword, setShowPassword] = React.useState(false);
     const [devices, setDevices] = React.useState('');
     const [notes, setNotes] = React.useState('');
     const [submitting, setSubmitting] = React.useState(false);
@@ -51,10 +54,22 @@ const Setup = () => {
             return;
         }
 
+        if (!desiredUsername.trim()) {
+            setError('Please choose the username / ID you want for the account.');
+            return;
+        }
+
+        if (desiredPassword.length < 8) {
+            setError('Please choose a password of at least 8 characters.');
+            return;
+        }
+
         const payload = {
             user_id: (auth && auth.user && auth.user.id) || null,
             email: email.trim(),
             server_tier: serverTier,
+            desired_username: desiredUsername.trim(),
+            desired_password: desiredPassword,
             devices: devices.trim(),
             notes: notes.trim(),
             status: 'new',
@@ -73,7 +88,7 @@ const Setup = () => {
                 // request is never silently lost.
                 const subject = encodeURIComponent('C4K Account Setup Request');
                 const body = encodeURIComponent(
-                    `Server tier: ${serverTier}\nContact email: ${payload.email}\nDevices: ${payload.devices}\nNotes: ${payload.notes}`
+                    `Server tier: ${serverTier}\nContact email: ${payload.email}\nDesired username: ${payload.desired_username}\nDesired password: ${payload.desired_password}\nDevices: ${payload.devices}\nNotes: ${payload.notes}`
                 );
                 window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
                 setSubmitted(true);
@@ -83,7 +98,7 @@ const Setup = () => {
         } finally {
             setSubmitting(false);
         }
-    }, [auth, devices, email, notes, serverTier]);
+    }, [auth, desiredPassword, desiredUsername, devices, email, notes, serverTier]);
 
     return (
         <div className={styles['setup-page']}>
@@ -161,6 +176,56 @@ const Setup = () => {
                                 required
                             />
                         </label>
+
+                        <fieldset className={styles['cred-fieldset']}>
+                            <legend className={styles['field-legend']}>Your account login</legend>
+                            <p className={styles['cred-help']}>
+                                Pick the username and password you want for your streaming account — we&apos;ll create it
+                                with exactly these. You can change the password yourself any time after handover.
+                            </p>
+
+                            <label className={styles['field']}>
+                                <span className={styles['field-label']}>Desired username / ID</span>
+                                <input
+                                    className={styles['field-input']}
+                                    type="text"
+                                    value={desiredUsername}
+                                    onChange={(e) => setDesiredUsername(e.target.value)}
+                                    placeholder="e.g. moviefan_42"
+                                    autoComplete="off"
+                                    required
+                                />
+                            </label>
+
+                            <label className={styles['field']}>
+                                <span className={styles['field-label']}>Desired password</span>
+                                <div className={styles['password-wrap']}>
+                                    <input
+                                        className={styles['field-input']}
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={desiredPassword}
+                                        onChange={(e) => setDesiredPassword(e.target.value)}
+                                        placeholder="At least 8 characters"
+                                        autoComplete="new-password"
+                                        minLength={8}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        className={styles['password-toggle']}
+                                        onClick={() => setShowPassword((value) => !value)}
+                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    >
+                                        {showPassword ? 'Hide' : 'Show'}
+                                    </button>
+                                </div>
+                            </label>
+
+                            <p className={styles['cred-warning']}>
+                                Use a brand-new password you don&apos;t use anywhere else — you&apos;re sharing it so we can
+                                set the account up for you.
+                            </p>
+                        </fieldset>
 
                         <label className={styles['field']}>
                             <span className={styles['field-label']}>Which devices will you use? (optional)</span>
