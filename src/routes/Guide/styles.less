@@ -518,3 +518,15 @@
         text-align: center;
     }
 }
+
+/* Keyboard focus rings for the raw (non-shared-Button) interactive elements. */
+.expand-all-btn,
+.section-header,
+.paywall-btn,
+.paywall-auth-toggle,
+.setup-crosslink {
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+    }
+}

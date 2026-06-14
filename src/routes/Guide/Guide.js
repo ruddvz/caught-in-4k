@@ -37,6 +37,7 @@ const GuideSection = ({ section, index, expanded, onToggle }) => {
                 className={styles['section-header']}
                 onClick={() => onToggle(section.id)}
                 aria-expanded={expanded}
+                aria-controls={hasDetail ? `section-detail-${section.id}` : undefined}
             >
                 <span className={styles['section-index']}>{String(index + 1).padStart(2, '0')}</span>
                 <span className={styles['section-heading']}>
@@ -56,7 +57,7 @@ const GuideSection = ({ section, index, expanded, onToggle }) => {
             </button>
 
             {expanded && hasDetail ? (
-                <div className={styles['section-detail']}>
+                <div className={styles['section-detail']} id={`section-detail-${section.id}`}>
                     {section.steps && section.steps.length > 0 ? (
                         <ol className={styles['step-list']}>
                             {section.steps.map((step, stepIndex) => (
@@ -128,6 +129,7 @@ const Guide = () => {
     const [password, setPassword] = React.useState('');
     const [authLoading, setAuthLoading] = React.useState(false);
     const [checkoutSuccess] = React.useState(readGuideCheckoutSuccess);
+    const [unlockTimedOut, setUnlockTimedOut] = React.useState(false);
 
     // After returning from Stripe, poll the profile until the webhook flips the flag.
     React.useEffect(() => {
@@ -146,6 +148,10 @@ const Guide = () => {
             }
             if (!cancelled && attempts < 5) {
                 timerId = setTimeout(poll, 1500);
+            } else if (!cancelled) {
+                // Webhook hasn't flipped the flag yet — stop spinning silently and
+                // tell the buyer what to do next instead of an endless "unlocking…".
+                setUnlockTimedOut(true);
             }
         };
         poll();
@@ -295,8 +301,10 @@ const Guide = () => {
                             </ul>
 
                             {checkoutSuccess && isLoggedIn ? (
-                                <p className={styles['paywall-fineprint']}>
-                                    Payment received — unlocking your guide. This can take a few seconds.
+                                <p className={styles['paywall-fineprint']} role="status">
+                                    {unlockTimedOut
+                                        ? 'Payment received, but unlocking is taking longer than usual. Refresh this page in a moment — if it still doesn’t unlock, contact us and we’ll sort it out.'
+                                        : 'Payment received — unlocking your guide. This can take a few seconds.'}
                                 </p>
                             ) : null}
 
@@ -314,6 +322,8 @@ const Guide = () => {
                                         className={styles['paywall-input']}
                                         type="email"
                                         placeholder="Email"
+                                        aria-label="Email"
+                                        autoComplete="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
@@ -322,6 +332,8 @@ const Guide = () => {
                                         className={styles['paywall-input']}
                                         type="password"
                                         placeholder="Password"
+                                        aria-label="Password"
+                                        autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
@@ -340,7 +352,7 @@ const Guide = () => {
                                 </form>
                             )}
 
-                            {checkoutError ? <p className={styles['paywall-error']}>{checkoutError}</p> : null}
+                            {checkoutError ? <p className={styles['paywall-error']} role="alert">{checkoutError}</p> : null}
 
                             <p className={styles['paywall-fineprint']}>
                                 Already paid? It unlocks automatically once your purchase is confirmed.

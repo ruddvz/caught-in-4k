@@ -153,8 +153,8 @@ const Setup = () => {
                 </header>
 
                 {submitted ? (
-                    <div className={styles['success-card']}>
-                        <div className={styles['success-icon']}>✓</div>
+                    <div className={styles['success-card']} role="status">
+                        <div className={styles['success-icon']} aria-hidden="true">✓</div>
                         <h2 className={styles['success-title']}>Request received</h2>
                         <p className={styles['success-copy']}>
                             We&apos;ll reach out at <strong>{email}</strong> to arrange payment and get your account
@@ -175,6 +175,7 @@ const Setup = () => {
                                         type="button"
                                         className={classnames(styles['tier-card'], { [styles['tier-selected']]: serverTier === tier.id })}
                                         onClick={() => setServerTier(tier.id)}
+                                        aria-pressed={serverTier === tier.id}
                                     >
                                         {tier.mostPopular ? (
                                             <span className={styles['tier-badge']}>Most popular</span>
@@ -196,7 +197,7 @@ const Setup = () => {
                         </fieldset>
 
                         <label className={styles['field']}>
-                            <span className={styles['field-label']}>Contact email</span>
+                            <span className={styles['field-label']}>Contact email<span className={styles['req']} aria-hidden="true"> *</span></span>
                             <input
                                 className={styles['field-input']}
                                 type="email"
@@ -215,7 +216,7 @@ const Setup = () => {
                             </p>
 
                             <label className={styles['field']}>
-                                <span className={styles['field-label']}>Desired username / ID</span>
+                                <span className={styles['field-label']}>Desired username / ID<span className={styles['req']} aria-hidden="true"> *</span></span>
                                 <input
                                     className={styles['field-input']}
                                     type="text"
@@ -228,7 +229,7 @@ const Setup = () => {
                             </label>
 
                             <label className={styles['field']}>
-                                <span className={styles['field-label']}>Desired password</span>
+                                <span className={styles['field-label']}>Desired password<span className={styles['req']} aria-hidden="true"> *</span></span>
                                 <div className={styles['password-wrap']}>
                                     <input
                                         className={styles['field-input']}
@@ -292,11 +293,11 @@ const Setup = () => {
                             </span>
                         </label>
 
-                        {error ? <p className={styles['error-text']}>{error}</p> : null}
+                        {error ? <p className={styles['error-text']} role="alert">{error}</p> : null}
 
-                        <Button className={styles['submit-btn']} type="submit" disabled={submitting}>
+                        <button className={styles['submit-btn']} type="submit" disabled={submitting}>
                             {submitting ? 'Sending…' : `Request setup — ${SETUP_SERVICE.price}`}
-                        </Button>
+                        </button>
                         <p className={styles['fineprint']}>
                             No charge yet. This sends a request; we confirm details and arrange payment before any setup.
                         </p>

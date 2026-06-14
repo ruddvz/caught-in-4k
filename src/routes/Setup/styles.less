@@ -157,6 +157,11 @@
     &:hover {
         border-color: var(--c4k-border-strong);
     }
+
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+    }
 }
 
 .tier-badge {
@@ -284,13 +289,28 @@
 .password-toggle {
     position: absolute;
     right: 0.5rem;
-    padding: 0.35rem 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.7rem;
     background: none;
     border: none;
     color: var(--c4k-gold);
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
+    border-radius: var(--c4k-radius-sm);
+
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+    }
+}
+
+.req {
+    color: var(--c4k-gold);
 }
 
 .field {

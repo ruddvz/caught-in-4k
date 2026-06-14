@@ -132,6 +132,7 @@ const Wizard = () => {
                                 type="button"
                                 className={classnames(styles['option-card'], { [styles['option-selected']]: debrid === option.id })}
                                 onClick={() => setDebrid(option.id)}
+                                aria-pressed={debrid === option.id}
                             >
                                 <span className={styles['option-name']}>{option.name}</span>
                                 <span className={styles['option-note']}>{option.note}</span>
@@ -171,7 +172,7 @@ const Wizard = () => {
             title: 'You\'re set',
             render: () => (
                 <div className={styles['step-body']}>
-                    <div className={styles['done-icon']}>✓</div>
+                    <div className={styles['done-icon']} aria-hidden="true">✓</div>
                     <p className={styles['step-lead']}>
                         That&apos;s the core setup. Open Stremio, search a title, and pick a high-quality stream. Fine-tune
                         resolution and language in the player settings whenever you like.
@@ -190,6 +191,8 @@ const Wizard = () => {
     const safeStepIndex = Math.max(0, Math.min(stepIndex, totalSteps - 1));
     const currentStep = steps[safeStepIndex];
     const progress = Math.round(((safeStepIndex + 1) / totalSteps) * 100);
+    // The debrid step tells the user to "pick one to continue" — enforce it.
+    const canProceed = currentStep.id !== 'debrid' || Boolean(debrid);
 
     if (!guideUnlocked) {
         return (
@@ -232,20 +235,23 @@ const Wizard = () => {
                 {currentStep.render()}
 
                 <div className={styles['nav-row']}>
-                    <Button
+                    <button
+                        type="button"
                         className={styles['nav-back']}
                         disabled={safeStepIndex === 0}
                         onClick={() => setStepIndex(Math.max(0, safeStepIndex - 1))}
                     >
                         Back
-                    </Button>
+                    </button>
                     {safeStepIndex < totalSteps - 1 ? (
-                        <Button
+                        <button
+                            type="button"
                             className={styles['nav-next']}
+                            disabled={!canProceed}
                             onClick={() => setStepIndex(Math.min(totalSteps - 1, safeStepIndex + 1))}
                         >
                             Next
-                        </Button>
+                        </button>
                     ) : null}
                 </div>
             </div>

@@ -225,6 +225,11 @@
     &:hover {
         border-color: var(--c4k-border-strong);
     }
+
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+    }
 }
 
 .option-selected {
@@ -282,6 +287,11 @@
     font-weight: 700;
     border: 1px solid var(--c4k-border);
     cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid var(--c4k-gold);
+        outline-offset: 2px;
+    }
 }
 
 .nav-back {
@@ -298,6 +308,11 @@
     background: var(--c4k-gold);
     color: #100c02;
     border-color: transparent;
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
 }
 
 /* ── Locked state ── */
