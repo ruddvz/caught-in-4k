@@ -4,7 +4,6 @@ const React = require('react');
 const { getCurrentAppLocation, normalizeAppHref } = require('../../common/navigation');
 
 const BUFFERING_TIMEOUT_MS = 8000;
-const NO_AUDIO_TIMEOUT_MS = 3000;
 const SESSION_KEY_CANDIDATES = 'c4k:fallback-candidates';
 const SESSION_KEY_INDEX = 'c4k:fallback-index';
 
@@ -105,7 +104,6 @@ const useStreamFallback = (videoState, videoEvents, playbackSessionKey) => {
         setFallbackState({ candidates: list, currentIndex: 0 });
     }, [candidates.length]);
     const bufferingTimerRef = React.useRef(null);
-    const audioTimerRef = React.useRef(null);
     const hasNavigatedRef = React.useRef(false);
     const pendingCriticalErrorRef = React.useRef(false);
     // Latest videoState ref so timer callbacks always read fresh values instead
@@ -115,7 +113,6 @@ const useStreamFallback = (videoState, videoEvents, playbackSessionKey) => {
 
     React.useEffect(() => {
         clearTimeout(bufferingTimerRef.current);
-        clearTimeout(audioTimerRef.current);
         hasNavigatedRef.current = false;
         pendingCriticalErrorRef.current = false;
         setExhausted(false);
@@ -154,28 +151,13 @@ const useStreamFallback = (videoState, videoEvents, playbackSessionKey) => {
         return () => clearTimeout(bufferingTimerRef.current);
     }, [enabled, videoState.buffering, videoState.time, tryNext]);
 
-    // No-audio detection: if playing but no audio tracks after 3s, try next
-    React.useEffect(() => {
-        if (!enabled || hasNavigatedRef.current) return;
-
-        const isPlaying = videoState.time !== null && videoState.time > 0;
-        const hasNoAudio = !Array.isArray(videoState.audioTracks) || videoState.audioTracks.length === 0;
-
-        if (isPlaying && hasNoAudio) {
-            audioTimerRef.current = setTimeout(() => {
-                // Re-check live state before navigating — tracks may have loaded late
-                const live = stateRef.current;
-                const stillNoAudio = !Array.isArray(live.audioTracks) || live.audioTracks.length === 0;
-                if (stillNoAudio) {
-                    tryNext();
-                }
-            }, NO_AUDIO_TIMEOUT_MS);
-        } else {
-            clearTimeout(audioTimerRef.current);
-        }
-
-        return () => clearTimeout(audioTimerRef.current);
-    }, [enabled, videoState.time, videoState.audioTracks, tryNext]);
+    // NOTE: We intentionally do NOT auto-skip on "no audio tracks". The browser
+    // HTMLMediaElement.audioTracks API is unimplemented in Chrome and Firefox, so
+    // videoState.audioTracks stays empty for virtually every healthy stream. A
+    // no-audio heuristic therefore mis-fires on good playback and jumps to the
+    // next candidate every few seconds — the source can never finish loading its
+    // tracks because we abandon it first. Audio issues are surfaced through the
+    // AudioMenu instead, where the user can pick a track if any are reported.
 
     React.useEffect(() => {
         if (!enabled || !pendingCriticalErrorRef.current || hasNavigatedRef.current) return;
@@ -209,7 +191,6 @@ const useStreamFallback = (videoState, videoEvents, playbackSessionKey) => {
     React.useEffect(() => {
         return () => {
             clearTimeout(bufferingTimerRef.current);
-            clearTimeout(audioTimerRef.current);
         };
     }, []);
 

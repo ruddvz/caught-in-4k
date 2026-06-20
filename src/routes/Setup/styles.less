@@ -1,7 +1,11 @@
 @import (reference) "~stremio/common/screen-sizes.less";
 
 .setup-page {
-    min-height: 100dvh;
+    // See Guide/styles.less: bind to the full-viewport route host with height:100%
+    // (not min-height:100dvh) so overflow-y:auto scrolls internally on mobile
+    // instead of overflowing the host's clipped box.
+    height: 100%;
+    min-height: 100%;
     width: 100%;
     background:
         var(--gradient-gold),
@@ -17,6 +21,9 @@
         calc(env(safe-area-inset-top, 0px) + 7rem) 2rem
         calc(env(safe-area-inset-bottom, 0px) + 3rem);
     overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
 
 .ambient-orb-a,
