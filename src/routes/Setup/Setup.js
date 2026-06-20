@@ -49,6 +49,7 @@ const Setup = () => {
 
     const handleSubmit = React.useCallback(async (event) => {
         event.preventDefault();
+        if (submitting) return;
         setError(null);
 
         if (!email.trim()) {
@@ -124,7 +125,7 @@ const Setup = () => {
         } finally {
             setSubmitting(false);
         }
-    }, [agreed, auth, desiredPassword, desiredUsername, devices, email, notes, serverTier]);
+    }, [agreed, auth, desiredPassword, desiredUsername, devices, email, notes, serverTier, submitting]);
 
     return (
         <div className={styles['setup-page']}>

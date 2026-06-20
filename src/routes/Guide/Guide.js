@@ -197,6 +197,7 @@ const Guide = () => {
 
     const handleAuth = React.useCallback(async (event) => {
         event.preventDefault();
+        if (authLoading) return;
         setCheckoutError(null);
         setAuthLoading(true);
         try {
@@ -210,7 +211,7 @@ const Guide = () => {
         } finally {
             setAuthLoading(false);
         }
-    }, [auth, authMode, email, password]);
+    }, [auth, authMode, email, password, authLoading]);
 
     const startGuideCheckout = React.useCallback(async () => {
         setCheckoutError(null);
