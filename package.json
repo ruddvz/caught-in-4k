@@ -43,7 +43,7 @@
         "@stremio/stremio-icons": "5.10.0",
         "@stremio/stremio-video": "0.0.80",
         "@stripe/stripe-js": "^9.7.0",
-        "@supabase/supabase-js": "^2.101.1",
+        "@supabase/supabase-js": "^2.108.2",
         "@tabler/icons-react": "^3.44.0",
         "a-color-picker": "1.2.1",
         "animate.css": "^4.1.1",
