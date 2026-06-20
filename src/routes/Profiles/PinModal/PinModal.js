@@ -32,12 +32,15 @@ const PinModal = ({ mode, profileName, title: titleOverride, subtitle: subtitleO
     const [lastAdded, setLastAdded] = React.useState(-1);
     const dismissedRef = React.useRef(false);
     const submitTimeoutRef = React.useRef(null);
+    const errorTimeoutRefs = React.useRef([]);
 
     React.useEffect(() => () => {
         dismissedRef.current = true;
         if (submitTimeoutRef.current) {
             clearTimeout(submitTimeoutRef.current);
         }
+        errorTimeoutRefs.current.forEach(clearTimeout);
+        errorTimeoutRefs.current = [];
     }, []);
 
     const derivedTitle = React.useMemo(() => {
@@ -60,14 +63,19 @@ const PinModal = ({ mode, profileName, title: titleOverride, subtitle: subtitleO
     const displaySubtitle = subtitleOverride || derivedSubtitle;
 
     const triggerError = React.useCallback((msg) => {
+        if (dismissedRef.current) return;
         setShake(true);
         setError(msg);
-        setTimeout(() => {
+        errorTimeoutRefs.current.push(setTimeout(() => {
+            if (dismissedRef.current) return;
             setShake(false);
             setDigits([]);
             setLastAdded(-1);
-            setTimeout(() => setError(''), 1500);
-        }, 600);
+            errorTimeoutRefs.current.push(setTimeout(() => {
+                if (dismissedRef.current) return;
+                setError('');
+            }, 1500));
+        }, 600));
     }, []);
 
     const getDefaultErrorMessage = React.useCallback(() => {

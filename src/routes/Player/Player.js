@@ -651,7 +651,7 @@ const Player = ({ urlParams, queryParams }) => {
                 shellTransport: services.shell.active ? services.shell.transport : null,
             });
         }
-    }, [auth, casting, forceTranscoding, historyStore, player.libraryItem, player.metaItem, player.selected, player.seriesInfo, player.stream, player.selected?.stream, selectedProfileId, services.chromecast.active, services.shell.active, settings.assSubtitlesStyling, settings.hardwareDecoding, settings.surroundSound, settings.videoMode, streamingServer.baseUrl, streamingServer.selected.transportUrl, streamingServer.settings, urlParams.id, urlParams.type]);
+    }, [auth, casting, forceTranscoding, historyStore, player.libraryItem, player.metaItem, player.selected, player.seriesInfo, player.stream, player.selected?.stream, selectedProfileId, services.chromecast.active, services.shell.active, settings.assSubtitlesStyling, settings.hardwareDecoding, settings.surroundSound, settings.videoMode, streamingServer.baseUrl, streamingServer.selected?.transportUrl, streamingServer.settings, urlParams.id, urlParams.type]);
     React.useEffect(() => {
         if (video.state.stream !== null) {
             const tracks = player.subtitles.map((subtitles) => ({
@@ -844,13 +844,13 @@ const Player = ({ urlParams, queryParams }) => {
 
     onShortcut('volumeUp', () => {
         if (!menusOpen && !nextVideoPopupOpen && video.state.volume !== null) {
-            onVolumeChangeRequested(Math.min(video.state.volume + 5, 200));
+            onVolumeChangeRequested(Math.min(video.state.volume + 5, 100));
         }
     }, [menusOpen, nextVideoPopupOpen, video.state.volume]);
 
     onShortcut('volumeDown', () => {
         if (!menusOpen && !nextVideoPopupOpen && video.state.volume !== null) {
-            onVolumeChangeRequested(Math.min(video.state.volume - 5, 200));
+            onVolumeChangeRequested(Math.max(video.state.volume - 5, 0));
         }
     }, [menusOpen, nextVideoPopupOpen, video.state.volume]);
 

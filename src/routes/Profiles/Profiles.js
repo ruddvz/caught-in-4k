@@ -100,14 +100,15 @@ const Profiles = () => {
                 const max = profiles.length < 4 ? profiles.length : profiles.length - 1;
                 setFocusedIndex((i) => Math.min(max, i + 1));
             } else if (e.key === 'Enter') {
-                if (focusedIndex < profiles.length) {
-                    const p = profiles[focusedIndex];
+                const p = profiles[focusedIndex];
+                if (p) {
                     if (p.hasPin) {
                         setPinModalProfile(p);
                     } else {
                         doSelectProfile(p);
                     }
-                } else {
+                } else if (profiles.length < 4) {
+                    // Focus is on the "Add Profile" card (only rendered when < 4).
                     setView('add');
                 }
             }

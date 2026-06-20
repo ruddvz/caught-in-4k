@@ -28,6 +28,11 @@ type Props = {
 const Indicator = ({ className, videoState, disabled }: Props) => {
     const timeout = useRef<NodeJS.Timeout | null>(null);
     const prevVideoState = useRef<VideoState>(videoState);
+    // Tracks which properties we've already seen at least once. The first value
+    // a property reports is its initial state on player open — not a user change
+    // — so we record it without flashing the on-screen indicator. Only genuine
+    // subsequent changes (e.g. the user nudging subtitle delay) surface the HUD.
+    const initialized = useRef<Set<string>>(new Set());
 
     const [shown, show, hide] = useBinaryState(false);
     const [current, setCurrent] = useState<string | null>(null);
@@ -49,11 +54,15 @@ const Indicator = ({ className, videoState, disabled }: Props) => {
             const next = videoState[property];
 
             if (next && next !== prev) {
-                setCurrent(property);
-                show();
+                if (!initialized.current.has(property)) {
+                    initialized.current.add(property);
+                } else {
+                    setCurrent(property);
+                    show();
 
-                timeout.current && clearTimeout(timeout.current);
-                timeout.current = setTimeout(hide, 1000);
+                    timeout.current && clearTimeout(timeout.current);
+                    timeout.current = setTimeout(hide, 1000);
+                }
             }
         }
 

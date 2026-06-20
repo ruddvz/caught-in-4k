@@ -45,14 +45,14 @@ importers:
         specifier: 5.2.0
         version: 5.2.0
       '@stremio/stremio-core-web':
-        specifier: 0.58.0
-        version: 0.58.0
+        specifier: 0.59.0
+        version: 0.59.0
       '@stremio/stremio-icons':
         specifier: 5.10.0
         version: 5.10.0
       '@stremio/stremio-video':
-        specifier: 0.0.79
-        version: 0.0.79
+        specifier: 0.0.80
+        version: 0.0.80
       '@stripe/stripe-js':
         specifier: ^9.7.0
         version: 9.8.0
@@ -162,8 +162,8 @@ importers:
         specifier: github:Stremio/spatial-navigation#64871b1422466f5f45d24ebc8bbd315b2ebab6a6
         version: https://codeload.github.com/Stremio/spatial-navigation/tar.gz/64871b1422466f5f45d24ebc8bbd315b2ebab6a6
       stremio-translations:
-        specifier: github:Stremio/stremio-translations#72a0decf9c636efc3171ee7238a0037ccefc36c1
-        version: https://codeload.github.com/Stremio/stremio-translations/tar.gz/72a0decf9c636efc3171ee7238a0037ccefc36c1
+        specifier: github:Stremio/stremio-translations#89e695effcd165b6b1f2133d9bc5c4ffe37ba4be
+        version: https://codeload.github.com/Stremio/stremio-translations/tar.gz/89e695effcd165b6b1f2133d9bc5c4ffe37ba4be
       stripe:
         specifier: ^22.2.0
         version: 22.2.0(@types/node@24.5.2)
@@ -2148,14 +2148,14 @@ packages:
   '@stremio/stremio-colors@5.2.0':
     resolution: {integrity: sha512-dYlPgu9W/H7c9s1zmW5tiDnRenaUa4Hg1QCyOg1lhOcgSfM/bVTi5nnqX+IfvGTTUNA0zgzh8hI3o3miwnZxTg==}
 
-  '@stremio/stremio-core-web@0.58.0':
-    resolution: {integrity: sha512-HwXf4fXdWKxvfnXhqvI3qpXaHVITYdjWwQrdGJKG17LURXPGZfYddcTIQ+h2J6K7EIYSrjysyjoJ0lEYBdSemg==}
+  '@stremio/stremio-core-web@0.59.0':
+    resolution: {integrity: sha512-vN7r2rjU/C9Xt29cN2Iim5jowXQQCaIdgbbM25Pg5Uj+ZIr17SFNL0lAI8KuDXaEExGPgli7N7V2fBaMegXDpg==}
 
   '@stremio/stremio-icons@5.10.0':
     resolution: {integrity: sha512-Zw/vGC3D2yeQfk8xv/tfMJTDvbCPOI91tBg4XpR2+EgbZSX8Xvm7Vz457PIhFPhTAwdOPHp0VX0M3gzjbt0zOg==}
 
-  '@stremio/stremio-video@0.0.79':
-    resolution: {integrity: sha512-RfxmeG+rQdoflfqBybRB9vSqb3cjc3Fd5T9uNNUbwC287apQsNyjYOlvk7sfRlQ1Za/UdFsyoqR5vGBSBDzlhQ==}
+  '@stremio/stremio-video@0.0.80':
+    resolution: {integrity: sha512-9mIDeKUUEt6h7h685Bl9HUTOLT0VtaQWrC7uBlL5uoo2CWohIZBr3KEHYlaTnM2ve6CIQJ/nB+hfTyymgGDiGg==}
 
   '@stripe/stripe-js@9.8.0':
     resolution: {integrity: sha512-DHJpol/98VKyojNSYmpkB5vOMnlf87hPe0wPxyaYTNiTMk5QjKMXDfSZLwGctYIXAgAWDFeRABc8lFAj0BELyw==}
@@ -6319,9 +6319,9 @@ packages:
   streamx@2.25.0:
     resolution: {integrity: sha512-0nQuG6jf1w+wddNEEXCF4nTg3LtufWINB5eFEN+5TNZW7KWJp6x87+JFL43vaAUPyCfH1wID+mNVyW6OHtFamg==}
 
-  stremio-translations@https://codeload.github.com/Stremio/stremio-translations/tar.gz/72a0decf9c636efc3171ee7238a0037ccefc36c1:
-    resolution: {tarball: https://codeload.github.com/Stremio/stremio-translations/tar.gz/72a0decf9c636efc3171ee7238a0037ccefc36c1}
-    version: 1.47.2
+  stremio-translations@https://codeload.github.com/Stremio/stremio-translations/tar.gz/89e695effcd165b6b1f2133d9bc5c4ffe37ba4be:
+    resolution: {tarball: https://codeload.github.com/Stremio/stremio-translations/tar.gz/89e695effcd165b6b1f2133d9bc5c4ffe37ba4be}
+    version: 1.52.0
 
   string-length@4.0.2:
     resolution: {integrity: sha512-+l6rNN5fYHNhZZy41RXsYptCjA2Igmq4EG7kZAYFQI1E1VTXarr6ZPXBg6eq7Y6eK4FEhY6AJlyuFIb/v/S0VQ==}
@@ -9089,13 +9089,13 @@ snapshots:
 
   '@stremio/stremio-colors@5.2.0': {}
 
-  '@stremio/stremio-core-web@0.58.0':
+  '@stremio/stremio-core-web@0.59.0':
     dependencies:
       '@babel/runtime': 7.24.1
 
   '@stremio/stremio-icons@5.10.0': {}
 
-  '@stremio/stremio-video@0.0.79':
+  '@stremio/stremio-video@0.0.80':
     dependencies:
       buffer: 6.0.3
       color: 4.2.3
@@ -13942,7 +13942,7 @@ snapshots:
       - bare-abort-controller
       - react-native-b4a
 
-  stremio-translations@https://codeload.github.com/Stremio/stremio-translations/tar.gz/72a0decf9c636efc3171ee7238a0037ccefc36c1: {}
+  stremio-translations@https://codeload.github.com/Stremio/stremio-translations/tar.gz/89e695effcd165b6b1f2133d9bc5c4ffe37ba4be: {}
 
   string-length@4.0.2:
     dependencies:

@@ -1,7 +1,14 @@
 @import (reference) "~stremio/common/screen-sizes.less";
 
 .guide-page {
-    min-height: 100dvh;
+    // The route host (.route-content) is an absolutely-positioned, full-viewport
+    // box with overflow:hidden. Using min-height:100dvh here let this element grow
+    // taller than that host as content stacked up — the host then clipped the
+    // overflow and the page became unscrollable on mobile (the bottom sections
+    // were unreachable). Binding to height:100% keeps the page exactly the host's
+    // height so its own overflow-y:auto creates a real internal scroll region.
+    height: 100%;
+    min-height: 100%;
     width: 100%;
     background:
         var(--gradient-gold),
@@ -17,6 +24,9 @@
         calc(env(safe-area-inset-top, 0px) + 7rem) 2rem
         calc(env(safe-area-inset-bottom, 0px) + 3rem);
     overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
 
 .ambient-orb-a,
