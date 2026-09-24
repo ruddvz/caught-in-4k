@@ -1,10 +1,11 @@
 'use strict';
 
 const { loadJellyfinCandidates } = require('./providers/jellyfin');
+const { loadPlexCandidates } = require('./providers/plex');
 
 const DEFAULT_TIMEOUT_MS = 8000;
 const MAX_CANDIDATES = 50;
-const SUPPORTED_SOURCE_PROVIDERS = new Set(['index', 'jellyfin']);
+const SUPPORTED_SOURCE_PROVIDERS = new Set(['index', 'jellyfin', 'plex']);
 
 const parseCsv = (value) => String(value || '')
     .split(',')
@@ -115,6 +116,9 @@ const loadAuthorisedCandidates = async ({ type, id, env = process.env, fetchImpl
     const provider = resolveSourceProvider(env.C4K_SOURCE_PROVIDER);
     if (provider === 'jellyfin') {
         return loadJellyfinCandidates({ type, id, env, fetchImpl });
+    }
+    if (provider === 'plex') {
+        return loadPlexCandidates({ type, id, env, fetchImpl });
     }
     if (provider === 'index') {
         return loadIndexCandidates({ type, id, env, fetchImpl });
