@@ -46,6 +46,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Lint add-on
+        run: pnpm lint:addon
+
       - name: Test
         run: pnpm test
 
