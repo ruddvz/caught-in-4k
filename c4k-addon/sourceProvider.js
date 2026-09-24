@@ -1,7 +1,10 @@
 'use strict';
 
+const { loadJellyfinCandidates } = require('./providers/jellyfin');
+
 const DEFAULT_TIMEOUT_MS = 8000;
 const MAX_CANDIDATES = 50;
+const SUPPORTED_SOURCE_PROVIDERS = new Set(['index', 'jellyfin']);
 
 const parseCsv = (value) => String(value || '')
     .split(',')
@@ -58,7 +61,7 @@ const parseCandidatePayload = (payload) => {
     return [];
 };
 
-const loadAuthorisedCandidates = async ({ type, id, env = process.env, fetchImpl = fetch } = {}) => {
+const loadIndexCandidates = async ({ type, id, env = process.env, fetchImpl = fetch } = {}) => {
     const providerUrl = parseHttpUrl(env.C4K_SOURCE_INDEX_URL, {
         allowLocalHttp: env.NODE_ENV !== 'production',
     });
@@ -103,9 +106,27 @@ const loadAuthorisedCandidates = async ({ type, id, env = process.env, fetchImpl
     }
 };
 
+const resolveSourceProvider = (value) => {
+    const provider = String(value || 'index').trim().toLowerCase();
+    return SUPPORTED_SOURCE_PROVIDERS.has(provider) ? provider : null;
+};
+
+const loadAuthorisedCandidates = async ({ type, id, env = process.env, fetchImpl = fetch } = {}) => {
+    const provider = resolveSourceProvider(env.C4K_SOURCE_PROVIDER);
+    if (provider === 'jellyfin') {
+        return loadJellyfinCandidates({ type, id, env, fetchImpl });
+    }
+    if (provider === 'index') {
+        return loadIndexCandidates({ type, id, env, fetchImpl });
+    }
+    return [];
+};
+
 module.exports = {
     isAllowedMediaUrl,
     loadAuthorisedCandidates,
+    loadIndexCandidates,
     parseCandidatePayload,
+    resolveSourceProvider,
     sanitiseCandidate,
 };
