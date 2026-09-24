@@ -110,8 +110,23 @@ const createJellyfinRelayHandler = ({ env = process.env, fetchImpl = fetch } = {
     }
 
     const controller = new AbortController();
-    const abort = () => controller.abort();
+    const abort = () => {
+        if (!controller.signal.aborted) controller.abort();
+    };
+    const cleanup = () => {
+        req.removeListener('aborted', abort);
+        res.removeListener('finish', onFinish);
+        res.removeListener('close', onClose);
+    };
+    const onFinish = () => cleanup();
+    const onClose = () => {
+        abort();
+        cleanup();
+    };
+
     req.once('aborted', abort);
+    res.once('finish', onFinish);
+    res.once('close', onClose);
 
     const headers = {
         Accept: req.headers.accept || '*/*',
@@ -146,16 +161,20 @@ const createJellyfinRelayHandler = ({ env = process.env, fetchImpl = fetch } = {
             return res.end();
         }
 
-        return Readable.fromWeb(upstream.body).pipe(res);
+        const stream = Readable.fromWeb(upstream.body);
+        stream.once('error', (error) => {
+            cleanup();
+            if (!res.destroyed) res.destroy(error);
+        });
+        return stream.pipe(res);
     } catch (error) {
+        cleanup();
         if (error.name === 'AbortError') return undefined;
         console.error('[C4K Addon] Jellyfin relay failed:', error.message);
         if (!res.headersSent) {
             return res.status(502).json({ error: 'Unable to read media from Jellyfin.' });
         }
         return res.end();
-    } finally {
-        req.removeListener('aborted', abort);
     }
 };
 
