@@ -311,17 +311,25 @@ const loadJellyfinCandidates = async ({ type, id, env = process.env, fetchImpl =
     if (!baseUrl || !token || !env.C4K_MEDIA_RELAY_SECRET) return [];
 
     const itemsByImdbId = await buildLibraryIndex({ env, fetchImpl });
-    const item = itemsByImdbId.get(String(id).toLowerCase());
-    if (!item?.Id) return [];
+    const indexedItem = itemsByImdbId.get(String(id).toLowerCase());
+    if (!indexedItem?.Id) return [];
 
     const timeoutMs = boundedInteger(env.C4K_JELLYFIN_TIMEOUT_MS, DEFAULT_TIMEOUT_MS, {
         min: 1000,
         max: 30000,
     });
-    const playbackUrl = appendPath(baseUrl, `/Items/${encodeURIComponent(item.Id)}/PlaybackInfo`);
     const userId = String(env.C4K_JELLYFIN_USER_ID || '').trim();
-    if (userId) playbackUrl.searchParams.set('UserId', userId);
 
+    const itemDetailsUrl = appendPath(baseUrl, `/Items/${encodeURIComponent(indexedItem.Id)}`);
+    if (userId) itemDetailsUrl.searchParams.set('UserId', userId);
+    const itemDetails = await fetchJson(itemDetailsUrl, { token, timeoutMs, fetchImpl });
+    const item = {
+        ...indexedItem,
+        ...(itemDetails && typeof itemDetails === 'object' ? itemDetails : {}),
+    };
+
+    const playbackUrl = appendPath(baseUrl, `/Items/${encodeURIComponent(indexedItem.Id)}/PlaybackInfo`);
+    if (userId) playbackUrl.searchParams.set('UserId', userId);
     const playbackInfo = await fetchJson(playbackUrl, { token, timeoutMs, fetchImpl });
     const mediaSources = Array.isArray(playbackInfo?.MediaSources) ? playbackInfo.MediaSources : [];
 
