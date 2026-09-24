@@ -198,6 +198,19 @@ For a personal or household Jellyfin integration, the most efficient deployment 
 
 A future design can add a separate trusted-edge or same-host deployment mode, but it must not reintroduce access tokens into public Stremio URLs.
 
+## Verification
+
+The provider and relay are covered by `tests/c4kJellyfin.spec.js`, while the generic protocol and quality-ranking path remain covered by `tests/c4kAddon.spec.js`.
+
+Focused verification commands:
+
+```bash
+pnpm lint:addon
+pnpm test:addon
+```
+
+The pull-request CI also runs the repository-wide Jest suite, frontend build and existing E2E checks.
+
 ## Current boundaries
 
 Implemented:
