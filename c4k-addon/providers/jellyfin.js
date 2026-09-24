@@ -189,8 +189,11 @@ const mapHdr = (videoStream) => {
     if (!videoStream) return [];
     const rangeType = String(videoStream.VideoRangeType || videoStream.VideoRange || '').toUpperCase();
     const result = [];
+    const hasDolbyVisionProfile = videoStream.DvProfile !== null
+        && videoStream.DvProfile !== undefined
+        && Number.isFinite(Number(videoStream.DvProfile));
 
-    if (rangeType.startsWith('DOVI') || Number.isFinite(Number(videoStream.DvProfile))) {
+    if (rangeType.startsWith('DOVI') || hasDolbyVisionProfile) {
         result.push('dolby-vision');
     }
     if (rangeType.includes('HDR10PLUS') || videoStream.Hdr10PlusPresentFlag === true) result.push('hdr10-plus');
