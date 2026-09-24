@@ -27,10 +27,14 @@ const baseEnv = {
     C4K_MEDIA_RELAY_SECRET: 'relay-secret-value',
 };
 
-const jellyfinItem = {
+const indexedJellyfinItem = {
     Id: 'movie-1',
     Name: 'Example Movie',
     ProviderIds: { Imdb: 'tt1234567' },
+};
+
+const detailedJellyfinItem = {
+    ...indexedJellyfinItem,
     Tags: [
         'c4k:source=uhd-bluray-remux',
         'c4k:presentation=imax-1.90',
@@ -76,11 +80,20 @@ const makeJellyfinFetch = () => jest.fn(async (url, options) => {
         expect(requestUrl.searchParams.get('IncludeItemTypes')).toBe('Movie');
         return {
             ok: true,
-            json: async () => ({ Items: [jellyfinItem], TotalRecordCount: 1 }),
+            json: async () => ({ Items: [indexedJellyfinItem], TotalRecordCount: 1 }),
+        };
+    }
+
+    if (requestUrl.pathname === '/base/Items/movie-1') {
+        expect(requestUrl.searchParams.get('UserId')).toBe(baseEnv.C4K_JELLYFIN_USER_ID);
+        return {
+            ok: true,
+            json: async () => detailedJellyfinItem,
         };
     }
 
     if (requestUrl.pathname === '/base/Items/movie-1/PlaybackInfo') {
+        expect(requestUrl.searchParams.get('UserId')).toBe(baseEnv.C4K_JELLYFIN_USER_ID);
         return {
             ok: true,
             json: async () => playbackInfo,
@@ -119,14 +132,14 @@ describe('C4K Jellyfin provider', () => {
         expect(candidates[0].filename).toBe('Example Movie - UHD.mkv');
         expect(candidates[0].url).toContain('https://addon.example.test/media/jellyfin/movie-1/source-4k');
         expect(candidates[0].url).not.toContain(baseEnv.C4K_JELLYFIN_TOKEN);
-        expect(fetchImpl).toHaveBeenCalledTimes(2);
+        expect(fetchImpl).toHaveBeenCalledTimes(3);
     });
 
-    it('does not fetch playback info when the IMDb id is absent from the library', async () => {
+    it('does not fetch item details or playback info when the IMDb id is absent from the library', async () => {
         const fetchImpl = jest.fn(async () => ({
             ok: true,
             json: async () => ({
-                Items: [{ ...jellyfinItem, ProviderIds: { Imdb: 'tt7654321' } }],
+                Items: [{ ...indexedJellyfinItem, ProviderIds: { Imdb: 'tt7654321' } }],
                 TotalRecordCount: 1,
             }),
         }));
@@ -188,6 +201,11 @@ describe('C4K Jellyfin provider', () => {
             { Type: 'Audio', Codec: 'dts', AudioSpatialFormat: 'DTSX' },
         ])).toEqual(['truehd-atmos', 'dts-x']);
         expect(mapThreeD('HalfSideBySide')).toBe('half-sbs');
+    });
+
+    it('does not classify a null Dolby Vision profile as Dolby Vision', () => {
+        expect(mapHdr({ VideoRangeType: 'HDR10', DvProfile: null })).toEqual(['hdr10']);
+        expect(mapHdr({ VideoRangeType: 'SDR', DvProfile: null })).toEqual(['sdr']);
     });
 });
 
