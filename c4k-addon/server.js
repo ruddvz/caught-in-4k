@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const { manifest } = require('./manifest');
 const { createJellyfinRelayHandler } = require('./mediaRelay');
+const { createPlexRelayHandler } = require('./plexRelay');
 const { createStreamResolver } = require('./service');
 
 const DEFAULT_PORT = 7000;
@@ -14,6 +15,7 @@ const createApp = ({ env = process.env, loadCandidates, fetchImpl = fetch } = {}
     const app = express();
     const resolveStreams = createStreamResolver({ env, loadCandidates });
     const relayJellyfinMedia = createJellyfinRelayHandler({ env, fetchImpl });
+    const relayPlexMedia = createPlexRelayHandler({ env, fetchImpl });
 
     app.disable('x-powered-by');
     app.use(helmet({
@@ -38,6 +40,8 @@ const createApp = ({ env = process.env, loadCandidates, fetchImpl = fetch } = {}
 
     app.head('/media/jellyfin/:itemId/:mediaSourceId', relayJellyfinMedia);
     app.get('/media/jellyfin/:itemId/:mediaSourceId', relayJellyfinMedia);
+    app.head('/media/plex/:partId', relayPlexMedia);
+    app.get('/media/plex/:partId', relayPlexMedia);
 
     const registerAddonRoutes = (basePath = '') => {
         app.get(`${basePath}/manifest.json`, (_req, res) => {
