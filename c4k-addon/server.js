@@ -88,7 +88,7 @@ const createApp = ({ env = process.env, loadCandidates, fetchImpl = fetch } = {}
 if (require.main === module) {
     const port = Number(process.env.C4K_ADDON_PORT) || DEFAULT_PORT;
     createApp().listen(port, () => {
-        console.log(`C4K Stremio add-on listening on http://localhost:${port}`);
+        console.warn(`C4K Stremio add-on listening on http://localhost:${port}`);
     });
 }
 
