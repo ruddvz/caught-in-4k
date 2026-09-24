@@ -5,13 +5,15 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const { manifest } = require('./manifest');
+const { createJellyfinRelayHandler } = require('./mediaRelay');
 const { createStreamResolver } = require('./service');
 
 const DEFAULT_PORT = 7000;
 
-const createApp = ({ env = process.env, loadCandidates } = {}) => {
+const createApp = ({ env = process.env, loadCandidates, fetchImpl = fetch } = {}) => {
     const app = express();
     const resolveStreams = createStreamResolver({ env, loadCandidates });
+    const relayJellyfinMedia = createJellyfinRelayHandler({ env, fetchImpl });
 
     app.disable('x-powered-by');
     app.use(helmet({
@@ -19,15 +21,23 @@ const createApp = ({ env = process.env, loadCandidates } = {}) => {
     }));
     app.use(cors({
         origin: '*',
-        methods: ['GET', 'OPTIONS'],
+        methods: ['GET', 'HEAD', 'OPTIONS'],
     }));
-    app.use(rateLimit({
+
+    const addonLimiter = rateLimit({
         windowMs: 60 * 1000,
         max: 120,
         standardHeaders: true,
         legacyHeaders: false,
         message: { error: 'Too many C4K add-on requests.' },
-    }));
+    });
+    app.use((req, res, next) => {
+        if (req.path.startsWith('/media/')) return next();
+        return addonLimiter(req, res, next);
+    });
+
+    app.head('/media/jellyfin/:itemId/:mediaSourceId', relayJellyfinMedia);
+    app.get('/media/jellyfin/:itemId/:mediaSourceId', relayJellyfinMedia);
 
     const registerAddonRoutes = (basePath = '') => {
         app.get(`${basePath}/manifest.json`, (_req, res) => {
@@ -58,6 +68,7 @@ const createApp = ({ env = process.env, loadCandidates } = {}) => {
         res.json({
             ok: true,
             service: 'c4k-stremio-addon',
+            sourceProvider: String(env.C4K_SOURCE_PROVIDER || 'index').toLowerCase(),
             version: manifest.version,
         });
     });
