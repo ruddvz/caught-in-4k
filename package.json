@@ -18,7 +18,7 @@
         "addon:start": "node c4k-addon/server.js",
         "build": "webpack --mode production",
         "test": "jest",
-        "test:addon": "jest tests/c4kAddon.spec.js tests/c4kJellyfin.spec.js",
+        "test:addon": "jest tests/c4kAddon.spec.js tests/c4kJellyfin.spec.js tests/c4kPlex.spec.js",
         "lint": "eslint src",
         "lint:addon": "eslint c4k-addon",
         "scan-translations": "cross-env JEST_INCLUDE_I18N=1 jest ./tests/i18nScan.test.js",
