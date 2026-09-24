@@ -2,7 +2,7 @@
 
 const manifest = Object.freeze({
     id: 'live.c4k.quality',
-    version: '0.1.0',
+    version: '0.2.0',
     name: 'C4K Quality',
     description: 'Quality-first stream resolver for authorised C4K movie libraries.',
     resources: [
