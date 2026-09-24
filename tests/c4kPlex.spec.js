@@ -274,10 +274,12 @@ describe('C4K Plex media relay', () => {
         })).toBe(true);
     });
 
-    it('rejects arbitrary Plex paths even with a structurally valid part id', () => {
+    it('rejects arbitrary and encoded-traversal Plex paths', () => {
         expect(isValidPartKey({ partId: '1001', partKey: '/library/metadata/42' })).toBe(false);
         expect(isValidPartKey({ partId: '1001', partKey: '/library/parts/1002/123/file.mkv' })).toBe(false);
         expect(isValidPartKey({ partId: '1001', partKey: '/library/parts/1001/../metadata/42' })).toBe(false);
+        expect(isValidPartKey({ partId: '1001', partKey: '/library/parts/1001/%2e%2e/metadata/42' })).toBe(false);
+        expect(isValidPartKey({ partId: '1001', partKey: '/library/parts/1001/%252e%252e/metadata/42' })).toBe(false);
     });
 
     it('rejects a signature when the signed Plex part key is changed', () => {
