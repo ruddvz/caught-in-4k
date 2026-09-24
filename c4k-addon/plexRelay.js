@@ -13,10 +13,33 @@ const createPlexRelaySignature = ({ secret, partId, partKey, expires }) => crypt
     .update(plexRelayPayload({ partId, partKey, expires }))
     .digest('base64url');
 
+const decodeForValidation = (value) => {
+    let decoded = value;
+    for (let index = 0; index < 2; index += 1) {
+        try {
+            const next = decodeURIComponent(decoded);
+            if (next === decoded) break;
+            decoded = next;
+        } catch (_error) {
+            return null;
+        }
+    }
+    return decoded;
+};
+
 const isValidPartKey = ({ partId, partKey }) => {
     if (!/^\d+$/.test(String(partId || ''))) return false;
-    if (typeof partKey !== 'string' || partKey.includes('..') || partKey.includes('?') || partKey.includes('#')) return false;
-    return partKey.startsWith(`/library/parts/${partId}/`) && partKey.length > `/library/parts/${partId}/`.length;
+    if (typeof partKey !== 'string' || partKey.length === 0) return false;
+    if (partKey.includes('?') || partKey.includes('#') || partKey.includes('\\') || partKey.includes('\0')) return false;
+
+    const decoded = decodeForValidation(partKey);
+    if (!decoded || decoded.includes('?') || decoded.includes('#') || decoded.includes('\\') || decoded.includes('\0')) return false;
+
+    const prefix = `/library/parts/${partId}/`;
+    if (!decoded.startsWith(prefix) || decoded.length <= prefix.length) return false;
+
+    const pathSegments = decoded.split('/');
+    return !pathSegments.some((segment) => segment === '.' || segment === '..');
 };
 
 const verifyPlexRelaySignature = ({
