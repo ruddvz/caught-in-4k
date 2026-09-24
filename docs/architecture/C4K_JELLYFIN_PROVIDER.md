@@ -12,6 +12,7 @@ The flow is:
 Stremio movie id
     -> C4K stream endpoint
     -> Jellyfin IMDb library index
+    -> full Jellyfin item details for the match
     -> Jellyfin PlaybackInfo for the matched movie
     -> one C4K candidate per Jellyfin MediaSource
     -> C4K quality ranking
@@ -58,15 +59,15 @@ It forwards these response headers when present:
 - `ETag`
 - `Last-Modified`
 
+The relay keeps its upstream abort signal active for the lifetime of the client response. An interrupted playback connection can therefore cancel the Jellyfin request rather than leaving an orphaned media transfer.
+
 The normal add-on request rate limiter does not apply to `/media/` because a player may issue many range requests during normal playback. Network-level abuse protection should be applied separately at the deployment layer.
 
 ## Library lookup
 
 Stremio supplies an IMDb-style id such as `tt1234567`.
 
-Jellyfin does not provide a reliable exact provider-id lookup through the standard item query, so C4K builds an in-memory map of Jellyfin movies that have IMDb provider IDs.
-
-The provider queries Jellyfin `/Items` in pages and requests:
+C4K builds an in-memory map of Jellyfin movies that have IMDb provider IDs. The provider queries Jellyfin `/Items` in pages and requests:
 
 ```text
 Recursive=true
@@ -79,6 +80,8 @@ EnableTotalRecordCount=true
 ```
 
 The resulting `ProviderIds.Imdb` values are indexed by lowercase IMDb id. The index is cached for five minutes by default.
+
+After a match, C4K fetches `/Items/{itemId}` before PlaybackInfo. This ensures the full movie record, including operator-added C4K tags, is available without depending on which optional fields were included in the paged library response.
 
 Relevant controls:
 
@@ -201,10 +204,12 @@ Implemented:
 
 - movie IMDb lookup
 - multiple Jellyfin MediaSources
+- full item metadata fetch after match
 - probed technical metadata mapping
 - quality ranking through the existing C4K engine
 - signed relay URLs
 - HTTP range forwarding
+- client-disconnect cancellation
 - configurable cache and scan limits
 - explicit source/IMAX tags
 
